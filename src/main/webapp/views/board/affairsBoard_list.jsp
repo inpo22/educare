@@ -9,9 +9,9 @@
   <meta content="" name="description">
   <meta content="" name="keywords">
 
-<%--  css--%>
+  <%--  css--%>
   <jsp:include page="/views/common/head.jsp"></jsp:include>
-<%--js--%>
+  <%--js--%>
 
 
 <style>
