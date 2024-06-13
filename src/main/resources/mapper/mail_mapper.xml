@@ -4,4 +4,30 @@
 
 <mapper namespace="com.edu.care.dao.MailDAO">
 	
+	<select id="receivedMailListCall" resultType="mail">
+		SELECT 
+			m.mail_no
+			, m.send_user_code
+			, (SELECT u.name FROM user u WHERE u.user_code = m.send_user_code) AS send_user_name
+			, m.subject
+			, m.content
+			, m.is_read
+		FROM mail m JOIN mail_recipient mr ON m.mail_no = mr.mail_no
+		WHERE mr.receive_user_code = #{param3} AND mr.type = 0 AND m.is_del = 0
+		ORDER BY m.mail_no DESC LIMIT #{param2} OFFSET #{param1}
+	</select>
+	
+	<select id="receivedMailPageCnt" resultType="Integer">
+		SELECT CEIL(COUNT(m.mail_no)/#{param1}) FROM mail m JOIN mail_recipient mr ON m.mail_no = mr.mail_no
+		WHERE mr.receive_user_code = #{param2} AND mr.type = 0 AND m.is_del = 0
+	</select>
+	
+	<update id="mailListRead">
+		UPDATE mail SET is_read = 1 WHERE mail_no = #{param1}
+	</update>
+	
+	<update id="mailListDel">
+		UPDATE mail SET is_del = 1 WHERE mail_no = #{param1}
+	</update>
+	
 </mapper>
