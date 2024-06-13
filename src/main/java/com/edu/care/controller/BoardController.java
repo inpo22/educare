@@ -1,10 +1,14 @@
 package com.edu.care.controller;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.edu.care.service.BoardService;
 
@@ -19,7 +23,15 @@ public class BoardController {
 	public String allBoardList() {
 		return "board/allBoard_list";
 	}
-
+	
+	/*
+	 * @PostMapping(value="/allBoard/list.ajax")
+	 * 
+	 * @ResponseBody public Map<String, Object> allList(){ return
+	 * boardService.allList(); }
+	 */
+	
+	
 	@GetMapping(value="/affairsBoard/list.go")
 	public String affairsBoardList() {
 		return "board/affairsBoard_list";

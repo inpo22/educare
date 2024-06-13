@@ -4,4 +4,8 @@
 
 <mapper namespace="com.edu.care.dao.BoardDAO">
 	
+	<!-- <select id="allList" parameterType="board">
+		select  from
+	</select> -->
+	
 </mapper>
