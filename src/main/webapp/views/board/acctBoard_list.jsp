@@ -8,6 +8,10 @@
   <title>Dashboard - NiceAdmin Bootstrap Template</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
+   
+   <!-- css -->
+   
+   <!-- js -->
 
   <jsp:include page="/views/common/head.jsp"></jsp:include>
 
