@@ -24,9 +24,10 @@
 	<main id="main" class="main">
 
 		<div class="pagetitle">
-			<h1>부서 관리</h1>
+		<h1>부서 관리</h1>
 		</div>
 		<!-- End Page Title -->
+		
 		<div class="content">
 			<div class="container-fluid">
 				<div class="row">
@@ -38,13 +39,13 @@
 									<h3 class="card-title">조직도</h3>
 								</div>
 							</div>
-							<!-- care-header End -->
+							<!-- card-header End -->
 							<div class="card-body">
-								<div id="tree" class="tui-tree-wrap"></div>
+								<div id="deptTree" class="tui-tree-wrap"></div>
 							</div>
 							<!-- care-body End -->
 						</div>
-						<!-- care End -->
+						<!-- card End -->
 					</div>
 					<!-- 조직도 End -->
 					<div class="col-md-auto"></div>
@@ -60,7 +61,7 @@
 							<div class="card-body"></div>
 							<!-- care-body End -->
 						</div>
-						<!-- care End -->
+						<!-- card End -->
 
 					</div>
 					<!-- col-lg-4 End -->
@@ -80,181 +81,185 @@
 
 </body>
 <script>
-var data = [
-    {text: '에듀케어', children: [
-        {text: '대표', children: [
-            {text:'행정관리팀', children:[
-                {text:'입학 관리'},
-                {text:'기획 총무'}
-            ]},
-            {text:'교무실', children:[
-                {text:'고1'},
-                {text:'고2'},
-                {text:'고3'}
-            ]},
-            {text:'입학 지원팀', children:[
-                {text:'진로 상담'}
-            ]}
-         ]}
-    ]}
-];
+	$(document).ready(function() {
+		
+	});
+	
+	// 부서 트리
+	var tree = new tui.Tree('#deptTree', {
+		data: [{id: 'T00', text: '에듀케어', hashChild:true }],
+		nodeDefaultState: 'opened'
+	}).enableFeature('Editable', {
+		dataKey: 'text'
+	});
 
-
-var tree = new tui.Tree('#tree', {
-	data: data,
-    nodeDefaultState: 'opened',
-    template: {
-        internalNode: // Change to Mustache's format
-            '<div class="tui-tree-content-wrapper" style="padding-left: {{indent}}px">' + // Example for using indent value
-                '<button type="button" class="tui-tree-toggle-btn tui-js-tree-toggle-btn">' +
-                    '<span class="tui-ico-tree"></span>' +
-                    '{{stateLabel}}' +
-                '</button>' +
-                '<span class="tui-tree-text tui-js-tree-text">' +
-                    '<span class="tui-tree-ico tui-ico-folder"></span>' +
-                    '{{text}}' +
-                '</span>' +
-            '</div>' +
-            '<ul class="tui-tree-subtree tui-js-tree-subtree">' +
-                '{{children}}' + // Mustache's format
-            '</ul>',
-        leafNode:
-            '<div class="tui-tree-content-wrapper" style="padding-left: {{indent}}px">' + // Example for using indent value
-                '<span class="tui-tree-text {{textClass}}">' +
-                    '<span class="tui-tree-ico tui-ico-file"></span>' +
-                    '{{text}}' +
-                '</span>' +
-            '</div>'
-    }
-});
-
-// Bind custom event
-tree.on('selectContextMenu', function(e) {
-    var command = e.command;
-    var nodeId = e.nodeId;
-
-    switch (command) {
-        case 'create':
-            tree.createChildNode(nodeId);
-            break;
-        case 'update':
-            tree.editNode(nodeId);
-            break;
-        case 'remove':
-            tree.remove(nodeId);
-            break;
-    }
-});
-
-tree.on('beforeCreateChildNode', function(event) {
-    if (event.cause === 'blur') {
-        tree.finishEditing();
-        tree.remove(event.nodeId);
-        return false;
-    }
-    return confirm('Are you sure you want to create?');
-});
-
-tree.on('beforeEditNode', function(event) {
-    if (event.cause === 'blur') {
-        tree.finishEditing();
-        return false;
-    }
-    return confirm('Are you sure you want to edit?');
-});
-
-tree.on('beforeMove', function() {
-    console.log('before move');
-});
-
-tree.on('beforeAjaxRequest', function(eventData) {
-    print('beforeAjaxRequest', eventData);
-})
-
-tree.on('successAjaxResponse', function(eventData) {
-    print('successAjaxResponse', eventData);
-});
-
-function print(title, jsonData) {
-    var textareaId = title.replace(/([A-Z])/g, '-$1').toLowerCase();
-    var message = title + ' : \n';
-    message += JSON.stringify(jsonData, null, 8);
-
-    document.getElementById(textareaId).value = message
-}
-
-// Add features
-tree.enableFeature('Selectable')
-    .enableFeature('Editable', {
-    dataKey: 'text'
-}).enableFeature('Draggable', {
-    isSortable: true
-}).enableFeature('ContextMenu', {
-    menuData: [
-        {title: 'create', command: 'create'},
-        {title: 'update', command: 'update'},
-        {title: 'remove', command: 'remove'}
-    ]
-}).enableFeature('Ajax', {
-    command: {
-        read: {
-            url: 'data/tree.json',
-            contentType: 'application/json',
-            params: function(treeData) {
-                return {
-                    productId: tree.getNodeData(treeData.nodeId).pid
-                };
-            }
-        },
-        create: {
-            url: 'data/response.json',
-            contentType: 'application/json',
-            params: function(treeData) {
-                return {
-                    targetId: tree.getNodeData(treeData.parentId).pid,
-                    productName: treeData.data.text
-                };
-            }
-        },
-        update: {
-            url: 'data/response.json',
-            contentType: 'application/json',
-            params: function(treeData) {
-                return {
-                    productId: tree.getNodeData(treeData.nodeId).pid,
-                    productName: treeData.data.text
-                };
-            }
-        },
-        remove: {
-            url: 'data/response.json',
-            contentType: 'application/json',
-            params: function(treeData) {
-                return {
-                    productId: tree.getNodeData(treeData.nodeId).pid
-                };
-            }
-        },
-        move: {
-            url: 'data/response.json',
-            contentType: 'application/json',
-            params: function(treeData) {
-                return {
-                    productId: tree.getNodeData(treeData.nodeId).pid,
-                    targetId: tree.getNodeData(treeData.newParentId).pid,
-                    moveIdx: treeData.index
-                };
-            }
-        }
-    },
-    parseData: function(command, responseData) {
-        if (command === 'read') {
-            return responseData.tree;
-        } else {
-            return true;
-        }
-    }
-});
+	//ajax
+	$.ajax({
+		type	: 'get',
+		url		: '/dept/list',
+		dataType: 'json',
+		success	: function(result){
+			console.log('deptList: ',result.deptList);			
+ 			if(result.deptList.length > 0){
+ 				createTree(result.deptList);
+ 				
+				
+			}else{
+				console.log('부서 읎다');
+			}
+ 		},
+		error	:	function(error){
+			console.log(error);
+		}
+	});
+	
+	// method
+	function createTree(list){
+		tree.createChildNode('tui-tree-node-1');
+		list.forEach(function (data, idx){
+			//treeData[idx] = {id: data.team_code, parent: data.upper_code, text: data.team_name}
+			var upper_code = 2+Number(data.upper_code.substring(1));
+			console.log(idx,': ', upper_code);
+			if(data.upper_code == 'T00'){
+				console.log('상위 부서: ',data);
+				tree.add({text:data.team_name}, 'tui-tree-node-1');
+			}else{
+				console.log('하위 부서: ',data);				
+				tree.add({text:data.team_name}, 'tui-tree-node-'+upper_code);
+			}
+			
+		});
+	}
+	
+	
+	//event
+	//tree event
+	tree.on('selectContextMenu', function(e) {
+	    var command = e.command;
+	    var nodeId = e.nodeId;
+	
+	    switch (command) {
+	        case 'create':
+	            tree.createChildNode(nodeId);
+	            break;
+	        case 'update':
+	            tree.editNode(nodeId);
+	            break;
+	        case 'remove':
+	            tree.remove(nodeId);
+	            break;
+	    }
+	});
+	
+	tree.on('beforeCreateChildNode', function(event) {
+	    if (event.cause === 'blur') {
+	        tree.finishEditing();
+	        tree.remove(event.nodeId);
+	        return false;
+	    }
+	    return confirm('Are you sure you want to create?');
+	});
+	
+	tree.on('beforeEditNode', function(event) {
+	    if (event.cause === 'blur') {
+	        tree.finishEditing();
+	        return false;
+	    }
+	    return confirm('Are you sure you want to edit?');
+	});
+	
+	tree.on('beforeMove', function() {
+	    console.log('before move');
+	});
+	
+	tree.on('beforeAjaxRequest', function(eventData) {
+	    print('beforeAjaxRequest', eventData);
+	})
+	
+	tree.on('successAjaxResponse', function(eventData) {
+	    print('successAjaxResponse', eventData);
+	});
+	
+	function print(title, jsonData) {
+	    var textareaId = title.replace(/([A-Z])/g, '-$1').toLowerCase();
+	    var message = title + ' : \n';
+	    message += JSON.stringify(jsonData, null, 8);
+	
+	    document.getElementById(textareaId).value = message
+	}
+	
+	// Add features
+	tree.enableFeature('Selectable')
+	    .enableFeature('Editable', {
+	    dataKey: 'text'
+	}).enableFeature('Draggable', {
+	    isSortable: true
+	}).enableFeature('ContextMenu', {
+	    menuData: [
+	        {title: 'create', command: 'create'},
+	        {title: 'update', command: 'update'},
+	        {title: 'remove', command: 'remove'}
+	    ]
+	}).enableFeature('Ajax', {
+	    command: {
+	        read: {
+	            url: 'data/tree.json',
+	            contentType: 'application/json',
+	            params: function(treeData) {
+	                return {
+	                    productId: tree.getNodeData(treeData.nodeId).pid
+	                };
+	            }
+	        },
+	        create: {
+	            url: 'data/response.json',
+	            contentType: 'application/json',
+	            params: function(treeData) {
+	                return {
+	                    targetId: tree.getNodeData(treeData.parentId).pid,
+	                    productName: treeData.data.text
+	                };
+	            }
+	        },
+	        update: {
+	            url: 'data/response.json',
+	            contentType: 'application/json',
+	            params: function(treeData) {
+	                return {
+	                    productId: tree.getNodeData(treeData.nodeId).pid,
+	                    productName: treeData.data.text
+	                };
+	            }
+	        },
+	        remove: {
+	            url: 'data/response.json',
+	            contentType: 'application/json',
+	            params: function(treeData) {
+	                return {
+	                    productId: tree.getNodeData(treeData.nodeId).pid
+	                };
+	            }
+	        },
+	        move: {
+	            url: 'data/response.json',
+	            contentType: 'application/json',
+	            params: function(treeData) {
+	                return {
+	                    productId: tree.getNodeData(treeData.nodeId).pid,
+	                    targetId: tree.getNodeData(treeData.newParentId).pid,
+	                    moveIdx: treeData.index
+	                };
+	            }
+	        }
+	    },
+	    parseData: function(command, responseData) {
+	        if (command === 'read') {
+	            return responseData.tree;
+	        } else {
+	            return true;
+	        }
+	    }
+	});
 
 
 

@@ -3,5 +3,11 @@
    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.edu.care.dao.DeptDAO">
+
+	<select id="getDept" resultType="dept">
+		SELECT team_name, team_code, upper_code, reg_date
+		 FROM department 
+		  ORDER BY reg_date ASC
+	</select>
 	
 </mapper>
