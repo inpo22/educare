@@ -7,7 +7,7 @@
         <a href="/" class="logo d-flex align-items-center">
             <img src="/resources/img/EDUcare_logo.png" alt="">
         </a>
-        <i class="bi bi-list toggle-sidebar-btn"></i>
+        <!-- <i class="bi bi-list toggle-sidebar-btn"></i> -->
     </div><!-- End Logo -->
 
     <nav class="header-nav ms-auto">
