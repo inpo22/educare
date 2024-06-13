@@ -73,7 +73,7 @@
         </li><!-- 학생 관리 구획 끝 -->
 
         <li class="nav-item">
-            <a class="nav-link" data-bs-target="#board-nav" data-bs-toggle="collapse" href="#">
+            <a class="nav-link collapsed" data-bs-target="#board-nav" data-bs-toggle="collapse" href="#">
                 <i class="bi bi-archive"></i><span>게시판</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="board-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">

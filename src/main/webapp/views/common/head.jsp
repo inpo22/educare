@@ -33,3 +33,6 @@
 
 <!-- Template Main JS File -->
 <script src="/resources/assets/js/main.js"></script>
+
+<!-- J-Query JS File -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
