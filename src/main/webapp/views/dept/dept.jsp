@@ -1,84 +1,82 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html>
 <head>
-  <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>부서 관리</title>
-  <meta content="" name="description">
-  <meta content="" name="keywords">
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>부서 관리</title>
+<meta content="" name="description">
+<meta content="" name="keywords">
 
-  <jsp:include page="/views/common/head.jsp"></jsp:include>
-<link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui-tree/latest/tui-tree.css"/>
-<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-<script src="https://uicdn.toast.com/tui-tree/latest/tui-tree.js"></script>
-
+<jsp:include page="/views/common/head.jsp"></jsp:include>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
 <style>
 </style>
+<link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui-tree/latest/tui-tree.css" />
+<script src="https://uicdn.toast.com/tui-tree/latest/tui-tree.js"></script>
 </head>
-
 <body>
 
-  <jsp:include page="/views/common/header.jsp"></jsp:include>
-  <jsp:include page="/views/common/sidebar.jsp"></jsp:include>
+	<jsp:include page="/views/common/header.jsp"></jsp:include>
+	<jsp:include page="/views/common/sidebar.jsp"></jsp:include>
 
-  <main id="main" class="main">
+	<main id="main" class="main">
 
-    <div class="pagetitle">
-      <h1>부서 관리</h1>
-    </div><!-- End Page Title -->
-        <div class="content">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-lg-4">
-			<!-- 조직도 card -->
-            <div class="card">
-              <div class="card-header border-0">
-                <div class="d-flex justify-content-between">
-                  <h3 class="card-title">조직도</h3>
-                </div>
-              </div>
-              <!-- care-header End -->
-              <div class="card-body">
-					<div id="tree" class="tui-tree-wrap"></div>
-              </div>
-              <!-- care-body End -->
-            </div>
-            <!-- care End -->
-          </div>
-		<!-- 조직도 End -->
-		<div class="col-md-auto"></div>
-		<!-- 부서 card -->
-          <div class="col-lg-6">
-            <div class="card">
-              <div class="card-header border-0">
-                <div class="d-flex justify-content-between">
-                  <h3 class="card-title">부서 관리</h3>
-                </div>
-              </div>
-              <!-- care-header End -->
-              <div class="card-body">
-              </div>
-              <!-- care-body End -->
-            </div>
-            <!-- care End -->
-            
-          </div>
-            <!-- col-lg-4 End -->
+		<div class="pagetitle">
+			<h1>부서 관리</h1>
+		</div>
+		<!-- End Page Title -->
+		<div class="content">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-lg-4">
+						<!-- 조직도 card -->
+						<div class="card">
+							<div class="card-header border-0">
+								<div class="d-flex justify-content-between">
+									<h3 class="card-title">조직도</h3>
+								</div>
+							</div>
+							<!-- care-header End -->
+							<div class="card-body">
+								<div id="tree" class="tui-tree-wrap"></div>
+							</div>
+							<!-- care-body End -->
+						</div>
+						<!-- care End -->
+					</div>
+					<!-- 조직도 End -->
+					<div class="col-md-auto"></div>
+					<!-- 부서 card -->
+					<div class="col-lg-6">
+						<div class="card">
+							<div class="card-header border-0">
+								<div class="d-flex justify-content-between">
+									<h3 class="card-title">부서 관리</h3>
+								</div>
+							</div>
+							<!-- care-header End -->
+							<div class="card-body"></div>
+							<!-- care-body End -->
+						</div>
+						<!-- care End -->
+
+					</div>
+					<!-- col-lg-4 End -->
 
 
-         
-        </div>
-        <!-- /.row -->
-      </div>
-      <!-- /.container-fluid -->
-    </div>
-    <!-- /.content -->
-    
-  </main>
-  <!-- End #main -->
 
-  <jsp:include page="/views/common/footer.jsp"></jsp:include>
+				</div>
+				<!-- /.row -->
+			</div>
+			<!-- /.container-fluid -->
+		</div>
+		<!-- /.content -->
+
+	</main>
+	<!-- End #main -->
+	<jsp:include page="/views/common/footer.jsp"></jsp:include>
 
 </body>
 <script>
