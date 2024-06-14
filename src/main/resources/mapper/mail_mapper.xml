@@ -9,25 +9,188 @@
 			m.mail_no
 			, m.send_user_code
 			, (SELECT u.name FROM user u WHERE u.user_code = m.send_user_code) AS send_user_name
+			, (SELECT ac.code_name FROM all_code ac WHERE ac.code = (SELECT u2.class_code FROM user u2 WHERE u2.user_code = m.send_user_code)) AS class_name
 			, m.subject
 			, m.content
-			, m.is_read
+			, m.send_date
+			, mr.is_read_receiver
 		FROM mail m JOIN mail_recipient mr ON m.mail_no = mr.mail_no
-		WHERE mr.receive_user_code = #{param3} AND mr.type = 0 AND m.is_del = 0
+		WHERE mr.receive_user_code = #{param3} AND mr.type = 0 AND mr.is_del_receiver = 0
+		<if test="param5 != ''">
+			AND
+			<if test="param4 == 'subject'">
+				subject LIKE CONCAT('%', #{param5}, '%')
+			</if>
+			<if test="param4 == 'content'">
+				content LIKE CONCAT('%', #{param5}, '%')
+			</if>
+			<if test="param4 == 'send_user_name'">
+				(SELECT u.name FROM user u WHERE u.user_code = m.send_user_code) LIKE CONCAT('%', #{param5}, '%')
+			</if>
+		</if>
 		ORDER BY m.mail_no DESC LIMIT #{param2} OFFSET #{param1}
 	</select>
 	
 	<select id="receivedMailPageCnt" resultType="Integer">
 		SELECT CEIL(COUNT(m.mail_no)/#{param1}) FROM mail m JOIN mail_recipient mr ON m.mail_no = mr.mail_no
-		WHERE mr.receive_user_code = #{param2} AND mr.type = 0 AND m.is_del = 0
+		WHERE mr.receive_user_code = #{param2} AND mr.type = 0 AND mr.is_del_receiver = 0
+		<if test="param4 != ''">
+			AND
+			<if test="param3 == 'subject'">
+				subject LIKE CONCAT('%', #{param4}, '%')
+			</if>
+			<if test="param3 == 'content'">
+				content LIKE CONCAT('%', #{param4}, '%')
+			</if>
+			<if test="param3 == 'send_user_name'">
+				(SELECT u.name FROM user u WHERE u.user_code = m.send_user_code) LIKE CONCAT('%', #{param4}, '%')
+			</if>
+		</if>
 	</select>
 	
-	<update id="mailListRead">
-		UPDATE mail SET is_read = 1 WHERE mail_no = #{param1}
+	<update id="receivedMailListRead">
+		UPDATE mail_recipient SET is_read_receiver = 1 WHERE mail_no = #{param1} AND receive_user_code = #{param2}
 	</update>
 	
-	<update id="mailListDel">
-		UPDATE mail SET is_del = 1 WHERE mail_no = #{param1}
+	<update id="receivedMailListDel">
+		UPDATE mail_recipient SET is_del_receiver = 1 WHERE mail_no = #{param1} AND receive_user_code = #{param2}
 	</update>
+	
+
+
+	<select id="writtenMailListCall" resultType="mail">
+		SELECT DISTINCT
+			m.mail_no
+			<![CDATA[
+			, CASE WHEN (SELECT COUNT(mr2.mail_no) FROM mail_recipient mr2 WHERE m.mail_no = mr2.mail_no) > 1
+				THEN CONCAT(
+					    (SELECT u.name 
+					     FROM user u 
+					     WHERE u.user_code = 
+					         (SELECT mr3.receive_user_code 
+					          FROM mail_recipient mr3 
+					          WHERE m.mail_no = mr3.mail_no AND mr3.type = 0 
+					          LIMIT 1)
+					    ), 
+					    ' ', 
+					    (SELECT ac.code_name 
+					     FROM all_code ac 
+					     WHERE ac.code = 
+					         (SELECT u2.class_code 
+					          FROM user u2 
+					          WHERE u2.user_code = 
+					              (SELECT mr3.receive_user_code 
+					               FROM mail_recipient mr3 
+					               WHERE m.mail_no = mr3.mail_no AND mr3.type = 0 
+					               LIMIT 1)
+					         )
+					    ), 
+					    ' 외'
+					)
+				ELSE CONCAT(
+						(SELECT u3.name 
+						FROM user u3 
+						WHERE u3.user_code = mr.receive_user_code AND mr.type = 0),
+						' ',
+						(SELECT ac.code_name 
+						FROM all_code ac 
+						WHERE ac.code = 
+							(SELECT u2.class_code 
+							FROM user u2 
+							WHERE u2.user_code = mr.receive_user_code)
+						)
+					)
+				END AS receivers_name
+			]]>
+			, m.subject
+			, m.content
+			, m.send_date
+			, (SELECT GROUP_CONCAT(u.name SEPARATOR ', ')
+				FROM mail_recipient mr4 JOIN user u ON mr4.receive_user_code = u.user_code 
+				WHERE mr4.mail_no = m.mail_no AND mr4.type = 0) AS all_receivers
+		FROM mail m JOIN mail_recipient mr ON m.mail_no = mr.mail_no
+		WHERE m.send_user_code = #{param3} AND m.is_del_sender = 0
+		<if test="param5 != ''">
+			AND
+			<if test="param4 == 'subject'">
+				subject LIKE CONCAT('%', #{param5}, '%')
+			</if>
+			<if test="param4 == 'content'">
+				content LIKE CONCAT('%', #{param5}, '%')
+			</if>
+			<if test="param4 == 'receivers_name'">
+				(SELECT GROUP_CONCAT(u.name SEPARATOR ', ')
+				FROM mail_recipient mr4 JOIN user u ON mr4.receive_user_code = u.user_code 
+				WHERE mr4.mail_no = m.mail_no AND mr4.type = 0) LIKE CONCAT('%', #{param5}, '%')
+			</if>
+		</if>
+		ORDER BY m.mail_no DESC LIMIT #{param2} OFFSET #{param1}
+	</select>
+	
+	<select id="writtenMailPageCnt" resultType="Integer">
+		SELECT CEIL(COUNT(DISTINCT m.mail_no)/#{param1}) FROM mail m JOIN mail_recipient mr ON m.mail_no = mr.mail_no
+		WHERE m.send_user_code = #{param2} AND m.is_del_sender = 0
+		<if test="param4 != ''">
+			AND
+			<if test="param3 == 'subject'">
+				subject LIKE CONCAT('%', #{param4}, '%')
+			</if>
+			<if test="param3 == 'content'">
+				content LIKE CONCAT('%', #{param4}, '%')
+			</if>
+			<if test="param3 == 'receivers_name'">
+				(SELECT GROUP_CONCAT(u.name SEPARATOR ', ')
+				FROM mail_recipient mr4 JOIN user u ON mr4.receive_user_code = u.user_code 
+				WHERE mr4.mail_no = m.mail_no AND mr4.type = 0) LIKE CONCAT('%', #{param4}, '%')
+			</if>
+		</if>
+	</select>
+	
+	<update id="writtenMailListDel">
+		UPDATE mail SET is_del_sender = 1 WHERE mail_no = #{param1}
+	</update>
+	
+	<select id="mailContentsDetail" resultType="mail">
+		SELECT
+			m.mail_no
+			, u.name AS send_user_name
+			, (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code) AS class_name
+			, m.subject
+			, m.content
+			, m.send_date
+		FROM mail m JOIN user u ON m.send_user_code = u.user_code
+		WHERE m.mail_no = #{param1}
+	</select>
+	
+	<select id="mailReceiverDetail" resultType="mail">
+		SELECT 
+			mr.receive_user_code
+			, u.name AS receiver_name
+			, (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code) AS class_name
+		FROM mail_recipient mr JOIN user u ON mr.receive_user_code = u.user_code
+		WHERE mail_no = #{param1} AND mr.type = 0
+	</select>
+	
+	<select id="mailCcDetail" resultType="mail">
+		SELECT 
+			mr.receive_user_code
+			, u.name AS cc_name
+			, (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code) AS class_name
+		FROM mail_recipient mr JOIN user u ON mr.receive_user_code = u.user_code
+		WHERE mail_no = #{param1} AND mr.type = 1
+	</select>
+	
+	<select id="mailAttachFileList" resultType="mail">
+		SELECT
+			af.file_no
+			, af.ori_filename
+			, af.new_filename
+		FROM attach_file af
+		WHERE af.board_no = #{param1} AND af.board_type = 'mail'
+	</select>
+	
+	<select id="getOriFileName" resultType="String">
+		SELECT af.ori_filename FROM attach_file af WHERE af.new_filename = #{param1}
+	</select>
 	
 </mapper>
