@@ -4,8 +4,73 @@
 
 <mapper namespace="com.edu.care.dao.BoardDAO">
 	
-	<!-- <select id="allList" parameterType="board">
-		select  from
-	</select> -->
+	 <select id="allList" resultType="board">
+		SELECT  
+			p.post_no
+			, (SELECT u.name FROM user u WHERE u.user_code = p.user_code) AS user_name
+			, (SELECT ac.code_name FROM all_code ac WHERE ac.code = (SELECT u2.class_code FROM user u2 WHERE u2.user_code = p.user_code)) AS class_name
+			, p.title
+			, p.bHit
+			<![CDATA[
+			, CASE WHEN p.edit_date >= p.reg_date THEN p.edit_date
+				ELSE p.reg_date END AS reg_date
+			]]>
+			, p.fixed_yn
+			, (SELECT ac2.code_name FROM all_code ac2 WHERE ac2.code = (SELECT u3.team_code FROM user u3 WHERE u3.user_code = p.user_code)) AS team_name
+		FROM post p JOIN board b ON p.board_no = b.board_no
+		WHERE p.is_del = 0 AND b.team_code = 'T01'
+		<if test="param4 != ''">
+       		AND
+	        <choose>
+	            <when test="param3 == 'title'">
+	                p.title LIKE CONCAT('%', #{param4}, '%')
+	            </when>
+	            <when test="param3 == 'writer'">
+	                EXISTS (SELECT 1 FROM user u WHERE u.user_code = p.user_code AND u.name LIKE CONCAT('%', #{param4}, '%'))
+	            </when>
+	            <when test="param3 == 'contents'">
+	                p.contents LIKE CONCAT('%', #{param4}, '%')
+	            </when>
+	        </choose>
+    	</if>
+		ORDER BY p.post_no DESC LIMIT #{param2} OFFSET #{param1}
+	</select> 
 	
+	<select id="allListPageCnt" resultType="Integer">
+		SELECT CEIL(COUNT(p.post_no)/#{param1}) FROM post p JOIN board b ON p.board_no = b.board_no
+		WHERE p.is_del = 0 AND b.team_code = 'T01'
+		<if test="param3 != ''">
+       		AND
+	        <choose>
+	            <when test="param2 == 'title'">
+	                p.title LIKE CONCAT('%', #{param3}, '%')
+	            </when>
+	            <when test="param2 == 'writer'">
+	                EXISTS (SELECT 1 FROM user u WHERE u.user_code = p.user_code AND u.name LIKE CONCAT('%', #{param3}, '%'))
+	            </when>
+	            <when test="param2 == 'contents'">
+	                p.contents LIKE CONCAT('%', #{param3}, '%')
+	            </when>
+	        </choose>
+    	</if>
+	</select>
+
+	<select id="topFixedList" resultType="board">
+		SELECT  
+			p.post_no
+			, (SELECT u.name FROM user u WHERE u.user_code = p.user_code) AS user_name
+			, (SELECT ac.code_name FROM all_code ac WHERE ac.code = (SELECT u2.class_code FROM user u2 WHERE u2.user_code = p.user_code)) AS class_name
+			, p.title
+			, p.bHit
+			<![CDATA[
+			, CASE WHEN p.edit_date >= p.reg_date THEN p.edit_date
+				ELSE p.reg_date END AS reg_date
+			]]>
+			, p.fixed_yn
+			, (SELECT ac2.code_name FROM all_code ac2 WHERE ac2.code = (SELECT u3.team_code FROM user u3 WHERE u3.user_code = p.user_code)) AS team_name
+		FROM post p JOIN board b ON p.board_no = b.board_no
+		WHERE p.is_del = 0 AND b.team_code = 'T01'
+		AND p.fixed_yn = 1
+	</select> 
+
 </mapper>

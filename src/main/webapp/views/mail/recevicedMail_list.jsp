@@ -171,7 +171,7 @@ a {
 				content += '<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>';
 				count++;
 				if (count == 5) {
-					break;
+					break;s
 				}
 			}
 		}else if (page >= 3 && topPage >= 5 && page < (topPage - 2)) {

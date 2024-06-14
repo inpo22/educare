@@ -19,9 +19,15 @@ public class BoardService {
 	
 	@Autowired BoardDAO boardDAO;
 
-	/*
-	 * public Map<String, Object> allList() { Map<String, Object> map = new
-	 * HashMap<String, Object>(); // int start = (page - 1) * 10; List<BoardDTO> dto
-	 * = boardDAO.allList(); return map; }
-	 */
+	public Map<String, Object> allList(int currPage, int pagePerCnt, String searchCategory, String searchWord) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		int start = (currPage-1) * pagePerCnt;
+		
+		List<BoardDTO> list = boardDAO.allList(start, pagePerCnt, searchCategory, searchWord);
+		map.put("list", list);
+		map.put("totalPage", boardDAO.allListPageCnt(pagePerCnt, searchCategory, searchWord));
+		map.put("topFixedList", boardDAO.topFixedList());
+		return map;
+	}
+	
 }
