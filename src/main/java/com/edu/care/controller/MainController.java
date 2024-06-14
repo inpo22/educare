@@ -24,7 +24,8 @@ public class MainController {
 			session.setAttribute("user_name", "관리자");
 			session.setAttribute("class_name", "대리");
 			session.setAttribute("team_name", "인사총무팀");
-			session.setAttribute("team_code", "T02");
+			session.setAttribute("team_code", "T06");
+			session.setAttribute("classify_code", "U01");
 		}
 		return "main/main";
 	}
