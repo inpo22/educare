@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.edu.care.service.DeptService;
@@ -20,14 +22,38 @@ public class DeptController {
 	
 	@GetMapping(value="/dept.go")
 	public String dept() {
+		logger.info(":: 부서 페이지 ::");
 		return "dept/dept";
 	}
 	
-	@GetMapping(value = "/dept/list")
+	@GetMapping(value = "/dept/list.ajax")
 	@ResponseBody
 	public Map<String, Object> getDept(){
 		logger.info(":: 부서 리스트 ::");
 		return deptService.getDept();
 	}
 	
+	@PostMapping(value = "/dept/register")
+	public Map<String, Object> createDept(@RequestParam Map<String, Object> param){
+		logger.info(":: 부서 추가 ::");
+		logger.info("param: "+param);
+		return null;
+	}
+
+	@GetMapping(value = "/dept/delete.ajax")
+	@ResponseBody
+	public Map<String, Object> removeDept(@RequestParam Map<String, Object> param){
+		logger.info(":: 부서 제거 ::");
+		logger.info("param: "+param);
+		return null;
+	}
+
+	@PostMapping(value = "/dept/update.ajax")
+	@ResponseBody
+	public Map<String, Object> updateDept(@RequestParam Map<String, Object> param){
+		logger.info(":: 부서 수정 ::");
+		logger.info("param: "+param);
+		return null;
+	}
+
 }
