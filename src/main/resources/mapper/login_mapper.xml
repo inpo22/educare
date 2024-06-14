@@ -4,4 +4,21 @@
 
 <mapper namespace="com.edu.care.dao.LoginDAO">
 	
+	<select id="loginAccess" resultType="Integer">
+		SELECT COUNT(id)
+		FROM user
+		WHERE id = #{param1} and pw = #{param2}
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 </mapper>
