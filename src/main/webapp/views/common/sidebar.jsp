@@ -12,14 +12,14 @@
             </a>
         </li><!-- 대시보드 구획 끝 -->
 
-        <li class="nav-item">
+        <li class="nav-item pm-admin">
             <a class="nav-link collapsed" href="/receivedMail/list.go">
                 <i class="bi bi-envelope"></i>
                 <span>메일</span>
             </a>
         </li><!-- 메일 구획 끝 -->
 
-        <li class="nav-item">
+        <li class="nav-item pm-admin">
             <a class="nav-link collapsed" href="/getApproval/list.go">
                 <i class="bi bi-file-earmark-text"></i>
                 <span>전자결재</span>
@@ -33,7 +33,7 @@
             </a>
         </li><!-- 일정 관리 구획 끝 -->
 
-        <li class="nav-item">
+        <li class="nav-item pm-admin">
             <a class="nav-link collapsed" data-bs-target="#commute-nav" data-bs-toggle="collapse" href="#">
                 <i class="bi bi-check-circle"></i><span>근태 관리</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
@@ -51,21 +51,21 @@
             </ul>
         </li><!-- 근태 관리 구획 끝 -->
 
-        <li class="nav-item">
+        <li class="nav-item pm-admin">
             <a class="nav-link collapsed" href="/course/list.go">
                 <i class="bi bi-book"></i>
                 <span>강의 관리</span>
             </a>
         </li><!-- 강의 관리 구획 끝 -->
 
-        <li class="nav-item">
+        <li class="nav-item pm-admin">
             <a class="nav-link collapsed" href="/courseReservation.go">
                 <i class="bi bi-geo"></i>
                 <span>강의실 관리</span>
             </a>
         </li><!-- 강의실 관리 구획 끝 -->
 
-        <li class="nav-item">
+        <li class="nav-item pm-admin">
             <a class="nav-link collapsed" href="/std/list.go">
                 <i class="bi bi-people"></i>
                 <span>학생 관리</span>
@@ -77,29 +77,14 @@
                 <i class="bi bi-archive"></i><span>게시판</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="board-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                <li>
+                <li class="pm-admin">
                     <a href="/allBoard/list.go">
                         <i class="bi bi-circle"></i><span>전사 공지사항</span>
                     </a>
                 </li>
-                <li>
-                    <a href="/affairsBoard/list.go">
-                        <i class="bi bi-circle"></i><span>총무인사팀 공지사항</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="/trainingBoard/list.go">
-                        <i class="bi bi-circle"></i><span>훈련운영팀 공지사항</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="/mgmtBoard/list.go">
-                        <i class="bi bi-circle"></i><span>행정관리팀 공지사항</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="/acctBoard/list.go">
-                        <i class="bi bi-circle"></i><span>재무회계팀 공지사항</span>
+                <li class="pm-admin">
+                    <a href="/teamBoard/list.go">
+                        <i class="bi bi-circle"></i><span>부서 공지사항</span>
                     </a>
                 </li>
                 <li>
@@ -115,14 +100,14 @@
             </ul>
         </li><!-- 게시판 구획 끝 -->
 
-        <li class="nav-item">
+        <li class="nav-item pm-superadmin">
             <a class="nav-link collapsed" href="/dept.go">
                 <i class="bi bi-diagram-3"></i>
                 <span>부서 관리</span>
             </a>
         </li><!-- 부서 관리 구획 끝 -->
 
-        <li class="nav-item">
+        <li class="nav-item pm-superadmin">
             <a class="nav-link collapsed" href="/emp/list.go">
                 <i class="bi bi-people"></i>
                 <span>사원 관리</span>
@@ -141,3 +126,20 @@
     </ul>
 
 </aside><!-- End Sidebar-->
+<script>
+var superadmin_team_code = ['T01', 'T06'];
+var pm_classify_code = '${sessionScope.classify_code}';
+
+if (!superadmin_team_code.includes('${sessionScope.team_code}')) {
+	// console.log('관리자 권한 설정 완료');
+	$('.pm-superadmin').css('display', 'none');
+	
+}
+
+if (pm_classify_code == 'U03') {
+	// console.log('이용자 권한 설정 완료');
+	$('.pm-superadmin').css('display', 'none');
+	$('.pm-admin').css('display', 'none');
+	
+}
+</script>
