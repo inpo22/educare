@@ -119,7 +119,7 @@ textarea.content-textarea {
 	    <div class="buttonCon">
 			<input type="button" id="backBtn" value="뒤로" class="btn btn-primary" onclick="allBoardList()"/>
 			<input type="button" id="updateBtn" value="수정" class="btn btn-primary"/>
-			<input type="button" id="deleteBtn" value="삭제" class="btn btn-primary"/>
+			<input type="button" id="deleteBtn" value="삭제" class="btn btn-primary" onclick="boardDel()"/>
 		</div>
 	</div>
 	</main>
@@ -153,7 +153,16 @@ function allBoardList(){
 
 // 삭제
 function boardDel(){
-	$.ajax({})
+	console.log(${post_no});
+	console.log(${dto});
+// 	$.ajax({
+// 		type:'post'
+// 		,url:'/board/del.ajax'
+// 		,data:{
+// 			'post_no':post
+// 		},
+		
+// 	})
 }
 </script>
 </html>
