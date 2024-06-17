@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.edu.care.service.MailService;
@@ -47,8 +48,10 @@ public class MailController {
 	}
 	
 	@GetMapping(value="/mail/write.go")
-	public String mailWriteForm(String mail_no, String writeType) {
-		return "mail/mail_write";
+	public ModelAndView mailWriteForm(String mail_no, String writeType, HttpSession session) {
+		String user_code = (String) session.getAttribute("user_code");
+		
+		return mailService.mailWriteForm(mail_no, user_code, writeType);
 	}
 	
 	@GetMapping(value="/receivedMail/list.ajax")
@@ -138,6 +141,20 @@ public class MailController {
 	@ResponseBody
 	public Map<String, Object> deptList() {
 		return mailService.deptList();
+	}
+	
+	@PostMapping(value="/mail/write.do")
+	public String mailWrite(@RequestParam("attachFile") MultipartFile[] attachFile, @RequestParam Map<String, String> param, HttpSession session) {
+		String page = "";
+		String user_code = (String) session.getAttribute("user_code");
+		
+		boolean result = mailService.mailWrite(attachFile, param, user_code);
+		
+		if (result) {
+			page = "redirect:/writtenMail/list.go";
+		}
+		
+		return page;
 	}
 	
 }
