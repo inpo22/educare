@@ -1,8 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<%
+    String memId = (String) session.getAttribute("mem_id");
+%>
+<!-- 세션에서 가져온 mem_id 값을 페이지에 출력 -->
+<p>Session mem_id: <%= memId %></p>
 <!-- ======= Header ======= -->
 <header id="header" class="header fixed-top d-flex align-items-center">
-
     <div class="d-flex align-items-center justify-content-between">
         <a href="/" class="logo d-flex align-items-center">
             <img src="/resources/img/EDUcare_logo.png" alt="">
@@ -107,7 +112,7 @@
                     </li>
 
                     <li>
-                        <a class="dropdown-item d-flex align-items-center" href="#">
+                        <a href="/logout.do" class="dropdown-item d-flex align-items-center" onclick="logoutAccess()">
                             <i class="bi bi-box-arrow-right"></i>
                             <span>로그아웃</span>
                         </a>
@@ -120,3 +125,32 @@
     </nav><!-- 아이콘 구획 끝 -->
 
 </header><!-- End Header -->
+
+<script>
+function logoutAccess() {
+	var id = "${mem_id}";
+	console.log("mem_id:", id);
+	if (id !== null && id !== "") {
+		window.location.href = "/logout.do";
+		return false;
+	}else{
+		alert("로그아웃 되었습니다.");
+		return false;
+	}
+}
+
+
+
+	/*function logoutAccess() {
+		var id = "${mem_id}";
+		console.log("mem_id:", id);
+		if (id !== null && id !== "") {
+			window.location.href = "/logout.do";
+			return false;
+		}else{
+			alert("로그아웃을 할 수 없습니다.");
+			return false;
+		}
+	}*/
+
+</script>
