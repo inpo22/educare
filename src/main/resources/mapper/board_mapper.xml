@@ -89,6 +89,10 @@
 		WHERE p.is_del = 0 AND p.post_no = #{param1}
 	</select>
 
+	<update id="upHit">
+		update post set bHit = bHit+1 where post_no = #{param1}
+	</update>
+
 	<select id="attachFileList" resultType="board">
 		SELECT
 			af.file_no
@@ -102,10 +106,20 @@
 		SELECT af.ori_filename FROM attach_file af WHERE af.new_filename = #{param1}
 	</select>
 
+	<update id="del">
+		UPDATE post SET is_del = 1 WHERE post_no = #{param1}
+	</update>
 
-
-
-
+	<select id="isPerm" resultType="boolean">
+		SELECT 
+		    CASE 
+		        WHEN user_code = #{param1} THEN true 
+		        ELSE false 
+		    END AS is_equal
+		FROM 
+		    post
+		WHERE post_no = #{param2}
+	</select>
 
 
 

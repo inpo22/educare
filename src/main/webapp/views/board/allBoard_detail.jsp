@@ -11,16 +11,22 @@
 <meta content="" name="keywords">
 
 <!-- css -->
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
 <jsp:include page="/views/common/head.jsp"></jsp:include>
 <!-- js -->
-
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 <style>
 #backBoard{
 	background-color: white;
 	width: 100%;
-    height: 110%; /* 높이를 원하는 크기로 설정 */
+    height: 80%; /* 높이를 원하는 크기로 설정 */
 	border-radius: 20px;
 }
+
+#allBoardTitle{
+	margin-left: 20px;
+}
+
 th.th{
 	background-color: lightgray;
 	text-align: center;
@@ -59,6 +65,11 @@ textarea.content-textarea {
 	background-color: gray;
 	border-color: gray;
 }
+
+#allBoardTitle:hover{
+	cursor: pointer;
+	color: rgba(52, 152, 219, 0.76);
+}
 </style>
 </head>
 
@@ -69,11 +80,11 @@ textarea.content-textarea {
 
 	<main id="main" class="main">
 		<div id="backBoard">
-		<br/>	
+			<br/>	
 			<div class="pagetitle">
-				<h1>전사 공지사항</h1>
+				<h1 id="allBoardTitle">전사 공지사항</h1>
 			</div>
-		<br/>
+			<br/>
 			<table class="table">
 				<colgroup>
 					<col width="10%" />
@@ -110,18 +121,21 @@ textarea.content-textarea {
 						</c:forEach>
 					</td>
 				</tr>
+				<tr>
+					<td colspan="2">
+						<div id="viewer"></div>
+					</td>
+				</tr>
 			</table>
-		<div class="content-wrapper">
-	        <span class="content-label">내용</span>
-	        <textarea class="content-textarea" style="resize: none;" disabled>${dto.contents}</textarea>
-	    </div>
-	    <br/><br/>
-	    <div class="buttonCon">
-			<input type="button" id="backBtn" value="뒤로" class="btn btn-primary" onclick="allBoardList()"/>
-			<input type="button" id="updateBtn" value="수정" class="btn btn-primary"/>
-			<input type="button" id="deleteBtn" value="삭제" class="btn btn-primary" onclick="boardDel()"/>
+			<br/><br/>
+			<div class="buttonCon">
+				<input type="button" id="backBtn" value="뒤로" class="btn btn-primary" onclick="allBoardList()"/>
+				<c:if test="${isPerm}">
+					<input type="button" id="updateBtn" value="수정" class="btn btn-primary" onclick="allBoardUpdate()"/>
+					<input type="button" id="deleteBtn" value="삭제" class="btn btn-primary" onclick="boardDel()"/>
+				</c:if>
+			</div>
 		</div>
-	</div>
 	</main>
 	<!-- End #main -->
 
@@ -129,10 +143,13 @@ textarea.content-textarea {
 
 </body>
 <script>
-var msg = '${msg}';
-if(msg != ''){
-	alert(msg);
-}
+var content = '${dto.contents}';
+
+const viewer = toastui.Editor.factory({
+	el: document.querySelector('#viewer'),
+	viewer: true,
+	initialValue: content// 여기에 내용 담아야함
+});
 
 function formatDate(dateStr) {
 	const options = {year: 'numeric', month: '2-digit', day: '2-digit' };
@@ -151,19 +168,38 @@ function allBoardList(){
 	location.href = '/allBoard/list.go';
 }
 
+// 수정
+function allBoardUpdate(){
+	location.href = '/allBoard/update.go';
+}
 // 삭제
 function boardDel(){
-	console.log(${post_no});
-	console.log(${dto});
-// 	$.ajax({
-// 		type:'post'
-// 		,url:'/board/del.ajax'
-// 		,data:{
-// 			'post_no':post
-// 		},
-		
-// 	})
+	var post_no =${dto.post_no };
+	if(confirm("공지를 삭제하시겠습니까?")){
+		$.ajax({
+			type:'post'
+			,url:'/board/del.ajax'
+			,data:{
+				'post_no':post_no
+			},dataType:'JSON'
+			,success:function(data){
+				console.log(data);
+				if(data.row > 0){
+					alert("삭제 되었습니다.");
+					location.href = '/allBoard/list.go';
+				}
+		},error:function(error){
+			console.log(error);	
+		}		
+	});
+	}
 }
+
+// 타이틀 클릭시 리스트페이지로
+$('#allBoardTitle').click(function(){
+	location.href='/allBoard/list.go';
+});
+
 </script>
 </html>
 
