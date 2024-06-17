@@ -7,11 +7,15 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.edu.care.service.EmpService;
 
@@ -19,6 +23,8 @@ import com.edu.care.service.EmpService;
 public class EmpController {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
+	
+	@Autowired PasswordEncoder encoder;
 	
 	@Autowired EmpService empService;
 	
@@ -51,6 +57,47 @@ public class EmpController {
 	public String empReg() {
 		return "emp/emp_reg";
 	}
+	
+	// 아이디 중복체크
+	@ResponseBody
+	@PostMapping(value="/emp/overlay.do")
+	public Map<String, Object> overlay(String id){
+		logger.info("id ="+id);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("use", empService.overlay(id));
+		return map;
+	}
+	
+	// 사원등록
+	@RequestMapping(value="/emp/reg.do")
+	public String reg(MultipartFile photo ,Model model, @RequestParam Map<String, String> param) {
+		String page = "emp_reg";
+		String msg = "사원 등록에 실패했습니다.";
+		logger.info("param:"+param);
+		
+		// 비밀번호 암호화
+		String rawPassword = param.get("pw");
+        String encodedPassword = encoder.encode(rawPassword);
+        param.put("pw", encodedPassword);
+		
+        // 사진 파일 저장 및 파일명 파라미터에 추가
+        String photoFileName = empService.fileSave(photo);
+        if (photoFileName != null) {
+            param.put("photo", photoFileName);
+        }
+		
+		int row = empService.reg(photo, param);
+		logger.info("insert count:"+row);
+		
+		if(row==1) {
+			page="redirect:/emp_list";
+			msg="사원 등록에 성공했습니다.";
+		}
+		model.addAttribute("msg", msg);
+		return page;
+	}
+	
 	
 	// 퇴사자목록 페이지 이동
 	@GetMapping(value="/emp/quitList.go")
