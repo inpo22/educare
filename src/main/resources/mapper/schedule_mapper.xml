@@ -69,5 +69,21 @@
 	<update id="scheduleDelete">
 		UPDATE schedule SET is_del = 1 WHERE sked_no = #{param1}
 	</update>
+	
+	<update id="scheduleUpdate"  parameterType="schedule">
+		UPDATE 
+			schedule 
+		SET edit_user_code = #{team_code}
+			, team_code = #{team_code}
+			, title = #{title}
+			, contents = #{contents}
+			, start_date = #{start_date}
+			, end_Date = #{end_date}
+			, edit_date = NOW()
+			, is_del = 1
+			, sked_type = #{sked_type}
+		WHERE 
+			sked_no = #{sked_no}
+	</update>
 
 </mapper>

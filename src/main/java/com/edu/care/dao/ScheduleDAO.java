@@ -15,4 +15,6 @@ public interface ScheduleDAO {
 
 	int scheduleDelete(String sked_no);
 
+	Boolean scheduleUpdate(ScheduleDTO scheduleDTO);
+
 }

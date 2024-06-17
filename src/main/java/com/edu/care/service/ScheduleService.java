@@ -34,6 +34,10 @@ public class ScheduleService {
 	public int scheduleDelete(String sked_no) {
 		return scheduleDAO.scheduleDelete(sked_no);
 	}
+
+	public Boolean scheduleUpdate(ScheduleDTO scheduleDTO) {
+		return scheduleDAO.scheduleUpdate(scheduleDTO);
+	}
 	
 	
 }

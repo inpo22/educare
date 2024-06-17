@@ -39,9 +39,13 @@
 }
 
 .modal-header {
-	background-color: black;
-	color: #FFF;
-	border-bottom: 1px dashed white;
+background: #EEEEEE;
+color: #707070;
+}
+
+.modal-footer {
+background: #EEEEEE;
+color: #707070;
 }
 
 .all {
@@ -146,6 +150,7 @@ textarea {
 		</div>
 		<!-- End Page Title -->
 		
+		<input type="hidden" id="sessionUserCode" value="${sessionScope.user_code}" />		
 		<div class="row">
 			<div class="col-2 rounded-5 p-3">
 			<button class="btn btn-dark border-secondary pln_btn w-100" data-bs-toggle="modal" id="write_btn" data-bs-target="#writeModal">+ 일정 추가</button>
@@ -173,7 +178,7 @@ textarea {
 			<div class="modal fade" id="writeModal" tabindex="-1" aria-labelledby="writeModalLabel" aria-hidden="true">
 				<div class="modal-dialog modal-dialog-centered">
 					<div class="modal-content">
-						<div class="modal-header text-light">
+						<div class="modal-header">
 							<h1 class="modal-title fs-5" id="writeModalLabel"></h1>
 							<button type="button" class="btn-close bg-white rounded-5" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
@@ -182,7 +187,7 @@ textarea {
 								<div class="input-group input-group-sm mb-3">
 									<label class="input-group-text">일정유형</label>
 									<select class="form-select" id="selectSchRange">
-										<option selected>유형선택</option>
+										<option value="">유형선택</option>
 										<option value="SKED_TP01">전사</option>
 										<option value="SKED_TP02">부서</option>
 										<option value="SKED_TP03">개인</option>
@@ -205,9 +210,10 @@ textarea {
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-secondary" id="closeButton" data-bs-dismiss="modal">취소</button>
-							<button type="button" class="btn text-light bg-dark" id="submitButton" onclick="sch_submit()">등록</button>
+							<button type="button" class="btn text-light bg-dark" id="submitButton" onclick="sch_beforeSubmit()">등록</button>
 							<button type="button" class="btn btn-secondary" id="deleteButton" onclick="sch_del()" style="display:none;">삭제</button>
-							<button type="button" class="btn text-light bg-dark" id="updateButton" onclick="sch_uodatet()" style="display:none;">수정</button>
+							<button type="button" class="btn text-light bg-dark" id="beforeUpdateButton" style="display:none;">수정</button>
+							<button type="button" class="btn text-light bg-dark" id="updateButton" onclick="sch_update()" style="display:none;">수정완료</button>
 						</div>
 					</div>
 				</div>
@@ -265,11 +271,11 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
             arg.dayNumberText = arg.dayNumberText.replace('일', '');
             return arg.dayNumberText;
         },
-        select: function(info){	//드래그시
+        select: function(info){	
         	document.getElementById('modalForm').reset();
         	writeModalOpen();
         },
-        eventClick : function(info) {	//일정클릭시
+        eventClick : function(info) {
         	document.getElementById('modalForm').reset();
         	detailModalOpen(info);
         	info.jsEvent.cancelBubble = true; 
@@ -303,10 +309,11 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
         							skedType:item.sked_type,
         							contents:item.contents,
         							name : item.name,
+        							user_code : item.user_code,
         							team_name : item.team_name,
         							backgroundColor: item.sked_type === 'SKED_TP01' ? '#ffd146':
         											 item.sked_type === 'SKED_TP02' ? '#6fb171':
-        											 item.sked_type === 'SKED_TP02' ? '#55b4ff':'#ff6666'
+        											 item.sked_type === 'SKED_TP03' ? '#55b4ff':'#ff6666'
         						};
         					
         						events.push(event);
@@ -348,8 +355,13 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
         $('#deleteButton').hide();
     	$('#submitButton').show(); 
         $('#updateButton').hide();
+        $('#beforeUpdateButton').hide();
+        if($('#title').val() == null){
+    		alert('제목을 입력해주세요');
+    		return;
+    	}
    }
-    
+   
     calendar.setOption('select', function(selectionInfo) {
     	var endCal = selectionInfo.end;
     	var endDate = endCal.toISOString().split('T')[0];
@@ -373,9 +385,12 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
     	var end = info.event.end;
     	var name = info.event.extendedProps.name;
     	var team_name = info.event.extendedProps.team_name;
-    	var info_user = '<div class="input-group input-group-sm mb-3 name_info"><span class="input-group-text" id="basic-addon1">작성자</span> <input type="text" class="form-control" id="name"><span class="input-group-text team_name_info" id="basic-addon1">소속부서</span> <input type="text" class="form-control" id="team_name"></div>';	
+    	var info_user = '<div class="input-group input-group-sm mb-3 name_info"><span class="input-group-text" id="basic-user">작성자</span> <input type="text" class="form-control" id="name"><span class="input-group-text team_name_info" id="basic-addon1">소속부서</span> <input type="text" class="form-control" id="team_name"></div>';	
     	var parent = document.querySelector("form");
-    	
+    	var sessionUserCode = document.getElementById('sessionUserCode').value;
+    	var user_code = info.event.extendedProps.user_code;
+    	console.log("user_codeuser_code:: "+user_code);
+    	console.log("sessionUserCodesessionUserCode:: "+sessionUserCode);	
     	console.log(end);
     	parent.insertAdjacentHTML('afterbegin',info_user);
     	$('#name').val(name);
@@ -402,12 +417,56 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
        	$('#submitButton').hide(); 
     	$('#deleteButton').show(); 
     	$('#deleteButton').attr('data-val',skedNo); 
-        $('#updateButton').show();
+    	$('#beforeUpdateButton').show();
+        $('#updateButton').hide();
+        
+        //수정부분 수정해야함..!! 
+        $("#beforeUpdateButton").click(function () {
+        	console.log("fdfsfds"+sessionUserCode == user_code);
+        	if(sessionUserCode === user_code){
+        		updateModalOpen(info);
+        	}else {
+        		alert('수정권한이 없습니다.');
+        		$('#writeModal').modal('hide');
+        	}
+        	
+        });
+        
+        function updateModalOpen(info) {
+        	
+        	$('#name').val('${sessionScope.user_name}');
+        	$('#name').attr('disabled',true);
+        	$('#team_name').val('${sessionScope.team_name}');
+        	$('#team_name').attr('disabled',true);
+        	$('#writeModal').modal('show');
+          	$('#writeModalLabel').html('일정 수정');	
+          	$('#title').val(title);
+          	$('#title').removeAttr('disabled');
+           	$('#contents').val(contents);
+           	$('#contents').removeAttr('disabled');
+           	$('#selectSchRange').val(skedType);
+           	$('#selectSchRange').removeAttr('disabled');
+            $('#start_date').removeAttr('disabled');
+            $('#end_date').removeAttr('disabled');
+           	$('#start_date').val(start);
+           	if(end === null){
+           		$('#end_date').val(start);
+           	}else{
+           		$('#end_date').val(end.toISOString().split('T')[0]);
+           	}
+        	$('#closeButton').show(); 
+           	$('#submitButton').hide(); 
+        	$('#deleteButton').hide(); 
+        	$('#beforeUpdateButton').hide();
+        	$('#updateButton').show();
+        	$('#updateButton').attr('data-val',skedNo); 
+        	
+        }
+        
     }
     
     calendar.render();
 });
-
 
 $('#writeModal').on('hidden.bs.modal', function () {
 	$('.name_info').remove();
@@ -419,9 +478,71 @@ $('#writeModal').on('hidden.bs.modal', function () {
     $('#deleteButton').removeAttr('data-val');
 });
 
+function sch_beforeSubmit(){
+	console.log($('#selectSchRange option:selected').val());
+	console.log($('#start_date').val());
+	if( $('#selectSchRange option:selected').val() === ''){
+		alert('일정유형을 선택해주세요.');
+		$('#selectSchRange').focus();
+		return;
+	}else if($('#title').val() === ''){
+		alert('일정제목을 입력해주세요.');
+		$('#title').focus();
+		return;
+	}else if($('#contents').val() === ''){
+		alert('일정내용을 입력해주세요.');
+		$('#contents').focus();
+		return;
+	}else if($('#start_date').val() === ''){
+		alert('시작날짜를 선택해주세요.');
+		$('#start_date').focus();
+		return;
+	}else if($('#end_date').val() === ''){
+		alert('종료날짜를 선택해주세요.');
+		$('#end_date').focus();
+		return;
+	}else if($('#end_date').val() < $('#start_date').val()){
+		alert('종료날짜는 시작날짜와 같거나 이후여야합니다.');
+		$('#end_date').focus();
+		return;
+	}else{
+		sch_submit();
+	}
+}
+
+function sch_update(){
+	var updateNo = $('#updateButton').attr('data-val');
+	console.log(updateNo);
+	var paramData = {
+		sked_type: $('#selectSchRange').val(), 
+		contents:$('#contents').val(),	
+		start_date:$('#start_date').val(),
+		end_date:$('#end_date').val()
+	};
+	
+	if(confirm('수정하시겠습니까?')){
+		$.ajax({
+			url:'/schedule/update.ajax',
+			type:'POST',
+			contentType: 'application/json',
+			date: JSON.stringify(paramData),
+			dataType:'JSON',
+			success : function(data){
+				//calendar.addEvent(paramData);
+				if(data.row > 0){
+					alert('수정되었습니다.');
+					$('#writeModal').modal('hide');
+					calendar.refetchEvents();
+				}
+			},
+			error:function(request, status, error){
+				console.log(error);
+			}
+		});
+	}
+}
 
 function sch_submit() {
-	
 	var paramData = {
 		sked_type: $('#selectSchRange').val(), 
 		title:$('#title').val(),	
@@ -430,6 +551,7 @@ function sch_submit() {
 		end_date:$('#end_date').val()
 	};
 	
+	if(confirm('일정을 등록하시겠습니까?')){
 	$.ajax({
 		url:'/schedule/write.ajax',
 		type:'POST',
@@ -444,12 +566,12 @@ function sch_submit() {
 				$('#writeModal').modal('hide');
 				calendar.refetchEvents();
 			}
-			
 		},
 		error:function(request, status, error){
 			console.log(error);
 		}
 	});
+	}
 };
 
 function sch_del(){
