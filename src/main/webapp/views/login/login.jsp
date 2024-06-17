@@ -72,7 +72,7 @@ body {
 			<div class="form-group">
 				<i class="fa fa-lock"></i> <input type="password"
 					class="form-control" id="password" name="pw"
-					placeholder="PW ********">
+					placeholder="PW">
 			</div>
 			<div class="form-group form-check">
 				<input type="checkbox" class="form-check-input" id="rememberMe"
