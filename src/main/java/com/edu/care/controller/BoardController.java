@@ -1,5 +1,6 @@
 package com.edu.care.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,6 +55,41 @@ public class BoardController {
 		return boardService.allDetail(post_no, user_code);
 	}
 
+	// 전사 공지사항 작성페이지 이동
+	@GetMapping(value = "/allBoard/write.go")
+	public String noticeWriteGo() {
+		logger.info("전사 공지사항 글작성 페이지 접속");
+		return "board/allBoard_write";
+	}
+	
+	// 전사 공지사항 수정페이지 이동
+	@GetMapping(value = "/allBoard/update.go")
+	public String noticeDetailGo() {
+		logger.info("공지사항 글수정 페이지 접속");
+		return "board/allBoard_update";
+	}
+	
+	// 파일 다운로드 
+	@RequestMapping(value="/board/download/{fileName}")
+	public ResponseEntity<Resource> download(@PathVariable String fileName){
+		logger.info("download fileName : "+fileName);
+		return boardService.download(fileName);
+	}
+	
+	
+	// 공지사항 삭제
+	@PostMapping(value="/board/del.ajax")
+	@ResponseBody
+	public Map<String, Object> del(String post_no, HttpSession session) {
+		logger.info("삭제요청");
+		logger.info(post_no);
+		Map<String, Object> map = new HashMap<String, Object>();
+		int row = boardService.del(post_no);
+		if(row > 0) {
+			map.put("row", row);
+		}
+		return	map;
+	}
 	
 	// 부서 공지사항 리스트 페이지 이동
 	@GetMapping(value = "/teamBoard/list.go")
@@ -66,30 +103,27 @@ public class BoardController {
 		return "board/stuBoard_list";
 	}
 
+	
 	// 자료실 리스트 페이지 이동
 	@GetMapping(value = "/dataBoard/list.go")
 	public String dataBoardList() {
 		return "board/dataBoard_list";
 	}
 
-	// 파일 다운로드 
-	@RequestMapping(value="/board/download/{fileName}")
-	public ResponseEntity<Resource> download(@PathVariable String fileName){
-		logger.info("download fileName : "+fileName);
-		return boardService.download(fileName);
-	}
-	
-	// 공지사항 삭제
-	@PostMapping(value="/board/del.ajax")
-	public String del(HttpSession session, String post_no) {
-		logger.info("삭제요청");
-		return	null;
-	}
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
-
-
-
-
 
 
 

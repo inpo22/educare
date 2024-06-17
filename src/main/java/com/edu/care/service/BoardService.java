@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.edu.care.dao.BoardDAO;
 import com.edu.care.dto.BoardDTO;
+import com.edu.care.dto.EmpDTO;
 
 @Service
 public class BoardService {
@@ -47,11 +48,12 @@ public class BoardService {
 	public ModelAndView allDetail(String post_no, String user_code) {
 		ModelAndView mav = new ModelAndView("board/allBoard_detail");
 		BoardDTO dto = boardDAO.allDetail(post_no);
+		boardDAO.upHit(post_no);
 		List<BoardDTO> attachFileList = boardDAO.attachFileList(post_no);
-		
+		dto.setPost_no(Integer.parseInt(post_no));
 		mav.addObject("dto", dto);
 		mav.addObject("attachFileList",attachFileList);
-		
+		mav.addObject("isPerm",boardDAO.isPerm(user_code, post_no));
 		return mav;
 	}
 
@@ -70,6 +72,10 @@ public class BoardService {
 		}
 		
 		return new ResponseEntity<Resource>(resource, header, HttpStatus.OK);
+	}
+
+	public int del(String post_no) {
+		return boardDAO.del(post_no);
 	}
 
 	

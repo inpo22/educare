@@ -27,7 +27,7 @@
 	<main id="main" class="main">
 
 		<div class="pagetitle">
-			<h1>공지사항 글작성</h1>
+			<h1>전사 공지글 수정</h1>
 		</div>
 		<!-- End Page Title -->
 

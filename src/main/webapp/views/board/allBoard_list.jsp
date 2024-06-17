@@ -22,6 +22,11 @@
     height: 110%; /* 높이를 원하는 크기로 설정 */
 	border-radius: 20px;
 }
+
+#allBoardTitle{
+	margin-left: 20px;
+}
+
 .table {
 	text-align: center;
 }
@@ -64,8 +69,7 @@
 </head>
 
 <body>
-	
-	
+
 	<jsp:include page="/views/common/header.jsp"></jsp:include>
 
 	<jsp:include page="/views/common/sidebar.jsp"></jsp:include>
@@ -109,7 +113,7 @@
 				  
 				</tbody>
 			</table>
-			<button class="write" onclick="location.href='/noticeBoard/write.go'">글쓰기</button>
+			<button class="write" onclick="location.href='/allBoard/write.go'">글쓰기</button>
 			<ul class="pagination d-flex justify-content-center" id="pagination"></ul>
 			  
 		</div>
@@ -318,5 +322,11 @@ $(document).on('mouseleave', '.boardTableTr', function() {
     $(this).css('background-color', '');
 });
 
+//엔터 키로 검색 버튼 클릭 이벤트 트리거
+$('#searchWord').keypress(function(event) {
+	if (event.which == 13) { // 13은 Enter 키의 키코드입니다.
+		$('#searchBtn').click();
+	}
+});
 </script>
 </html>
