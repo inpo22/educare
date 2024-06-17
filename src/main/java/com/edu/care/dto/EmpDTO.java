@@ -25,7 +25,8 @@ public class EmpDTO {
 	private String user_name;
 	private String team_name;
 	private String class_name;
-	
+	private String page;
+		
 	public String getUser_code() {
 		return user_code;
 	}
@@ -140,7 +141,11 @@ public class EmpDTO {
 	public void setClass_name(String class_name) {
 		this.class_name = class_name;
 	}
+	public String getPage() {
+		return page;
+	}
+	public void setPage(String page) {
+		this.page = page;
+	}
 	
-	
-
 }
