@@ -9,5 +9,15 @@
 		 FROM department 
 		  ORDER BY reg_date ASC
 	</select>
+
+	<insert id="createDept" parameterType="map">
+		INSERT INTO department(team_code, team_name, upper_code) 
+		 VALUES(#{team_code}, #{team_name}, #{upper_code})
+	</insert>
+	
+	<delete id="removeDept" parameterType="map">
+		DELETE FROM department 
+		 WHERE team_code = #{team_code}
+	</delete>
 	
 </mapper>

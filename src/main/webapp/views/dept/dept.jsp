@@ -12,6 +12,10 @@
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 <style>
+.invalidation {
+	color: red;
+	display: none;
+}
 </style>
 <!-- tree css -->
 <link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui-tree/latest/tui-tree.css" />
@@ -89,38 +93,37 @@
 
 	</main>
 	<!-- End #main -->
-    <!-- CreateDept Modal -->
-    <div class="modal fade" id="createDeptModal" tabindex="-1">
-      <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-          <!-- CreateDept Form -->
-          <form class="row g-3" action="/dept/register" method="post">        
-          <div class="modal-header">
-            <h5 class="modal-title">부서 추가</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-                <div class="col-12">
-                  <label for="addName_input" class="form-label">부서명</label>
-                  <input type="text" class="form-control" id="addName_input">
-                </div>
-                <div class="col-12">
-                  <label for="addCode_input" class="form-label">부서 코드</label>
-                  <input type="text" class="form-control" id="addCode_input">
-                </div>
-                <div class="col-12">
-                  <label for="addUpperCode_input" class="form-label">상위 부서</label>
-                  <input type="text" class="form-control" id="addUpperCode_input">
-                </div>
-          </div>
-          <div class="modal-footer">
-            <button type="reset" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-            <button type="submit" class="btn btn-primary">추가</button>
-          </div>              
-          </form><!-- CreateDept Form -->
-        </div>
-      </div>
-    </div>
+	<!-- CreateDept Modal -->
+	<div class="modal fade" id="createDeptModal" tabindex="-1">
+	<div class="modal-dialog modal-sm">
+	<div class="modal-content">
+		<div class="modal-header">
+			<h5 class="modal-title">부서 추가</h5>
+			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		</div>
+			<div class="modal-body">
+			<div class="col-12">
+				<label for="add_name_input" class="form-label">부서명</label>
+				<input type="text" class="form-control" id="add_name_input">
+				<span class="invalidation" id="invalid_name">부서명을 입력 해주세요.</span>
+			</div>
+			<div class="col-12">
+				<label for="add_code_input" class="form-label">부서 코드</label>
+				<input type="text" class="form-control" id="add_code_input">
+				<span class="invalidation" id="invalid_code">부서 코드를 입력 해주세요.</span>
+			</div>
+			<div class="col-12">
+			<label for="add_upper_input" class="form-label">상위 부서</label>
+			<input type="text" class="form-control" id="add_upper_input">
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button type="reset" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+			<button type="button" class="btn btn-primary" id="createDept_modal_btn">추가</button>
+		</div>
+	</div>
+	</div>
+	</div>
 	<!-- End CreateDept Modal -->
 	
 	<jsp:include page="/views/common/footer.jsp"></jsp:include>
@@ -160,37 +163,71 @@
 	
 	
 	// tree-select event
- 	tree.on('select', function(e){
+	tree.on('select', function(e){
  		var nodeData = tree.getNodeData(e.nodeId);
- 		var node = Number(e.nodeId.substring(14));
 		selected_nodeId = e.nodeId;
-		console.log('selected node number: '+node);
 		console.log('selected node: '+selected_nodeId);
-		console.log('selected node name: '+nodeData.text);
+		//console.log('selected node name: '+nodeData.text);
+		console.log('selected node data: '+nodeData.team_code,'/'+nodeData.team_name,'/'+nodeData.upper_code);
 	});
 	
 	// tree-edit event
-	tree.on('beforeEditNode', function(event) {
-	       if (event.cause === 'blur') {
-	           tree.finishEditing();
-	           return false;
-	       }
-	       return confirm('부서명을 수정하시겠습니까?');
-	   });
+	tree.on('beforeEditNode', function(e) {
+		// 수정중222222
+		console.log('edit: ',e.nodeId, '/',e.value, '/',e.cause);
+		var edit_name = e.value;
+		var data = tree.getNodeData(e.nodeId);
+
+		if (e.cause === 'blur') {
+			tree.finishEditing();
+			return false;
+		}else{
+			var result = confirm('부서명을 수정하시겠습니까?');
+			if(result){
+				console.log('edit Dept: ',data.team_name,'->',edit_name)
+				var edit_param = {
+					'team_code'	: data.team_code,
+					'team_name'	: edit_name,
+					'edit_type'	: 'name'
+				}
+				tree.setNodeData(e.nodeId, {team_name: edit_name});	// update node data
+				updateDept_ajax(edit_param);	// update DB
+			}
+		}
+	});
 
 	// tree-move event
-	tree.on('beforeMove', function() {
-		console.log('before move');
+	tree.on('beforeMove', function(e) {
+		console.log('::before move::');
+		/* 
+		console.log('dragging node: ' + e.nodeId);
+		console.log('new parent node: ' + e.newParentId);
+		console.log('original parent node: ' + tree.getParentId(e.nodeId));
+ 		*/
+		var edit_data = tree.getNodeData(e.nodeId);
+		var og_upper = tree.getNodeData(tree.getParentId(e.nodeId));
+		var new_upper = tree.getNodeData(e.newParentId);
+		console.log('move Dept: ',edit_data.team_name);
+		console.log(og_upper.team_name,'->',new_upper.team_name);
+		
+		var edit_param = {
+			'team_code'	: edit_data.team_code,
+			'upper_code': new_upper.team_code,
+			'edit_type'	: 'code'
+		}
+		tree.setNodeData(e.nodeId, {upper_code: new_upper.team_code});	// update node data
+		updateDept_ajax(edit_param);	// update DB
 	});
 	
-	tree.on('move', function(e){
-		var msg;
-		
-		msg = 'nodeId: '+e.nodeId+'\n';
+ 	tree.on('move', function(e){
+		var msg = 'nodeId: '+e.nodeId+'\n';
 		msg += 'newPId: '+e.newParentId+'\n';
 		msg += 'idx: '+e.index+'\n';
+		console.log('::after move::');
+		//console.log(msg);
+		console.log('data: ',tree.getNodeData(e.nodeId));
 		
-		console.log('move event: ',msg);
+		
 	});
 
 	/* menu.register('#target', onclick, [
@@ -199,21 +236,49 @@
 	 */
 	// basic event
 	// create Dept
+	// open modal createDept 
 	$('#createDept_btn').on('click', function(){
-		var upper_id = tree.getParentId(selected_nodeId);
-		var upper_name = tree.getNodeData(upper_id);
-		console.log('create Dept: ', selected_nodeId);
-		console.log('upper_id: ',upper_id,'/ upper_name: ',upper_name);
-		
-		$('#addUpperCode_input').val(upper_name.text);
-		createDeptModal.show();
-		//tree.createChildNode(selected_nodeId);
+		if(selected_nodeId != null){
+			var data = tree.getNodeData(selected_nodeId);
+			console.log('create Dept: ', data.team_name);
+			
+			$('#add_code_input').val('');
+			$('#add_name_input').val('');
+			$('#add_upper_input').val(data.team_name);
+			$('#add_upper_input').attr('name', data.team_code);
+			createDeptModal.show();	
+		}else{
+			alert('추가할 부서를 선택해 주세요.');
+		}
 	});
-	
+	// createDept to DB
+	$('#createDept_modal_btn').on('click', function(){
+		// 수정중(부서 등록 유효성 미완성)
+		if($('#add_code_input').val() == ''){
+			$('#invalid_code').attr('style','display:block;');
+		} else if($('#add_name_input').val() == ''){
+			$('#invalid_name').attr('style','display:block;');
+		} else{
+			var now = new Date();
+			var add_param = {
+				'team_code' : $('#add_code_input').val(),
+				'team_name' : $('#add_name_input').val(),
+				'upper_code': $('#add_upper_input').attr('name'),
+				'reg_date'	: now
+			}
+			createDeptModal.hide();
+			createDept_ajax(add_param);
+		}
+	});
 	// remove Dept
 	$('#removeDept_btn').on('click', function(){
-		console.log('remove Dept');
-		tree.remove(selected_nodeId);
+ 		var data = tree.getNodeData(selected_nodeId);
+		console.log('remove Dept: ', data.team_name);
+
+		var result = confirm('해당 부서를 삭제 하시겠습니까?');
+		if(result){
+			removeDept_ajax(data.team_code);
+		}
 	});
 	
 
@@ -240,9 +305,65 @@
 				console.log(error);
 			}
 		});
+	 }
 		
+	function createDept_ajax(param){
+		$.ajax({
+			type	: 'post',
+			url		: '/dept/register.ajax',
+			data	: param,
+			dataType: 'json',
+			success	: function(result){
+				console.log('createDept_ajax: ',result.msg);
+				if(result.msg == 'success'){
+					addNode(param);
+					alert('해당 부서가 등록되었습니다.');
+				}
+	 		},
+			error	:	function(error){
+				console.log(error);
+			}
+		});
 	}
 	
+	function removeDept_ajax(code){
+		$.ajax({
+			type	: 'get',
+			url		: '/dept/delete.ajax',
+			data	: {
+				'team_code': code
+			},
+			dataType: 'json',
+			success	: function(result){
+				console.log('removeDept_ajax: ',result.msg);
+				if(result.msg == 'success'){
+					alert('해당 부서가 삭제되었습니다.');
+					tree.remove(selected_nodeId);
+				}
+	 		},
+			error	:	function(error){
+				console.log(error);
+			}
+		});
+	}	
+
+	function updateDept_ajax(param){
+		$.ajax({
+			type	: 'post',
+			url		: '/dept/update.ajax',
+			data	: param,
+			dataType: 'json',
+			success	: function(result){
+				console.log('updateDept_ajax: ',result.msg);
+				if(result.msg == 'success'){
+					alert('해당 부서가 수정되었습니다.');
+				}
+	 		},
+			error	:	function(error){
+				console.log(error);
+			}
+		});
+	}	
 	//ajaxEnd
 	
 	
@@ -258,20 +379,32 @@
 		
 		// 정렬한 리스트 순서대로 조직화
 		list.forEach(function (data, idx){
-			//treeData[idx] = {id: data.team_code, parent: data.upper_code, text: data.team_name}
-			var upper_code = 1+Number(data.upper_code.substring(1));
-			console.log(idx,'team_code:', data.team_code,'- upper:', upper_code);
-			if(data.upper_code == 'T00'){
-				tree.add({text:data.team_name}, 'tui-tree-node-1');
-				console.log('상위 부서 data: ',data);
-			}else{
-				console.log('하위 부서 data: ',data);	
-				tree.add({text:data.team_name}, 'tui-tree-node-'+upper_code);
-			}
+			console.log(idx,'team_code:', data.team_code);
+			addNode(data);
+			console.log('=====================================');
 			
 		});
 	}
 	
+	function addNode(data){
+		var added_nodeId;
+		var upper_code = 1+Number(data.upper_code.substring(1));
+		if(data.upper_code == 'T00'){
+			console.log('상위 부서 data: ',data);
+			added_nodeId = tree.add({text:data.team_name}, 'tui-tree-node-1');
+		}else{
+			console.log('하위 부서 data: ',data);	
+			added_nodeId = tree.add({text:data.team_name}, 'tui-tree-node-'+upper_code);
+		}
+		console.log('생성된 nodeId: ',added_nodeId);
+		tree.setNodeData(added_nodeId, {
+			team_code: data.team_code,
+			team_name: data.team_name,
+			upper_code: data.upper_code,
+			reg_date: data.reg_date
+		});
+		
+	}
 
 	
 	// methodEnd
