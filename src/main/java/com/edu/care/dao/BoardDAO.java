@@ -9,6 +9,10 @@ import com.edu.care.dto.BoardDTO;
 @Mapper
 public interface BoardDAO {
 
-	/* List<BoardDTO> allList(); */
+	List<BoardDTO> allList(int start, int pagePerCnt, String searchCategory, String searchWord);
+
+	int allListPageCnt(int pagePerCnt, String searchCategory, String searchWord);
+
+	List<BoardDTO> topFixedList();
 
 }

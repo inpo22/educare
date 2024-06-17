@@ -10,9 +10,9 @@
 </style>
 </head>
 <body>
-<H2> 로그인 화면</H2>
+<H2> EDUcare 로그인</H2>
 
-<form action="login" method="post">
+<form action="login.do" method="post">
 	<table>
 		<tr>
 			<th>ID</th>
@@ -30,5 +30,11 @@
 	</table>
 </form>
 </body>
-<script></script>
+<script>
+var loginError = '${loginError}'; 
+console.log("Login Error Status: ", loginError);
+if (loginError === "true") {
+	alert("로그인에 실패하였습니다.");
+}
+</script>
 </html>

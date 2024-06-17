@@ -47,18 +47,18 @@
 		width: 500px;
 	}
 	
+	.btn-search, .select-read, .select-del {
+		height: 33px;
+	}
 	a {
 		color: black;
 	}
-	
 	.blue-color {
 		color: rgb(88, 88, 255);
 	}
-	
 	.text-bold {
 		font-weight: bold;
 	}
-	
 	#second-sidebar td {
 		padding: 5px 0;
 	}
@@ -80,10 +80,10 @@
 				<br/><br/><br/>
 				<table id="second-sidebar">
 					<tr>
-						<td><a href="/receivedMail/list.go" class="blue-color"><b>받은 메일함</b></a></td>
+						<td><a href="/receivedMail/list.go">받은 메일함</a></td>
 					</tr>
 					<tr>
-						<td><a href="/writtenMail/list.go">보낸 메일함</a></td>
+						<td><a href="/writtenMail/list.go" class="blue-color"><b>보낸 메일함</b></a></td>
 					</tr>
 				</table>
 			</div>
@@ -91,7 +91,7 @@
 				<select id="search-condition">
 					<option value="subject">제목</option>
 					<option value="content">내용</option>
-					<option value="send_user_name">보낸 사람</option>
+					<option value="receivers_name">받는 사람</option>
 				</select> <input type="text" id="search-content"/>
 				<button class="btn btn-secondary btn-sm" onclick="search()">검색</button>
 				<br/>
@@ -101,7 +101,6 @@
 						<tr>
 							<th scope="col" class="first-col"><input type="checkbox" id="select-all"/></th>
 							<td scope="col" class="second-col">
-								<button class="btn btn-outline-primary btn-sm" onclick="read()">읽음</button>
 								<button class="btn btn-outline-danger btn-sm" onclick="del()">삭제</button>
 							</td>
 							<th scope="col" class="third-col"></th>
@@ -147,7 +146,7 @@
 	function listCall(page, searchCondition, searchContent) {
 		$.ajax({
 			type:'get',
-			url:'/receivedMail/list.ajax',
+			url:'/writtenMail/list.ajax',
 			data:{
 				'page':page,
 				'condition':searchCondition,
@@ -187,7 +186,7 @@
 				content += '<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>';
 				count++;
 				if (count == 5) {
-					break;s
+					break;
 				}
 			}
 		}else if (page >= 3 && page < (totalPage - 2)) {
@@ -256,23 +255,15 @@
 	function drawList(list) {
 		var content = '';
 		for (var row of list) {
-			if (row.is_read_receiver == '0') {
-				content += '<tr class="text-bold">';
-			}else {
-				content += '<tr>';
-			}
 			
-			
+			content += '<tr>';
 			content += '<th scope="row" class="first-col"><input type="checkbox" class="select-box" value="' + row.mail_no + '"/></th>';
-			content += '<td>' + row.send_user_name + ' ' + row.class_name + '</td>';
-			content += '<td><a class="list-title" href="/mail/detail.go?mail_no=' + row.mail_no; 
-			content += '&is_read_receiver=' + row.is_read_receiver + '">' + row.subject + '</a></td>';
+			content += '<td>' + row.receivers_name + '</td>';
+			content += '<td><a class="list-title" href="/mail/detail.go?mail_no=' + row.mail_no + '">' + row.subject + '</a></td>';
 			
 			var date = new Date(row.send_date);
 		    var dateStr = date.toLocaleString("ko-KR");
 		    content += '<td>' + dateStr + '</td>';
-		    // console.log(row.send_date);
-		    // console.log(dateStr);
 			
 			content += '</tr>';
 		}
@@ -285,36 +276,6 @@
 		searchContent = $('#search-content').val();
 		
 		listCall(page, searchCondition, searchContent);
-	}
-	
-	function read() {
-		var readArr = [];
-		
-		$('.select-box').each(function(idx, item) {
-			if ($(item).is(":checked")) {
-				var val = $(this).val();
-				//console.log(val);
-				readArr.push(val);
-			}
-		});
-		// console.log('readArr : ', readArr);
-
-		$.ajax({
-			type:'post',
-			url:'/receivedMail/read.ajax',
-			data:{
-				readList:readArr
-			},
-			dataType:'JSON',
-			success:function(data) {
-				console.log(data.result);
-				$('#drawList').empty();
-				listCall(page, searchCondition, searchContent);
-			},
-			error:function(error) {
-				console.log(error);
-			}
-		});
 	}
 	
 	
@@ -335,7 +296,7 @@
 			if (result) {
 				$.ajax({
 					type:'post',
-					url:'/receivedMail/delete.ajax',
+					url:'/writtenMail/delete.ajax',
 					data:{
 						delList:delArr
 					},
@@ -354,8 +315,6 @@
 				});
 			}
 		}
-		
-		
 	}
 </script>
 </html>

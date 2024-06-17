@@ -21,15 +21,19 @@ public class BoardController {
 	
 	@GetMapping(value="/allBoard/list.go")
 	public String allBoardList() {
+		logger.info("전사공지사항 리스트 페이지 접속");
 		return "board/allBoard_list";
 	}
 	
-	/*
-	 * @PostMapping(value="/allBoard/list.ajax")
-	 * 
-	 * @ResponseBody public Map<String, Object> allList(){ return
-	 * boardService.allList(); }
-	 */
+	@PostMapping(value="/allBoard/list.ajax")
+	@ResponseBody
+	public Map<String, Object> allList(String page, String searchCategory, String searchWord){
+		
+		int currPage = Integer.parseInt(page);
+		int pagePerCnt = 10;
+		
+		return boardService.allList(currPage, pagePerCnt, searchCategory, searchWord);
+	}
 	
 	
 	@GetMapping(value="/affairsBoard/list.go")

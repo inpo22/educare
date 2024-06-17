@@ -17,9 +17,9 @@
 
 <!-- js -->
 <!-- 캘린더 -->
-<script src="https://cdn.jsdelivr.net/npm/@fullcalendar/googlecalendar@6.1.8/index.global.min.js"></script>
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js'></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar@6.1.14/index.global.min.js"></script>
 <!-- 툴팁쓸거면... -->
 <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
 <script src="https://unpkg.com/tippy.js@6"></script>
@@ -132,32 +132,32 @@ textarea{
 						<div class="modal-body">
 							<form>
 								<div class="input-group input-group-sm mb-3">
-									<label class="input-group-text" for="inputGroupSelect">일정유형</label>
-									<select class="form-select" id="inputGroupSelect">
+									<label class="input-group-text">일정유형</label>
+									<select class="form-select" id="selectSchRange">
 										<option selected>유형선택</option>
-										<option value="1">전사</option>
-										<option value="2">부서</option>
+										<option value="T01">전사</option>
+										<option value="${sessionScope.team_code }">부서</option>
 										<option value="3">개인</option>
 									</select>
 								</div>
 								<div class="input-group input-group-sm mb-3">
 									<span class="input-group-text" id="basic-addon1">일정제목</span> 
-									<input type="text" class="form-control" placeholder="제목을 입력해주세요.">
+									<input type="text" class="form-control" id="title" placeholder="제목을 입력해주세요.">
 								</div>
 								<div class="input-group input-group-sm mb-3">
 									<span class="input-group-text">일정내용</span>
-									<textarea class="form-control h-25" row="10" aria-label="With textarea"></textarea>
+									<textarea class="form-control h-25" row="10" id="contents" aria-label="With textarea"></textarea>
 								</div>
 								<div class="input-group input-group-sm mb-3">
-									<input type="date" class="form-control" placeholder="시작날짜" aria-label="startDate"> 
+									<input type="date" class="form-control" id="start_date" placeholder="시작날짜" aria-label="startDate"> 
 									<span class="input-group-text">~</span>
-									<input type="date" class="form-control" placeholder="종료날짜" aria-label="endDate">
+									<input type="date" class="form-control" id="end_date" placeholder="종료날짜" aria-label="endDate">
 								</div>
 							</form>
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-							<button type="button" class="btn btn-primary">등록</button>
+							<button type="button" class="btn btn-primary" onclick="sch_submit()">등록</button>
 						</div>
 					</div>
 				</div>
@@ -172,10 +172,22 @@ textarea{
 
 </body>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+$(document).ready(function(){
+	callSch();
+});
+
+var calendar;
+
+document.addEventListener('DOMContentLoaded', function(eventList) {
     var calendarEl = document.getElementById('calendar');
 
-    var calendar = new FullCalendar.Calendar(calendarEl, {
+    calendar = new FullCalendar.Calendar(calendarEl, {
+    	googleCalendarApiKey: 'AIzaSyCJeD_Gho52ovrTpfj8zqwl-m3r41gvpBo',
+    	eventSources: 
+    		 {  
+    		   googleCalendarId: 'ko.south_korea#holiday@group.v.calendar.google.com',
+    			color:'red'
+    		 },
     	locale: 'ko',
         headerToolbar : {
             left : 'prev',
@@ -183,10 +195,9 @@ document.addEventListener('DOMContentLoaded', function() {
             right : 'next'
         },
         selectable : true,
-        editable : true,
+        nowIndicator: true,
         expandRows: true,
         dayMaxEventRows: true, 
-        nextDayThreshold: "09:00:00",
         timeZone : 'local',
         initialView : 'dayGridMonth',
         slotLabelFormat: 'HH:mm',
@@ -197,118 +208,133 @@ document.addEventListener('DOMContentLoaded', function() {
             arg.dayNumberText = arg.dayNumberText.replace('일', '');
             return arg.dayNumberText;
         },
-        select : function() {
+        select: function(info){
+        	console.log('이게 드래그라고?');
         	writeModalOpen();
         },
-        eventClick : function() {
+        eventClick : function(info) {
+        	console.log('일정클릭시');
         	detailModalOpen();
         },
-        eventDrop : function() {
-        	writeModalOpen();
-        },
-        events: function(info, successCallback, failureCallback) {
-            $.ajax({
-                url: 'https://www.googleapis.com/calendar/v3/calendars/YOUR_GOOGLE_CALENDAR_ID/events',
-                dataType: 'json',
-                data: {
-                    key: 'AIzaSyCJeD_Gho52ovrTpfj8zqwl-m3r41gvpBo' // Google Calendar API 키
-                },
-                success: function(response) {
-                    var events = response.items.map(function(item) {
-                        return {
-                            title: item.summary,
-                            start: item.start.dateTime || item.start.date,
-                            end: item.end.dateTime || item.end.date
-                        };
-                    });
-                    successCallback(events);
-                },
-                error: function(xhr, status, error) {
-                    console.error('Google Calendar API 호출 중 에러:', status, error);
-                    failureCallback(error);
-                }
-            });
-        },
-        events :[ 
-            {
-                title : '10시까지 남은 일정마무리하기',
-                start : '2024-06-10',
-                end : '2024-06-10',
-                state: 'private',
-                description: '남은 일정 : 엑셀 / 피피티 작성',
-                color: '#ABDEE6'
-            },
-            {
-                title : '야근하는날',
-                start : '2024-06-27',
-                end : '2024-06-28T24:00',
-                description: '야근하기 싫어..',
-                state: 'private',
-                color: '#ABDEE6'
-            },
-            {
-                title : '회의 및 발표회',
-                start : '2024-06-24',
-                end : '2024-06-25T12:00:00',
-                description: '발표자료 준비해오기',
-                state: 'common',
-                color: '#F3B0C3'
-            },
-            {
-                title : '세미나',
-                start : '2024-06-03',
-                end : '2024-06-03',
-                description: '3~4시 세미나 예정',
-                state: 'common',
-                color: '#F3B0C3'
-            },
-            {
-                title :'구디아카데미 오리엔테이션',
-                start : '2024-06-17',
-                end : '2024-06-21T12:00:00',
-                description: '간단한 오리엔테이션',
-                state: 'private',
-                color: '#FFC8A2'
-            },
-            {
-                title :'수업 1주차',
-                start : '2024-06-24',
-                end : '2024-06-28T12:00:00',
-                description: '자료준비해가기',
-                state: 'private',
-                color: '#FFC8A2'
-            },
-            {
-                title : '인사팀 회식 겸 식사',
-                start : '2024-06-20',
-                end : '2024-06-20',
-                description: '냠냠',
-                state: 'dept',
-                color: '#CBAACB'
-            },
-            {
-                title : '주말모임',
-                start : '2024-06-30',
-                end : '2024-06-30',
-                description: '주말에 모임을...?',
-                state: 'dept',
-                color: '#CBAACB'
-            }
-        ]
+        events: eventList
     });
 
+    $(".filter_btn").click(function () {
+        var eventType = $(this).data('type');
+        var evt = calendar.getEvents();
+        states = eventType;
+        console.log(states);
+        if (states === 'all') {
+            evt.forEach(function(event) {
+                event.setProp('display', '');
+            });
+        } else {
+            filterEvent();
+        }
+    });
+    
+    function filterEvent() {
+        var evt = calendar.getEvents();
+        evt.forEach(function(event) {
+            var stateCont = event.extendedProps.state;
+            if (!states.includes(stateCont)) {
+                event.setProp('display', 'none'); 
+            } else {
+                event.setProp('display', ''); 
+            }
+            
+        });
+    }
+    
     calendar.render();
     
-    function writeModalOpen() {
+    function writeModalOpen(start,end) {
+    	$('#start_date').val(start); 
+    	$('#end_date').val(end); 
         $('#writeModal').modal('show');
     }
+    
+    calendar.setOption('dateClick', function(info) {
+        writeModalOpen(info.dateStr,info.dateStr);
+        calendar.addEvent({title:$('#title').val(),contents:$('#contents').val(),start_date:$('#start_date').val(),end_date:$('#end_date').val()});
+    });
+    
+    calendar.setOption('select', function(selectionInfo) {
+    	var endCal = selectionInfo.end;
+    	var endDate = endCal.toISOString().split('T')[0];
 
+    	writeModalOpen(selectionInfo.startStr,endDate);
+        
+        console.log(selectionInfo.startStr);
+        console.log(endDate);
+    });
+    
     function detailModalOpen() {
        alert('흐아아아');
     }
     
 });
 
+
+function sch_submit() {
+	alert('title : ' + $('#title').val());
+	
+	var paramData = {
+		//id: $('sessionScope.id').val(),	//작성자 이름 
+		//team_code : $('sessionScope.team_code').val(),	//작성자 소속부서
+		//selectSchRange:$('#selectSchRange').val(),	//일정유형
+		title:$('#title').val(),	//일정제목
+		contents:$('#contents').val(),	//일정내용
+		start_date:$('#start_date').val(),	//일정시작일
+		end_date:$('#end_date').val()	//일정마감일
+	};
+	
+	
+	$.ajax({
+		url:'/schedule/write.ajax',
+		type:'POST',
+		contentType: 'application/json',
+		data: JSON.stringify(paramData),
+		dataType:'JSON',
+		success : function(data){
+			console.log(data.row);
+			if(data.row > 0){
+				alert('등록되었습니다');
+				 $('#writeModal').modal('hide');
+			}
+		},
+		error:function(request, status, error){
+			console.log(error);
+		}
+	});
+};
+
+
+function callSch(){
+	$.ajax({
+			url:'/schedule/list.ajax',
+			type:'GET',
+			contentType: 'application/json',
+			dataType:'JSON',
+			success : function(response){
+					console.log(response);
+					var events = [];
+					response.list.forEach(function(item) {
+							var event = {
+									title: item.title,
+									start: item.start_date,
+									end: item.end_date,
+							};
+							events.push(event);
+					});
+					console.log('Events:', events);
+					calendar.addEventSource(events); 
+			},
+			error:function(request, status, error){
+					console.log(error);
+			}
+	});
+};
 
 </script>
 </html>

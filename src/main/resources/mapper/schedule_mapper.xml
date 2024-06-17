@@ -3,5 +3,10 @@
    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.edu.care.dao.ScheduleDAO">
-	
+	<insert id="scheduleWrite" parameterType="schedule">
+		INSERT INTO schedule(user_code,team_code,title,contents,start_date,end_date,reg_date,is_del) VALUES('2024U010001','T02',#{title},#{contents},#{start_date},#{end_date},'2024-06-14',1)	
+	</insert>
+	<select id="scheduleList" resultType="schedule">
+		select * from schedule
+	</select>
 </mapper>

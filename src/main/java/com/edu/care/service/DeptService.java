@@ -23,8 +23,8 @@ public class DeptService {
 	public Map<String, Object> getDept() {
 		Map<String, Object> result = new HashMap<String, Object>();
 		List<DeptDTO> deptList = deptDAO.getDept();
-		logger.info("deptList: "+deptList);
 		if(deptList.size() > 0) {
+			logger.info("deptList is not empty ");
 			result.put("deptList", deptList);
 		}
 		return result;
