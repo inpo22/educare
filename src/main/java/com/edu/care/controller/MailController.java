@@ -46,6 +46,11 @@ public class MailController {
 		return mailService.mailDetail(mail_no, is_read_receiver, user_code);
 	}
 	
+	@GetMapping(value="/mail/write.go")
+	public String mailWriteForm(String mail_no, String writeType) {
+		return "mail/mail_write";
+	}
+	
 	@GetMapping(value="/receivedMail/list.ajax")
 	@ResponseBody
 	public Map<String, Object> receivedMailListCall(String page, String condition, String content, HttpSession session) {
@@ -127,6 +132,12 @@ public class MailController {
 	public ResponseEntity<Resource> download(@PathVariable String fileName) {
 		// logger.info("download fileName : " + fileName);
 		return mailService.download(fileName);
+	}
+	
+	@GetMapping(value="/mail/deptList.ajax")
+	@ResponseBody
+	public Map<String, Object> deptList() {
+		return mailService.deptList();
 	}
 	
 }

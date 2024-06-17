@@ -33,4 +33,6 @@ public interface MailDAO {
 
 	String getOriFileName(String fileName);
 
+	List<MailDTO> deptList();
+
 }
