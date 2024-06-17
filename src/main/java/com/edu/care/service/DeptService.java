@@ -29,5 +29,44 @@ public class DeptService {
 		}
 		return result;
 	}
+
+	public Map<String, Object> createDept(Map<String, Object> param) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		String msg = "fail";
+		int row = deptDAO.createDept(param);
+		if(row > 0) {
+			msg = "success";
+		}
+		logger.info("부서 추가 결과: "+msg);
+		result.put("msg", msg);
+		return result;
+	}
+
+	public Map<String, Object> removeDept(Map<String, Object> param) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		String msg = "fail";
+		int row = deptDAO.removeDept(param);
+		if(row > 0) {
+			msg = "success";
+		}
+		logger.info("부서 삭제 결과: "+msg);
+		result.put("msg", msg);
+		return result;
+	}
+
+	public Map<String, Object> updateDept(Map<String, Object> param) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		String msg = "fail";
+		String type = param.get("edit_type").toString();
+		logger.info("수정 유형: "+type);
+		// 수정중~
+		int row = 0;
+		if(row > 0) {
+			msg = "success";
+		}
+		logger.info("부서 수정 결과: "+msg);
+		result.put("msg", msg);
+		return result;
+	}
 	
 }
