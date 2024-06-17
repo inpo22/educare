@@ -28,8 +28,14 @@ public class InterCeptorConfig implements WebMvcConfigurer {
 		List<String> excludeList = new ArrayList<String>();
 		excludeList.add("/");
 		excludeList.add("/resources/**"); // resources 하위 요청
+		excludeList.add("/login.go");
+		excludeList.add("/login.do");
+		excludeList.add("/logout.do");
 		
-		registry.addInterceptor(checker).addPathPatterns("/**").excludePathPatterns(excludeList);
+		
+		registry.addInterceptor(checker)
+					.addPathPatterns("/**")
+					.excludePathPatterns(excludeList);
 		
 	}
 	

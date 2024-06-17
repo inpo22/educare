@@ -38,9 +38,11 @@ public class LoginController {
 	@GetMapping(value ="/logout.do")
 	public String logoutAccess(HttpSession session, Model model) {
 		logger.info("::로그아웃 실행::");
-		session.removeAttribute("id");
-		session.removeAttribute("pw");
-		session.removeAttribute("name");
+		session.removeAttribute("user_code");
+		session.removeAttribute("user_name");
+		session.removeAttribute("class_name");
+		session.removeAttribute("team_name");
+		session.removeAttribute("team_code");
 		session.removeAttribute("classify_code");
 		model.addAttribute("msg", "로그아웃 되었습니다.");
 		session.invalidate();
