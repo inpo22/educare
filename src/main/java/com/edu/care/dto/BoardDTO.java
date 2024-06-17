@@ -22,6 +22,43 @@ public class BoardDTO {
 	private String class_name;
 	private String team_name;
 	
+	private String file_no;
+	private String ori_filename;
+	private String new_filename;
+	private String board_type;
+	
+	public String getFile_no() {
+		return file_no;
+	}
+
+	public void setFile_no(String file_no) {
+		this.file_no = file_no;
+	}
+
+	public String getOri_filename() {
+		return ori_filename;
+	}
+
+	public void setOri_filename(String ori_filename) {
+		this.ori_filename = ori_filename;
+	}
+
+	public String getNew_filename() {
+		return new_filename;
+	}
+
+	public void setNew_filename(String new_filename) {
+		this.new_filename = new_filename;
+	}
+
+	public String getBoard_type() {
+		return board_type;
+	}
+
+	public void setBoard_type(String board_type) {
+		this.board_type = board_type;
+	}
+
 	public int getPost_no() {
 		return post_no;
 	}

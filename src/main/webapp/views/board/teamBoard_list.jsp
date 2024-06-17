@@ -14,20 +14,19 @@
 <jsp:include page="/views/common/head.jsp"></jsp:include>
 <!-- js -->
 
+
 <style>
 </style>
 </head>
 
 <body>
-
 	<jsp:include page="/views/common/header.jsp"></jsp:include>
-
 	<jsp:include page="/views/common/sidebar.jsp"></jsp:include>
 
 	<main id="main" class="main">
 
 		<div class="pagetitle">
-			<h1>훈련운영팀 공지사항</h1>
+			<h1>부서 공지사항</h1>
 		</div>
 		<!-- End Page Title -->
 

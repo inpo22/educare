@@ -64,7 +64,7 @@
 </head>
 
 <body>
-	<fmt:formatDate value="${now}" pattern="yyyy-MM-dd" var="today" />
+	
 	
 	<jsp:include page="/views/common/header.jsp"></jsp:include>
 
@@ -83,7 +83,6 @@
 					<option value="contents">내용</option>
 				</select>
 				<input type="text" id="searchWord" placeholder="검색단어입력" maxlength="30"/>
-				<!-- 이거 누르면 아작스 하는걸로 -->
 				<input type="button" id="searchBtn" value="검색" class="btn btn-primary"/>
 			</div>
 			<br/><br/>

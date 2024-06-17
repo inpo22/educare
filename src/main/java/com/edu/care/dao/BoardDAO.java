@@ -15,4 +15,12 @@ public interface BoardDAO {
 
 	List<BoardDTO> topFixedList();
 
+	BoardDTO allDetail(String post_no);
+
+	List<BoardDTO> attachFileList(String post_no);
+
+	String getOriFileName(String fileName);
+
+
+
 }
