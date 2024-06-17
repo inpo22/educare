@@ -29,6 +29,10 @@ public class MailDTO {
 	private String new_filename;
 	private String board_no;
 	private String board_type;
+	
+	private String team_code;
+	private String team_name;
+	private String upper_code;
 
 	public int getMail_no() {
 		return mail_no;
@@ -180,6 +184,30 @@ public class MailDTO {
 
 	public void setBoard_type(String board_type) {
 		this.board_type = board_type;
+	}
+
+	public String getTeam_code() {
+		return team_code;
+	}
+
+	public String getTeam_name() {
+		return team_name;
+	}
+
+	public String getUpper_code() {
+		return upper_code;
+	}
+
+	public void setTeam_code(String team_code) {
+		this.team_code = team_code;
+	}
+
+	public void setTeam_name(String team_name) {
+		this.team_name = team_name;
+	}
+
+	public void setUpper_code(String upper_code) {
+		this.upper_code = upper_code;
 	}
 
 }

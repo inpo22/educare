@@ -126,4 +126,13 @@ public class MailService {
 		return new ResponseEntity<Resource>(resource, header, HttpStatus.OK);
 	}
 
+	public Map<String, Object> deptList() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		List<MailDTO> deptList = mailDAO.deptList();
+		
+		map.put("deptList", deptList);
+		
+		return map;
+	}
+
 }

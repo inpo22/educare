@@ -316,5 +316,9 @@
 			}
 		}
 	}
+	
+	$('.btn-newMail').click(function() {
+		location.href = '/mail/write.go';
+	});
 </script>
 </html>
