@@ -11,6 +11,8 @@ public interface ScheduleDAO {
 
 	int scheduleWrite(ScheduleDTO schedultDTO);
 
-	List<ScheduleDTO> scheduleList();
+	List<ScheduleDTO> scheduleList(ScheduleDTO scheduleDTO);
+
+	int scheduleDelete(String sked_no);
 
 }

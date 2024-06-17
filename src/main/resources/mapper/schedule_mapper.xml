@@ -4,9 +4,70 @@
 
 <mapper namespace="com.edu.care.dao.ScheduleDAO">
 	<insert id="scheduleWrite" parameterType="schedule">
-		INSERT INTO schedule(user_code,team_code,title,contents,start_date,end_date,reg_date,is_del) VALUES('2024U010001','T02',#{title},#{contents},#{start_date},#{end_date},'2024-06-14',1)	
+		INSERT INTO schedule
+		(
+			user_code
+			, team_code
+			, title
+			, contents
+			, start_date
+			, end_date
+			, reg_date
+			, is_del
+			, sked_type
+		) VALUES(
+			#{user_code}
+			, #{team_code}
+			, #{title}
+			, #{contents}
+			, #{start_date}
+			, #{end_date}
+			, NOW()
+			, 0
+			, #{sked_type}
+		)	
 	</insert>
-	<select id="scheduleList" resultType="schedule">
-		select * from schedule
+	<select id="scheduleList" parameterType="schedule" resultType="schedule">
+		select 
+			sch.sked_no
+			, sch.user_code
+			, sch.title
+			, sch.contents
+			, sch.start_date
+			, sch.end_date
+			, sch.sked_type
+			, usr.name as name
+			, (select team_name from department where team_code = usr.TEAM_CODE) as team_name
+		from schedule sch
+		left join user usr
+		on usr.user_code = sch.user_code
+		where 1=1
+			and sch.is_del = 0
+		<if test="sked_type != null">
+			and sch.sked_type = #{sked_type}
+			<choose>
+				<when test="sked_type == 'SKED_TP01'">
+				and sch.team_code = 'T01'
+				</when>
+				<when test="sked_type == 'SKED_TP02'">
+				and sch.team_code = #{team_code}
+				</when>
+				<when test="sked_type == 'SKED_TP03'">
+				and sch.user_code = #{user_code}
+				</when>
+			</choose>
+		</if>
+		<if test="sked_type == null">
+		and (
+			(sch.team_code = #{team_code} and sch.sked_type = 'SKED_TP02') or
+			(sch.user_code = #{user_code} and sch.sked_type = 'SKED_TP03') or
+			(sch.sked_type = 'SKED_TP01')
+		)
+		</if>
 	</select>
+	
+	<update id="scheduleDelete">
+		UPDATE schedule SET is_del = 1 WHERE sked_no = #{param1}
+	</update>
+
 </mapper>

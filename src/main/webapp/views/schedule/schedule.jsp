@@ -12,7 +12,7 @@
 
 <!-- css -->
 <link href='https://cdn.jsdelivr.nenpm/bootstrap@4.5.0/dist/css/bootstrap.css' rel='stylesheet'>
-
+<link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/main.min.css' rel='stylesheet' />
 <jsp:include page="/views/common/head.jsp"></jsp:include>
 
 <!-- js -->
@@ -20,64 +20,114 @@
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js'></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar@6.1.14/index.global.min.js"></script>
-<!-- 툴팁쓸거면... -->
 <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
 <script src="https://unpkg.com/tippy.js@6"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <style>
 
-/*
-fieldset {
-    text-align: center;
-    height: 80px;
-    border-radius: 10px;
-    width: 320px;
-    box-shadow: 3px 2px 9px 1px darkgrey;
-    background-color:white;
+.pln_btn {
+	height: 54px;
 }
-*/
 
-.pln_btn{
-	width: 230px;
+.card-header {
+	font-weight: bold;
+}
+
+.card-body {
+	padding: 10px;
 }
 
 .modal-header {
-    background-color: black;
-    color:#FFF;
-    border-bottom:2px dashed white;
- }
+	background-color: black;
+	color: #FFF;
+	border-bottom: 1px dashed white;
+}
 
-.all{
+.all {
 	background-color: #ff6666;
-	color:white;
-	height:20px;
+	color: white;
+	height: 20px;
 	padding: 0px;
-    font-size: 13px;
+	font-size: 13px;
 }
 
-.common{
+.common {
 	background-color: #ffd146;
-	color:white;
+	color: white;
 	padding: 0px;
-    font-size: 13px;
+	font-size: 13px;
 }
 
-.dept{
+.dept {
 	background-color: #6fb171;
-	color:white;
+	color: white;
 	padding: 0px;
-    font-size: 13px;
+	font-size: 13px;
 }
 
-.private{
+.private {
 	background-color: #55b4ff;
-	color:white;
+	color: white;
 	padding: 0px;
-    font-size: 13px;
+	font-size: 13px;
 }
 
-textarea{
-	resize:none;
+.all:hover, .common:hover, .dept:hover, .private:hover {
+    box-shadow: inset 1px 1px 2px 0px #403e3ed9;
+    color: white;
+}
+
+textarea {
+	resize: none;
+}
+
+
+#calendar {
+	background-color: white;
+	padding: 15px;
+	border-radius: 10px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+:root { -
+	-fc-border-color: #e9ecef;
+}
+
+.fc-day-sat .fc-daygrid-day-number {
+	color: blue;
+}
+
+.fc-day-sun .fc-daygrid-day-number {
+	color: red;
+}
+
+.fc-day-mon .fc-daygrid-day-number, .fc-day-tue .fc-daygrid-day-number,
+.fc-day-wed .fc-daygrid-day-number, .fc-day-thu .fc-daygrid-day-number,
+.fc-day-fri .fc-daygrid-day-number {
+	color: black;
+}
+
+.fc-day-sun .fc-col-header-cell-cushion {
+	color: red;
+}
+
+.fc-day-sat .fc-col-header-cell-cushion {
+	color: blue;
+}
+
+.fc-day-mon .fc-col-header-cell-cushion, .fc-day-tue .fc-col-header-cell-cushion,
+.fc-day-wed .fc-col-header-cell-cushion, .fc-day-thu .fc-col-header-cell-cushion,
+.fc-day-fri .fc-col-header-cell-cushion {
+	color: black;
+}
+
+.fc-event-start {
+	border: none;
+}
+
+.fc-direction-ltr .fc-daygrid-event.fc-event-end, .fc-direction-rtl .fc-daygrid-event.fc-event-start{
+	border: none;
 }
 
 </style>
@@ -95,21 +145,19 @@ textarea{
 			<h1>일정 관리</h1>
 		</div>
 		<!-- End Page Title -->
-		<button
-			class="btn btn-dark mt-2 d-grid gap-2 col-2 border-secondary p-3 pln_btn"
-			data-bs-toggle="modal" data-bs-target="#writeModal">+ 일정 추가
-		</button>
-		<!-- End Schedule Button -->
+		
 		<div class="row">
-			<div class="mt-1 d-grid gap-2 col-2 rounded-5 p-3">
-				<div class="card border-secondary">
+			<div class="col-2 rounded-5 p-3">
+			<button class="btn btn-dark border-secondary pln_btn w-100" data-bs-toggle="modal" id="write_btn" data-bs-target="#writeModal">+ 일정 추가</button>
+			<!-- End Schedule Button -->
+				<div class="card border-secondary mt-4">
 					<div class="card-header">선택한 일정 보기</div>
 					<div class="card-body text-secondary mt-2">
 						<ul class="list-group list-group-flush">
-							<li class="list-group-item"><button type="button" class="btn w-100 filter_btn all" id="all" data-type="all">전체</button></li>
-							<li class="list-group-item"><button type="button" class="btn w-100 filter_btn common" id="common" data-type="common">전사</button></li>
-							<li class="list-group-item"><button type="button" class="btn w-100 filter_btn dept" id="dept" data-type="dept">부서</button></li>
-							<li class="list-group-item"><button type="button" class="btn w-100 filter_btn private" id="private" data-type="private">개인</button></li>
+							<li class="list-group-item"><button type="button" class="btn w-100 filter_btn all" id="all" data-type="">전체</button></li>
+							<li class="list-group-item"><button type="button" class="btn w-100 filter_btn common" id="common" data-type="SKED_TP01">전사</button></li>
+							<li class="list-group-item"><button type="button" class="btn w-100 filter_btn dept" id="dept" data-type="SKED_TP02">부서</button></li>
+							<li class="list-group-item"><button type="button" class="btn w-100 filter_btn private" id="private" data-type="SKED_TP03">개인</button></li>
 						</ul>
 					</div>
 				</div>
@@ -126,18 +174,18 @@ textarea{
 				<div class="modal-dialog modal-dialog-centered">
 					<div class="modal-content">
 						<div class="modal-header text-light">
-							<h1 class="modal-title fs-5" id="writeModalLabel">일정 등록</h1>
+							<h1 class="modal-title fs-5" id="writeModalLabel"></h1>
 							<button type="button" class="btn-close bg-white rounded-5" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 						<div class="modal-body">
-							<form>
+							<form id="modalForm">
 								<div class="input-group input-group-sm mb-3">
 									<label class="input-group-text">일정유형</label>
 									<select class="form-select" id="selectSchRange">
 										<option selected>유형선택</option>
-										<option value="T01">전사</option>
-										<option value="${sessionScope.team_code }">부서</option>
-										<option value="3">개인</option>
+										<option value="SKED_TP01">전사</option>
+										<option value="SKED_TP02">부서</option>
+										<option value="SKED_TP03">개인</option>
 									</select>
 								</div>
 								<div class="input-group input-group-sm mb-3">
@@ -156,29 +204,28 @@ textarea{
 							</form>
 						</div>
 						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-							<button type="button" class="btn btn-primary" onclick="sch_submit()">등록</button>
+							<button type="button" class="btn btn-secondary" id="closeButton" data-bs-dismiss="modal">취소</button>
+							<button type="button" class="btn text-light bg-dark" id="submitButton" onclick="sch_submit()">등록</button>
+							<button type="button" class="btn btn-secondary" id="deleteButton" onclick="sch_del()" style="display:none;">삭제</button>
+							<button type="button" class="btn text-light bg-dark" id="updateButton" onclick="sch_uodatet()" style="display:none;">수정</button>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 		<!-- End #wirteModal -->
-		
 	</main>
+		
 	<!-- End #main -->
 
 	<jsp:include page="/views/common/footer.jsp"></jsp:include>
 
 </body>
 <script>
-$(document).ready(function(){
-	callSch();
-});
-
 var calendar;
-
+	
 document.addEventListener('DOMContentLoaded', function(eventList) {
+	
     var calendarEl = document.getElementById('calendar');
 
     calendar = new FullCalendar.Calendar(calendarEl, {
@@ -200,64 +247,108 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
         dayMaxEventRows: true, 
         timeZone : 'local',
         initialView : 'dayGridMonth',
-        slotLabelFormat: 'HH:mm',
-        dayPopoverFormat: 'MM/DD dddd',
+        slotLabelFormat: {
+            hour: '2-digit',
+            minute: '2-digit',
+            omitZeroMinute: false,
+            meridiem: false
+        },
+        dayPopoverFormat: {
+            month: 'short',
+            day: 'numeric',
+            weekday: 'long'
+        },
         dayMaxEvents : true,
         fixedWeekCount : false,
+        displayEventTime: false,
         dayCellContent: function(arg) {
             arg.dayNumberText = arg.dayNumberText.replace('일', '');
             return arg.dayNumberText;
         },
-        select: function(info){
-        	console.log('이게 드래그라고?');
+        select: function(info){	//드래그시
+        	document.getElementById('modalForm').reset();
         	writeModalOpen();
         },
-        eventClick : function(info) {
-        	console.log('일정클릭시');
-        	detailModalOpen();
+        eventClick : function(info) {	//일정클릭시
+        	document.getElementById('modalForm').reset();
+        	detailModalOpen(info);
+        	info.jsEvent.cancelBubble = true; 
+            info.jsEvent.preventDefault(); 
         },
-        events: eventList
-    });
-
-    $(".filter_btn").click(function () {
-        var eventType = $(this).data('type');
-        var evt = calendar.getEvents();
-        states = eventType;
-        console.log(states);
-        if (states === 'all') {
-            evt.forEach(function(event) {
-                event.setProp('display', '');
+        eventDidMount: function(info) {
+            var popover = new bootstrap.Popover(info.el, {
+                title: info.event.title,
+                trigger: 'hover',
+                placement: 'top',
+                container: 'body'
             });
-        } else {
-            filterEvent();
+        },
+        events: function(info, successCallback, failureCallback) {
+        	
+        	$.ajax({
+        		url:'/schedule/list.ajax',
+        		type:'POST',
+        		contentType: 'application/json',
+        		dataType:'JSON',
+        		success : function(response){
+        				console.log(response);
+        				var events = [];
+        				response.list.forEach(function(item) {
+        						var tp_color; 
+        						var event = {
+        							title: item.title,
+        							start: item.start_date,
+        							end: item.end_date,
+        							skedNo: item.sked_no,
+        							skedType:item.sked_type,
+        							contents:item.contents,
+        							name : item.name,
+        							team_name : item.team_name,
+        							backgroundColor: item.sked_type === 'SKED_TP01' ? '#ffd146':
+        											 item.sked_type === 'SKED_TP02' ? '#6fb171':
+        											 item.sked_type === 'SKED_TP02' ? '#55b4ff':'#ff6666'
+        						};
+        					
+        						events.push(event);
+        				});
+        				console.log('Events:', events);
+        				successCallback(events);
+        				//return events;
+        				//calendar.addEventSource(events); 
+        		},
+        		error:function(request, status, error){
+        				console.log(error);
+        		}
+        	});
+        	
+        	
         }
+       
     });
-    
-    function filterEvent() {
-        var evt = calendar.getEvents();
-        evt.forEach(function(event) {
-            var stateCont = event.extendedProps.state;
-            if (!states.includes(stateCont)) {
-                event.setProp('display', 'none'); 
-            } else {
-                event.setProp('display', ''); 
-            }
-            
-        });
-    }
-    
-    calendar.render();
-    
-    function writeModalOpen(start,end) {
-    	$('#start_date').val(start); 
-    	$('#end_date').val(end); 
-        $('#writeModal').modal('show');
-    }
     
     calendar.setOption('dateClick', function(info) {
         writeModalOpen(info.dateStr,info.dateStr);
-        calendar.addEvent({title:$('#title').val(),contents:$('#contents').val(),start_date:$('#start_date').val(),end_date:$('#end_date').val()});
     });
+    
+    $('#write_btn').on('click', function () {
+    	forWriteModal();
+    });
+    
+    function writeModalOpen(start,end) {
+    	forWriteModal();
+    	$('#start_date').val(start); 
+    	$('#end_date').val(end); 
+    }
+    
+   function forWriteModal(){
+	   	document.getElementById('modalForm').reset();
+   		$('#writeModalLabel').html('일정 등록');
+   		$('#writeModal').modal('show');
+        $('#closeButton').show(); 
+        $('#deleteButton').hide();
+    	$('#submitButton').show(); 
+        $('#updateButton').hide();
+   }
     
     calendar.setOption('select', function(selectionInfo) {
     	var endCal = selectionInfo.end;
@@ -269,26 +360,75 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
         console.log(endDate);
     });
     
-    function detailModalOpen() {
-       alert('흐아아아');
+    function detailModalOpen(info) {
+    	console.log(info.event);
+    	var skedNo = info.event.extendedProps.skedNo;
+    	if(skedNo == null){
+    		return;
+    	}
+    	var title = info.event.title;
+    	var contents = info.event.extendedProps.contents;
+    	var skedType = info.event.extendedProps.skedType;
+    	var start = info.event.start.toISOString().split('T')[0];
+    	var end = info.event.end;
+    	var name = info.event.extendedProps.name;
+    	var team_name = info.event.extendedProps.team_name;
+    	var info_user = '<div class="input-group input-group-sm mb-3 name_info"><span class="input-group-text" id="basic-addon1">작성자</span> <input type="text" class="form-control" id="name"><span class="input-group-text team_name_info" id="basic-addon1">소속부서</span> <input type="text" class="form-control" id="team_name"></div>';	
+    	var parent = document.querySelector("form");
+    	
+    	console.log(end);
+    	parent.insertAdjacentHTML('afterbegin',info_user);
+    	$('#name').val(name);
+    	$('#name').attr('disabled',true);
+    	$('#team_name').val(team_name);
+    	$('#team_name').attr('disabled',true);
+      	$('#writeModal').modal('show');
+      	$('#writeModalLabel').html('일정 상세정보');
+      	$('#title').val(title);
+      	$('#title').attr('disabled',true);
+       	$('#contents').val(contents);
+    	$('#contents').attr('disabled',true);
+       	$('#selectSchRange').val(skedType);
+       	$('#selectSchRange').attr('disabled',true);
+       	$('#start_date').val(start);
+    	$('#start_date').attr('disabled',true);
+       	if(end === null){
+       		$('#end_date').val(start);
+       	}else{
+       		$('#end_date').val(end.toISOString().split('T')[0]);
+       	}
+       	$('#end_date').attr('disabled',true);
+    	$('#closeButton').hide(); 
+       	$('#submitButton').hide(); 
+    	$('#deleteButton').show(); 
+    	$('#deleteButton').attr('data-val',skedNo); 
+        $('#updateButton').show();
     }
     
+    calendar.render();
+});
+
+
+$('#writeModal').on('hidden.bs.modal', function () {
+	$('.name_info').remove();
+	$('#title').val('').removeAttr('disabled');
+    $('#contents').val('').removeAttr('disabled');
+    $('#selectSchRange').val('').removeAttr('disabled');
+    $('#start_date').val('').removeAttr('disabled');
+    $('#end_date').val('').removeAttr('disabled');
+    $('#deleteButton').removeAttr('data-val');
 });
 
 
 function sch_submit() {
-	alert('title : ' + $('#title').val());
 	
 	var paramData = {
-		//id: $('sessionScope.id').val(),	//작성자 이름 
-		//team_code : $('sessionScope.team_code').val(),	//작성자 소속부서
-		//selectSchRange:$('#selectSchRange').val(),	//일정유형
-		title:$('#title').val(),	//일정제목
-		contents:$('#contents').val(),	//일정내용
-		start_date:$('#start_date').val(),	//일정시작일
-		end_date:$('#end_date').val()	//일정마감일
+		sked_type: $('#selectSchRange').val(), 
+		title:$('#title').val(),	
+		contents:$('#contents').val(),	
+		start_date:$('#start_date').val(),
+		end_date:$('#end_date').val()
 	};
-	
 	
 	$.ajax({
 		url:'/schedule/write.ajax',
@@ -297,11 +437,14 @@ function sch_submit() {
 		data: JSON.stringify(paramData),
 		dataType:'JSON',
 		success : function(data){
-			console.log(data.row);
+			console.log("datadatarow: " +data.row);
+			 calendar.addEvent(paramData);
 			if(data.row > 0){
 				alert('등록되었습니다');
-				 $('#writeModal').modal('hide');
+				$('#writeModal').modal('hide');
+				calendar.refetchEvents();
 			}
+			
 		},
 		error:function(request, status, error){
 			console.log(error);
@@ -309,32 +452,58 @@ function sch_submit() {
 	});
 };
 
-
-function callSch(){
-	$.ajax({
-			url:'/schedule/list.ajax',
-			type:'GET',
-			contentType: 'application/json',
-			dataType:'JSON',
-			success : function(response){
-					console.log(response);
-					var events = [];
-					response.list.forEach(function(item) {
-							var event = {
-									title: item.title,
-									start: item.start_date,
-									end: item.end_date,
-							};
-							events.push(event);
-					});
-					console.log('Events:', events);
-					calendar.addEventSource(events); 
+function sch_del(){
+	var delNo = $('#deleteButton').attr('data-val');
+	
+	if(confirm("해당 일정을 삭제하시겠습니까?")){
+		$.ajax({
+			url:'/schedule/delete.ajax',
+			type:'POST',
+			data: { sked_no: delNo },
+			success : function(data){
+				if(data.row > 0){
+					alert('삭제되었습니다.');
+					$('#writeModal').modal('hide');
+					calendar.refetchEvents();
+				}
 			},
 			error:function(request, status, error){
-					console.log(error);
+				console.log(error);
 			}
-	});
-};
+		});
+		
+	} 
+	
+}
+
+$(".filter_btn").click(function () {
+    var filter_skedType = $(this).data('type');
+    //callSch(skedType);
+    filterEvent(filter_skedType);
+    var evt = calendar.getEvents();
+    filter = filter_skedType;
+    console.log(filter);
+    if (filter === '') {
+        evt.forEach(function(event) {
+            event.setProp('display', '');
+        });
+    } else {
+        filterEvent(filter_skedType);
+    }
+});
+
+function filterEvent(filter_skedType) {
+    var evt = calendar.getEvents();
+    evt.forEach(function(event) {
+        var skedTypeResult = event.extendedProps.skedType;
+        if (!filter_skedType.includes(skedTypeResult)) {
+            event.setProp('display', 'none'); 
+        } else {
+            event.setProp('display', ''); 
+        }
+         
+    });
+}
 
 </script>
 </html>

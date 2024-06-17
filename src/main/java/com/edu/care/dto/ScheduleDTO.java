@@ -1,6 +1,7 @@
 package com.edu.care.dto;
 
-import java.sql.Date;
+
+import java.util.Date;
 
 import org.apache.ibatis.type.Alias;
 
@@ -10,6 +11,7 @@ public class ScheduleDTO {
 	private int sked_no;
 	private String user_code;
 	private String team_code;
+	private String team_name;
 	private String title;
 	private String contents;
 	private Date start_date;
@@ -19,6 +21,8 @@ public class ScheduleDTO {
 	private Date edit_date;
 	private int is_del;
 	private String id;
+	private String name;
+	private String sked_type;
 	
 	public int getSked_no() {
 		return sked_no;
@@ -91,6 +95,24 @@ public class ScheduleDTO {
 	}
 	public void setId(String id) {
 		this.id = id;
+	}
+	public String getSked_type() {
+		return sked_type;
+	}
+	public void setSked_type(String sked_type) {
+		this.sked_type = sked_type;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getTeam_name() {
+		return team_name;
+	}
+	public void setTeam_name(String team_name) {
+		this.team_name = team_name;
 	}
 
 	

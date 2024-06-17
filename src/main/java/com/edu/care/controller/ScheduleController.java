@@ -35,6 +35,12 @@ public class ScheduleController {
 	public Map<String, Object> scheduleWrite(@RequestBody ScheduleDTO scheduleDTO, HttpSession session) {
 		logger.info("##### schedule write ajax controller IN #####");
 		
+		String user_code = (String) session.getAttribute("user_code");
+		String team_code = (String) session.getAttribute("team_code");
+		
+		scheduleDTO.setUser_code(user_code);
+		scheduleDTO.setTeam_code(team_code);
+		
 		Map<String, Object> map = new HashMap<String, Object>();
 		
 		int row =  scheduleService.scheduleWrite(scheduleDTO);
@@ -45,12 +51,35 @@ public class ScheduleController {
 		return map;
 	}
 	
-	@GetMapping(value="/schedule/list.ajax")
+	@PostMapping(value="/schedule/list.ajax")
 	@ResponseBody
-	public Map<String, Object> scheduleList(HttpSession session) {
+	public Map<String, Object> scheduleList(@RequestParam(value="sked_type", required=false) String sked_type, HttpSession session) {
 		logger.info("##### schedule list ajax controller IN #####");
+		logger.info("##### sked_type : ", sked_type);
 		
-		Map<String, Object> map = scheduleService.scheduleList();
+		ScheduleDTO scheduleDTO = new ScheduleDTO();
+		scheduleDTO.setUser_code((String) session.getAttribute("user_code"));
+		scheduleDTO.setTeam_code((String) session.getAttribute("team_code"));
+		scheduleDTO.setSked_type(sked_type);
+		
+		
+		Map<String, Object> map = scheduleService.scheduleList(scheduleDTO);
+		return map;
+	}
+	
+	@PostMapping(value="/schedule/delete.ajax")
+	@ResponseBody
+	public Map<String, Object> scheduleDelete(@RequestParam(value="sked_no") String sked_no, HttpSession session) {
+		logger.info("##### schedule delete ajax controller IN #####");
+		logger.info("sked_no:{}",sked_no);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		int row =  scheduleService.scheduleDelete(sked_no);
+		if(row > 0) {
+			map.put("row", row);
+		}
+		
 		return map;
 	}
 }
