@@ -1,5 +1,6 @@
 package com.edu.care.controller;
 
+
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -28,10 +29,39 @@ public class LoginController {
 	}
 	//로그인
 	@PostMapping(value ="/login.do")
-	public String loginAccess(HttpSession session, Model model, String id, String pw,
+	public String loginAccess(HttpSession session, Model model, String id, String pw, String name, String classify_code,
 			RedirectAttributes redirectAttributes) {
 		logger.info("::최초 로그인 실행::");
-		return loginService.loginAccess(session, model, id, pw, redirectAttributes);
+		return loginService.loginAccess(session, model, id, pw, name, classify_code, redirectAttributes);
+	}
+	//로그아웃
+	@GetMapping(value ="/logout.do")
+	public String logoutAccess(HttpSession session, Model model) {
+		logger.info("::로그아웃 실행::");
+		session.removeAttribute("id");
+		session.removeAttribute("pw");
+		session.removeAttribute("name");
+		session.removeAttribute("classify_code");
+		model.addAttribute("msg", "로그아웃 되었습니다.");
+		session.invalidate();
+		return "login/login";
+	}
+	
+	
+	/*//아이디 저장하기
+	@GetMapping(value = "/login.go")
+	public String loginAccess(HttpServletRequest request) {
+		
+		String username = "";
+		
+		Cookie[] cookies = request.getCookies();
+		for (Cookie cookie : cookies) {
+			if (cookie.getName().equals("remember")) {
+				username = cookie.getValue();
+			}
+		}
+		request.setAttribute("remember", username);
+		return "login/login";*/
 	}
 	
 	
@@ -40,4 +70,3 @@ public class LoginController {
 	
 	
 	
-}
