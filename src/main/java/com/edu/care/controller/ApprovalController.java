@@ -20,4 +20,14 @@ public class ApprovalController {
 		return "approval/getApproval_list";
 	}
 	
+	@GetMapping(value="/vacaApproval/write.go")
+	public String vacaApprovalWriteForm() {
+		return "approval/vacaApproval_write";
+	}
+	
+	@GetMapping(value="/busiApproval/write.go")
+	public String busiApprovalWriteForm() {
+		return "approval/busiApproval_write";
+	}
+	
 }

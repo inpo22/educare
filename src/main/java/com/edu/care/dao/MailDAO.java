@@ -35,4 +35,14 @@ public interface MailDAO {
 
 	List<MailDTO> deptList();
 
+	List<MailDTO> empList();
+
+	int mailWrite(MailDTO dto);
+
+	void mailReceiverWrite(int mail_no, String receiver);
+
+	void mailCcWrite(int mail_no, String cc);
+
+	void fileSave(String user_code, String ori_filename, String new_filename, int mail_no, String file_type);
+
 }
