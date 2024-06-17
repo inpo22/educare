@@ -153,12 +153,12 @@
 	var writeType = -1;
 	
 	function reply() {
-		writeType = 0;
+		writeType = 1;
 		location.href = '/mail/write.go?mail_no=' + mail_no + '&writeType=' + writeType;
 	}
 
 	function relay() {
-		writeType = 1;
+		writeType = 2;
 		location.href = '/mail/write.go?mail_no=' + mail_no + '&writeType=' + writeType;
 	}
 	

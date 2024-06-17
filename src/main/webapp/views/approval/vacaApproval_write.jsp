@@ -32,25 +32,15 @@
 		background-color: white;
 		padding: 30px;
 	}
+	.second-sidebar td {
+		padding: 5px 0;
+	}
 	a {
 		color: black;
 	}
-	.table-left-section {
-		width: 96%;
-		height: 100%;
-	}
-	.table-right-section {
-		width: 3%;
-		height: 100%;
-	}
-	#second-sidebar td {
-		padding: 5px 0;
-	}
-	.first-col {
-		width: 15%;
-	}
-	.second-col {
-		width: 74%;
+	.blue-color {
+		color: rgb(88, 88, 255);
+		cursor: pointer;
 	}
 	.table-bordered th {
 		text-align: center;	
@@ -60,6 +50,34 @@
 	}
 	.text-align-right {
 		text-align: right;
+	}
+	.display-grid {
+		display: grid;
+		grid-auto-flow: column;
+		grid-template-columns: 1fr;
+	}
+	.display-inline {
+		display: inline;
+	}
+	.vertical-align-bottom {
+		vertical-align: bottom;
+		height: 78px;
+	}
+	.top-table-first-col {
+		width: 100px;
+	}
+	.top-table-second-col {
+		width: 200px;
+	}
+	.order-first-col {
+		width: 30px;
+		vertical-align: middle;
+	}
+	.order-second-col {
+		width: 120px;
+	}
+	.order-third-row {
+		height: 39px;
 	}
 	#subject {
 		width: 100%;
@@ -116,12 +134,12 @@
 		font-weight: bold;
 		font-size: 25px;
 	}
-	.tui-tree-wrap, .modal-add-list {
+	.tui-tree-wrap, .modal-add-list, .approval-type-list {
 		height: 400px;
 		width: 360px;
 		overflow-y: auto;
 	}
-	.modal-add-list {
+	.modal-add-list, .approval-type-list {
 		background-color: #f9f9f9;
 		padding: 20px;
 	}
@@ -136,7 +154,7 @@
 	.modal-inner-button-child {
 		display: block;
 	}
-	.receiver-add-button, .receiver-remove-button {
+	.list-add-button, .list-remove-button {
 		width: 30px;
 	}
 	.disabled-button {
@@ -144,14 +162,14 @@
       	opacity: 0.5;
       	cursor: not-allowed; 
 	}
-	.add-list {
+	.add-list, .approval-type-list ul {
 		list-style-type: none;
 	}
-	.add-list li {
+	.add-list li, .approval-type-list li {
 		cursor: pointer;
 		padding-left: 10px;
 	}
-	.add-list li:hover {
+	.add-list li:hover, .approval-type-list li:hover {
 		background-color: rgba(75, 150, 230, 0.1);
 		background: #e7eff7;
 	}
@@ -163,7 +181,6 @@
 	.right-padding {
 		padding-right: 40px;
 	}
-	
 </style>
 </head>
 
@@ -176,44 +193,80 @@
 		<div class="display-flex">
 			<div id="left-section">
 				<div class="pagetitle">
-					<h1>메일</h1>
+					<h1>전자 결재</h1>
 				</div>
-				<button class="btn btn-primary btn-newMail">메일 작성</button>
+				<button class="btn btn-primary btn-newApproval">새 결재 작성</button>
 				<br/><br/><br/>
-				<table id="second-sidebar">
+				<table class="second-sidebar">
 					<tr>
-						<td><a href="/receivedMail/list.go">받은 메일함</a></td>
+						<td><b>결재하기</b></td>
 					</tr>
 					<tr>
-						<td><a href="/writtenMail/list.go">보낸 메일함</a></td>
+						<td>&nbsp;&nbsp;&nbsp;<a href="/getApproval/list.go">결재 요청 받은 문서</a></td>
+					</tr>
+					<tr>
+						<td>&nbsp;&nbsp;&nbsp;<a href="/compApproval/list.go">결재 완료한 문서</a></td>
+					</tr>
+					<tr>
+						<td>&nbsp;&nbsp;&nbsp;<a href="/viewApproval/list.go">열람 가능한 문서</a></td>
+					</tr>
+				</table>
+				<br/>
+				<table class="second-sidebar">
+					<tr>
+						<td><b>상신한 결재</b></td>
+					</tr>
+					<tr>
+						<td>&nbsp;&nbsp;&nbsp;<a href="/requestApproval/list.go">결재 요청한 문서</a></td>
+					</tr>
+					<tr>
+						<td>&nbsp;&nbsp;&nbsp;<a href="/finishApproval/list.go">결재 완료된 문서</a></td>
+					</tr>
+					<tr>
+						<td>&nbsp;&nbsp;&nbsp;<a href="/rejectedApproval/list.go">반려된 문서</a></td>
 					</tr>
 				</table>
 			</div>
 			<div id="right-section">
 				<div class="pagetitle text-align-center">
-					<h1>메일 작성</h1>
+					<h1>휴가 신청서</h1>
 				</div>
-				<br/><br/><br/><br/>
-				<form action="/mail/write.do" method="post" enctype="multipart/form-data">
+				<br/>
+				<div class="text-align-right"><span class="blue-color" onclick="openModal()"><b>+ 결재선 추가</b></span></div>
+				<form action="/vacaApproval/write.do" method="post" enctype="multipart/form-data">
+					<div class="display-grid">
+						<table class="table table-bordered display-inline">
+							<tr>
+								<th class="table-active top-table-first-col">기안자</th>
+								<td class="text-align-center top-table-second-col">${sessionScope.user_name}&nbsp;${sessionScope.class_name}</td>
+							</tr>
+							<tr>
+								<th class="table-active">부서</th>
+								<td class="text-align-center">${sessionScope.team_name}</td>
+							</tr>
+							<tr>
+								<th class="table-active">기안일</th>
+								<td></td>
+							</tr>
+							<tr>
+								<th class="table-active">문서 번호</th>
+								<td></td>
+							</tr>
+						</table>
+						<table class="table table-bordered display-inline text-align-right">
+							<tr>
+								<th class="table-active order-first-col" rowspan="3">신<br/><br/>청</th>
+								<td class="text-align-center order-second-col">${sessionScope.class_name}</td>
+							</tr>
+							<tr>
+								<td class="text-align-center vertical-align-bottom">${sessionScope.user_name}</td>
+							</tr>
+							<tr>
+								<td class="order-third-row"></td>
+							</tr>
+						</table>
+					</div>
 					<table class="table table-bordered">
-						<tr>
-							<th class="table-active first-col">받는 사람</th>
-							<td class="second-col">
-								<div class="display-flex">
-									<div class="table-left-section receiver-visual"></div>
-									<div class="table-right-section"><button class="btn btn-secondary btn-sm" type="button" onclick="openReceiverModal()">+</button></div>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<th class="table-active">참조</th>
-							<td>
-								<div class="display-flex">
-									<div class="table-left-section cc-visual"></div>
-									<div class="table-right-section"><button class="btn btn-secondary btn-sm" type="button" onclick="openCcModal()">+</button></div>
-								</div>
-							</td>
-						</tr>
 						<tr>
 							<th class="table-active">제목</th>
 							<td>
@@ -237,18 +290,15 @@
 						</tr>
 					</table>
 					<input type="file" name="attachFile" id="attachFile" multiple="multiple"/>
-					<input type="hidden" name="receiverList" id="receiverList"/>
-					<input type="hidden" name="ccList" id="ccList"/>
+					<input type="hidden" name="orderList" id="orderList"/>
 					<input type="hidden" name="content" id="content"/>
 					<br/>
 					<div class="text-align-right">
-						<button class="btn btn-primary btn-sm" onclick="mailSubmit()" type="button">발송</button>
+						<button class="btn btn-primary btn-sm" onclick="approvalSubmit()" type="button">발송</button>
 						&nbsp;&nbsp;
-						<button class="btn btn-secondary btn-sm" onclick="mailList()" type="button">취소</button>
+						<button class="btn btn-secondary btn-sm" onclick="approvalList()" type="button">취소</button>
 					</div>
 				</form>
-				
-				
 			</div>
 		</div>
 	</main>
@@ -258,16 +308,16 @@
 	<div id="emp-modal" class="modal" onclick="closeModal()">
 		<div class="modal-content" onclick="event.stopPropagation()">
 			<div>
-				<span class="modal-title"></span>
+				<span class="modal-title">결재선 추가</span>
 	        	<span class="close" onclick="closeModal()">&times;</span>
 	        	<br/><br/>
 	        	<div class="display-flex">
 	        		<div id="dept-tree" class="tui-tree-wrap"></div>
 		        	<div class="modal-inner-button">
 		        		<div class="modal-inner-button-child">
-		        			<button class="btn btn-secondary btn-sm receiver-add-button disabled-button">&rsaquo;</button>
+		        			<button class="btn btn-secondary btn-sm list-add-button disabled-button">&rsaquo;</button>
 		        			<br/>
-		        			<button class="btn btn-secondary btn-sm receiver-remove-button disabled-button">&lsaquo;</button>
+		        			<button class="btn btn-secondary btn-sm list-remove-button disabled-button">&lsaquo;</button>
 		        		</div>
 		        	</div>
 		        	<div class="modal-add-list">
@@ -276,14 +326,15 @@
 	        	</div>
 	        	<br/>
 	        	<div class="text-align-right right-padding">
-	        		<button class="btn btn-primary btn-sm send-receiver-list">추가</button>
+	        		<button class="btn btn-primary btn-sm send-list">추가</button>
 	        	</div>
 			</div>
 	    </div>
 	</div>
 	
 	<jsp:include page="/views/common/footer.jsp"></jsp:include>
-
+	<jsp:include page="/views/common/newApproval_modal.jsp"></jsp:include>
+	
 </body>
 <script>
 	const editor = new toastui.Editor({
@@ -337,32 +388,27 @@
         $('#attachFile')[0].files = dataTransfer.files;
     }
 	
-	// 받는 사람 모달 창 열기
-	function openReceiverModal() {
+	// 결재선 모달 창 열기
+	function openModal() {
 	    $('#emp-modal').css('display', 'block');
-	    $('.modal-title').html('받는 사람 추가');
-	}
-	
-	// 참조 모달 창 열기
-	function openCcModal() {
-	    $('#emp-modal').css('display', 'block');
-	    $('.modal-title').html('참조 추가');
+	    $('.modal-content').css('width', '900px');
 	}
 	
 	// 모달 창 닫기
 	function closeModal() {
 	    $('.modal').css('display', 'none');
-	    receiverTextList = [];
-	    receiverValueList = [];
+	    orderTextList = [];
+	    orderValueList = [];
 		selectedNodeText = '';
 		selectedNodeValue = '';
 		removeTag = '';
 		removeNodeValue = '';
 		removeNodeText = '';
-		$('.receiver-add-button').addClass('disabled-button');
-		$('.receiver-remove-button').addClass('disabled-button');
+		$('.list-add-button').addClass('disabled-button');
+		$('.list-remove-button').addClass('disabled-button');
 		$('.tui-tree-selected').removeClass('tui-tree-selected');
 		$('.add-list').empty();
+		$('.modal-content').css('width', '400px');
 	}
 	
 	// 부서 Tree
@@ -374,12 +420,11 @@
 	const tree = new tui.Tree('#dept-tree', {
 		data: data,
 		nodeDefaultState: 'opened'
-		
 	});
 	
 	$.ajax({
 		type:'get',
-		url:'/mail/deptList.ajax',
+		url:'/approval/deptList.ajax',
 		data:{},
 		dataType:'JSON',
 		success:function(data) {
@@ -426,8 +471,8 @@
 	    return null;
 	}
 	
-	var receiverTextList = [];
-	var receiverValueList = [];
+	var orderTextList = [];
+	var orderValueList = [];
 	var selectedNodeText = '';
 	var selectedNodeValue = '';
 	var removeTag = '';
@@ -452,22 +497,20 @@
 			
 	});
 	
-	$('.receiver-add-button').click(function() {
+	$('.list-add-button').click(function() {
 		
 		var content = '<li class="value-' + selectedNodeValue + '">' + selectedNodeText + '</li>';
 		
 		if (!receiverValueList.includes(selectedNodeValue)) {
-			receiverTextList.push(selectedNodeText);
-			receiverValueList.push(selectedNodeValue);
+			orderTextList.push(selectedNodeText);
+			orderValueList.push(selectedNodeValue);
 			$('.add-list').append(content);
 		}
 		
-		$('.receiver-add-button').addClass('disabled-button');
+		$('.list-add-button').addClass('disabled-button');
 		$('.tui-tree-selected').removeClass('tui-tree-selected');
 		selectedNodeText = '';
 		selectedNodeValue = '';
-		
-		// console.log(receiverValueList);
 	});
 	
 	$('.add-list').on('click', 'li', function(e) {
@@ -483,15 +526,15 @@
 		removeNodeValue = e.target.className.substring(6);
 		// console.log(removeNodeValue);
 		$(this).addClass('selected-value');
-		$('.receiver-remove-button').removeClass('disabled-button');
+		$('.list-remove-button').removeClass('disabled-button');
 	});
 	
-	$('.receiver-remove-button').click(function() {
-		var index = receiverValueList.indexOf(removeNodeValue);
-		receiverValueList.splice(index, 1);
+	$('.list-remove-button').click(function() {
+		var index = orderValueList.indexOf(removeNodeValue);
+		orderValueList.splice(index, 1);
 		
-		index = receiverTextList.indexOf(removeNodeText);
-		receiverTextList.splice(index, 1);
+		index = orderTextList.indexOf(removeNodeText);
+		orderTextList.splice(index, 1);
 		
 		removeTag.remove();
 		
@@ -499,52 +542,27 @@
 		removeTag = '';
 		removeNodeValue = '';
 		$('.selected-value').removeClass('selected-value');
-		$('.receiver-remove-button').addClass('disabled-button');
-		// console.log(receiverValueList);
+		$('.list-remove-button').addClass('disabled-button');
 	});
 	
-	$('.send-receiver-list').click(function() {
-		if ($('.modal-title').html() == '받는 사람 추가') {
-			var content = '';
-			for (var item of receiverTextList) {
-				content += '<span class="badge bg-primary">' + item + '</span>&nbsp;&nbsp;';
-			}
-			$('.receiver-visual').html(content);
-			
-			$('#receiverList').val(receiverValueList.toString());
-			closeModal();
-		} else if ($('.modal-title').html() == '참조 추가') {
-			var content = '';
-			for (var item of receiverTextList) {
-				content += '<span class="badge bg-primary">' + item + '</span>&nbsp;&nbsp;';
-			}
-			$('.cc-visual').html(content);
-			
-			$('#ccList').val(receiverValueList.toString());
-			closeModal();
+	$('.send-list').click(function() {
+		var content = '';
+		for (var item of orderTextList) {
+			content += '<span class="badge bg-primary">' + item + '</span>&nbsp;&nbsp;';
 		}
+		$('.receiver-visual').html(content);
+		
+		$('#orderList').val(orderValueList.toString());
+		closeModal();
 	});
 	
-	var writeType = '${writeType}';
-	
-	// console.log(writeType);
-	
-	if (writeType == 1) {
-		$('#subject').val('RE: ');
-		editor.setHTML('${original_message}');
-	}
-	if (writeType == 2) {
-		$('#subject').val('FW: ');
-		editor.setHTML('${original_message}');
-	}
-	
-	function mailSubmit() {
+	function approvalSubmit() {
 		var editorContent = editor.getHTML();
 		$('#content').val(editorContent);
 		
 		var $subject = $('#subject');
 		var $content = $('#content');
-		var $receiverList = $('#receiverList');
+		var $orderList = $('#orderList');
 		
 		if ($subject.val() == '') {
 			alert('제목을 입력해주세요.');
@@ -552,8 +570,8 @@
 		} else if ($content.val() == '') {
 			alert('내용을 입력해주세요.');
 			$('#editor').focus();
-		} else if ($receiverList.val() == '') {
-			alert('받는 사람을 입력해주세요.');
+		} else if ($orderList.val() == '') {
+			alert('결재선을 입력해주세요.');
 			$('.receiver-visual').focus();
 		} else {
 			var result = confirm('발송하시겠습니까?');
@@ -564,12 +582,13 @@
 		}
 	}
 	
-	function mailList() {
-		location.href = '/receivedMail/list.go';
+	function approvalList() {
+		location.href = '/getApproval/list.go';
 	}
 	
-	$('.btn-newMail').click(function() {
-		location.href = '/mail/write.go';
+	('.btn-newApproval').click(function() {
+		
 	});
+	
 </script>
 </html>
