@@ -90,7 +90,19 @@
     WHERE user_code = #{param} AND quit_date IS NULL;
 </update>
 
+<!-- 아이디 중복체크 쿼리문 -->
+<select id="overlay" resultType="int">
+	SELECT COUNT(id) FROM user WHERE id=#{param}
+</select>
 
-
+<!-- 사원 등록 쿼리문 -->
+<insert id="reg" parameterType="map">
+	INSERT INTO user (user_code,name, id, pw, email, phone, birth, gender, class_code, classify_code, reg_date, photo, status)
+    VALUES (
+        '2024U010015', #{name}, #{id}, #{pw}, #{email}, #{phone}, #{birth}, #{gender}, 
+        #{class_code},#{classify_code},
+        #{reg_date}, #{photo},'0'
+    )
+</insert>
 	
 </mapper>
