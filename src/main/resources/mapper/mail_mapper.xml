@@ -193,4 +193,8 @@
 		SELECT af.ori_filename FROM attach_file af WHERE af.new_filename = #{param1}
 	</select>
 	
+	<select id="deptList" resultType="mail">
+		SELECT d.team_code, d.team_name, d.upper_code FROM department d
+	</select>
+	
 </mapper>
