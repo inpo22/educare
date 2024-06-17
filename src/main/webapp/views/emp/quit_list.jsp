@@ -26,11 +26,9 @@
 	<main id="main" class="main">
 
 		<div class="pagetitle">
-			<h1>사원 등록</h1>
+			<h1>퇴사자 목록</h1>
 		</div>
 		<!-- End Page Title -->
-		
-		
 
 	</main>
 	<!-- End #main -->

@@ -15,18 +15,38 @@
 <!-- js -->
 
 <style>
-#code,#quit_btn{
+#type,#del{
 	width: 100px;
-	margin : 7px 0;
+	margin : 7px 0 7px 10px;
 }
-#searchbox,#datefilter_start,#datefilter_end{
+#searchbox,#date,#date{
 	width: 250px;
 	margin : 7px 0;
 }
-#chk,#chkAll{
+#search_btn
+{
+	margin : 7px 5px;
+}	
+.chk,#chkAll{
 	margin:3px 0;
 	border: 1px solid black;
 }
+#backBoard{
+	background-color: white;
+	width:100%;
+	height:100%;
+	border-radius: 10px;
+}
+#empReg_btn,#quitList_btn{
+	margin : 7px 0 7px 10px;
+}
+.pagetitle{
+	margin:0 10px;
+}
+#inputdate,#searchdate_btn{
+	margin:7px 0;
+}
+
 </style>
 </head>
 
@@ -36,106 +56,83 @@
 	<jsp:include page="/views/common/sidebar.jsp"></jsp:include>
 
 	<main id="main" class="main">
-
-		<div class="pagetitle">
-			<h1>사원 목록</h1>
+		<div id="backBoard"><br/>
+			<div class="pagetitle">
+				<h1>사원 목록</h1>
+			</div>
+			
+			<!-- End Page Title -->
+			
+			<br/>
+			<br/>
+			<br/>
+			
+			<!-- Start 버튼 및 필터링 -->
+			
+			<div class="row">          
+	          <div class="d-flex">
+	              <button id="empReg_btn" type="button" class="btn btn-dark me-2">+사원등록</button>
+	              <button id="quitList_btn" type="button" class="btn btn-dark">퇴사자목록</button>  
+	          </div>
+	      	</div>
+	      	
+	      	<div class="row">          
+	          <div class="d-flex">
+	              <select id="type" class="form-select" aria-label="Default select example">
+	                  <option value="team">부서</option>
+	                  <option value="class">직책</option>
+	                  <option value="position">직급</option>
+	              </select>   
+			      <input id="searchbox" type="text" class="form-control" placeholder="검색어를 입력하세요." aria-label="Recipient's username" aria-describedby="button-addon2">
+				  <button id="search_btn" class="btn btn-outline-secondary" type="button">검색</button>
+				  
+				  <div id="date" class="input-group date">
+				    <input id="startDate" type="date" class="form-control">
+				  </div>
+				  <div>
+				  <span id="inputdate" class="input-group-text">~</span>
+				  </div>
+				  <div id="date" class="input-group date">
+				    <input id="endDate" type="date" class="form-control">
+				  </div>
+				  <button id="searchdate_btn" type="button" class="btn btn-outline-dark">검색</button>
+				  
+				  
+				  <div id="del" class="ms-auto">
+				  	<button id="quit_btn" type="button" class="btn btn-dark" onclick="quit()">퇴사처리</button>
+				  </div>
+	          </div>
+	          
+	          
+	      	</div>
+			
+			<!-- End 버튼 및 필터링 -->
+			
+			<!-- Start table -->
+			<table class="table">
+			  <thead>
+			    <tr>
+			      <th scope="col">사원번호</th>
+			      <th scope="col">이름</th>
+			      <th scope="col">부서</th>
+			      <th scope="col">직책</th>
+			      <th scope="col">직급</th>
+			      <th scope="col">입사일</th>
+			      <th><input class="form-check-input" type="checkbox" value="" id="chkAll"></th>
+			      
+			    </tr>
+			  </thead>
+			  <tbody id="empList">
+			  </tbody>
+			</table>
+			<!-- End table -->
+			
+			<br/>
+			
+			<!-- 페이징 시작 -->
+			<ul class="pagination d-flex justify-content-center" id="pagination"></ul>
+			<!-- 페이징 끝 -->
 		</div>
-		
-		<!-- End Page Title -->
-		
-		<br/>
-		<br/>
-		<br/>
-		
-		<!-- Start 버튼 및 필터링 -->
-		
-		<div class="row">          
-          <div class="d-flex">
-              <button type="button" class="btn btn-secondary me-2">+사원등록</button>
-              <button type="button" class="btn btn-secondary">퇴사자목록</button>  
-          </div>
-      	</div>
-      	
-      	<div class="row">          
-          <div class="d-flex">
-              <select id="code" class="form-select" aria-label="Default select example">
-                  <option selected>All</option>
-                  <option value="1">부서</option>
-                  <option value="2">직책</option>
-                  <option value="3">직급</option>
-              </select>   
-              
-              <div id="searchbox" class="input-group me-2 ms-2">
-		      	<input type="text" class="form-control" placeholder="사원 이름" aria-label="Recipient's username" aria-describedby="button-addon2">
-			  	<button class="btn btn-outline-secondary" type="button" id="button-addon2">검색</button>
-			  </div>
-			  
-			  <div id="datefilter_start" class="input-group date">
-			    <input type="text" class="form-control" id="datepicker" placeholder="시작 날짜 선택">
-			    <div class="input-group-append">
-			        <span class="input-group-text"><i class="bi bi-calendar"></i></span>
-			    </div>
-			  </div>
-			  <div id="datefilter_end" class="input-group date">
-			    <input type="text" class="form-control" id="datepicker" placeholder="종료 날짜 선택">
-			    <div class="input-group-append">
-			        <span class="input-group-text"><i class="bi bi-calendar"></i></span>
-			    </div>
-			  </div>
-			  
-			  <div id="quit_btn" class="ms-auto">
-			  	<button type="button" class="btn btn-secondary">퇴사처리</button>
-			  </div>
-          </div>
-          
-          
-      	</div>
-		
-		<!-- End 버튼 및 필터링 -->
-		
-		<!-- Start table -->
-		<table class="table">
-		  <thead>
-		    <tr>
-		      <th scope="col">사원번호</th>
-		      <th scope="col">이름</th>
-		      <th scope="col">부서</th>
-		      <th scope="col">직책</th>
-		      <th scope="col">직급</th>
-		      <th scope="col">입사일</th>
-		      <th><input class="form-check-input" type="checkbox" value="" id="chkAll"></th>
-		      
-		    </tr>
-		  </thead>
-		  <tbody id="empList">
-		  </tbody>
-		</table>
-		<!-- End table -->
-		
-		<br/>
-		
-		<!-- 페이징 시작 -->
-		<nav aria-label="Page navigation example">
-		  <ul class="pagination justify-content-center">
-		    <li class="page-item">
-		      <a class="page-link" href="#" aria-label="Previous">
-		        <span aria-hidden="true">&laquo;</span>
-		      </a>
-		    </li>
-		    <li class="page-item"><a class="page-link" href="#">1</a></li>
-		    <li class="page-item"><a class="page-link" href="#">2</a></li>
-		    <li class="page-item"><a class="page-link" href="#">3</a></li>
-		    <li class="page-item"><a class="page-link" href="#">4</a></li>
-		    <li class="page-item"><a class="page-link" href="#">5</a></li>
-		    <li class="page-item">
-		      <a class="page-link" href="#" aria-label="Next">
-		        <span aria-hidden="true">&raquo;</span>
-		      </a>
-		    </li>
-		  </ul>
-		</nav>
-		<!-- 페이징 끝 -->
-
 	</main>
 	<!-- End #main -->
 
@@ -147,29 +144,134 @@
 
 /* 체크박스 전체선택 스크립트 시작 */
 $(function () {
+	// 전체 선택 체크박스를 클릭했을 때 이벤트 처리
 	$("#chkAll").click(function(){
-    	$(".form-check-input").prop("checked", this.checked); //attr : HTML 속성을 체크로 변경 / prop : 체크박스 상태를 체크 상태로 설정
+		// .form-check-input 클래스를 가진 모든 체크박스의 상태를 #chkAll 체크박스의 상태와 동일하게 설정
+    	$(".chk").prop("checked", this.checked); //attr : HTML 속성을 체크로 변경 / prop : 체크박스 상태를 체크 상태로 설정
     });
 });
 /* 체크박스 전체선택 스크립트 끝 */
 
 
 /* 사원 리스트 출력 스크립트 시작 */
-$.ajax({
-	type:'post',
-	url:'/emp/list.ajax',
-	data:{
-		
-	},
-	dataType:'json',
-	success:function(data){
-		console.log(data);
-		drawEmpList(data.empList);
-	},
-	error:function(error){
-		console.log(error);
+// Pagination 전 변수 선언
+var page = 1;
+var totalPage = 0;
+var type = '';
+var searchbox = '';
+var startDate = '';
+var endDate = '';
+
+listCall(page, type, searchbox, startDate, endDate);
+
+function listCall(page, type, searchbox, startDate, endDate){
+	$.ajax({
+		type:'post',
+		url:'/emp/list.ajax',
+		data:{
+			'page':page,
+			'type':type,
+			'searchbox':searchbox,
+			'startDate':startDate,
+			'endDate':endDate
+		},
+		dataType:'json',
+		success:function(data){
+			totalPage = data.totalPage;
+			
+			console.log(data);
+			drawEmpList(data.list);
+			setupPagination(page, totalPage);
+		},
+		error:function(error){
+			console.log(error);
+		}
+	});
+}
+
+//totalPage 활용하여 Pagination 버튼 설정
+function setupPagination(page, totalPage) {
+	var pagination = $('#pagination');
+	var count = 0;
+	
+	pagination.empty();
+	
+	var content = '<li class="page-item">';
+	content += '<a class="page-link" href="#">&laquo;</a>';
+	content += '</li>';
+	content += '<li class="page-item">';
+	content += '<a class="page-link" href="#">&lsaquo;</a>';
+	content += '</li>';
+	
+	if (page < 3) {
+		for (var i = 1; i <= totalPage; i++) {
+			content += '<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>';
+			count++;
+			if (count == 5) {
+				break;
+			}
+		}
+	}else if (page >= 3 && page < (totalPage - 2)) {
+		for (var i = page - 2; i <= totalPage; i++) {
+			content += '<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>';
+			count++;
+			if (count == 5) {
+				break;
+			}
+		}
+	}else if (page >= 3 && page >= (totalPage - 2)) {
+		for (var i = totalPage - 4; i <= totalPage; i++) {
+			if (i == 0) {
+				continue;
+			}
+			content += '<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>';
+			count++;
+			if (count == 5) {
+				break;
+			}
+		}
 	}
+	
+	content += '<li class="page-item">';
+	content += '<a class="page-link" href="#">&rsaquo;</a>';
+	content += '</li>';
+	
+	content += '<li class="page-item">';
+	content += '<a class="page-link" href="#">&raquo;</a>';
+	content += '</li>';
+	
+	pagination.html(content);
+	pagination.find('.page-item').removeClass('active');
+	
+	$('.page-link').each(function() {
+		if ($(this).html() == page) {
+			$(this).parent().addClass('active');
+		}
+	});
+	
+}
+
+//설정된 버튼에 이벤트 적용
+$('#pagination').on('click', '.page-link', function(e) {
+    e.preventDefault();
+    if ($(this).html() == '«') {
+        page = 1;
+    } else if ($(this).html() == '‹') {
+        if (page > 1) {
+            page--;
+        }
+    } else if ($(this).html() == '›') {
+        if (page < totalPage) {
+            page++;
+        }
+    } else if ($(this).html() == '»') {
+        page = totalPage;
+    } else {
+        page = parseInt($(this).html());
+    }
+    listCall(page, type, searchbox, startDate, endDate);
 });
+
 
 // list 그리기
 function drawEmpList(empList){
@@ -178,19 +280,86 @@ function drawEmpList(empList){
 	
 	for(data of empList){
 		content += '<tr>';
-		content += '<td>' + data.user_code + '</td>';
+		content += '<td><a href="/emp/detail.go?user_code='+ data.user_code +'">' + data.user_code + '</td>';
 		content += '<td>' + data.name + '</td>';
 		content += '<td>' + data.team_name + '</td>';
 		content += '<td>' + data.class_name + '</td>';
 		content += '<td>' + data.position_name + '</td>';
 		content += '<td>' + data.reg_date + '</td>';
-		content += '<td><input class="form-check-input" type="checkbox" id="chk"></td>';
+		content += '<td><input class="form-check-input chk" type="checkbox" value="' + data.user_code + '"></td>';
 		content += '</tr>';
 	}
 	$('#empList').html(content);
 }
 
+// 필터링 검색 버튼 함수
+$('#search_btn').click(function(){
+	type = $('#type').val();
+	searchbox = $('#searchbox').val();
+	if(searchbox == ''){
+		alert("검색어를 입력해주세요.");
+		return;
+	}
+	listCall(page, type, searchbox);
+});
 
+// 날짜 검색 버튼 함수
+$('#searchdate_btn').click(function(){
+	startDate = $('#startDate').val();
+	endDate = $('#endDate').val();
+	if(startDate == '' && endDate == ''){
+		alert("날짜를 선택해주세요.");
+		return;
+	}else if(startDate > endDate){
+		alert("날짜를 확인해주세요.");
+		return;
+	}
+	listCall(page, type, searchbox, startDate, endDate);
+});
+
+// 사원등록페이지 이동버튼
+$('#empReg_btn').click(function(){
+	window.location.href = '/emp/regform.go';
+});
+
+// 퇴사자목록 페이지 이동버튼
+$('#quitList_btn').click(function(){
+	window.location.href = '/emp/quitList.go';
+});
+
+// 퇴사 처리 함수
+function quit(){
+	var quitArr = [];
+	
+	$('.chk:checked').each(function(idx, item) {
+        quitArr.push($(this).val());
+    });
+	
+	if(quitArr.length > 0){
+		var del = confirm(quitArr.length+'명의 사원을 퇴사처리하시겠습니까?');
+		if(del){
+			$.ajax({
+				type:'post',
+				url:'/emp/quit.ajax',
+				data:{
+					quitList:quitArr
+				},
+				dataType:'json',
+				success:function(data){
+					console.log(data);
+					if(data.cnt>0){
+						alert(data.cnt+'명의 사원이 퇴사처리되었습니다.');
+					}
+					//$('#empList').empty();
+					listCall(page, type, searchbox, startDate, endDate);
+				},
+				error:function(error){
+					console.log(error);
+				}
+			});
+		}
+	}
+}
 
 </script>
 </html>
