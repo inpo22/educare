@@ -116,10 +116,54 @@
 		font-weight: bold;
 		font-size: 25px;
 	}
-	.tui-tree-wrap {
-		height: 450px;
+	.tui-tree-wrap, .modal-add-list {
+		height: 400px;
+		width: 360px;
 		overflow-y: auto;
 	}
+	.modal-add-list {
+		background-color: #f9f9f9;
+		padding: 20px;
+	}
+	.modal-inner-button {
+		height: 400px;
+		width: 100px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		white-space: pre-line;
+	}
+	.modal-inner-button-child {
+		display: block;
+	}
+	.receiver-add-button, .receiver-remove-button {
+		width: 30px;
+	}
+	.disabled-button {
+		pointer-events: none;
+      	opacity: 0.5;
+      	cursor: not-allowed; 
+	}
+	.add-list {
+		list-style-type: none;
+	}
+	.add-list li {
+		cursor: pointer;
+		padding-left: 10px;
+	}
+	.add-list li:hover {
+		background-color: rgba(75, 150, 230, 0.1);
+		background: #e7eff7;
+	}
+	.selected-value {
+		background-color: rgba(75, 150, 230, 0.1);
+		background: #e7eff7;
+		color: #4b96e6;
+	}
+	.right-padding {
+		padding-right: 40px;
+	}
+	
 </style>
 </head>
 
@@ -156,7 +200,7 @@
 							<th class="table-active first-col">받는 사람</th>
 							<td class="second-col">
 								<div class="display-flex">
-									<div class="table-left-section"></div>
+									<div class="table-left-section receiver-visual"></div>
 									<div class="table-right-section"><button class="btn btn-secondary btn-sm" type="button" onclick="openReceiverModal()">+</button></div>
 								</div>
 							</td>
@@ -165,7 +209,7 @@
 							<th class="table-active">참조</th>
 							<td>
 								<div class="display-flex">
-									<div class="table-left-section"></div>
+									<div class="table-left-section cc-visual"></div>
 									<div class="table-right-section"><button class="btn btn-secondary btn-sm" type="button" onclick="openCcModal()">+</button></div>
 								</div>
 							</td>
@@ -198,7 +242,7 @@
 					<input type="hidden" name="content" id="content"/>
 					<br/>
 					<div class="text-align-right">
-						<button class="btn btn-primary btn-sm" onclick="submut()" type="button">발송</button>
+						<button class="btn btn-primary btn-sm" onclick="mailSubmit()" type="button">발송</button>
 						&nbsp;&nbsp;
 						<button class="btn btn-secondary btn-sm" onclick="mailList()" type="button">취소</button>
 					</div>
@@ -214,10 +258,26 @@
 	<div id="emp-modal" class="modal" onclick="closeModal()">
 		<div class="modal-content" onclick="event.stopPropagation()">
 			<div>
-				<span class="modal-title">받는 사람 추가</span>
+				<span class="modal-title"></span>
 	        	<span class="close" onclick="closeModal()">&times;</span>
 	        	<br/><br/>
-	        	<div id="dept-tree" class="tui-tree-wrap"></div>
+	        	<div class="display-flex">
+	        		<div id="dept-tree" class="tui-tree-wrap"></div>
+		        	<div class="modal-inner-button">
+		        		<div class="modal-inner-button-child">
+		        			<button class="btn btn-secondary btn-sm receiver-add-button disabled-button">&rsaquo;</button>
+		        			<br/>
+		        			<button class="btn btn-secondary btn-sm receiver-remove-button disabled-button">&lsaquo;</button>
+		        		</div>
+		        	</div>
+		        	<div class="modal-add-list">
+		        		<ul class="add-list"></ul>
+		        	</div>
+	        	</div>
+	        	<br/>
+	        	<div class="text-align-right right-padding">
+	        		<button class="btn btn-primary btn-sm send-receiver-list">추가</button>
+	        	</div>
 			</div>
 	    </div>
 	</div>
@@ -292,6 +352,17 @@
 	// 모달 창 닫기
 	function closeModal() {
 	    $('.modal').css('display', 'none');
+	    receiverTextList = [];
+	    receiverValueList = [];
+		selectedNodeText = '';
+		selectedNodeValue = '';
+		removeTag = '';
+		removeNodeValue = '';
+		removeNodeText = '';
+		$('.receiver-add-button').addClass('disabled-button');
+		$('.receiver-remove-button').addClass('disabled-button');
+		$('.tui-tree-selected').removeClass('tui-tree-selected');
+		$('.add-list').empty();
 	}
 	
 	// 부서 Tree
@@ -302,7 +373,8 @@
 	
 	const tree = new tui.Tree('#dept-tree', {
 		data: data,
-		nodeDefaultState: 'opened',
+		nodeDefaultState: 'opened'
+		
 	});
 	
 	$.ajax({
@@ -312,13 +384,23 @@
 		dataType:'JSON',
 		success:function(data) {
 			var rootNode = tree.getRootNodeId();
+			var valueToFind = '';
 			
 			for (var item of data.deptList) {
-				var valueToFind = item.upper_code;
+				valueToFind = item.upper_code;
 				var foundNode = findNodeByValue(rootNode, valueToFind);
 				
 				if (foundNode) {
 					tree.add({text: item.team_name, value: item.team_code}, foundNode);
+				}
+			}
+			
+			for (var item of data.empList) {
+				valueToFind = item.team_code;
+				var foundNode = findNodeByValue(rootNode, valueToFind);
+				
+				if (foundNode) {
+					tree.add({text: item.user_name + ' ' + item.class_name, value: item.user_code}, foundNode);
 				}
 			}
 		},
@@ -344,9 +426,142 @@
 	    return null;
 	}
 	
-	function submit() {
+	var receiverTextList = [];
+	var receiverValueList = [];
+	var selectedNodeText = '';
+	var selectedNodeValue = '';
+	var removeTag = '';
+	var removeNodeText = '';
+	var removeNodeValue = '';
+	
+	tree
+		.enableFeature('Selectable')
+		.on('select', function(e) {
+			selectedNodeText = '';
+			selectedNodeValue = '';
+			
+			$('.selected-value').removeClass('selected-value');
+			
+			if (tree.getChildIds(e.nodeId) == '') {
+				selectedNodeText = tree.getNodeData(e.nodeId).text;
+				selectedNodeValue = tree.getNodeData(e.nodeId).value;
+				$('.receiver-add-button').removeClass('disabled-button');
+			}
+			// console.log('nodeText : ' + selectedNodeText);
+			// console.log('nodeValue : ' + selectedNodeValue);
+			
+	});
+	
+	$('.receiver-add-button').click(function() {
+		
+		var content = '<li class="value-' + selectedNodeValue + '">' + selectedNodeText + '</li>';
+		
+		if (!receiverValueList.includes(selectedNodeValue)) {
+			receiverTextList.push(selectedNodeText);
+			receiverValueList.push(selectedNodeValue);
+			$('.add-list').append(content);
+		}
+		
+		$('.receiver-add-button').addClass('disabled-button');
+		$('.tui-tree-selected').removeClass('tui-tree-selected');
+		selectedNodeText = '';
+		selectedNodeValue = '';
+		
+		// console.log(receiverValueList);
+	});
+	
+	$('.add-list').on('click', 'li', function(e) {
+		removeNodeText = '';
+		removeTag = '';
+		removeNodeValue = '';
+		
+		$('.tui-tree-selected').removeClass('tui-tree-selected');
+		$('.selected-value').removeClass('selected-value');
+		removeTag = $(this);
+		// console.log(e);
+		removeNodeText = $(this).html();
+		removeNodeValue = e.target.className.substring(6);
+		// console.log(removeNodeValue);
+		$(this).addClass('selected-value');
+		$('.receiver-remove-button').removeClass('disabled-button');
+	});
+	
+	$('.receiver-remove-button').click(function() {
+		var index = receiverValueList.indexOf(removeNodeValue);
+		receiverValueList.splice(index, 1);
+		
+		index = receiverTextList.indexOf(removeNodeText);
+		receiverTextList.splice(index, 1);
+		
+		removeTag.remove();
+		
+		removeNodeText = '';
+		removeTag = '';
+		removeNodeValue = '';
+		$('.selected-value').removeClass('selected-value');
+		$('.receiver-remove-button').addClass('disabled-button');
+		// console.log(receiverValueList);
+	});
+	
+	$('.send-receiver-list').click(function() {
+		if ($('.modal-title').html() == '받는 사람 추가') {
+			var content = '';
+			for (var item of receiverTextList) {
+				content += '<span class="badge bg-primary">' + item + '</span>&nbsp;&nbsp;';
+			}
+			$('.receiver-visual').html(content);
+			
+			$('#receiverList').val(receiverValueList.toString());
+			closeModal();
+		} else if ($('.modal-title').html() == '참조 추가') {
+			var content = '';
+			for (var item of receiverTextList) {
+				content += '<span class="badge bg-primary">' + item + '</span>&nbsp;&nbsp;';
+			}
+			$('.cc-visual').html(content);
+			
+			$('#ccList').val(receiverValueList.toString());
+			closeModal();
+		}
+	});
+	
+	var writeType = '${writeType}';
+	
+	// console.log(writeType);
+	
+	if (writeType == 1) {
+		$('#subject').val('RE: ');
+		editor.setHTML('${original_message}');
+	}
+	if (writeType == 2) {
+		$('#subject').val('FW: ');
+		editor.setHTML('${original_message}');
+	}
+	
+	function mailSubmit() {
 		var editorContent = editor.getHTML();
 		$('#content').val(editorContent);
+		
+		var $subject = $('#subject');
+		var $content = $('#content');
+		var $receiverList = $('#receiverList');
+		
+		if ($subject.val() == '') {
+			alert('제목을 입력해주세요.');
+			$subject.focus();
+		} else if ($content.val() == '') {
+			alert('내용을 입력해주세요.');
+			$('#editor').focus();
+		} else if ($receiverList.val() == '') {
+			alert('받는 사람을 입력해주세요.');
+			$('.receiver-visual').focus();
+		} else {
+			var result = confirm('발송하시겠습니까?');
+			if (result) {
+				alert('메일 발송이 완료되었습니다.');
+				$('form').submit();
+			}
+		}
 	}
 	
 	function mailList() {

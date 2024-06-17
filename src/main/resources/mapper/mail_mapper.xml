@@ -197,4 +197,38 @@
 		SELECT d.team_code, d.team_name, d.upper_code FROM department d
 	</select>
 	
+	<select id="empList" resultType="mail">
+		SELECT
+			u.user_code
+			, u.name AS user_name
+			, (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code) AS class_name
+			, u.team_code
+		FROM user u
+		WHERE u.classify_code IN ('U01', 'U02')
+	</select>
+	
+	<insert id="mailWrite"
+		useGeneratedKeys="true"
+		keyColumn="mail_no"
+		keyProperty="mail_no"
+		parameterType="mail">
+		INSERT INTO mail(send_user_code, subject, content)
+			VALUES(#{user_code}, #{subject}, #{content})
+	</insert>
+	
+	<insert id="mailReceiverWrite">
+		INSERT INTO mail_recipient(mail_no, receive_user_code, type)
+			VALUES(#{param1}, #{param2}, 0)
+	</insert>
+	
+	<insert id="mailCcWrite">
+		INSERT INTO mail_recipient(mail_no, receive_user_code, type)
+			VALUES(#{param1}, #{param2}, 1)
+	</insert>
+	
+	<insert id="fileSave">
+		INSERT INTO attach_file(user_code, ori_filename, new_filename, board_no, board_type)
+			VALUES(#{param1}, #{param2}, #{param3}, #{param4}, #{param5})
+	</insert>
+	
 </mapper>

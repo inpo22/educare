@@ -33,6 +33,7 @@ public class MailDTO {
 	private String team_code;
 	private String team_name;
 	private String upper_code;
+	private String user_name;
 
 	public int getMail_no() {
 		return mail_no;
@@ -208,6 +209,14 @@ public class MailDTO {
 
 	public void setUpper_code(String upper_code) {
 		this.upper_code = upper_code;
+	}
+
+	public String getUser_name() {
+		return user_name;
+	}
+
+	public void setUser_name(String user_name) {
+		this.user_name = user_name;
 	}
 
 }
