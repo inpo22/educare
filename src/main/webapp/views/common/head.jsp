@@ -21,7 +21,7 @@
 <link href="/resources/assets/css/style.css" rel="stylesheet">
 
 
-<!-- Vendor JS Files -->
+<!-- Vendor JS Files -->				
 <script src="/resources/assets/vendor/apexcharts/apexcharts.min.js"></script>
 <script src="/resources/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="/resources/assets/vendor/chart.js/chart.umd.js"></script>

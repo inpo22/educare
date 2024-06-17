@@ -11,8 +11,12 @@
 <meta content="" name="keywords">
 
 <!-- css -->
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+
 <jsp:include page="/views/common/head.jsp"></jsp:include>
+
 <!-- js -->
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 
 <style>
 	.display-flex {
@@ -45,6 +49,9 @@
 	.text-align-right {
 		text-align: right;
 	}
+	a {
+		color: black;
+	}
 </style>
 </head>
 
@@ -66,7 +73,7 @@
 						<td><a href="/receivedMail/list.go">받은 메일함</a></td>
 					</tr>
 					<tr>
-						<td><a href="/writtenMail/list.go" class="blue-color"><b>보낸 메일함</b></a></td>
+						<td><a href="/writtenMail/list.go">보낸 메일함</a></td>
 					</tr>
 				</table>
 			</div>
@@ -116,7 +123,9 @@
 						</td>
 					</tr>
 					<tr>
-						<td colspan="2">${dto.content}</td>
+						<td colspan="2">
+							<div id="viewer"></div>
+						</td>
 					</tr>
 				</table>
 				<br/>
@@ -132,6 +141,14 @@
 
 </body>
 <script>
+	var content = '${dto.content}';
+	
+	const viewer = toastui.Editor.factory({
+		el: document.querySelector('#viewer'),
+		viewer: true,
+		initialValue: content
+	});
+
 	var mail_no = '${dto.mail_no}'
 	var writeType = -1;
 	
@@ -149,6 +166,9 @@
 		location.href = '/receivedMail/list.go';
 	}
 	
+	$('.btn-newMail').click(function() {
+		location.href = '/mail/write.go';
+	});
 
 
 </script>
