@@ -542,14 +542,13 @@
 		var editorContent = editor.getHTML();
 		$('#content').val(editorContent);
 		
-		var $subject = $('#subject');
-		var $content = $('#content');
+		var $subject = $('#subject')
 		var $receiverList = $('#receiverList');
 		
 		if ($subject.val() == '') {
 			alert('제목을 입력해주세요.');
 			$subject.focus();
-		} else if ($content.val() == '') {
+		} else if (editor.getMarkdown() == '') {
 			alert('내용을 입력해주세요.');
 			$('#editor').focus();
 		} else if ($receiverList.val() == '') {
