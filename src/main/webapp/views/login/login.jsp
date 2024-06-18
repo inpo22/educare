@@ -5,7 +5,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>EduCare - Login</title>
+<title>EDUcare - Login</title>
 <link
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
 	rel="stylesheet">
@@ -95,12 +95,10 @@ body {
 	<script
 		src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 	<script>
-    var loginError = '${loginError}'; 
-    console.log("Login Error Status: ", loginError);
-    if (loginError === "true") {
-    	alert("아이디 또는 비밀번호를 확인해주세요.");
-    }
-
+	var msgdo = '${msgdo}'; 
+	if(msgdo != ''){
+		alert(msgdo);
+	}
     </script>
 </body>
 </html>
