@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.edu.care.dto.EmpDTO;
 import com.edu.care.service.EmpService;
 
 @Controller
@@ -70,7 +71,7 @@ public class EmpController {
 	}
 	
 	// 사원등록
-	@RequestMapping(value="/emp/reg.do")
+	@PostMapping(value="/emp/reg.do")
 	public String reg(MultipartFile photo ,Model model, @RequestParam Map<String, String> param) {
 		String page = "emp_reg";
 		String msg = "사원 등록에 실패했습니다.";
@@ -80,24 +81,28 @@ public class EmpController {
 		String rawPassword = param.get("pw");
         String encodedPassword = encoder.encode(rawPassword);
         param.put("pw", encodedPassword);
-		
-        // 사진 파일 저장 및 파일명 파라미터에 추가
-        String photoFileName = empService.fileSave(photo);
-        if (photoFileName != null) {
-            param.put("photo", photoFileName);
-        }
+        
+        logger.info("rawPassword: " + rawPassword);
+        logger.info("encodedPassword: " + encodedPassword);
 		
 		int row = empService.reg(photo, param);
 		logger.info("insert count:"+row);
 		
 		if(row==1) {
-			page="redirect:/emp_list";
+			page="redirect:/emp/list.go";
 			msg="사원 등록에 성공했습니다.";
 		}
 		model.addAttribute("msg", msg);
 		return page;
 	}
 	
+	// 부서 리스트
+	@GetMapping(value="/emp/deptList.ajax")
+	@ResponseBody
+	public Map<String, Object> deptList() {
+		return empService.deptList();
+	}
+
 	
 	// 퇴사자목록 페이지 이동
 	@GetMapping(value="/emp/quitList.go")
@@ -107,9 +112,22 @@ public class EmpController {
 	
 	// 사원 상세정보 페이지 이동
 	@GetMapping(value="/emp/detail.go")
-	public String empDetail() {
+	public String empDetail(@RequestParam("user_code") String user_code, Model model) {
+		logger.info("detail user_code="+user_code);
+		
+		EmpDTO empDTO = empService.empDetail(user_code);
+		model.addAttribute("empDto", empDTO);
+		
 		return "emp/emp_detail";
 	}
+	
+	// 사원 정보 수정 페이지 이동
+	@GetMapping(value="/emp/edit.go")
+	public String empEdit() {
+		return "emp/emp_edit";
+	}
+	
+	
 	
 	// 사원 퇴사처리
 	@ResponseBody
@@ -122,6 +140,8 @@ public class EmpController {
 		map.put("cnt", cnt);
 		return map;
 	};
+	
+	
 	
 	
 }

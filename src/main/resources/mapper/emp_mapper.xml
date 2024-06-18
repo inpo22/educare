@@ -24,6 +24,8 @@
     WHERE 
         pc.code_name IN ('팀장', '팀원')
         AND quit_date is null
+        ORDER BY 
+    	u.reg_date ASC
         <if test="param4 != null and param4 != ''">
             AND (
                 <choose>
@@ -57,8 +59,10 @@
     LEFT JOIN all_code tc ON u.team_code = tc.code
     LEFT JOIN all_code cc ON u.class_code = cc.code
     LEFT JOIN all_code pc ON u.position_code = pc.code
-    WHERE pc.code_name IN ('팀장', '팀원')
+    WHERE u.position_code IN ('P01', 'P02')
     AND quit_date is null
+    ORDER BY 
+    u.reg_date ASC
         <if test="param3 != null and param3 != ''">
             AND (
                 <choose>
@@ -97,12 +101,83 @@
 
 <!-- 사원 등록 쿼리문 -->
 <insert id="reg" parameterType="map">
-	INSERT INTO user (user_code,name, id, pw, email, phone, birth, gender, class_code, classify_code, reg_date, photo, status)
+    INSERT INTO user (
+        user_code, name, id, pw, email, phone, birth, gender, class_code, classify_code, position_code, reg_date, team_code, photo, status
+    ) 
     VALUES (
-        '2024U010015', #{name}, #{id}, #{pw}, #{email}, #{phone}, #{birth}, #{gender}, 
-        #{class_code},#{classify_code},
-        #{reg_date}, #{photo},'0'
+        CONCAT(
+            YEAR(CURDATE()),
+            #{classify_code},
+            LPAD(
+                IFNULL(
+                    (SELECT MAX(CAST(RIGHT(u.user_code, 4) AS UNSIGNED)) + 1 
+                     FROM user u 
+                     WHERE YEAR(u.reg_date) = YEAR(CURDATE()) AND u.classify_code = #{classify_code}
+                    ),
+                    1
+                ),
+                4,
+                '0'
+            )
+        ),
+        #{name},
+        #{id},
+        #{pw},
+        #{email},
+        #{phone},
+        #{birth},
+        #{gender},
+        #{class_code},
+        #{classify_code},
+        'P02',
+        #{reg_date},
+        #{team_code},
+        <if test="photo == null">
+            NULL
+        </if>
+        <if test="photo != null">
+            #{photo, jdbcType=VARCHAR}
+        </if>,
+        '0'
     )
 </insert>
+
+
+
+<select id="deptList" resultType="emp">
+	SELECT d.team_code, d.team_name, d.upper_code FROM department d
+</select>
+
+
+<!-- 상세보기 쿼리문 -->
+<select id="empDetail" parameterType="String" resultType="emp">
+	SELECT  
+		u.user_code,
+		u.name,
+		tc.code_name AS team_name, 
+    	cc.code_name AS class_name, 
+    	pc.code_name AS position_name,
+    	cfc.code_name AS classify_name,
+    	u.id,
+    	u.email,
+    	u.phone,
+    	u.birth,
+    	u.photo,
+    	u.reg_date,
+    	u.quit_date,
+    	u.gender,
+    	u.status  
+    FROM 
+	    `user` u
+	LEFT JOIN 
+	    all_code tc ON u.team_code = tc.code
+	LEFT JOIN 
+	    all_code cc ON u.class_code = cc.code
+	LEFT JOIN 
+	    all_code pc ON u.position_code = pc.code
+    LEFT JOIN 
+	    all_code cfc ON u.classify_code = cfc.code  	
+	WHERE user_code=#{param}
+</select>
 	
 </mapper>
