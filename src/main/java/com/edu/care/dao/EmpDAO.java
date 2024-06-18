@@ -20,5 +20,9 @@ public interface EmpDAO {
 
 	int reg(Map<String, String> param);
 
+	List<EmpDTO> deptList();
+
+	EmpDTO empDetail(String user_code);
+
 
 }

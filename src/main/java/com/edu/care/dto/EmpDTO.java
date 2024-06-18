@@ -26,7 +26,10 @@ public class EmpDTO {
 	private String team_name;
 	private String class_name;
 	private String position_name;
+	private String classify_name;
 	private String page;
+	
+	private String upper_code;
 	
 	public String getPosition_name() {
 		return position_name;
@@ -153,6 +156,18 @@ public class EmpDTO {
 	}
 	public void setPage(String page) {
 		this.page = page;
+	}
+	public String getUpper_code() {
+		return upper_code;
+	}
+	public void setUpper_code(String upper_code) {
+		this.upper_code = upper_code;
+	}
+	public String getClassify_name() {
+		return classify_name;
+	}
+	public void setClassify_name(String classify_name) {
+		this.classify_name = classify_name;
 	}
 	
 }

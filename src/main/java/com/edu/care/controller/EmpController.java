@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.edu.care.dto.EmpDTO;
 import com.edu.care.service.EmpService;
 
 @Controller
@@ -95,6 +96,13 @@ public class EmpController {
 		return page;
 	}
 	
+	// 부서 리스트
+	@GetMapping(value="/emp/deptList.ajax")
+	@ResponseBody
+	public Map<String, Object> deptList() {
+		return empService.deptList();
+	}
+
 	
 	// 퇴사자목록 페이지 이동
 	@GetMapping(value="/emp/quitList.go")
@@ -104,9 +112,22 @@ public class EmpController {
 	
 	// 사원 상세정보 페이지 이동
 	@GetMapping(value="/emp/detail.go")
-	public String empDetail() {
+	public String empDetail(@RequestParam("user_code") String user_code, Model model) {
+		logger.info("detail user_code="+user_code);
+		
+		EmpDTO empDTO = empService.empDetail(user_code);
+		model.addAttribute("empDto", empDTO);
+		
 		return "emp/emp_detail";
 	}
+	
+	// 사원 정보 수정 페이지 이동
+	@GetMapping(value="/emp/edit.go")
+	public String empEdit() {
+		return "emp/emp_edit";
+	}
+	
+	
 	
 	// 사원 퇴사처리
 	@ResponseBody
@@ -119,6 +140,8 @@ public class EmpController {
 		map.put("cnt", cnt);
 		return map;
 	};
+	
+	
 	
 	
 }

@@ -56,27 +56,52 @@ public class EmpService {
 	}
 
 	public int reg(MultipartFile photo, Map<String, String> param) {
-		// 1. 파일 명 추출
-		String fileName = photo.getOriginalFilename();
-		
-		// 2. 새 파일 명 생성
-		String ext = fileName.substring(fileName.lastIndexOf("."));
-		String newFileName =  System.currentTimeMillis()+ext;
-		logger.info(fileName+" -> "+newFileName);
-		
-		// 3. 파일 저장
-		try {
-			byte[] bytes =  photo.getBytes();
-			Path path = Paths.get(file_root+"/"+newFileName);
-			Files.write(path, bytes);
-			
-			// 4. 파일 이름을 param 에 추가
-			param.put("photo", newFileName);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		// 파일 처리 로직
+        String newFileName = null;
+        
+        if (!photo.isEmpty()) {
+            String fileName = photo.getOriginalFilename();
+            String ext = "";
+            
+            // 파일 이름이 있는 경우에만 확장자 추출
+            if (fileName != null && !fileName.isEmpty()) {
+                int lastIndex = fileName.lastIndexOf(".");
+                
+                if (lastIndex != -1) {
+                    ext = fileName.substring(lastIndex);
+                }
+            }
+            
+            newFileName = System.currentTimeMillis() + ext;
+            
+            try {
+                byte[] bytes = photo.getBytes();
+                Path path = Paths.get(file_root + "/" + newFileName);
+                Files.write(path, bytes);
+            } catch (IOException e) {
+                e.printStackTrace();
+                // 파일 저장 실패 시 처리 로직 추가
+            }
+        }
+        
+        // 파일 이름을 param에 추가
+        param.put("photo", newFileName);
+        
 		return empDAO.reg(param);
     }
+
+	public Map<String, Object> deptList() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		List<EmpDTO> deptList = empDAO.deptList();
+		
+		map.put("deptList", deptList);
+		
+		return map;
+	}
+
+	public EmpDTO empDetail(String user_code) {
+		return empDAO.empDetail(user_code);
+	}
 
 
 	
