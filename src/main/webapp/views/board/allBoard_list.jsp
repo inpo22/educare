@@ -19,8 +19,8 @@
 #backBoard{
 	background-color: white;
 	width: 100%;
-    height: 110%; /* 높이를 원하는 크기로 설정 */
-	border-radius: 20px;
+    border-radius: 20px;
+	padding: 20px 0;
 }
 
 #allBoardTitle{

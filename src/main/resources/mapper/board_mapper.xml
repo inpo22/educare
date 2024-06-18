@@ -122,10 +122,16 @@
 	</select>
 
 
+	<insert id="allBoardWrite" useGeneratedKeys="true" keyColumn="post_no"
+		keyProperty="post_no" parameterType="board" >
+		INSERT INTO post(title, contents, fixed_yn, user_code, board_no)
+		VALUES(#{title},#{contents},#{fixed_yn}, #{user_code}, 1)
+	</insert>
 
-
-
-
+	<insert id="fileSave" parameterType="board">
+		INSERT INTO attach_file(user_code, ori_filename, new_filename, board_no, board_type)
+			VALUES(#{user_code}, #{ori_filename}, #{new_filename}, #{board_no}, #{board_type})
+	</insert>
 
 
 

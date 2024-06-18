@@ -29,6 +29,10 @@ public interface BoardDAO {
 
 	boolean isPerm(String user_code, String post_no);
 
+	void allBoardWrite(BoardDTO dto);
+
+	void fileSave(BoardDTO dto);
+
 
 
 }

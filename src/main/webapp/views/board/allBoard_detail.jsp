@@ -19,8 +19,8 @@
 #backBoard{
 	background-color: white;
 	width: 100%;
-    height: 80%; /* 높이를 원하는 크기로 설정 */
 	border-radius: 20px;
+	padding: 20px 0;
 }
 
 #allBoardTitle{
@@ -170,7 +170,7 @@ function allBoardList(){
 
 // 수정
 function allBoardUpdate(){
-	location.href = '/allBoard/update.go';
+	location.href = '/allBoard/update.go?post_no='+${dto.post_no};
 }
 // 삭제
 function boardDel(){
@@ -188,10 +188,10 @@ function boardDel(){
 					alert("삭제 되었습니다.");
 					location.href = '/allBoard/list.go';
 				}
-		},error:function(error){
-			console.log(error);	
-		}		
-	});
+			},error:function(error){
+				console.log(error);	
+			}		
+		});
 	}
 }
 

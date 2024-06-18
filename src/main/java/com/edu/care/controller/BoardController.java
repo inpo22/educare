@@ -16,9 +16,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.edu.care.dto.BoardDTO;
 import com.edu.care.service.BoardService;
 
 @Controller
@@ -62,9 +65,24 @@ public class BoardController {
 		return "board/allBoard_write";
 	}
 	
+	// 전사 공지사항 작성
+	@PostMapping(value="/allBoard/write.do")
+	public String allBoardWrite(@RequestParam("attachFile") MultipartFile[] attachFile,BoardDTO dto, HttpSession session) {
+		String user_code = (String) session.getAttribute("user_code");
+		logger.info("\n DTO Title :{}",dto.getTitle());
+		logger.info("\n DTO contents :{}",dto.getContents());
+		logger.info("\n DTO fixed_yn :{}",dto.getFixed_yn());
+		logger.info("attachFile ="+attachFile.length);
+		dto.setUser_code(user_code);
+		boardService.allBoardWrite(attachFile, dto);
+		
+		return "redirect:/allBoard/detail.go?post_no="+dto.getPost_no();
+	}
+	
+	
 	// 전사 공지사항 수정페이지 이동
 	@GetMapping(value = "/allBoard/update.go")
-	public String noticeDetailGo() {
+	public String allBoardUpdateGo() {
 		logger.info("공지사항 글수정 페이지 접속");
 		return "board/allBoard_update";
 	}

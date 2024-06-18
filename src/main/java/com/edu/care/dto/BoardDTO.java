@@ -26,7 +26,16 @@ public class BoardDTO {
 	private String ori_filename;
 	private String new_filename;
 	private String board_type;
+	private String fileName;
 	
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
 	public String getFile_no() {
 		return file_no;
 	}
