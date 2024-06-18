@@ -1,13 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC   "-//mybatis.org//DTD Mapper 3.0//EN"
    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
 <mapper namespace="com.edu.care.dao.DeptDAO">
 
-	<select id="getDept" resultType="dept">
+<!-- 	<select id="getDept" resultType="dept">
 		SELECT team_name, team_code, upper_code, reg_date
 		 FROM department 
 		  ORDER BY reg_date ASC
+	</select>
+ -->	
+ 	<select id="getDept" resultType="dept">
+		WITH RECURSIVE cte AS (
+		 SELECT team_code , team_name, upper_code, reg_date, 1 AS dept_level
+		  FROM department  
+		   WHERE upper_code='T00' 
+		 UNION ALL 
+		 SELECT d.team_code, d.team_name, d.upper_code, d.reg_date,
+		  cte.dept_level + 1 AS dept_level
+		  FROM department d
+		   INNER JOIN cte ON cte.team_code = d.upper_code
+	)
+	SELECT * FROM cte;
+
 	</select>
 
 	<insert id="createDept" parameterType="map">
@@ -20,4 +34,15 @@
 		 WHERE team_code = #{team_code}
 	</delete>
 	
+	<update id="updateDeptName" parameterType="map">
+		UPDATE department SET team_name = #{team_name}
+		 WHERE team_code = #{team_code}
+	</update>
+
+	<update id="updateUpper" parameterType="map">
+		UPDATE department SET upper_code = #{upper_code}
+		 WHERE team_code = #{team_code}
+	</update>
+
+
 </mapper>

@@ -23,10 +23,10 @@ public class DeptService {
 	public Map<String, Object> getDept() {
 		Map<String, Object> result = new HashMap<String, Object>();
 		List<DeptDTO> deptList = deptDAO.getDept();
-		if(deptList.size() > 0) {
-			logger.info("deptList is not empty ");
-			result.put("deptList", deptList);
+		if(deptList.size() < 0) {
+			logger.info("deptList is empty ");
 		}
+		result.put("deptList", deptList);
 		return result;
 	}
 
@@ -56,11 +56,19 @@ public class DeptService {
 
 	public Map<String, Object> updateDept(Map<String, Object> param) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		String msg = "fail";
-		String type = param.get("edit_type").toString();
-		logger.info("수정 유형: "+type);
-		// 수정중~
 		int row = 0;
+		String msg = "fail";
+		String type = param.get("type").toString();
+		logger.info("수정 코드: "+param.get("team_code").toString());
+		logger.info("수정 유형: "+type);
+		if(type.equals("name")) {
+			row = deptDAO.updateDeptName(param);
+			logger.info("수정 값: "+param.get("team_name").toString());
+		}else if(type.equals("code")){
+			row = deptDAO.updateUpper(param);
+			logger.info("수정 값: "+param.get("upper_code").toString());
+		}
+		
 		if(row > 0) {
 			msg = "success";
 		}
