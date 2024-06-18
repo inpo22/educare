@@ -6,9 +6,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.edu.care.dao.LoginDAO;
+import com.edu.care.dto.LoginDTO;
 
 
 @Service
@@ -18,28 +18,37 @@ public class LoginService {
 	@Autowired LoginDAO loginDAO;
 	
 
-	public  String loginAccess(HttpSession session, Model model, String id, String pw, String name, String classify_code,
-		RedirectAttributes redirectAttributes) {
-		logger.info("id : {} / name : {}", id, pw);
-		String msg="아이디 또는 비밀번호를 다시 확인하세요";
-		//String page="main/main";
-		//LoginService loginservice = new LoginService();
+	public  String loginAccess(HttpSession session, Model model, String id, String pw) {
+		logger.info("id : {} / pw : {}", id, pw);
+		//String msg="아이디 또는 비밀번호를 다시 확인하세요";
 		
-		int row = loginDAO.loginAccess(id,pw, name, classify_code, redirectAttributes);
+		int logininfo = loginDAO.loginAccess(id, pw);
+		
+		
+		
+		int row = loginDAO.loginAccess(id,pw);
 		if(row >0) {
-			session.setAttribute("mem_Id", id);
-			session.setAttribute("mem_pw", pw);
-			session.setAttribute("mem_name", name);
-			session.setAttribute("mem_class_code", classify_code);
-			//model.addAttribute("loginId", id);
-			model.addAttribute("loginSuccess", id+ "로그인 성공");
-			logger.info("id2 : {} / name2 : {}", id, pw);
+			/*session.setAttribute("user_code", "user_code");
+			session.setAttribute("user_name", "user_name");
+			session.setAttribute("class_name", "class_name");
+			session.setAttribute("team_name", "team_name");
+			session.setAttribute("team_code", "team_code");
+			session.setAttribute("classify_code", "classify_code");*/
+		
+			/*
+			 * model.addAttribute("loginSuccess", id+ "로그인 성공");
+			 * logger.info("id2 : {} / pw2 : {}", id, pw); logger.info("user_code: {}",
+			 * logininfo.getUser_code()); logger.info("name: {}", logininfo.getName());
+			 * logger.info("class_name: {}", logininfo.getClass_name());
+			 * logger.info("team_name: {}", logininfo.getTeam_name());
+			 * logger.info("classify_code: {}", logininfo.getClassify_code());
+			 */
 			return "redirect:/";
 		}else {
-			redirectAttributes.addFlashAttribute("loginError", true);
-			return "redirect:/login.go";
+			model.addAttribute("msgdo", "아이디 또는 비밀번호를 확인해주세요");
 			
 		}
+		return "/login/login";
 	}
 
 
