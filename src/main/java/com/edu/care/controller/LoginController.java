@@ -29,10 +29,9 @@ public class LoginController {
 	}
 	//로그인
 	@PostMapping(value ="/login.do")
-	public String loginAccess(HttpSession session, Model model, String id, String pw, String name, String classify_code,
-			RedirectAttributes redirectAttributes) {
+	public String loginAccess(HttpSession session, Model model, String id, String pw) {
 		logger.info("::최초 로그인 실행::");
-		return loginService.loginAccess(session, model, id, pw, name, classify_code, redirectAttributes);
+		return loginService.loginAccess(session, model, id, pw);
 	}
 	//로그아웃
 	@GetMapping(value ="/logout.do")
