@@ -73,14 +73,14 @@
 	<update id="scheduleUpdate"  parameterType="schedule">
 		UPDATE 
 			schedule 
-		SET edit_user_code = #{team_code}
+		SET edit_user_code = #{user_code}
 			, team_code = #{team_code}
 			, title = #{title}
 			, contents = #{contents}
 			, start_date = #{start_date}
 			, end_Date = #{end_date}
 			, edit_date = NOW()
-			, is_del = 1
+			, is_del = 0
 			, sked_type = #{sked_type}
 		WHERE 
 			sked_no = #{sked_no}

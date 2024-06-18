@@ -134,6 +134,10 @@ textarea {
 	border: none;
 }
 
+.fc-toolbar-chunk{
+	font-size: 19px;
+}
+
 </style>
 </head>
 
@@ -213,7 +217,7 @@ textarea {
 							<button type="button" class="btn text-light bg-dark" id="submitButton" onclick="sch_beforeSubmit()">등록</button>
 							<button type="button" class="btn btn-secondary" id="deleteButton" onclick="sch_del()" style="display:none;">삭제</button>
 							<button type="button" class="btn text-light bg-dark" id="beforeUpdateButton" style="display:none;">수정</button>
-							<button type="button" class="btn text-light bg-dark" id="updateButton" onclick="sch_update()" style="display:none;">수정완료</button>
+							<button type="button" class="btn text-light bg-dark" id="updateButton" style="display:none;">수정완료</button>
 						</div>
 					</div>
 				</div>
@@ -239,7 +243,7 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
     	eventSources: 
     		 {  
     		   googleCalendarId: 'ko.south_korea#holiday@group.v.calendar.google.com',
-    			color:'red'
+    			color:'red',
     		 },
     	locale: 'ko',
         headerToolbar : {
@@ -416,20 +420,14 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
     	$('#closeButton').hide(); 
        	$('#submitButton').hide(); 
     	$('#deleteButton').show(); 
-    	$('#deleteButton').attr('data-val',skedNo); 
+    	$('#deleteButton').attr('data-val',skedNo);
+    	$('#beforeUpdateButton').attr('data-user-code',skedNo);
+    	
     	$('#beforeUpdateButton').show();
         $('#updateButton').hide();
         
-        //수정부분 수정해야함..!! 
         $("#beforeUpdateButton").click(function () {
-        	console.log("fdfsfds"+sessionUserCode == user_code);
-        	if(sessionUserCode === user_code){
-        		updateModalOpen(info);
-        	}else {
-        		alert('수정권한이 없습니다.');
-        		$('#writeModal').modal('hide');
-        	}
-        	
+        	updateModalOpen(info);    	
         });
         
         function updateModalOpen(info) {
@@ -460,7 +458,6 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
         	$('#beforeUpdateButton').hide();
         	$('#updateButton').show();
         	$('#updateButton').attr('data-val',skedNo); 
-        	
         }
         
     }
@@ -510,11 +507,56 @@ function sch_beforeSubmit(){
 	}
 }
 
+$('#updateButton').click(function() {
+	
+	var schRange = $('#selectSchRange').val();
+    var title = $('#title').val();
+    var contents = $('#contents').val();
+    var startDate = $('#start_date').val();
+    var endDate = $('#end_date').val();
+    
+    if (schRange === ''){
+        alert('일정유형을 선택해주세요.');
+        $('#selectSchRange').focus();
+        return false;
+    }
+    if (title === ''){
+        alert('일정제목을 입력해주세요.');
+        $('#title').focus();
+        return false;
+    }
+    if (contents === ''){
+        alert('일정내용을 입력해주세요.');
+        $('#contents').focus();
+        return false;
+    }
+    if (startDate === ''){
+        alert('시작날짜를 선택해주세요.');
+        $('#start_date').focus();
+        return false;
+    }
+    if (endDate === ''){
+        alert('종료날짜를 선택해주세요.');
+        $('#end_date').focus();
+        return false;
+    }
+    if (endDate < startDate){
+        alert('종료날짜는 시작날짜와 같거나 이후여야합니다.');
+        $('#end_date').focus();
+        return false;
+    }else{
+    	sch_update();
+    }
+
+});
+
 function sch_update(){
 	var updateNo = $('#updateButton').attr('data-val');
 	console.log(updateNo);
 	var paramData = {
+		sked_no: updateNo,
 		sked_type: $('#selectSchRange').val(), 
+		title: $('#title').val(),	
 		contents:$('#contents').val(),	
 		start_date:$('#start_date').val(),
 		end_date:$('#end_date').val()
@@ -525,11 +567,11 @@ function sch_update(){
 			url:'/schedule/update.ajax',
 			type:'POST',
 			contentType: 'application/json',
-			date: JSON.stringify(paramData),
+			data: JSON.stringify(paramData),
 			dataType:'JSON',
 			success : function(data){
 				//calendar.addEvent(paramData);
-				if(data.row > 0){
+				if(data.result){
 					alert('수정되었습니다.');
 					$('#writeModal').modal('hide');
 					calendar.refetchEvents();
