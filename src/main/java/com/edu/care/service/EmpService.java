@@ -56,39 +56,55 @@ public class EmpService {
 	}
 
 	public int reg(MultipartFile photo, Map<String, String> param) {
-
-        String photoFileName = fileSave(photo); // 사진 저장
-        if (photoFileName != null) {
-            param.put("photo", photoFileName); // 매개변수에 사진 파일명 추가
+		// 파일 처리 로직
+        String newFileName = null;
+        
+        if (!photo.isEmpty()) {
+            String fileName = photo.getOriginalFilename();
+            String ext = "";
+            
+            // 파일 이름이 있는 경우에만 확장자 추출
+            if (fileName != null && !fileName.isEmpty()) {
+                int lastIndex = fileName.lastIndexOf(".");
+                
+                if (lastIndex != -1) {
+                    ext = fileName.substring(lastIndex);
+                }
+            }
+            
+            newFileName = System.currentTimeMillis() + ext;
+            
+            try {
+                byte[] bytes = photo.getBytes();
+                Path path = Paths.get(file_root + "/" + newFileName);
+                Files.write(path, bytes);
+            } catch (IOException e) {
+                e.printStackTrace();
+                // 파일 저장 실패 시 처리 로직 추가
+            }
         }
-        return empDAO.reg(param); // DAO를 통해 데이터베이스에 사원 정보 삽입
+        
+        // 파일 이름을 param에 추가
+        param.put("photo", newFileName);
+        
+		return empDAO.reg(param);
     }
 
-	
-	public String fileSave(MultipartFile photo) {
-		if (photo == null || photo.isEmpty()) {
-	        return null;
-	    }
+	public Map<String, Object> deptList() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		List<EmpDTO> deptList = empDAO.deptList();
 		
-		String fileName = photo.getOriginalFilename();
+		map.put("deptList", deptList);
 		
-		// 확장자 추출
-		String ext = fileName.substring(fileName.lastIndexOf("."));
-		
-		// 새 파일 명 생성
-		String newFileName = System.currentTimeMillis()+ext;
-		logger.info(fileName+ "->"+newFileName);
-		
-		// 파일 저장 (만든 upload 폴더에 저장)
-		try {
-			byte[] bytes = photo.getBytes(); // MultipartFile 로 부터 바이너리 추출
-			Path path = Paths.get(file_root+newFileName); // 저장 경로 지정
-			Files.write(path, bytes); // 저장
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-		
+		return map;
 	}
+
+	public EmpDTO empDetail(String user_code) {
+		return empDAO.empDetail(user_code);
+	}
+
+
+	
+	
 	
 }

@@ -11,10 +11,18 @@
 <meta content="" name="keywords">
 
 <!-- css -->
+<link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui-tree/latest/tui-tree.css" />
 <jsp:include page="/views/common/head.jsp"></jsp:include>
 <!-- js -->
+<script src="https://uicdn.toast.com/tui-tree/latest/tui-tree.js"></script>
 
 <style>
+#msg{
+	margin-left: 50px;
+}
+#team_btn{
+	margin-left: 50px;
+}
 body {
     font-family: Arial, sans-serif;
     background-color: #f8f9fa;
@@ -111,6 +119,48 @@ label[for="id"]{
 #name{
 	width:600px;
 }
+/* Modal css */
+.modal {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+.modal-content {
+    margin: 0 auto;
+    padding: 20px;
+    height: 600px;
+    width: 400px;
+    top: 150px;
+    background-color: white;
+}
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+.close:hover {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+.modal-title {
+	font-weight: bold;
+	font-size: 25px;
+}
+.tui-tree-wrap {
+	height: 400px;
+	width: 360px;
+	overflow-y: auto;
+}
+.text-align-right {
+	text-align: right;
+}
 </style>
 
 </head>
@@ -151,7 +201,7 @@ label[for="id"]{
                  <div class="form-group">
                      <label for="pwchk">비밀번호 확인:</label>
                      <input type="password" id="pwchk" name="pwchk" required>
-                     <span id="msg"></span>
+                     <br/><span id="msg"></span>
                  </div>
              </div>
              <div class="form-row">
@@ -161,7 +211,7 @@ label[for="id"]{
                  </div>
                  <div class="form-group">
                      <label for="phone">연락처:</label>
-                     <input type="text" id="phone" name="phone" required>
+                     <input type="text" id="phone" name="phone" oninput="phoneNumber(this)" placeholder="숫자만 입력하세요">
                  </div>
              </div>
              <div class="form-row">
@@ -172,11 +222,11 @@ label[for="id"]{
                  <div class="form-group">
                      <label for="gender">성별:</label>
                      <div class="form-check form-check-inline">
-					  <input class="form-check-input" type="radio" name="gender" id="male" value="male">
+					  <input class="form-check-input" type="radio" name="gender" id="male" value="남">
 					  <label class="form-check-label" for="male">남성</label>
 					</div>
 					<div class="form-check form-check-inline">
-					  <input class="form-check-input" type="radio" name="gender" id="female" value="female">
+					  <input class="form-check-input" type="radio" name="gender" id="female" value="여">
 					  <label class="form-check-label" for="female">여성</label>
 					</div>
                  </div>
@@ -184,7 +234,7 @@ label[for="id"]{
              <div class="form-row">
                  <div class="form-group">
                      <label for="email">직급:</label>
-                     <select id="class" name="class" class="form-select" aria-label="Default select example">
+                     <select id="class_code" name="class_code" class="form-select" aria-label="Default select example">
 		                  <option value="C06">사원</option>
 		                  <option value="C05">대리</option>
 		                  <option value="C04">과장</option>
@@ -195,7 +245,7 @@ label[for="id"]{
                  </div>
                  <div class="form-group">
                      <label for="class">회원구분:</label>
-                     <select id="classify" name="classify" class="form-select" aria-label="Default select example">
+                     <select id="classify_code" name="classify_code" class="form-select" aria-label="Default select example">
 		                  <option value="U01">정규직</option>
 		                  <option value="U02">계약직</option>
 		              </select> 
@@ -207,8 +257,9 @@ label[for="id"]{
                      <input type="date" id="reg_date" name="reg_date">
                  </div>
                  <div class="form-group">
-                     <label for="team">부서:</label>
-                     
+                     <label for="team" class="team-select">부서:</label>
+                     <button id="team_btn" class="btn btn-dark" type="button" onclick="openModal()">부서 선택</button>
+                     <input type="hidden" id="team_code" name="team_code"/>
                  </div>
              </div>
              <div class="form-row">
@@ -218,7 +269,7 @@ label[for="id"]{
 	             </div>	
 	             <div class="form-group">
 	                 <label for="photo">Photo:</label>	                 
-	                 <input type="file" id="photo" name="photo" onchange="previewImage(event)">	                 	             	 
+	                 <input type="file" id="photo" name="photo" onchange="previewImage(event)" accept=".jpeg, .jpg, .png, .jfif">	                 	             	 
 	             </div>
 	                          
 	         </div>	
@@ -236,6 +287,22 @@ label[for="id"]{
 	</main>
 	<!-- End #main -->
 
+	<!-- 받는 사람 모달 -->
+	<div id="dept-modal" class="modal" onclick="closeModal()">
+		<div class="modal-content" onclick="event.stopPropagation()">
+			<div>
+				<span class="modal-title">부서 등록</span>
+	        	<span class="close" onclick="closeModal()">&times;</span>
+	        	<br/><br/>
+	        	<div id="dept-tree" class="tui-tree-wrap"></div>
+	        	<br/>
+	        	<div class="text-align-right">
+	        		<button class="btn btn-primary btn-sm dept-reg">추가</button>
+	        	</div>
+			</div>
+	    </div>
+	</div>
+	
 	<jsp:include page="/views/common/footer.jsp"></jsp:include>
 
 </body>
@@ -256,12 +323,118 @@ function previewImage(event) {
     reader.readAsDataURL(event.target.files[0]);
 }
 
+
+
+// 부서 등록 모달 창 열기
+function openModal() {
+    $('#dept-modal').css('display', 'block');
+}
+
+// 모달 창 닫기
+function closeModal() {
+    $('.modal').css('display', 'none');
+	selectedNodeText = '';
+	selectedNodeValue = '';
+	$('.tui-tree-selected').removeClass('tui-tree-selected');
+}
+
+// 부서 Tree
+var data = [{
+	text: '에듀케어',
+	value: 'T00'
+}];
+
+const tree = new tui.Tree('#dept-tree', {
+	data: data,
+	nodeDefaultState: 'opened'
+	
+});
+
+$.ajax({
+	type:'get',
+	url:'/emp/deptList.ajax',
+	data:{},
+	dataType:'JSON',
+	success:function(data) {
+		var rootNode = tree.getRootNodeId();
+		var valueToFind = '';
+		
+		for (var item of data.deptList) {
+			valueToFind = item.upper_code;
+			var foundNode = findNodeByValue(rootNode, valueToFind);
+			
+			if (foundNode) {
+				tree.add({text: item.team_name, value: item.team_code}, foundNode);
+			}
+		}
+	},
+	error:function(error) {
+		console.log(error);
+	}
+});
+
+function findNodeByValue(node, value) {
+	
+	if (tree.getNodeData(node).value == value) {
+		return node;
+    }
+
+    var children = tree.getChildIds(node);
+    for (var i = 0; i < children.length; i++) {
+        var found = findNodeByValue(children[i], value);
+        if (found) {
+			return found;
+		}
+    }
+    
+    return null;
+}
+
+var selectedNodeText = '';
+var selectedNodeValue = '';
+
+tree
+	.enableFeature('Selectable')
+	.on('select', function(e) {
+		selectedNodeText = '';
+		selectedNodeValue = '';
+		
+		$('.selected-value').removeClass('selected-value');
+		
+		selectedNodeText = tree.getNodeData(e.nodeId).text;
+		selectedNodeValue = tree.getNodeData(e.nodeId).value;
+		
+		// console.log('nodeText : ' + selectedNodeText);
+		// console.log('nodeValue : ' + selectedNodeValue);
+		
+});
+
+$('.dept-reg').click(function() {
+	var content = '부서: ' + selectedNodeText;
+	
+	$('.team-select').html(content);
+	$('#team_code').val(selectedNodeValue);
+	closeModal();
+});
+
+
+
+
+
 //아이디 중복체크
 var overChk = false;
 overChk = true;
 
 function overlay(){
 	var id = $('input[name="id"]').val();
+	
+	// 아이디 유효성 검사
+    var idRegex = /^[a-zA-Z0-9]{4,12}$/;
+    if (!idRegex.test(id)) {
+        alert("아이디는 4글자 이상 12글자 이하, 영어 또는 숫자만 가능합니다.");
+        $('input[name="id"]').focus();
+        return false;
+    }
 	
 	$.ajax({
 		type:'post',
@@ -284,7 +457,7 @@ function overlay(){
 	});
 }
 
-// 등록버튼
+// 등록버튼 (유효성 검사)
 var overChk = false;
 
 function reg(){
@@ -298,6 +471,7 @@ function reg(){
 	var $classify = $('#classify');
 	var $birth = $('input[name="birth"]');
 	var $reg_date = $('input[name="reg_date"]');
+	var $team_code = $('input[name="team_code"]');
 	
 	if(overChk == false){
 		alert('중복 체크를 해주세요.');
@@ -336,7 +510,22 @@ function reg(){
 	}else if($reg_date.val()==''){ // 이메일 값이 비었을 경우
 		alert('입사일을 입력해주세요.');
 		$reg_date.focus(); // 커서가 나이로
-	}else{
+	}else if($team_code.val()==''){ // 이메일 값이 비었을 경우
+		alert('부서를 선택해주세요.');
+	}
+	else{
+		// 이메일 유효성 검사
+		var regEmail = /^([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
+		if(regEmail.test($email.val())==false){			
+
+			alert("이메일형식이 올바르지 않습니다.");
+
+			$email.focus();
+
+			return false;
+		
+		}
+		// 비밀번호 유효성 검사
 		var regex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[!@#$%^&*()_+={}[\]:;'"<>,./?\\|~-]).{8,16}$/;
 	    
 		if(!regex.test($pw.val())){
@@ -348,6 +537,7 @@ function reg(){
 			$pw.focus();
 			return false;
 		}else{
+			alert("사원 등록에 성공했습니다.");
 			$('form').submit();
 		}
 
@@ -356,8 +546,6 @@ function reg(){
 }
 
 
-
-// 비밀번호 확인
 // 비밀번호 확인
 $('#pwchk').on('keyup', function(){
     var pw = $('input[name="pw"]').val();
@@ -370,6 +558,22 @@ $('#pwchk').on('keyup', function(){
         $('#msg').html('비밀번호가 일치하지 않습니다.');
         $('#msg').css({'color': 'red'});
     }
+});
+
+// 연락처 입력 시 하이픈 자동생성
+$(document).on("keyup", "#phone", function() {
+    $(this).val( $(this).val().replace(/[^0-9]/g, "").replace(/(^02|^0505|^1[0-9]{3}|^0[0-9]{2})([0-9]+)?([0-9]{4})$/,"$1-$2-$3").replace("--", "-") ); 
+});
+// 하이픈 포함 13자리까지만 입력 가능하도록
+function phoneNumber(e){
+    if(e.value.length>13){
+	e.value=e.value.slice(0,13);	
+    }
+}
+
+//사원 리스트 이동
+$('#no_btn').click(function(){
+	window.location.href = '/emp/list.go';
 });
 
 </script>

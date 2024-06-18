@@ -1,6 +1,5 @@
 package com.edu.care.dao;
 
-import java.sql.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +19,10 @@ public interface EmpDAO {
 	int overlay(String id);
 
 	int reg(Map<String, String> param);
+
+	List<EmpDTO> deptList();
+
+	EmpDTO empDetail(String user_code);
 
 
 }
