@@ -16,4 +16,8 @@ public interface DeptDAO {
 
 	int removeDept(Map<String, Object> param);
 
+	int updateDeptName(Map<String, Object> param);
+
+	int updateUpper(Map<String, Object> param);
+
 }
