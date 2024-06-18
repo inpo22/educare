@@ -25,8 +25,15 @@ public class EmpDTO {
 	private String user_name;
 	private String team_name;
 	private String class_name;
+	private String position_name;
 	private String page;
-		
+	
+	public String getPosition_name() {
+		return position_name;
+	}
+	public void setPosition_name(String position_name) {
+		this.position_name = position_name;
+	}		
 	public String getUser_code() {
 		return user_code;
 	}

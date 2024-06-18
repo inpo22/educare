@@ -15,6 +15,9 @@
 <!-- js -->
 
 <style>
+#team_btn{
+	margin-left: 50px;
+}
 body {
     font-family: Arial, sans-serif;
     background-color: #f8f9fa;
@@ -172,11 +175,11 @@ label[for="id"]{
                  <div class="form-group">
                      <label for="gender">성별:</label>
                      <div class="form-check form-check-inline">
-					  <input class="form-check-input" type="radio" name="gender" id="male" value="male">
+					  <input class="form-check-input" type="radio" name="gender" id="male" value="남">
 					  <label class="form-check-label" for="male">남성</label>
 					</div>
 					<div class="form-check form-check-inline">
-					  <input class="form-check-input" type="radio" name="gender" id="female" value="female">
+					  <input class="form-check-input" type="radio" name="gender" id="female" value="여">
 					  <label class="form-check-label" for="female">여성</label>
 					</div>
                  </div>
@@ -184,7 +187,7 @@ label[for="id"]{
              <div class="form-row">
                  <div class="form-group">
                      <label for="email">직급:</label>
-                     <select id="class" name="class" class="form-select" aria-label="Default select example">
+                     <select id="class_code" name="class_code" class="form-select" aria-label="Default select example">
 		                  <option value="C06">사원</option>
 		                  <option value="C05">대리</option>
 		                  <option value="C04">과장</option>
@@ -195,7 +198,7 @@ label[for="id"]{
                  </div>
                  <div class="form-group">
                      <label for="class">회원구분:</label>
-                     <select id="classify" name="classify" class="form-select" aria-label="Default select example">
+                     <select id="classify_code" name="classify_code" class="form-select" aria-label="Default select example">
 		                  <option value="U01">정규직</option>
 		                  <option value="U02">계약직</option>
 		              </select> 
@@ -208,6 +211,7 @@ label[for="id"]{
                  </div>
                  <div class="form-group">
                      <label for="team">부서:</label>
+                     <button id="team_btn" class="btn btn-dark" type="button">부서 선택</button>
                      
                  </div>
              </div>

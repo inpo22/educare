@@ -70,7 +70,7 @@ public class EmpController {
 	}
 	
 	// 사원등록
-	@RequestMapping(value="/emp/reg.do")
+	@PostMapping(value="/emp/reg.do")
 	public String reg(MultipartFile photo ,Model model, @RequestParam Map<String, String> param) {
 		String page = "emp_reg";
 		String msg = "사원 등록에 실패했습니다.";
@@ -80,18 +80,15 @@ public class EmpController {
 		String rawPassword = param.get("pw");
         String encodedPassword = encoder.encode(rawPassword);
         param.put("pw", encodedPassword);
-		
-        // 사진 파일 저장 및 파일명 파라미터에 추가
-        String photoFileName = empService.fileSave(photo);
-        if (photoFileName != null) {
-            param.put("photo", photoFileName);
-        }
+        
+        logger.info("rawPassword: " + rawPassword);
+        logger.info("encodedPassword: " + encodedPassword);
 		
 		int row = empService.reg(photo, param);
 		logger.info("insert count:"+row);
 		
 		if(row==1) {
-			page="redirect:/emp_list";
+			page="redirect:/emp/list.go";
 			msg="사원 등록에 성공했습니다.";
 		}
 		model.addAttribute("msg", msg);

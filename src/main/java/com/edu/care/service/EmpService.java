@@ -56,39 +56,30 @@ public class EmpService {
 	}
 
 	public int reg(MultipartFile photo, Map<String, String> param) {
-
-        String photoFileName = fileSave(photo); // 사진 저장
-        if (photoFileName != null) {
-            param.put("photo", photoFileName); // 매개변수에 사진 파일명 추가
-        }
-        return empDAO.reg(param); // DAO를 통해 데이터베이스에 사원 정보 삽입
-    }
-
-	
-	public String fileSave(MultipartFile photo) {
-		if (photo == null || photo.isEmpty()) {
-	        return null;
-	    }
-		
+		// 1. 파일 명 추출
 		String fileName = photo.getOriginalFilename();
 		
-		// 확장자 추출
+		// 2. 새 파일 명 생성
 		String ext = fileName.substring(fileName.lastIndexOf("."));
+		String newFileName =  System.currentTimeMillis()+ext;
+		logger.info(fileName+" -> "+newFileName);
 		
-		// 새 파일 명 생성
-		String newFileName = System.currentTimeMillis()+ext;
-		logger.info(fileName+ "->"+newFileName);
-		
-		// 파일 저장 (만든 upload 폴더에 저장)
+		// 3. 파일 저장
 		try {
-			byte[] bytes = photo.getBytes(); // MultipartFile 로 부터 바이너리 추출
-			Path path = Paths.get(file_root+newFileName); // 저장 경로 지정
-			Files.write(path, bytes); // 저장
+			byte[] bytes =  photo.getBytes();
+			Path path = Paths.get(file_root+"/"+newFileName);
+			Files.write(path, bytes);
+			
+			// 4. 파일 이름을 param 에 추가
+			param.put("photo", newFileName);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return null;
-		
-	}
+		return empDAO.reg(param);
+    }
+
+
+	
+	
 	
 }

@@ -24,6 +24,8 @@
     WHERE 
         pc.code_name IN ('팀장', '팀원')
         AND quit_date is null
+        ORDER BY 
+    	u.reg_date ASC
         <if test="param4 != null and param4 != ''">
             AND (
                 <choose>
@@ -57,8 +59,10 @@
     LEFT JOIN all_code tc ON u.team_code = tc.code
     LEFT JOIN all_code cc ON u.class_code = cc.code
     LEFT JOIN all_code pc ON u.position_code = pc.code
-    WHERE pc.code_name IN ('팀장', '팀원')
+    WHERE u.position_code IN ('P01', 'P02')
     AND quit_date is null
+    ORDER BY 
+    u.reg_date ASC
         <if test="param3 != null and param3 != ''">
             AND (
                 <choose>
@@ -97,12 +101,37 @@
 
 <!-- 사원 등록 쿼리문 -->
 <insert id="reg" parameterType="map">
-	INSERT INTO user (user_code,name, id, pw, email, phone, birth, gender, class_code, classify_code, reg_date, photo, status)
-    VALUES (
-        '2024U010015', #{name}, #{id}, #{pw}, #{email}, #{phone}, #{birth}, #{gender}, 
-        #{class_code},#{classify_code},
-        #{reg_date}, #{photo},'0'
+    INSERT INTO user (
+        user_code, name, id, pw, email, phone, birth, gender, class_code, classify_code, position_code, reg_date, photo, status
+    ) VALUES (
+        CONCAT(
+            YEAR(CURDATE()),
+            #{classify_code},
+            LPAD(
+                IFNULL(
+                    (SELECT MAX(CAST(RIGHT(u.user_code, 4) AS UNSIGNED)) + 1 FROM user u WHERE YEAR(u.reg_date) = YEAR(CURDATE()) AND u.classify_code = #{classify_code}),
+                    1
+                ),
+                4,
+                '0'
+            )
+        ),
+        #{name},
+        #{id},
+        #{pw},
+        #{email},
+        #{phone},
+        #{birth},
+        #{gender},
+        #{class_code},
+        #{classify_code},
+        'P02',
+        #{reg_date},
+        #{photo},
+        '0'
     )
 </insert>
+
+
 	
 </mapper>
