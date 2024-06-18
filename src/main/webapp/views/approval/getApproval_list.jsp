@@ -150,7 +150,7 @@
 	</main>
 	<!-- End #main -->
 	<jsp:include page="/views/common/footer.jsp"></jsp:include>
-	<jsp:include page="/views/common/newApproval_modal.jsp"></jsp:include>
+	<jsp:include page="/views/approval/newApproval_modal.jsp"></jsp:include>
 	
 </body>
 <script>

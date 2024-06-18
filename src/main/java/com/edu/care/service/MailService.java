@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.edu.care.dao.MailDAO;
+import com.edu.care.dao.NotiDAO;
 import com.edu.care.dto.MailDTO;
 
 @Service
@@ -31,6 +32,7 @@ public class MailService {
 	Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Autowired MailDAO mailDAO;
+	@Autowired NotiDAO notiDAO;
 	
 	@Value("${spring.servlet.multipart.location}")
 	private String root;
@@ -159,16 +161,18 @@ public class MailService {
 		
 		if (mail_no > 0) {
 			String receiverList = param.get("receiverList");
-			if (receiverList.equals("") || receiverList != null) {
-				String[] arr = receiverList.split(",");
-				for (String receiver : arr) {
-					mailDAO.mailReceiverWrite(mail_no, receiver);
-				}
+			int noti_type = 2;
+			String noti_content_no = "" + mail_no;
+			
+			String[] arr = receiverList.split(",");
+			for (String receiver : arr) {
+				mailDAO.mailReceiverWrite(mail_no, receiver);
+				notiDAO.sendNoti(receiver, user_code, noti_content_no, noti_type);
 			}
 			
 			String ccList = param.get("ccList");
 			if (ccList.equals("") || ccList != null) {
-				String[] arr = ccList.split(",");
+				arr = ccList.split(",");
 				for (String cc : arr) {
 					mailDAO.mailCcWrite(mail_no, cc);
 				}
