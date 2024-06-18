@@ -20,9 +20,16 @@ public class CourseController {
 		return "course/course_list";
 	}
 	
+	@GetMapping(value="/course/write.go")
+	public String courseWrtie() {
+		return "course/course_write";
+	}
+	
 	@GetMapping(value="/courseReservation.go")
 	public String courseReservation() {
 		return "course/courseReservation";
 	}
+	
+	
 	
 }

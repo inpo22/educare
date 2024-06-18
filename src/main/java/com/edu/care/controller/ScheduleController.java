@@ -85,26 +85,17 @@ public class ScheduleController {
 	
 	@PostMapping(value="/schedule/update.ajax")
 	@ResponseBody
-	public Map<String, Object> scheduleUpdate(@RequestParam(value="sked_no") String sked_no, HttpSession session) {
+	public Map<String, Object> scheduleUpdate(@RequestBody ScheduleDTO scheduleDTO, HttpSession session) {
 		logger.info("##### schedule update ajax controller IN #####");
-		logger.info("sked_no:{}",sked_no);
 		
-		ScheduleDTO scheduleDTO = new ScheduleDTO();
 		scheduleDTO.setUser_code((String)session.getAttribute("user_code"));
 		scheduleDTO.setTeam_code((String) session.getAttribute("team_code"));
-		scheduleDTO.setSked_no(Integer.parseInt(sked_no));
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		
-		String result;
 		Boolean trueFalse =  scheduleService.scheduleUpdate(scheduleDTO);
 		
-		if(trueFalse) {
-			result="success";
-		}else {
-			result="fail";
-		}
-		map.put("result", result);
+		map.put("result", trueFalse);
 		
 		return map;
 	}
