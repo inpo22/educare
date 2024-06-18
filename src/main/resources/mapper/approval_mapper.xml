@@ -4,4 +4,76 @@
 
 <mapper namespace="com.edu.care.dao.ApprovalDAO">
 	
+	<select id="deptList" resultType="approval">
+		SELECT d.team_code, d.team_name, d.upper_code FROM department d
+	</select>
+	
+	<select id="empList" resultType="approval">
+		SELECT
+			u.user_code
+			, u.name AS user_name
+			, (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code) AS class_name
+			, u.team_code
+		FROM user u
+		WHERE u.classify_code IN ('U01', 'U02')
+	</select>
+	
+	<select id="createAu_code" resultType="String">
+		SELECT
+			CONCAT(SUBSTR(CAST(CURDATE() AS CHAR), 1, 4), '-',
+			<if test="param2 == 0">
+				'업무',
+			</if>
+			<if test="param2 == 1">
+				'휴가',
+			</if>
+			'-', #{param1}, '-', RIGHT(CONCAT("000" , 
+            (SELECT (COUNT(a.au_code) + 1) FROM approval a JOIN user u ON a.user_code = u.user_code WHERE YEAR(a.reg_date) = YEAR(CURDATE()) 
+            AND u.team_code = #{param1} AND a.au_type = #{param2})), 4)) AS au_code
+	</select>
+	
+	<insert id="vacaApprovalWrite" parameterType="approval">
+		INSERT INTO approval(au_code, user_code, au_type, title, contents, va_days, start_date, end_date, va_type)
+			VALUES(
+				#{au_code}, #{user_code}, #{au_type}, #{title}, #{contents},
+            	<if test="va_days == 0.5">
+            		#{va_days},
+            	</if>
+            	<if test="va_days != 0.5">
+            		DATEDIFF(#{end_date}, #{start_date}),
+            	</if>
+            	#{start_date}, #{end_date}, #{va_type}
+			)
+	</insert>
+	
+	<insert id="busiApprovalWrite" parameterType="approval">
+		INSERT INTO 
+			approval(
+				au_code, user_code, au_type, title, contents
+				<if test="enf_date != null">
+					, enf_date
+				</if>
+			)
+			VALUES(
+				#{au_code}, #{user_code}, #{au_type}, #{title}, #{contents}
+				<if test="enf_date != null">
+					, #{enf_date}
+				</if>
+			)
+	</insert>
+	
+	<insert id="orderInsert">
+		INSERT INTO approval_order(au_code, user_code)
+			VALUES(#{param1}, #{param2})
+	</insert>
+	
+	<insert id="receiveTeamInsert">
+		INSERT INTO approval_recipient VALUES(#{param1}, #{param2})
+	</insert>
+	
+	<insert id="fileSave">
+		INSERT INTO attach_file(user_code, ori_filename, new_filename, board_no, board_type)
+			VALUES(#{param1}, #{param2}, #{param3}, #{param4}, #{param5})
+	</insert>
+	
 </mapper>

@@ -132,7 +132,7 @@
 	    text-decoration: none;
 	    cursor: pointer;
 	}
-	.modal-title {
+	.modal-title, .dept-modal-title {
 		font-weight: bold;
 		font-size: 25px;
 	}
@@ -186,7 +186,12 @@
 	#order-list-div {
 		margin-left: 10px;
 	}
-	.form-select, .datepicker {
+	.receive-list-div {
+		height: 38px;
+		display: flex;
+		align-items: center;
+	}
+	.datepicker {
 		width: 200px;
 		display: inline;
 	}
@@ -244,11 +249,15 @@
 			</div>
 			<div id="right-section">
 				<div class="pagetitle text-align-center">
-					<h1>휴가 신청서</h1>
+					<h1>업무 기안</h1>
 				</div>
 				<br/>
-				<div class="text-align-right"><span class="blue-color" onclick="openModal()"><b>+ 결재선 추가</b></span></div>
-				<form action="/vacaApproval/write.do" method="post" enctype="multipart/form-data">
+				<div class="text-align-right">
+					<span class="blue-color" onclick="openReceiveModal()"><b>+ 수신부서 추가</b></span>
+					&nbsp;&nbsp;
+					<span class="blue-color" onclick="openOrderModal()"><b>+ 결재선 추가</b></span>
+				</div>
+				<form action="/busiApproval/write.do" method="post" enctype="multipart/form-data">
 					<div class="display-grid">
 						<table class="table table-bordered display-inline">
 							<tr>
@@ -284,29 +293,17 @@
 					</div>
 					<table class="table table-bordered">
 						<tr>
-							<th class="table-active first-col">휴가 종류</th>
+							<th class="table-active first-col vertical-align-middle">시행일자</th>
 							<td class="second-col">
-								<select name="va_type" id="va_type" class="form-select">
-									<option value="0">연차</option>
-									<option value="1">오전 반차</option>
-									<option value="2">오후 반차</option>
-									<option value="3">경조사</option>
-									<option value="4">공가</option>
-									<option value="5">병가</option>
-									<option value="6">대체 휴가</option>
-								</select>
+								<input type="date" name="enf_date" id="enf_date" class="form-control datepicker"/>
 							</td>
 						</tr>
 						<tr>
-							<th class="table-active">휴가 기간</th>
-							<td>
-								<input type="date" name="start_date" id="start_date" class="form-control datepicker"/>
-								<span class="is-half">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
-								<input type="date" name="end_date" id="end_date" class="form-control is-half datepicker"/>
-							</td>
+							<th class="table-active vertical-align-middle">수신부서</th>
+							<td><div class="receive-list-div"></div></td>
 						</tr>
 						<tr>
-							<th class="table-active">제목</th>
+							<th class="table-active vertical-align-middle">제목</th>
 							<td>
 								<input type="text" name="subject" id="subject" class="form-control"/>
 							</td>
@@ -330,6 +327,7 @@
 					</table>
 					<input type="file" name="attachFile" id="attachFile" multiple="multiple"/>
 					<input type="hidden" name="orderList" id="orderList"/>
+					<input type="hidden" name="receiveList" id="receiveList"/>
 					<input type="hidden" name="content" id="content"/>
 					<br/>
 					<div class="text-align-right">
@@ -344,10 +342,10 @@
 	<!-- End #main -->
 	
 	<!-- 받는 사람 모달 -->
-	<div id="emp-modal" class="modal" onclick="closeModal()">
+	<div id="dept-modal" class="modal" onclick="closeModal()">
 		<div class="modal-content" onclick="event.stopPropagation()">
 			<div>
-				<span class="modal-title">결재선 추가</span>
+				<span class="dept-modal-title"></span>
 	        	<span class="close" onclick="closeModal()">&times;</span>
 	        	<br/><br/>
 	        	<div class="display-flex">
@@ -428,16 +426,38 @@
     }
 	
 	// 결재선 모달 창 열기
-	function openModal() {
-	    $('#emp-modal').css('display', 'block');
+	function openOrderModal() {
+		deptListCall();
+		
+		tree.add([{
+			text: '에듀케어',
+			value: 'T00'
+		}]);
+		
+		$('.dept-modal-title').html('결재선 추가');
+	    $('#dept-modal').css('display', 'block');
+	    $('.modal-content').css('width', '900px');
+	}
+	
+	// 결재선 모달 창 열기
+	function openReceiveModal() {
+		deptListCall();
+		
+		tree.add([{
+			text: '에듀케어',
+			value: 'T00'
+		}]);
+		
+		$('.dept-modal-title').html('수신부서 추가');
+	    $('#dept-modal').css('display', 'block');
 	    $('.modal-content').css('width', '900px');
 	}
 	
 	// 모달 창 닫기
 	function closeModal() {
 	    $('.modal').css('display', 'none');
-	    orderTextList = [];
-	    orderValueList = [];
+	    textList = [];
+	    valueList = [];
 		selectedNodeText = '';
 		selectedNodeValue = '';
 		removeTag = '';
@@ -448,50 +468,55 @@
 		$('.tui-tree-selected').removeClass('tui-tree-selected');
 		$('.add-list').empty();
 		$('.modal-content').css('width', '400px');
+		
+		var rootNode = tree.getRootNodeId();
+		var childIds = tree.getChildIds(rootNode);
+		
+		for (var i = 0; i < childIds.length; i++) {
+			var removeNodeId = childIds[i];
+			tree.remove(removeNodeId);
+		}
 	}
 	
 	// 부서 Tree
-	var data = [{
-		text: '에듀케어',
-		value: 'T00'
-	}];
-	
 	const tree = new tui.Tree('#dept-tree', {
-		data: data,
 		nodeDefaultState: 'opened'
 	});
 	
-	$.ajax({
-		type:'get',
-		url:'/approval/deptList.ajax',
-		data:{},
-		dataType:'JSON',
-		success:function(data) {
-			var rootNode = tree.getRootNodeId();
-			var valueToFind = '';
-			
-			for (var item of data.deptList) {
-				valueToFind = item.upper_code;
-				var foundNode = findNodeByValue(rootNode, valueToFind);
+	function deptListCall() {
+		$.ajax({
+			type:'get',
+			url:'/approval/deptList.ajax',
+			data:{},
+			dataType:'JSON',
+			success:function(data) {
+				var rootNode = tree.getRootNodeId();
+				var valueToFind = '';
 				
-				if (foundNode) {
-					tree.add({text: item.team_name, value: item.team_code}, foundNode);
+				for (var item of data.deptList) {
+					valueToFind = item.upper_code;
+					var foundNode = findNodeByValue(rootNode, valueToFind);
+					
+					if (foundNode) {
+						tree.add({text: item.team_name, value: item.team_code}, foundNode);
+					}
 				}
-			}
-			
-			for (var item of data.empList) {
-				valueToFind = item.team_code;
-				var foundNode = findNodeByValue(rootNode, valueToFind);
-				
-				if (foundNode) {
-					tree.add({text: item.user_name + ' ' + item.class_name, value: item.user_code}, foundNode);
+				if ($('.dept-modal-title').html() == '결재선 추가') {
+					for (var item of data.empList) {
+						valueToFind = item.team_code;
+						var foundNode = findNodeByValue(rootNode, valueToFind);
+						
+						if (foundNode) {
+							tree.add({text: item.user_name + ' ' + item.class_name, value: item.user_code}, foundNode);
+						}
+					}
 				}
+			},
+			error:function(error) {
+				console.log(error);
 			}
-		},
-		error:function(error) {
-			console.log(error);
-		}
-	});
+		});
+	}
 	
 	function findNodeByValue(node, value) {
 		
@@ -510,8 +535,8 @@
 	    return null;
 	}
 	
-	var orderTextList = [];
-	var orderValueList = [];
+	var textList = [];
+	var valueList = [];
 	var selectedNodeText = '';
 	var selectedNodeValue = '';
 	var removeTag = '';
@@ -526,7 +551,11 @@
 			
 			$('.selected-value').removeClass('selected-value');
 			
-			if (tree.getChildIds(e.nodeId) == '') {
+			if (tree.getChildIds(e.nodeId) == '' && $('.dept-modal-title').html() == '결재선 추가') {
+				selectedNodeText = tree.getNodeData(e.nodeId).text;
+				selectedNodeValue = tree.getNodeData(e.nodeId).value;
+				$('.list-add-button').removeClass('disabled-button');
+			} else if ($('.dept-modal-title').html() == '수신부서 추가') {
 				selectedNodeText = tree.getNodeData(e.nodeId).text;
 				selectedNodeValue = tree.getNodeData(e.nodeId).value;
 				$('.list-add-button').removeClass('disabled-button');
@@ -540,9 +569,9 @@
 		
 		var content = '<li class="value-' + selectedNodeValue + '">' + selectedNodeText + '</li>';
 		
-		if (!orderValueList.includes(selectedNodeValue)) {
-			orderTextList.push(selectedNodeText);
-			orderValueList.push(selectedNodeValue);
+		if (!valueList.includes(selectedNodeValue)) {
+			textList.push(selectedNodeText);
+			valueList.push(selectedNodeValue);
 			$('.add-list').append(content);
 		}
 		
@@ -569,11 +598,11 @@
 	});
 	
 	$('.list-remove-button').click(function() {
-		var index = orderValueList.indexOf(removeNodeValue);
-		orderValueList.splice(index, 1);
+		var index = valueList.indexOf(removeNodeValue);
+		valueList.splice(index, 1);
 		
-		index = orderTextList.indexOf(removeNodeText);
-		orderTextList.splice(index, 1);
+		index = textList.indexOf(removeNodeText);
+		textList.splice(index, 1);
 		
 		removeTag.remove();
 		
@@ -587,42 +616,43 @@
 	$('.send-list').click(function() {
 		var index = -1;
 		var content = '';
-		content += '<table class="table table-bordered display-inline text-align-right order-table">';
-		content += '<tr>';
-		content += '<th class="table-active order-first-col vertical-align-middle" rowspan="3">결<br/><br/>재</th>';
-		for (var orderText of orderTextList) {
-			index = orderText.indexOf(' ');
-			// console.log(orderText.substring(index + 1, orderText.length));
-			content += '<td class="text-align-center order-second-col">' + orderText.substring(index + 1, orderText.length) + '</td>';
-		}
-		content += '</tr>';
-		content += '<tr>';
-		for (var orderText of orderTextList) {
-			content += '<td class="text-align-center vertical-align-bottom">' + orderText.substring(0, index) + '</td>';
-		}
-		content += '</tr>';
-		content += '<tr>';
-		for (var i = 0; i < orderTextList.length; i++) {
-			content += '<td class="order-third-row"></td>';
-		}
-		content += '</tr>';
-		content += '</table>';
 		
-		$('#order-list-div').html(content);
-		
-		$('#orderList').val(orderValueList.toString());
+		if ($('.dept-modal-title').html() == '결재선 추가') {
+			content += '<table class="table table-bordered display-inline text-align-right order-table">';
+			content += '<tr>';
+			content += '<th class="table-active order-first-col vertical-align-middle" rowspan="3">결<br/><br/>재</th>';
+			for (var orderText of textList) {
+				index = orderText.indexOf(' ');
+				// console.log(orderText.substring(index + 1, orderText.length));
+				content += '<td class="text-align-center order-second-col">' + orderText.substring(index + 1, orderText.length) + '</td>';
+			}
+			content += '</tr>';
+			content += '<tr>';
+			for (var orderText of textList) {
+				content += '<td class="text-align-center vertical-align-bottom">' + orderText.substring(0, index) + '</td>';
+			}
+			content += '</tr>';
+			content += '<tr>';
+			for (var i = 0; i < textList.length; i++) {
+				content += '<td class="order-third-row"></td>';
+			}
+			content += '</tr>';
+			content += '</table>';
+			
+			$('#order-list-div').html(content);
+			
+			$('#orderList').val(valueList.toString());
+		} else if ($('.dept-modal-title').html() == '수신부서 추가') {
+			for (var receiveText of textList) {
+				content += '<span class="badge bg-primary">' + receiveText + '</span>&nbsp;&nbsp;';
+			}
+			
+			$('.receive-list-div').html(content);
+			$('#receiveList').val(valueList.toString());
+		}
 		closeModal();
 	});
 	
-	$('#va_type').change(function() {
-		var selectedVal = $('#va_type').val();
-		
-		if (selectedVal == 1 || selectedVal == 2) {
-			$('.is-half').css('display', 'none');
-		}else {
-			$('.is-half').css('display', 'inline');
-		}
-	});
 	
 	function approvalSubmit() {
 		var editorContent = editor.getHTML();
@@ -630,19 +660,8 @@
 		
 		var $subject = $('#subject');
 		var $orderList = $('#orderList');
-		var $va_type = $('#va_type');
-		var $start_date = $('#start_date');
-		var $end_date = $('#end_date');
 		
-		if ($start_date.val() == '') {
-			alert('휴가 시작일을 입력해주세요.');
-			$start_date.focus();
-		} else if (!$va_type.val() == 1 && !$va_type.val() == 2) {
-			if ($end_date.val() == '') {
-				alert('휴가 종료일을 입력해주세요.');
-				$end_date.focus();
-			}
-		} else if ($subject.val() == '') {
+		if ($subject.val() == '') {
 			alert('제목을 입력해주세요.');
 			$subject.focus();
 		} else if (editor.getMarkdown() == '') {

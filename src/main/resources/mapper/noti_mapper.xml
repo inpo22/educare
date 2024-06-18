@@ -4,4 +4,13 @@
 
 <mapper namespace="com.edu.care.dao.NotiDAO">
 	
+	<insert id="sendNoti">
+		INSERT INTO notification(to_user_code, from_user_code, noti_content_no, noti_type)
+			VALUES(#{param1}, #{param2}, #{param3}, #{param4})
+	</insert>
+	
+	<delete id="deleteNoti">
+		DELETE FROM notification WHERE noti_content_no = #{param1} AND noti_type = #{param2}
+	</delete>
+	
 </mapper>
