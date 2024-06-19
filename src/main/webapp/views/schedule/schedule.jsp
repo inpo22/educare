@@ -294,7 +294,7 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
             });
         },
         events: function(info, successCallback, failureCallback) {
-        	
+
         	$.ajax({
         		url:'/schedule/list.ajax',
         		type:'POST',
@@ -307,8 +307,8 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
         						var tp_color; 
         						var event = {
         							title: item.title,
-        							start: item.start_date,
-        							end: item.end_date,
+        							start: item.start_date.substring(0,10),
+        							end: item.end_date.substring(0,10),
         							skedNo: item.sked_no,
         							skedType:item.sked_type,
         							contents:item.contents,
