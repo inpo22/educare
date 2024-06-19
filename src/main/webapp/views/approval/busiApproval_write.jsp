@@ -341,7 +341,7 @@
 	</main>
 	<!-- End #main -->
 	
-	<!-- 받는 사람 모달 -->
+	<!-- 부서 모달 -->
 	<div id="dept-modal" class="modal" onclick="closeModal()">
 		<div class="modal-content" onclick="event.stopPropagation()">
 			<div>
@@ -644,7 +644,7 @@
 			$('#orderList').val(valueList.toString());
 		} else if ($('.dept-modal-title').html() == '수신부서 추가') {
 			for (var receiveText of textList) {
-				content += '<span class="badge bg-primary">' + receiveText + '</span>&nbsp;&nbsp;';
+				content += '<h5><span class="badge bg-primary">' + receiveText + '</span></h5>&nbsp;&nbsp;';
 			}
 			
 			$('.receive-list-div').html(content);
