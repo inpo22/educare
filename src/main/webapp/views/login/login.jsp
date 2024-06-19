@@ -59,6 +59,33 @@ body {
 .login-container .alert {
 	display: none;
 }
+
+#findIdLink, #findPwLink {
+    font-size: 14px;
+    color: #007bff;
+    text-decoration: none;
+    margin-left:270px;
+}
+
+#findIdLink:hover, #findPwLink:hover {
+    text-decoration: underline;
+}
+
+#LoginButton{
+	width:100%;
+	height:50px;
+	display:flex;
+	align-tiems: flex-start;
+	justify-content:center;
+	padding-top:10px;
+	line-height:1.2;
+	margin-top:10px;
+}
+
+
+
+
+
 </style>
 </head>
 <body>
@@ -70,30 +97,25 @@ body {
 					id="name" name="id" placeholder="ID">
 			</div>
 			<div class="form-group">
-				<i class="fa fa-lock"></i> <input type="password"
-					class="form-control" id="password" name="pw"
-					placeholder="PW">
+				<i class="fa fa-lock"></i> <input type="password" class="form-control" id="password" name="pw" placeholder="PW">
 			</div>
 			<div class="form-group form-check">
-				<input type="checkbox" class="form-check-input" id="rememberMe"
-					name="rememberMe"> <label class="form-check-label"
-					for="rememberMe">아이디저장</label>
+				<input type="checkbox" class="form-check-input" id="rememberMe" name="rememberMe"> 
+				<label class="form-check-label" for="rememberMe">아이디저장</label>
 			</div>
-			<div class="forgot-links">
-				<a href="" id="L1">아이디찾기</a> <a
-					href="" id="L2">패스워드찾기</a>
+			<div class="forgot-links">		
+				<a href="" id="findIdLink">아이디찾기</a>
 			</div>
-			<button type="submit" class="btn btn-primary" id="L3">LOGIN</button>
-			<div class="alert alert-danger mt-3" role="alert" id="errorMsg">
-				아이디 또는 비밀번호를 확인해 주세요.</div>
+			<div>
+				<a href="" id="findPwLink">패스워드찾기</a>
+			</div>
+			<button type="submit" class="btn-primary" id="LoginButton">LOGIN</button>
+			<div class="alert alert-danger mt-3" role="alert" id="errorMsg">아이디 또는 비밀번호를 확인해 주세요.</div>
 		</form>
 	</div>
 
-	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-	<script
-		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-	<script
-		src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	
+	
 	<script>
 	var msgdo = '${msgdo}'; 
 	if(msgdo != ''){
