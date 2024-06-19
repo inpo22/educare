@@ -36,7 +36,6 @@ h3 {
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #f8f9fa;
     margin: 0;
     padding: 0;
 }
@@ -245,7 +244,10 @@ input[readonly] {
             	<div class="col-md-6"></div>
 	            <div class="col-md-6 d-flex justify-content-end">
 	                <button id="empList_go" class="btn btn-dark" type="button">사원리스트</button>
-	            	<button id="edit_go" class="btn btn-dark" type="button">수정하기</button>
+	            	<form action="/emp/edit.go" method="get">
+	            		<input type="hidden" name="user_code" value="${empDto.user_code}">
+	            		<button id="edit_go" class="btn btn-dark" type="submit">수정하기</button>
+	            	</form>
 	            </div>
 	        </div>
 

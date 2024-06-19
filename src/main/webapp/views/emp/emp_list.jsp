@@ -34,8 +34,11 @@
 #backBoard{
 	background-color: white;
 	width:100%;
-	height:100%;
+	height:1000px;
 	border-radius: 10px;
+	position: relative;
+	margin: 20px auto;
+	box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 #empReg_btn,#quitList_btn{
 	margin : 7px 0 7px 10px;
@@ -46,7 +49,14 @@
 #inputdate,#searchdate_btn{
 	margin:7px 0;
 }
-
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+#quit_btn{
+	margin-right: 10px;
+}
 </style>
 </head>
 

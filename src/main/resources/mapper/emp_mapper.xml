@@ -179,5 +179,22 @@
 	    all_code cfc ON u.classify_code = cfc.code  	
 	WHERE user_code=#{param}
 </select>
+
+<!-- 정보수정 쿼리문 -->
+<update id="edit" parameterType="map">
+	UPDATE user SET 
+		birth=#{birth},
+		email=#{email},
+		phone=#{phone},
+		team_code=#{team_code} ,
+		gender=#{gender} ,
+		quit_date = 
+	        CASE WHEN #{quit_date} = '' THEN NULL ELSE #{quit_date} END,
+		class_code=#{class_code} ,
+		classify_code=#{classify_code} ,
+		status=#{status} ,
+		photo = CASE WHEN #{photo} IS NULL THEN photo ELSE #{photo} END
+	WHERE user_code=#{user_code}
+</update>
 	
 </mapper>
