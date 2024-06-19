@@ -28,6 +28,31 @@ public class ApprovalController {
 		return "approval/getApproval_list";
 	}
 	
+	@GetMapping(value="/compApproval/list.go")
+	public String compApproval() {
+		return "approval/compApproval_list";
+	}
+	
+	@GetMapping(value="/viewApproval/list.go")
+	public String viewApproval() {
+		return "approval/viewApproval_list";
+	}
+	
+	@GetMapping(value="/requestApproval/list.go")
+	public String requestApproval() {
+		return "approval/requestApproval_list";
+	}
+	
+	@GetMapping(value="/finishApproval/list.go")
+	public String finishApproval() {
+		return "approval/finishApproval_list";
+	}
+	
+	@GetMapping(value="/rejectedApproval/list.go")
+	public String rejectedApproval() {
+		return "approval/rejectedApproval_list";
+	}
+	
 	@GetMapping(value="/vacaApproval/write.go")
 	public String vacaApprovalWriteForm() {
 		return "approval/vacaApproval_write";
@@ -74,6 +99,26 @@ public class ApprovalController {
 		}
 		
 		return page;
+	}
+	
+	@GetMapping(value="/approval/list.ajax")
+	@ResponseBody
+	public Map<String, Object> approvalListCall(String page, String condition, String content, String listType, HttpSession session) {
+		// logger.info("전자 결재 리스트 Call");
+		// logger.info("page : " + page);
+		// logger.info("condition : " + condition);
+		// logger.info("content : " + content);
+		// logger.info("listType : " + listType);
+		
+		String user_code = (String) session.getAttribute("user_code");
+		String team_code = (String) session.getAttribute("team_code");
+		
+		int currPage = Integer.parseInt(page);
+		int pagePerCnt = 10;
+		
+		Map<String, Object> map = approvalService.approvalListCall(currPage, pagePerCnt, user_code, team_code, condition, content, listType);
+		
+		return map;
 	}
 	
 }

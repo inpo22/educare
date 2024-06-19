@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -183,6 +184,31 @@ public class ApprovalService {
 		fileSave(au_code, attachFile, user_code);
 		
 		result = true;
+		
+		return result;
+	}
+
+	public Map<String, Object> approvalListCall(int currPage, int pagePerCnt, String user_code, String team_code, String condition,
+			String content, String listType) {
+		int start = (currPage-1) * pagePerCnt;
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		List<ApprovalDTO> list = new ArrayList<ApprovalDTO>();
+		int totalPage = 0;
+		
+		if (listType.equals("get")) {
+			list = approvalDAO.getApprovalListCall(start, pagePerCnt, user_code, condition, content);
+			totalPage = approvalDAO.getApprovalPageCnt(pagePerCnt, user_code, condition, content);
+		} else if (listType.equals("comp")) {
+			list = approvalDAO.compApprovalListCall(start, pagePerCnt, user_code, condition, content);
+			totalPage = approvalDAO.compApprovalPageCnt(pagePerCnt, user_code, condition, content);
+		} else if (listType.equals("view")) {
+			list = approvalDAO.viewApprovalListCall(start, pagePerCnt, team_code, condition, content);
+			totalPage = approvalDAO.viewApprovalPageCnt(pagePerCnt, team_code, condition, content);
+		}
+		
+		result.put("list", list);
+		result.put("totalPage", totalPage);
 		
 		return result;
 	}
