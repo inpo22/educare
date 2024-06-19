@@ -24,5 +24,7 @@ public interface EmpDAO {
 
 	EmpDTO empDetail(String user_code);
 
+	int edit(Map<String, String> param);
+
 
 }
