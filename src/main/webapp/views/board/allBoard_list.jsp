@@ -56,14 +56,17 @@
 	width:80px;
 	height: 30px;
 }
-.table .boardTableTr:hover {
-    --bs-table-bg: lightgray;
-    cursor: pointer;
+.table table-hover {
+	cursor: pointer;
 }
 
 #allBoardTitle:hover{
 	cursor: pointer;
 	color: rgba(52, 152, 219, 0.76);
+}
+
+.boardTableTr:hover{
+	cursor: pointer;
 }
 </style>
 </head>
@@ -90,7 +93,7 @@
 				<input type="button" id="searchBtn" value="검색" class="btn btn-primary"/>
 			</div>
 			<br/><br/>
-			<table class="table">
+			<table class="table table-hover">
 				<colgroup>
 					<col width="5%" />
 					<col width="25%" />

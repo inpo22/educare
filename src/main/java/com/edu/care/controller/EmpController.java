@@ -123,8 +123,31 @@ public class EmpController {
 	
 	// 사원 정보 수정 페이지 이동
 	@GetMapping(value="/emp/edit.go")
-	public String empEdit() {
+	public String empEdit(@RequestParam("user_code") String user_code, Model model) {
+		logger.info("edit user_code="+user_code);
+		
+		EmpDTO empDTO = empService.empDetail(user_code);
+		model.addAttribute("empDto", empDTO);
+		
 		return "emp/emp_edit";
+	}
+	
+	// 사원 정보 수정
+	@PostMapping(value="/emp/edit.do")
+	public String empEdit(MultipartFile photo ,Model model, @RequestParam Map<String, String> param, @RequestParam("user_code") String user_code) {
+		String page = "emp_edit";
+		String msg = "정보수정에 실패했습니다.";
+		logger.info("param:"+param);
+		
+		int row = empService.edit(photo, param,user_code);
+		logger.info("insert count:"+row);
+		
+		if(row==1) {
+			page="redirect:/emp/detail.go?user_code="+user_code;
+			msg="정보수정에 성공했습니다.";
+		}
+		model.addAttribute("msg", msg);
+		return page;
 	}
 	
 	

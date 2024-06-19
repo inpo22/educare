@@ -32,6 +32,13 @@ public class DeptController {
 		logger.info(":: 부서 리스트 ::");
 		return deptService.getDept();
 	}
+
+	@GetMapping(value = "/dept/user/list.ajax")
+	@ResponseBody
+	public Map<String, Object> getUser(){
+		logger.info(":: 부서원 리스트 ::");
+		return deptService.getUser();
+	}
 	
 	@PostMapping(value = "/dept/register.ajax")
 	@ResponseBody

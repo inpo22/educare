@@ -12,6 +12,8 @@ public interface DeptDAO {
 
 	List<DeptDTO> getDept();
 
+	List<DeptDTO> getUser();
+
 	int createDept(Map<String, Object> param);
 
 	int removeDept(Map<String, Object> param);
@@ -19,5 +21,6 @@ public interface DeptDAO {
 	int updateDeptName(Map<String, Object> param);
 
 	int updateUpper(Map<String, Object> param);
+
 
 }

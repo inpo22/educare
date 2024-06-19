@@ -99,7 +99,7 @@
 			, af.ori_filename
 			, af.new_filename
 		FROM attach_file af
-		WHERE af.board_no = #{param1} AND af.board_type = 'mail'
+		WHERE af.board_no = #{param1} AND af.board_type = 'board'
 	</select>
 	
 	<select id="getOriFileName" resultType="String">
@@ -130,14 +130,18 @@
 
 	<insert id="fileSave" parameterType="board">
 		INSERT INTO attach_file(user_code, ori_filename, new_filename, board_no, board_type)
-			VALUES(#{user_code}, #{ori_filename}, #{new_filename}, #{board_no}, #{board_type})
+			VALUES(#{user_code}, #{ori_filename}, #{new_filename}, #{post_no}, #{board_type})
 	</insert>
 
 
+	<select id="oldFileList" resultType="board">
+		SELECT file_no, new_filename FROM attach_file WHERE board_no=#{param1}
+	</select>
 
 
-
-
+	<delete id="delAttachFile" parameterType="String">
+		DELETE FROM attach_file WHERE file_no = #{param1}
+	</delete>
 
 
 

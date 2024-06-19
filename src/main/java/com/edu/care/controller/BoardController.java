@@ -64,51 +64,66 @@ public class BoardController {
 		logger.info("전사 공지사항 글작성 페이지 접속");
 		return "board/allBoard_write";
 	}
-	
+
 	// 전사 공지사항 작성
-	@PostMapping(value="/allBoard/write.do")
-	public String allBoardWrite(@RequestParam("attachFile") MultipartFile[] attachFile,BoardDTO dto, HttpSession session) {
+	@PostMapping(value = "/allBoard/write.do")
+	public String allBoardWrite(@RequestParam("attachFile") MultipartFile[] attachFile, BoardDTO dto,
+			HttpSession session) {
 		String user_code = (String) session.getAttribute("user_code");
-		logger.info("\n DTO Title :{}",dto.getTitle());
-		logger.info("\n DTO contents :{}",dto.getContents());
-		logger.info("\n DTO fixed_yn :{}",dto.getFixed_yn());
-		logger.info("attachFile ="+attachFile.length);
+		logger.info("\n DTO Title :{}", dto.getTitle());
+		logger.info("\n DTO contents :{}", dto.getContents());
+		logger.info("\n DTO fixed_yn :{}", dto.getFixed_yn());
+		logger.info("attachFile =" + attachFile.length);
 		dto.setUser_code(user_code);
 		boardService.allBoardWrite(attachFile, dto);
-		
-		return "redirect:/allBoard/detail.go?post_no="+dto.getPost_no();
+
+		return "redirect:/allBoard/detail.go?post_no=" + dto.getPost_no();
 	}
-	
-	
+
 	// 전사 공지사항 수정페이지 이동
 	@GetMapping(value = "/allBoard/update.go")
-	public String allBoardUpdateGo() {
+	public ModelAndView allBoardUpdateGo(String post_no) {
 		logger.info("공지사항 글수정 페이지 접속");
-		return "board/allBoard_update";
+
+		return boardService.allDetail(post_no);
 	}
 	
-	// 파일 다운로드 
-	@RequestMapping(value="/board/download/{fileName}")
-	public ResponseEntity<Resource> download(@PathVariable String fileName){
-		logger.info("download fileName : "+fileName);
+	// 전사 공지사항 수정
+	@PostMapping(value = "/allBoard/update.do")
+	public String allBoardUpdate(@RequestParam("attachFile") MultipartFile[] attachFile, @RequestParam Map<String, String> param, HttpSession session) {
+		String user_code = (String) session.getAttribute("user_code");
+		logger.info("\n param  :{}", param);
+		logger.info("fileNameList="+param.get("fileNumbers")); 
+		logger.info("attachFile =" + attachFile.length);
+		String[] fileNumbers = param.get("fileNumbers").split(",");
+		param.put("user_code", user_code);
+		boardService.fileDelete(fileNumbers, param.get("post_no"));
+//		boardService.allBoardWrite(attachFile, param);
+
+		return null;
+	}
+	
+	// 파일 다운로드
+	@RequestMapping(value = "/board/download/{fileName}")
+	public ResponseEntity<Resource> download(@PathVariable String fileName) {
+		logger.info("download fileName : " + fileName);
 		return boardService.download(fileName);
 	}
-	
-	
+
 	// 공지사항 삭제
-	@PostMapping(value="/board/del.ajax")
+	@PostMapping(value = "/board/del.ajax")
 	@ResponseBody
 	public Map<String, Object> del(String post_no, HttpSession session) {
 		logger.info("삭제요청");
 		logger.info(post_no);
 		Map<String, Object> map = new HashMap<String, Object>();
 		int row = boardService.del(post_no);
-		if(row > 0) {
+		if (row > 0) {
 			map.put("row", row);
 		}
-		return	map;
+		return map;
 	}
-	
+
 	// 부서 공지사항 리스트 페이지 이동
 	@GetMapping(value = "/teamBoard/list.go")
 	public String affairsBoardList() {
@@ -121,27 +136,10 @@ public class BoardController {
 		return "board/stuBoard_list";
 	}
 
-	
 	// 자료실 리스트 페이지 이동
 	@GetMapping(value = "/dataBoard/list.go")
 	public String dataBoardList() {
 		return "board/dataBoard_list";
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
-
-
-
