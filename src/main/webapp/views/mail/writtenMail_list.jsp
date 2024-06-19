@@ -62,6 +62,14 @@
 	#second-sidebar td {
 		padding: 5px 0;
 	}
+	#search-condition {
+		width: 150px;
+		display: inline;
+	}
+	#search-content {
+		width: 400px;
+		display: inline;
+	}
 </style>
 </head>
 
@@ -88,12 +96,13 @@
 				</table>
 			</div>
 			<div id="right-section">
-				<select id="search-condition">
+				<select id="search-condition" class="form-select">
 					<option value="subject">제목</option>
 					<option value="content">내용</option>
 					<option value="receivers_name">받는 사람</option>
-				</select> <input type="text" id="search-content"/>
-				<button class="btn btn-secondary btn-sm" onclick="search()">검색</button>
+				</select> 
+				<input type="text" id="search-content" class="form-control"/>
+				<button class="btn btn-secondary" onclick="search()">검색</button>
 				<br/>
 				<br/>
 				<table class="table">
@@ -109,7 +118,9 @@
 					</thead>
 					<tbody id="drawList"></tbody>
 				</table>
-				<ul class="pagination d-flex justify-content-center" id="pagination"></ul>
+				<div id="pagination-div">
+					<ul class="pagination d-flex justify-content-center" id="pagination"></ul>
+				</div>
 			</div>
 		</div>
 	</main>
@@ -254,20 +265,27 @@
 	
 	function drawList(list) {
 		var content = '';
-		for (var row of list) {
-			
+		if (list.length == 0) {
 			content += '<tr>';
-			content += '<th scope="row" class="first-col"><input type="checkbox" class="select-box" value="' + row.mail_no + '"/></th>';
-			content += '<td>' + row.receivers_name + '</td>';
-			content += '<td><a class="list-title" href="/mail/detail.go?mail_no=' + row.mail_no + '">' + row.subject + '</a></td>';
-			
-			var date = new Date(row.send_date);
-		    var dateStr = date.toLocaleString("ko-KR");
-		    content += '<td>' + dateStr + '</td>';
-			
+			content += '<th colspan="4">보낸 메일이 없습니다.</th>';
 			content += '</tr>';
+			
+			$('#pagination').css('display', 'none');
+		} else {
+			for (var row of list) {
+				
+				content += '<tr>';
+				content += '<th scope="row" class="first-col"><input type="checkbox" class="select-box" value="' + row.mail_no + '"/></th>';
+				content += '<td>' + row.receivers_name + '</td>';
+				content += '<td><a class="list-title" href="/mail/detail.go?mail_no=' + row.mail_no + '">' + row.subject + '</a></td>';
+				
+				var date = new Date(row.send_date);
+			    var dateStr = date.toLocaleString("ko-KR");
+			    content += '<td>' + dateStr + '</td>';
+				
+				content += '</tr>';
+			}
 		}
-		
 		$('#drawList').html(content);
 	}
 	
