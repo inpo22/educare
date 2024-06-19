@@ -3,5 +3,7 @@
    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.edu.care.dao.CourseDAO">
-	
+	<select id="courseList" resultType="course">
+		SELECT * FROM course
+	</select>
 </mapper>

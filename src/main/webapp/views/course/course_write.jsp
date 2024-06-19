@@ -70,19 +70,19 @@ textarea {
 					<div class="col-md-6">
 						<div class="input-group input-group mb-3">
 							<span class="input-group-text" id="basic-addon1">강의명</span> <input
-								type="text" class="form-control" id="title"
+								type="text" class="form-control" name="course_name" id="title"
 								placeholder="강의명을 입력해주세요.">
 						</div>
 
 						<div class="input-group input-group mb-3">
 							<span class="input-group-text" id="basic-addon2">강사명</span> <input
-								type="text" class="form-control" id="name"
+								type="text" class="form-control" name="user_name" id="name"
 								placeholder="강사명을 입력해주세요.">
 						</div>
 
 						<div class="input-group input-group mb-3">
 							<span class="input-group-text" id="basic-addon3">강의료</span> <input
-								type="text" class="form-control" id="pay"
+								type="text" class="form-control" name="course_price" id="pay"
 								placeholder="강의료를 입력해주세요.">
 						</div>
 					</div>

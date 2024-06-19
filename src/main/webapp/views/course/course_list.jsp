@@ -29,7 +29,7 @@
 .card-header {
 	font-weight: bold;
 }
-
+/*
 .form-select{
 	border: none;
     box-shadow: -1px 1px 6px #929297;
@@ -43,6 +43,12 @@
 .search-btn {
     border: none;
     box-shadow: 3px 1px 6px #929297;
+}
+
+*/
+
+.search-btn {
+	border: 1px solid lightgray;
 }
 
 .input-group-text{
@@ -105,29 +111,7 @@
 							<th scope="col">강의종료일</th>
 						</tr>
 					</thead>
-					<tbody>
-						<tr>
-							<td>Mark</td>
-							<td>중1 중간고사대비용 예습반</td>
-							<td>A101</td>
-							<td>2024-05-05</td>
-							<td>2024-06-06</td>
-						</tr>
-						<tr>
-							<td>Mark</td>
-							<td>중1 중간고사대비용 예습반</td>
-							<td>A101</td>
-							<td>2024-05-05</td>
-							<td>2024-06-06</td>
-						</tr>
-						<tr>
-							<td>Mark</td>
-							<td>중1 중간고사대비용 예습반</td>
-							<td>A101</td>
-							<td>2024-05-05</td>
-							<td>2024-06-06</td>
-						</tr>
-					</tbody>
+					<tbody id="drawList"></tbody>
 				</table>
 			</div>
 		</div>
@@ -138,6 +122,39 @@
 
 </body>
 <script>
+$(document).ready(function() {
+	read_courseList();
+});
+	
+function read_courseList(){
+	$.ajax({
+		url:'/course/list.ajax',
+		type:'GET',
+		dataType: 'JSON',
+		success: function(data){
+			console.log(data);
+			drawList(data.list);
+		},
+		error:function(request, status, error){
+			console.log(error);
+		}
+		
+	});
+}
+
+function drawList(list){
+	var con = '';
+	for(var list of list){
+		con += '<tr>';
+		con += '<td>'+list.user_code+'</td>';
+		con += '<td>'+list.course_name+'</td>';
+		con += '<td>'+list.course_con+'</td>';
+		con += '<td>'+list.course_start+'</td>';
+		con += '<td>'+list.course_end+'</td>';
+		con += '</tr>';
+	}
+	$('#drawList').html(con);
+}
 
 function course_wirte(){
 	location.href='/course/write.go'
