@@ -76,4 +76,197 @@
 			VALUES(#{param1}, #{param2}, #{param3}, #{param4}, #{param5})
 	</insert>
 	
+	<select id="getApprovalListCall" resultType="approval">
+		WITH approval_order_rank AS (
+			SELECT
+				*, ROW_NUMBER() OVER (PARTITION BY au_code ORDER BY apv_no) AS row_num
+			FROM approval_order
+		)
+		SELECT
+			*
+			FROM
+			(SELECT
+				a.au_code
+				, u.name AS user_name
+				, (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code) AS class_name
+				, (SELECT d.team_name FROM department d WHERE d.team_code = u.team_code) AS team_name
+				, a.au_type
+				, a.title
+				, a.contents
+				, a.reg_date
+				, aor.state
+				, CASE 
+					WHEN aor.row_num != 1 THEN (SELECT ao.state FROM approval_order ao WHERE ao.apv_no = (aor.apv_no - 1))
+					WHEN aor.row_num = 1 THEN 1
+				END AS is_my_turn
+			FROM approval a JOIN approval_order_rank aor ON a.au_code = aor.au_code JOIN user u ON a.user_code = u.user_code
+			WHERE aor.user_code = #{param3}) AS subquery
+		WHERE is_my_turn = 1
+		<if test="param5 != ''">
+			AND
+			<if test="param4 == 'subject'">
+				title LIKE CONCAT('%', #{param5}, '%')
+			</if>
+			<if test="param4 == 'content'">
+				contents LIKE CONCAT('%', #{param5}, '%')
+			</if>
+			<if test="param4 == 'drafter_name'">
+				user_name LIKE CONCAT('%', #{param5}, '%')
+			</if>
+		</if>
+		ORDER BY reg_date DESC LIMIT #{param2} OFFSET #{param1}
+	</select>
+	
+	<select id="getApprovalPageCnt" resultType="Integer">
+		WITH approval_order_rank AS (
+			SELECT
+				*, ROW_NUMBER() OVER (PARTITION BY au_code ORDER BY apv_no) AS row_num
+			FROM approval_order
+		)
+		SELECT
+			CEIL(COUNT(au_code)/#{param1})
+			FROM
+			(SELECT
+				a.au_code
+				, u.name AS user_name
+				, (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code) AS class_name
+				, (SELECT d.team_name FROM department d WHERE d.team_code = u.team_code) AS team_name
+				, a.au_type
+				, a.title
+				, a.contents
+				, a.reg_date
+				, aor.state
+				, CASE 
+					WHEN aor.row_num != 1 THEN (SELECT ao.state FROM approval_order ao WHERE ao.apv_no = (aor.apv_no - 1))
+					WHEN aor.row_num = 1 THEN 1
+				END AS is_my_turn
+			FROM approval a JOIN approval_order_rank aor ON a.au_code = aor.au_code JOIN user u ON a.user_code = u.user_code
+			WHERE aor.user_code = #{param2}) AS subquery
+		WHERE is_my_turn = 1
+		<if test="param4 != ''">
+			AND
+			<if test="param3 == 'subject'">
+				title LIKE CONCAT('%', #{param4}, '%')
+			</if>
+			<if test="param3 == 'content'">
+				contents LIKE CONCAT('%', #{param4}, '%')
+			</if>
+			<if test="param3 == 'drafter_name'">
+				user_name LIKE CONCAT('%', #{param4}, '%')
+			</if>
+		</if>
+	</select>
+	
+	<select id="compApprovalListCall" resultType="approval">
+		WITH approval_order_check AS (
+				SELECT 
+				* 
+				, COUNT(apv_no) OVER (PARTITION BY au_code) AS order_count
+				, SUM(state) OVER (PARTITION BY au_code) AS approval_state
+				, MAX(state) OVER (PARTITION BY au_code) AS is_rejected
+			FROM approval_order
+		)
+		SELECT
+			a.au_code
+			, u.name AS user_name
+			, (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code) AS class_name
+			, (SELECT d.team_name FROM department d WHERE d.team_code = u.team_code) AS team_name
+			, a.au_type
+			, a.title
+			, a.contents
+			, a.reg_date
+			, CASE 
+				WHEN is_rejected = 2 THEN 2
+				WHEN is_rejected != 2 AND order_count = approval_state THEN 1
+				WHEN is_rejected != 2 AND order_count > approval_state THEN 0
+			END AS total_order_state
+		FROM approval a JOIN approval_order_check aoc ON a.au_code = aoc.au_code JOIN user u ON a.user_code = u.user_code
+		WHERE aoc.user_code = #{param3} AND aoc.state = 1
+		<if test="param5 != ''">
+			AND
+			<if test="param4 == 'subject'">
+				a.title LIKE CONCAT('%', #{param5}, '%')
+			</if>
+			<if test="param4 == 'content'">
+				a.contents LIKE CONCAT('%', #{param5}, '%')
+			</if>
+			<if test="param4 == 'drafter_name'">
+				u.name LIKE CONCAT('%', #{param5}, '%')
+			</if>
+		</if>
+		ORDER BY reg_date DESC LIMIT #{param2} OFFSET #{param1}
+	</select>
+	
+	<select id="compApprovalPageCnt" resultType="Integer">
+		WITH approval_order_check AS (
+				SELECT 
+				* 
+				, COUNT(apv_no) OVER (PARTITION BY au_code) AS order_count
+				, SUM(state) OVER (PARTITION BY au_code) AS approval_state
+				, MAX(state) OVER (PARTITION BY au_code) AS is_rejected
+			FROM approval_order
+		)
+		SELECT
+			CEIL(COUNT(a.au_code)/#{param1})
+		FROM approval a JOIN approval_order_check aoc ON a.au_code = aoc.au_code JOIN user u ON a.user_code = u.user_code
+		WHERE aoc.user_code = #{param3} AND aoc.state = 1
+		<if test="param4 != ''">
+			AND
+			<if test="param3 == 'subject'">
+				a.title LIKE CONCAT('%', #{param4}, '%')
+			</if>
+			<if test="param3 == 'content'">
+				a.contents LIKE CONCAT('%', #{param4}, '%')
+			</if>
+			<if test="param3 == 'drafter_name'">
+				u.name LIKE CONCAT('%', #{param4}, '%')
+			</if>
+		</if>
+	</select>
+	
+	<select id="viewApprovalListCall" resultType="approval">
+		SELECT 
+			a.au_code
+			, u.name AS user_name
+			, (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code) AS class_name
+			, (SELECT d.team_name FROM department d WHERE d.team_code = u.team_code) AS team_name
+			, a.au_type
+			, a.title
+			, a.reg_date
+		FROM approval a JOIN approval_recipient ar ON a.au_code = ar.au_code JOIN user u ON a.user_code = u.user_code
+		WHERE ar.receive_team_code = #{param3}
+		<if test="param5 != ''">
+			AND
+			<if test="param4 == 'subject'">
+				a.title LIKE CONCAT('%', #{param5}, '%')
+			</if>
+			<if test="param4 == 'content'">
+				a.contents LIKE CONCAT('%', #{param5}, '%')
+			</if>
+			<if test="param4 == 'drafter_name'">
+				u.name LIKE CONCAT('%', #{param5}, '%')
+			</if>
+		</if>
+		ORDER BY reg_date DESC LIMIT #{param2} OFFSET #{param1}
+	</select>
+	
+	<select id="viewApprovalPageCnt" resultType="Integer">
+		SELECT
+			CEIL(COUNT(a.au_code)/#{param1})
+		FROM approval a JOIN approval_recipient ar ON a.au_code = ar.au_code JOIN user u ON a.user_code = u.user_code
+		WHERE ar.receive_team_code = #{param2}
+		<if test="param4 != ''">
+			AND
+			<if test="param3 == 'subject'">
+				a.title LIKE CONCAT('%', #{param4}, '%')
+			</if>
+			<if test="param3 == 'content'">
+				a.contents LIKE CONCAT('%', #{param4}, '%')
+			</if>
+			<if test="param3 == 'drafter_name'">
+				u.name LIKE CONCAT('%', #{param4}, '%')
+			</if>
+		</if>
+	</select>
+	
 </mapper>

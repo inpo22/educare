@@ -343,7 +343,7 @@
 	</main>
 	<!-- End #main -->
 	
-	<!-- 받는 사람 모달 -->
+	<!-- 부서 모달 -->
 	<div id="emp-modal" class="modal" onclick="closeModal()">
 		<div class="modal-content" onclick="event.stopPropagation()">
 			<div>

@@ -25,4 +25,19 @@ public interface ApprovalDAO {
 
 	void receiveTeamInsert(String au_code, String team);
 
+	List<ApprovalDTO> getApprovalListCall(int start, int pagePerCnt, String user_code, String condition,
+			String content);
+
+	int getApprovalPageCnt(int pagePerCnt, String user_code, String condition, String content);
+
+	List<ApprovalDTO> compApprovalListCall(int start, int pagePerCnt, String user_code, String condition,
+			String content);
+
+	int compApprovalPageCnt(int pagePerCnt, String user_code, String condition, String content);
+
+	List<ApprovalDTO> viewApprovalListCall(int start, int pagePerCnt, String team_code, String condition,
+			String content);
+
+	int viewApprovalPageCnt(int pagePerCnt, String team_code, String condition, String content);
+
 }

@@ -57,10 +57,10 @@ public class MailController {
 	@GetMapping(value="/receivedMail/list.ajax")
 	@ResponseBody
 	public Map<String, Object> receivedMailListCall(String page, String condition, String content, HttpSession session) {
-		logger.info("받은 메일 리스트 Call");
-		logger.info("page : " + page);
-		logger.info("condition : " + condition);
-		logger.info("content : " + content);
+		// logger.info("받은 메일 리스트 Call");
+		// logger.info("page : " + page);
+		// logger.info("condition : " + condition);
+		// logger.info("content : " + content);
 		
 		String user_code = (String) session.getAttribute("user_code");
 		
@@ -104,10 +104,10 @@ public class MailController {
 	@GetMapping(value="/writtenMail/list.ajax")
 	@ResponseBody
 	public Map<String, Object> writtenMailListCall(String page, String condition, String content, HttpSession session) {
-		logger.info("보낸 메일 리스트 Call");
-		logger.info("page : " + page);
-		logger.info("condition : " + condition);
-		logger.info("content : " + content);
+		// logger.info("보낸 메일 리스트 Call");
+		// logger.info("page : " + page);
+		// logger.info("condition : " + condition);
+		// logger.info("content : " + content);
 		
 		String user_code = (String) session.getAttribute("user_code");
 		
