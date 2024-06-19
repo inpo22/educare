@@ -1,5 +1,6 @@
 package com.edu.care.service;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.file.Files;
@@ -95,7 +96,8 @@ public class BoardService {
 		for (MultipartFile file : attachFile) {
 
 			dto.setOri_filename(file.getOriginalFilename());
-			String new_filename = "allboardFile_"+dto.getPost_no()+'_'+count+dto.getOri_filename().substring(dto.getOri_filename().lastIndexOf("."));
+			String new_filename = "allboardFile_" + dto.getPost_no() + '_' + count
+					+ dto.getOri_filename().substring(dto.getOri_filename().lastIndexOf("."));
 			dto.setNew_filename(new_filename);
 			count++;
 			try {
@@ -103,15 +105,48 @@ public class BoardService {
 				Path path = Paths.get(root + new_filename);
 				Files.write(path, bytes);
 
-				dto.setBoard_type("allBoard");
+				dto.setBoard_type("board");
 				boardDAO.fileSave(dto);
-				logger.info(count+"회 완료");
+				logger.info(count + "회 완료");
 
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
 		}
+	}
+
+	public ModelAndView allDetail(String post_no) {
+		ModelAndView mav = new ModelAndView("board/allBoard_update");
+		BoardDTO dto = boardDAO.allDetail(post_no);
+		List<BoardDTO> attachFileList = boardDAO.attachFileList(post_no);
+		dto.setPost_no(Integer.parseInt(post_no));
+		mav.addObject("dto", dto);
+		mav.addObject("attachFileList", attachFileList);
+		return mav;
+	}
+	
+	@Transactional
+	public void fileDelete(String[] fileNumbers, String post_no) {
+		List<BoardDTO> oldFileList = boardDAO.oldFileList(post_no);
+		boolean isFileNameSame = false;
+		for (BoardDTO boardDTO : oldFileList) {
+			logger.info("\nfileName = " + boardDTO.getNew_filename() + "\nfileNo = " + boardDTO.getFile_no());
+			for (String fileNumber : fileNumbers) {
+				if (boardDTO.getFile_no().equals(fileNumber) == true) {
+					isFileNameSame = true;
+				}
+				if(isFileNameSame == false) {
+					boardDAO.delAttachFile(boardDTO.getFile_no());
+					File file = new File(root+boardDTO.getNew_filename());
+					if (file.exists()) {
+						file.delete();
+					}						
+				}
+			}
+			isFileNameSame = false;
+		}
+
 	}
 
 }

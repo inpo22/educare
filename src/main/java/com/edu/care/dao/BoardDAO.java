@@ -33,6 +33,10 @@ public interface BoardDAO {
 
 	void fileSave(BoardDTO dto);
 
+	List<BoardDTO> oldFileList(String post_no);
+
+	void delAttachFile(String file_no);
+
 
 
 }

@@ -18,9 +18,9 @@
 <style>
 #backBoard{
 	background-color: white;
-	width: 60%;
+	width: 100%;
 	border-radius: 20px;
-	padding: 20px 0;
+	padding: 20px 10px;
 }
 
 #allBoardTitle{
@@ -33,6 +33,10 @@
 	font-weight: bold;
 }
 
+#fixedYn, #flexSwitchCheckChecked, #fixedText:hover{
+	cursor: pointer;
+}
+
 #writeForm {
 	margin-top: 30px;
 	font-size: 15px;
@@ -42,33 +46,6 @@
 .writeLabel{
 	margin-left: 20px;
 }
-
-input[type=text] {
-	float:right;
-	margin-right: 30px;	
-	width: 50%;
-}
-
-
-
-#fileList {
-	float:right;
-	margin-right: 30px;	
-	width: 50%;
-}
-
-#fileInputButton {
-	float:right;
-	margin-right: 30px;
-	margin-top: 10px;
-}
-
-#editor {
-	margin-left: 20px;
-	margin-right: 30px;
-	margin-top: 10px;
-}
-
 .buttonCon{
 	display: flex;
     justify-content: center;
@@ -85,9 +62,9 @@ input[type=text] {
 		display: none;
 }
 #fileList {
-	border: solid 1px gray;
+	border: solid 1px lightgray;
 	border-radius: 5px;
-	min-height: 28px;
+	min-height: 37px;
 	height: auto;
 }
 #fileList li {
@@ -101,6 +78,15 @@ input[type=text] {
 .fileBtnWrap{
 	width: 100%;
     float: right;
+}
+.first-col {
+	width:15%;
+}
+.second-col {
+	width:84%;
+}
+#editor {
+	min-height: 500px;
 }
 </style>
 </head>
@@ -119,25 +105,29 @@ input[type=text] {
 			<br/>
 			<div class="form-check form-switch" id="fixedYn">
 				<input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"/>
-				<label class="form-check-label" for="flexSwitchCheckChecked">상단 고정 여부</label>
+				<label class="form-check-label" for="flexSwitchCheckChecked" id="fixedText">상단 고정 여부</label>
 			</div>
 			<br/>
 			<form action="/allBoard/write.do" method="post" id="writeForm" enctype="multipart/form-data">
-				<div>
-					<label class="writeLabel">제목</label>
-					<input type="text" id="titleText" name="title" maxlength="30"/>
-				</div>	
-				<br/><br/>
-				<div class="writeWrap">
-					<label class="writeLabel">파일 첨부</label>
-					<ul id="fileList"></ul>
-				</div>
-				<div class="fileBtnWrap">
-					<button type="button" id="fileInputButton" class="btn btn-secondary btn-sm">파일 선택</button>
-				</div>
-				<input type="file" name="attachFile" id="attachFile" multiple="multiple"/>
-				<br/><br/><br/>
-				<div id="editor"></div>
+				<table class="table table-borderless">
+					<tr>
+						<th class="first-col">제목</th>
+						<td class="second-col"><input type="text" id="titleText" name="title" class="form-control"/></td>
+					</tr>
+					<tr>
+						<th>
+							<button type="button" id="fileInputButton" class="btn btn-secondary btn-sm">파일 선택</button>
+							<input type="file" name="attachFile" id="attachFile" multiple="multiple"/>
+						</th>
+						<td><ul id="fileList" ></ul></td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<div id="editor"></div>
+						</td>
+					</tr>
+				</table>
+				
 				<div class="buttonCon">
 					<input type="button" id="cancleBtn" value="작성취소" class="btn btn-primary" onclick="writeCancle()"/>
 					<input type="button" id="finishBtn" value="작성완료" class="btn btn-primary" onclick="writeSubmit()"/>

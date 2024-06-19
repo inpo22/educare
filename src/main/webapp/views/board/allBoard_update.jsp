@@ -18,9 +18,9 @@
 <style>
 #backBoard{
 	background-color: white;
-	width: 60%;
+	width: 100%;
 	border-radius: 20px;
-	padding: 20px 0;
+	padding: 20px 10px;
 }
 
 #allBoardTitle{
@@ -33,7 +33,17 @@
 	font-weight: bold;
 }
 
-#updateForm {
+#fixedYn {
+	float: right;
+	margin-right: 30px;
+	font-weight: bold;
+}
+
+#fixedYn, #flexSwitchCheckChecked, #fixedText:hover{
+	cursor: pointer;
+}
+
+#writeForm {
 	margin-top: 30px;
 	font-size: 15px;
 	font-weight: bold;
@@ -42,33 +52,6 @@
 .writeLabel{
 	margin-left: 20px;
 }
-
-input[type=text] {
-	float:right;
-	margin-right: 30px;	
-	width: 50%;
-}
-
-
-
-#fileList {
-	float:right;
-	margin-right: 30px;	
-	width: 50%;
-}
-
-#fileInputButton {
-	float:right;
-	margin-right: 30px;
-	margin-top: 10px;
-}
-
-#editor {
-	margin-left: 20px;
-	margin-right: 30px;
-	margin-top: 10px;
-}
-
 .buttonCon{
 	display: flex;
     justify-content: center;
@@ -85,9 +68,9 @@ input[type=text] {
 		display: none;
 }
 #fileList {
-	border: solid 1px gray;
+	border: solid 1px lightgray;
 	border-radius: 5px;
-	min-height: 28px;
+	min-height: 37px;
 	height: auto;
 }
 #fileList li {
@@ -101,6 +84,15 @@ input[type=text] {
 .fileBtnWrap{
 	width: 100%;
     float: right;
+}
+.first-col {
+	width:15%;
+}
+.second-col {
+	width:84%;
+}
+#editor {
+	min-height: 500px;
 }
 </style>
 </head>
@@ -119,31 +111,42 @@ input[type=text] {
 			<br/>
 			<div class="form-check form-switch" id="fixedYn">
 				<input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" />
-				<label class="form-check-label" for="flexSwitchCheckChecked">상단 고정 여부</label>
+				<label class="form-check-label" for="flexSwitchCheckChecked" id="fixedText">상단 고정 여부</label>
 			</div>
 			<br/>
 			<form action="/allBoard/update.do" method="post" id="updateForm" enctype="multipart/form-data">
-				<div>
-					<label class="writeLabel">제목</label>
-					<input type="text" id="titleText" name="title" maxlength="30" value="${dto.title}"/>
-				</div>	
-				<br/><br/>
-				<div class="writeWrap">
-					<label class="writeLabel">파일 첨부</label>
-					<ul id="fileList"></ul>
-				</div>
-				<div class="fileBtnWrap">
-					<button type="button" id="fileInputButton" class="btn btn-secondary btn-sm">파일 선택</button>
-				</div>
-				<input type="file" name="attachFile" id="attachFile" multiple="multiple"/>
-				<br/><br/><br/>
-				<div id="editor"></div>
+				<table class="table table-borderless">
+					<tr>
+						<th class="first-col">제목</th>
+						<td class="second-col"><input type="text" id="titleText" name="title" class="form-control" value="${dto.title}"/></td>
+					</tr>
+					<tr>
+						<th>
+							<button type="button" id="fileInputButton" class="btn btn-secondary btn-sm">파일 선택</button>
+							<input type="file" name="attachFile" id="attachFile" multiple="multiple"/>
+						</th>
+						<td>
+							<ul id="fileList" >
+								 <c:forEach var="file" items="${attachFileList}">
+                                    <li><span >${file.ori_filename}</span>&nbsp;&nbsp;&nbsp;<span onclick="deleteFileList(this, '${file.file_no}')">X</span></li>
+                                </c:forEach>
+							</ul>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<div id="editor">${dto.contents}</div>
+						</td>
+					</tr>
+				</table>
 				<div class="buttonCon">
 					<input type="button" id="cancleBtn" value="수정취소" class="btn btn-primary" onclick="updateCancle()"/>
 					<input type="button" id="finishBtn" value="수정완료" class="btn btn-primary" onclick="updateSubmit()"/>
 				</div>
+				<input type="hidden" name="post_no" id="post_no" value="${dto.post_no}"/>
 				<input type="hidden" name="contents" id="content"/>
 				<input type="hidden" name="fixed_yn" id="checkBox"/>
+				<input type="hidden" name="fileNumbers" id="fileNumbers"/>
 			</form>
 		</div>
 		<!-- End Page Title -->
@@ -155,6 +158,7 @@ input[type=text] {
 
 </body>
 <script>
+console.log();
 const editor = new toastui.Editor({
 	   el: document.querySelector('#editor'),
 	   height: '300px',
@@ -165,6 +169,13 @@ const editor = new toastui.Editor({
 	editor.removeToolbarItem('codeblock');
 
 	var fileList = [];
+
+    <c:forEach var="file" items="${attachFileList}">
+    fileList.push({
+        file_no: "${file.file_no}"
+    });
+</c:forEach>
+console.log(fileList);
 
 	$('#fileInputButton').click(function() {
 		$('#attachFile').click();
@@ -178,6 +189,14 @@ const editor = new toastui.Editor({
 		updateFileList();
 		updateAttachFile();
 	});
+	
+	// 파일리스트에서삭제
+	function deleteFileList(spanElement, file_no) {
+		console.log(file_no);
+		fileList = fileList.filter(file => file.file_no !== file_no);
+		console.log(fileList);
+		$(spanElement).closest('li').remove();
+	}
 
 	function updateFileList() {
 		$('#fileList').empty();
@@ -209,7 +228,7 @@ const editor = new toastui.Editor({
 	function updateCancle(){
 		location.href = '/allBoard/list.go';
 	}
-
+	
 	// 수정완료
 	function updateSubmit(){
 		var editContent = editor.getHTML()+'';
@@ -217,6 +236,8 @@ const editor = new toastui.Editor({
 		console.log(editor.getMarkdown());
 		var isChecked = $('#flexSwitchCheckChecked').prop('checked');
 		console.log(isChecked);
+	    var fileNumbers = fileList.map(file => file.file_no).join(',');
+	    $('#fileNumbers').val(fileNumbers);
 		if(isChecked == true){
 			$('#checkBox').val(1);		
 		}else{
