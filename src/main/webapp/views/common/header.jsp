@@ -88,18 +88,20 @@
             <li class="nav-item dropdown pe-3">
 
                 <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                    <!--회원이미지<img src="/resources/assets/img/profile-img.jpg" alt="Profile" class="rounded-circle"> -->
-                    <span class="d-none d-md-block dropdown-toggle ps-2">유저1</span>
+                    <img src="/resources/assets/img/profile-img.jpg" alt="Profile" class="rounded-circle"> 
+                    <span class="d-none d-md-block dropdown-toggle ps-2">${sessionScope.name}</span>
                 </a><!-- 프로필 아이콘 끝 -->
 
                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                     <li class="dropdown-header">
-                        <h6>${sessionScope.loginInfo.name}</h6>
-                        <span>${sessionScope.loginInfo.team_name}</span>
+                        <h6>${sessionScope.user_code}</h6>
+                        <span>${sessionScope.team_name}</span>
                         <br>
-                        <span>${sessionScope.loginInfo.class_name}</span>
+                        <span>${sessionScope.class_code}</span>
                         <br>
-                        <span>${sessionScope.loginInfo.team_code}</span>
+                        <span>${sessionScope.team_code}</span>
+                        <br>
+                        <span>${sessionScope.classify_code}</span>
                     </li>
                     <li>
                         <hr class="dropdown-divider">
