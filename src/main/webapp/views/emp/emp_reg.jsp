@@ -17,9 +17,10 @@
 <script src="https://uicdn.toast.com/tui-tree/latest/tui-tree.js"></script>
 
 <style>
-#msg{
+#msg,#length-msg,#pattern-msg{
 	margin-left: 50px;
 }
+
 #team_btn{
 	margin-left: 50px;
 }
@@ -196,6 +197,8 @@ label[for="id"]{
                  <div class="form-group">
                      <label for="pw">비밀번호:</label>
                      <input type="password" id="pw" name="pw" required>
+                     <br/><span id="length-msg"></span>
+                     <br/><span id="pattern-msg"></span>
                  </div>
                  <div class="form-group">
                      <label for="pwchk">비밀번호 확인:</label>
@@ -523,18 +526,6 @@ function reg(){
 
 			return false;
 		
-		}
-		// 비밀번호 유효성 검사
-		var regex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[!@#$%^&*()_+={}[\]:;'"<>,./?\\|~-]).{8,16}$/;
-	    
-		if(!regex.test($pw.val())){
-			alert("비밀번호는 8-16자리, 숫자, 소문자, 특수문자를 모두 포함해야 합니다.")
-			$pw.focus();
-			return false;
-		}else if($pw.val().indexOf(" ") !== -1){
-			alert("비밀번호는 공백을 포함할 수 없습니다.")
-			$pw.focus();
-			return false;
 		}else{
 			alert("사원 등록에 성공했습니다.");
 			$('form').submit();
@@ -556,6 +547,32 @@ $('#pwchk').on('keyup', function(){
     } else {
         $('#msg').html('비밀번호가 일치하지 않습니다.');
         $('#msg').css({'color': 'red'});
+    }
+});
+
+// 비밀번호 유효성검사
+$('#pw').on('keyup', function(){
+	var pw = $('input[name="pw"]').val();
+	
+	// 비밀번호 길이 확인 (8-16자)
+    if (pw.length < 8 || pw.length > 16) {
+        $('#length-msg').html("☹ 비밀번호는 8자 이상 16자 이하여야 합니다.");
+        $('#length-msg').css({'color': 'red'});
+    } else {
+    	 $('#length-msg').html("☺ 비밀번호는 8자 이상 16자 이하여야 합니다.");
+         $('#length-msg').css({'color': 'green'});
+    }
+	
+ 	// 비밀번호 패턴 확인 (영어, 소문자, 특수문자 포함)
+    var pattern = /^(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[a-zA-Z\d!@#$%^&*(),.?":{}|<>]{8,}$/;
+
+ 
+    if (!pattern.test(pw)) {
+        $('#pattern-msg').html("☹ 영어 소문자, 숫자, 특수문자를 포함해야 합니다.");
+        $('#pattern-msg').css({'color': 'red'});
+    } else {
+    	$('#pattern-msg').html("☺ 영어 소문자, 숫자, 특수문자를 포함해야 합니다.");
+        $('#pattern-msg').css({'color': 'green'});
     }
 });
 

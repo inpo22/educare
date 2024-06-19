@@ -50,7 +50,7 @@ body {
     margin-right: 20px;
 }
 
-.emp-profile img {
+.emp-profile img{
     width: 250px; /* 사진의 너비 조정 */
     height: auto; /* 높이 자동 조정 */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
@@ -58,6 +58,15 @@ body {
     margin-bottom: 20px;
     margin-right: 10px;
 }
+.bi.bi-person-fill {
+    font-size: 250px;
+    width: 250px; /* 사진의 너비 조정 */
+    height: auto; 
+    margin-left: 30px;
+    margin-bottom: 20px;
+    margin-right: 10px;
+}
+
 
 .employee-info {
     flex: 1; /* 남은 공간을 모두 차지하도록 */
@@ -130,7 +139,9 @@ input[readonly] {
 .info-group input {
     flex: 1;
 }
-
+#empList_go{
+	height:38px;
+}
 
 
 </style>
@@ -159,7 +170,7 @@ input[readonly] {
 			        </c:when>
 			        <c:otherwise>
 			            <!-- 기본 프로필 사진 또는 다른 대체 이미지 -->
-			            <img src="/resources/img/profile.png">
+			            <i class="bi bi-person-fill"></i>
 			        </c:otherwise>
 			    </c:choose>
                 <div class="employee-info">

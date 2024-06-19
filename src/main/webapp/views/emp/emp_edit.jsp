@@ -147,6 +147,10 @@ input[type="text"]:readonly {
 #status{
 	width:39%;
 }
+#msg{
+	font-weight: bold;
+	color: red;
+}
 </style>
 
 </head>
@@ -199,7 +203,7 @@ input[type="text"]:readonly {
                  <div class="form-group">
                      <label for="team" class="team-select">부서:${empDto.team_name}</label>
                      <button id="team_btn" class="btn btn-dark" type="button" onclick="openModal()">부서 선택</button>
-                     <input type="hidden" 	id="team_code" name="team_code" value="${empDto.team_name}"/>
+                     <input type="hidden" id="team_code" name="team_code" value="${empDto.team_code}"/>
                  </div>
                  <div class="form-group">
                      <label for="gender">성별:</label>
@@ -266,13 +270,20 @@ input[type="text"]:readonly {
             	<div class="col-md-6"></div>
 	            <div class="d-flex justify-content-end">
 	            	<span id="msg"></span><br>
-	                <button id="pw_reset" class="btn btn-outline-danger" type="button">비밀번호 초기화</button>
+	            </div>
+	         </div>
+	         <div class="row mt-3">
+            	<div class="col-md-6"></div>
+	            <div class="d-flex justify-content-end">
+	            	<span id="msg"></span><br>
+	                <button id="pw_reset" class="btn btn-outline-danger" type="button" onclick="reset()">비밀번호 초기화</button>
+	            	<input type="hidden" id="pw" name="pw" value="${empDto.pw}"/>
 	            </div>
 	         </div>
 	         <div class="row mt-3">
             	<div class="col-md-6"></div>
 	            <div class="col-md-6 d-flex justify-content-end">
-	           		<button id="empDetail_go" class="btn btn-dark" type="button">취소</button>
+	           		<button id="empDetail_go" class="btn btn-dark" type="button" onclick="detail('${empDto.user_code}')">취소</button>
 	            	<button id="empDetail_fn" class="btn btn-dark" type="button" onclick="edit()">수정완료</button>
 	            </div>
 	        </div>
@@ -321,7 +332,6 @@ function previewImage(event) {
     };
     reader.readAsDataURL(event.target.files[0]);
 }
-
 
 
 // 부서 등록 모달 창 열기
@@ -470,6 +480,16 @@ function phoneNumber(e){
 	e.value=e.value.slice(0,13);	
     }
 }
+
+function detail(user_code){
+	window.location.href = '/emp/detail.go?user_code='+user_code;
+}
+
+// 비밀번호 초기화
+$('#pw_reset').on('click',function(){
+	$('#pw').val('00000000'); // 비밀번호를 '00000000'으로 설정
+	$('#msg').html("수정완료 버튼을 누르면 비밀번호 00000000 으로 초기화 됩니다.")
+});
 
 
 </script>

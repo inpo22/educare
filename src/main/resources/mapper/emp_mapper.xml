@@ -154,7 +154,9 @@
 	SELECT  
 		u.user_code,
 		u.name,
-		tc.code_name AS team_name, 
+		d.team_name, 
+		u.team_code,
+		u.pw,
     	cc.code_name AS class_name, 
     	pc.code_name AS position_name,
     	cfc.code_name AS classify_name,
@@ -170,7 +172,7 @@
     FROM 
 	    `user` u
 	LEFT JOIN 
-	    all_code tc ON u.team_code = tc.code
+	    department d ON d.team_code = u.team_code
 	LEFT JOIN 
 	    all_code cc ON u.class_code = cc.code
 	LEFT JOIN 
@@ -190,6 +192,7 @@
 		gender=#{gender} ,
 		quit_date = 
 	        CASE WHEN #{quit_date} = '' THEN NULL ELSE #{quit_date} END,
+	    pw = CASE WHEN #{pw} IS NULL THEN pw ELSE #{pw} END,
 		class_code=#{class_code} ,
 		classify_code=#{classify_code} ,
 		status=#{status} ,

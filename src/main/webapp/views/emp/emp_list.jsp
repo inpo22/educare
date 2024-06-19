@@ -31,14 +31,13 @@
 	margin:3px 0;
 	border: 1px solid black;
 }
-#backBoard{
-	background-color: white;
-	width:100%;
-	height:1000px;
-	border-radius: 10px;
-	position: relative;
-	margin: 20px auto;
-	box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+#backBoard {
+    background-color: white;
+    width: 100%;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
 }
 #empReg_btn,#quitList_btn{
 	margin : 7px 0 7px 10px;
