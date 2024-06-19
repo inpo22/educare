@@ -19,8 +19,8 @@
 		  cte.dept_level + 1 AS dept_level
 		  FROM department d
 		   INNER JOIN cte ON cte.team_code = d.upper_code
-	)
-	SELECT * FROM cte;
+		)
+		 SELECT * FROM cte;
 
 	</select>
 
