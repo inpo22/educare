@@ -93,26 +93,27 @@ public class BoardService {
 	// 파일 저장
 	private void fileSave(MultipartFile[] attachFile, BoardDTO dto) {
 		int count = 1;
+		
 		for (MultipartFile file : attachFile) {
-
-			dto.setOri_filename(file.getOriginalFilename());
-			String new_filename = "allboardFile_" + dto.getPost_no() + '_' + count
-					+ dto.getOri_filename().substring(dto.getOri_filename().lastIndexOf("."));
-			dto.setNew_filename(new_filename);
-			count++;
-			try {
-				byte[] bytes = file.getBytes();
-				Path path = Paths.get(root + new_filename);
-				Files.write(path, bytes);
-
-				dto.setBoard_type("board");
-				boardDAO.fileSave(dto);
-				logger.info(count + "회 완료");
-
-			} catch (Exception e) {
-				e.printStackTrace();
+			String ori_filename = file.getOriginalFilename();
+			if(!ori_filename.equals("")){
+				String new_filename = "allboardFile_" + dto.getPost_no() + '_' + count
+						+ dto.getOri_filename().substring(dto.getOri_filename().lastIndexOf("."));
+				dto.setNew_filename(new_filename);
+				count++;
+				try {
+					byte[] bytes = file.getBytes();
+					Path path = Paths.get(root + new_filename);
+					Files.write(path, bytes);
+	
+					dto.setBoard_type("board");
+					boardDAO.fileSave(dto);
+					logger.info(count + "회 완료");
+	
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
-
 		}
 	}
 
