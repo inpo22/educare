@@ -3,12 +3,27 @@
    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.edu.care.dao.LoginDAO">
-	
-	<select id="loginAccess" resultType="Integer">
-		SELECT COUNT(id)
-		FROM user
-		WHERE id = #{param1} and pw = #{param2}
+
+	<select id="loginAccess" resultType="com.edu.care.dto.LoginDTO">
+		SELECT
+		 	u.user_code
+		 	,u.team_code
+			,u.class_code 
+			,u.classify_code
+			,u.name 
+			,d.team_name
+		FROM 
+			user u
+		JOIN 
+			department d 
+		ON 
+			u.team_code = d.team_code
+		WHERE
+		 	u.id = #{param1} AND u.pw = #{param2}
 	</select>
+
+	
+
 	
 	
 </mapper>
