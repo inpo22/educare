@@ -7,13 +7,16 @@
 <title>부서 관리</title>
 <meta content="" name="description">
 <meta content="" name="keywords">
-
 <jsp:include page="/views/common/head.jsp"></jsp:include>
-<meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
 <style>
 .invalidation {
 	color: red;
+	display: none;
+}
+#deptInfo_table_sample{
+	display: none;
+}
+#deptUser_list_sample{
 	display: none;
 }
 </style>
@@ -81,23 +84,30 @@
 										aria-controls="deptInfo" aria-selected="true">부서 정보</button>
 									</li>
 									<li class="nav-item flex-fill" role="presentation">
-										<button class="nav-link w-100" id="deptList_tab" onclick="clickTab('deptList')" data-bs-toggle="tab" data-bs-target="#deptList_tab_content" type="button" role="tab" 
-										aria-controls="deptList" aria-selected="false">부서원 리스트</button>
+										<button class="nav-link w-100" id="deptUser_tab" onclick="clickTab('deptUser')" data-bs-toggle="tab" data-bs-target="#deptUser_tab_content" type="button" role="tab" 
+										aria-controls="deptUser" aria-selected="false">부서원 리스트</button>
 									</li>
 								</ul>
-								<div class="tab-content pt-2" id="tabContent">
-									<div class="tab-pane fade show active" id="deptInfo_tab_content" role="tabpanel" aria-labelledby="deptInfo_tab">
-										<table id="deptInfo_table" class="table table-borderless">
-										</table>
-									</div>
-									<div class="tab-pane fade" id="deptList_tab_content" role="tabpanel" aria-labelledby="deptList_tab"></div>
-								</div>
  								<!-- TabsEnd -->
 								
 							</div>
 							<!-- care-header End -->
 							<div id="card-body-list" class="card-body">
 								<!-- 부서 card body 내용 -->
+								<div class="tab-content pt-2" id="tabContent">
+									<div class="tab-pane fade show active" id="deptInfo_tab_content" role="tabpanel" aria-labelledby="deptInfo_tab">
+										<table id="deptInfo_table" class="table table-borderless">
+										</table>
+									</div>
+									<div class="tab-pane fade" id="deptUser_tab_content" role="tabpanel" aria-labelledby="deptUser_tab">
+										<input class="form-check-input all" type="checkbox">
+										<button type="button" class="btn btn-outline-primary btn-sm">부서장 위임</button>
+										<button type="button" class="btn btn-outline-primary btn-sm">부서 이동</button>
+										<br/><br/>
+										<ul id="deptUser_list" class="list-group">
+										</ul>
+									</div>
+								</div>
 							</div>
 							<!-- care-body End -->
 						</div>
@@ -116,23 +126,39 @@
 	<table id="deptInfo_table_sample" class="table table-borderless">
 		<tbody>
 			<tr>
-				<th scope="row">1</th>
-				<td>Brandon Jacob</td>
-				<td>Designer</td>
-				<td>28</td>
-				<td>2016-05-25</td>
+				<th>부서명(한글)</th>
+				<td></td>
 			</tr>
 			<tr>
-				<th scope="row">2</th>
-				<td>Bridie Kessler</td>
-				<td>Developer</td>
-				<td>35</td>
-				<td>2014-12-05</td>
+				<th>부서 코드</th>
+				<td></td>
+			</tr>
+			<tr>
+				<th>부서 생성일</th>
+				<td></td>
+			</tr>
+			<tr>
+				<th>상위 부서</th>
+				<td>upper</td>
+			</tr>
+			<tr>
+				<th>하위 부서</th>
+				<td>lower</td>
 			</tr>
 		</tbody>
 	</table>
-	<!-- deptInfo Tables -->
-	
+	<!-- deptInfo Tables End -->
+
+	<!-- deptUser List -->
+	<ul id="deptUser_list_sample" class="list-group">
+		<li class="list-group-item">
+			<input class="form-check-input me-1" type="checkbox">
+			<i class="ri-account-circle-fill"></i>
+			<span>name</span>
+		</li>
+	</ul>
+	<!-- deptUser List End -->
+
 	<!-- CreateDept Modal -->
 	<div class="modal fade" id="createDeptModal" tabindex="-1">
 	<div class="modal-dialog modal-sm">
@@ -175,7 +201,8 @@
 	});
 	
 	// 변수
-	var selected_nodeId;
+	var selected_nodeId = 'tui-tree-node-1';
+	var selected_tab = 'deptInfo';
 
 	// 부서 트리 객체 생성
 	var tree = new tui.Tree('#deptTree', {
@@ -204,14 +231,15 @@
 		team_code: 'T00',
 		team_name: '에듀케어',
 		upper_code: 'T00',
-		reg_date: 0,
+		reg_date: '2002-02-02',
 	});
 
 	// tree-select event
 	tree.on('select', function(e){
 		selected_nodeId = e.nodeId;
 		console.log('selected node id: '+e.nodeId);
-		console.log('selected node data: '+nodeData.team_code,'/'+nodeData.team_name,'/'+nodeData.upper_code);
+		//console.log('selected node data: '+nodeData.team_code,'/'+nodeData.team_name,'/'+nodeData.upper_code);
+		loadContent(selected_tab,e.nodeId);
 	});
 	
 	// tree-edit event
@@ -331,10 +359,26 @@
 				console.log('deptList: ',result.deptList);			
 	 			if(result.deptList.length > 0){
 	 				createTree(result.deptList);
+		 			loadContent('deptInfo', selected_nodeId);
 				}else{
 					console.log('부서 읎다');
 				}
-	 			loadContent('deptInfo');
+	 		},
+			error	:	function(error){
+				console.log(error);
+			}
+		});
+	 }
+	function getUser_ajax(code){
+		$.ajax({
+			type	: 'get',
+			url		: '/dept/user/list.ajax',
+			data	:	{
+				'team_code'	: code
+			},
+			dataType: 'json',
+			success	: function(result){
+				console.log('userList: ',result.userList);
 	 		},
 			error	:	function(error){
 				console.log(error);
@@ -381,7 +425,6 @@
 			}
 		});
 	}	
-	//수정중
 	function updateDept_ajax(param){
 		$.ajax({
 			type	: 'post',
@@ -473,29 +516,74 @@
 		}
 		return false;		
 	}
-	function loadContent(type){
+	// 수정중
+	function loadContent(type, nodeId){
 		if(type == 'deptInfo'){
-			var table = $('#deptInfo_table_sample tbody').clone();
-			$('#deptInfo_table').append(table);
-			$('#deptInfo_table').attr('style', "display:'';")
+			var now = tree.getNodeData(nodeId);
+			var parent = tree.getNodeData(tree.getParentId(nodeId));
+			var child = tree.getNodeData(tree.getChildIds(nodeId)[0]);
+			var og_table = $('#deptInfo_table_sample tbody').clone(true);
+			var new_table = $('#deptInfo_table');
+			console.log('::load deptInfo table::');
+			console.log(nodeId,':',now);
+			console.log('parent:',parent.team_name);
+			console.log('child:',child);
+			
+			og_table.find('td').eq(0).text(now.team_name);
+			og_table.find('td').eq(1).text(now.team_code);
+
+			if(now.reg_date == null || now.reg_date == "" || now.reg_date == "defined"){
+				og_table.find('td').eq(2).text('-');
+			}else{
+				var dt = new Date(now.reg_date);
+				var dt_form = dt.getFullYear()+'년 '+(dt.getMonth()+1)+'월 '+dt.getDate()+'일';
+				og_table.find('td').eq(2).text(dt_form);
+			}			
+			if(parent.team_name == null || parent.team_name == "" || parent.team_name == "defined"){
+				og_table.find('td').eq(3).text('-');
+			}else{
+				og_table.find('td').eq(3).text(parent.team_name);
+			}
+			if(child == null || child == "" || child == "defined"){
+				og_table.find('td').eq(4).text('-');
+			}else{
+				og_table.find('td').eq(4).text(child.team_name+' 외');
+			}
+			
+			new_table.empty();
+			new_table.append(og_table);
+			new_table.attr('style', "display:'';");
+			//new_table.attr('style', "display:'none';");
+		
+		} else if(type='deptUser'){
+			var code = tree.getNodeData(nodeId).team_code;
+			var og_list = $('#deptUser_list_sample li').clone(true);
+			var new_list = $('#deptUser_list');
+			console.log('::load deptUser list::');
+			console.log('code: ', code);
+			getUser_ajax(code);
+
+			console.log('before: ', og_list.html())
+			new_list.empty();
+			new_list.append(og_list);
+			console.log('after: ', new_list.html())
+			new_list.attr('style', "display:'';");
 		}
 	}
 	// tab click
 	function clickTab(type){
 		console.log('click tab: ',type);
 		if(type == 'deptInfo'){
-
-		}else if(type='deptList'){
-			
+			selected_tab = type;
+			loadContent(type, selected_nodeId);
+		}else if(type='deptUser'){
+			selected_tab = type;
+			loadContent(type, selected_nodeId);
 		}else {
 			
 		}
 	}
  // methodEnd
-
-	
-
-
 
 </script>
 </html>
