@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.edu.care.dao.DeptDAO;
 import com.edu.care.dto.DeptDTO;
+import com.edu.care.dto.EmpDTO;
 
 @Service
 public class DeptService {
@@ -26,16 +27,18 @@ public class DeptService {
 		if(deptList.size() < 0) {
 			logger.info("deptList is empty ");
 		}
+		logger.info("deptList: "+deptList);
 		result.put("deptList", deptList);
 		return result;
 	}
 	// 부서원 리스트 조회
-	public Map<String, Object> getUser() {
+	public Map<String, Object> getUser(Map<String, Object> param) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		List<DeptDTO> userList = deptDAO.getUser();
+		List<EmpDTO> userList = deptDAO.getUser(param);
 		if(userList.size() < 0) {
 			logger.info("userList is empty ");
 		}
+		logger.info("userList: "+userList);
 		result.put("userList", userList);
 		return result;
 	}
@@ -63,7 +66,7 @@ public class DeptService {
 		}
 		logger.info("부서 삭제 결과: "+msg);
 		result.put("msg", msg);
-		return null;
+		return result;
 	}
 
 	// 부서 수정

@@ -8,6 +8,12 @@
 <meta content="" name="description">
 <meta content="" name="keywords">
 <jsp:include page="/views/common/head.jsp"></jsp:include>
+<!-- tree css -->
+<link rel="stylesheet" href="https://uicdn.toast.com/tui.context-menu/latest/tui-context-menu.css"/>
+<link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui-tree/latest/tui-tree.css" />
+<!-- tree js -->
+<script src="https://uicdn.toast.com/tui.context-menu/latest/tui-context-menu.js"></script>	
+<script src="https://uicdn.toast.com/tui-tree/latest/tui-tree.js"></script>
 <style>
 .invalidation {
 	color: red;
@@ -19,16 +25,12 @@
 #deptUser_list_sample{
 	display: none;
 }
+.tui-tree-wrap{
+      width: auto;
+   }
 </style>
-<!-- tree css -->
-<link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui-tree/latest/tui-tree.css" />
-<link rel="stylesheet" href="https://uicdn.toast.com/tui.context-menu/latest/tui-context-menu.css"/>
-<!-- tree js -->
-<script src="https://uicdn.toast.com/tui-tree/latest/tui-tree.js"></script>
-<script src="https://uicdn.toast.com/tui.context-menu/latest/tui-context-menu.js"></script>	
 </head>
 <body>
-
 	<jsp:include page="/views/common/header.jsp"></jsp:include>
 	<jsp:include page="/views/common/sidebar.jsp"></jsp:include>
 
@@ -37,7 +39,6 @@
 		<h1>부서 관리</h1>
 		</div>
 		<!-- End Page Title -->
-		
 		<div class="content">
 			<div class="container-fluid">
 				<div class="row">
@@ -152,7 +153,7 @@
 	<!-- deptUser List -->
 	<ul id="deptUser_list_sample" class="list-group">
 		<li class="list-group-item">
-			<input class="form-check-input me-1" type="checkbox">
+			<input class="form-check-input" type="checkbox">
 			<i class="ri-account-circle-fill"></i>
 			<span>name</span>
 		</li>
@@ -198,6 +199,7 @@
 <script>
 	$(document).ready(function() {
 		getDept_ajax();
+		console.log('select:',selected_nodeId);
 	});
 	
 	// 변수
@@ -210,7 +212,6 @@
 		nodeDefaultState: 'opened'
 	});
 	
-	//var menu = new tui.contextMenu(document.querySelector('#deptTree'));
 	// modal 객체
 	var createDeptModal = new bootstrap.Modal(
 			document.getElementById('createDeptModal'), { keyboard: false });
@@ -225,7 +226,13 @@
 		isSortable: true
 	}).enableFeature('Editable', {
 		dataKey: 'text'
+	}).enableFeature('ContextMenu', {
+		menuData: [
+			{title: 'menu1'},
+			{title: 'menu2', disable: true}
+		]
 	});
+	
 	// root node data	
 	tree.setNodeData('tui-tree-node-1', {
 		team_code: 'T00',
@@ -292,11 +299,7 @@
 			console.log('update fail');
 		}
 	});
-	
-	/* menu.register('#target', onclick, [
-		{title: '부서 추가', command: 'create'}
-	]);
-	 */
+
 	// basic event
 	// create Dept
 	// open modal createDept 
@@ -356,20 +359,21 @@
 			url		: '/dept/list.ajax',
 			dataType: 'json',
 			success	: function(result){
-				console.log('deptList: ',result.deptList);			
+				console.log('deptList: ',result.deptList);
 	 			if(result.deptList.length > 0){
 	 				createTree(result.deptList);
 		 			loadContent('deptInfo', selected_nodeId);
 				}else{
-					console.log('부서 읎다');
+					console.log('data empty');
 				}
 	 		},
-			error	:	function(error){
+			error	: function(error){
 				console.log(error);
 			}
 		});
 	 }
 	function getUser_ajax(code){
+		var result_data;
 		$.ajax({
 			type	: 'get',
 			url		: '/dept/user/list.ajax',
@@ -377,14 +381,26 @@
 				'team_code'	: code
 			},
 			dataType: 'json',
+			async	: false,
 			success	: function(result){
-				console.log('userList: ',result.userList);
+				//console.log('userList: ',result.userList);
+	 			if(result.userList != null){
+	 				result_data = result.userList;
+	 				var emp_cnt = result.userList.length;
+					console.log('부서 인원수: ', emp_cnt);
+					tree.setNodeData(selected_nodeId, {
+						emp_cnt: emp_cnt
+					});
+				}else{
+					console.log('data empty');
+				}
 	 		},
-			error	:	function(error){
+			error	: function(error){
 				console.log(error);
 			}
 		});
-	 }
+		return result_data;
+	}
 		
 	function createDept_ajax(param){
 		$.ajax({
@@ -395,11 +411,13 @@
 			success	: function(result){
 				console.log('createDept_ajax: ',result.msg);
 				if(result.msg == 'success'){
-					addNode(param);
 					alert('해당 부서가 등록되었습니다.');
+					addNode(param);
+					loadContent(selected_tab, selected_nodeId);
+					console.log('selected_nodeId: ', selected_nodeId);
 				}
 	 		},
-			error	:	function(error){
+			error	: function(error){
 				console.log(error);
 			}
 		});
@@ -417,10 +435,14 @@
 				console.log('removeDept_ajax: ',result.msg);
 				if(result.msg == 'success'){
 					alert('해당 부서가 삭제되었습니다.');
-					tree.remove(selected_nodeId);
+					var remove_nodeId = selected_nodeId;
+					selected_nodeId = tree.getParentId(selected_nodeId);
+					loadContent(selected_tab, selected_nodeId);
+					tree.select(selected_nodeId);
+					tree.remove(remove_nodeId);
 				}
 	 		},
-			error	:	function(error){
+			error	: function(error){
 				console.log(error);
 			}
 		});
@@ -442,14 +464,18 @@
 							console.log(msg);
 							 */
 							tree.setNodeData(e.nodeId, {upper_code: param.team_code});	// update node data
+							selected_nodeId = e.nodeId;
 							console.log('updated node data: ',tree.getNodeData(e.nodeId));
 					 	});
 						
 					}else if(param.type == 'name'){
 						tree.finishEditing();
 						tree.setNodeData(param.nodeId, {team_name: param.team_name});	// update node data
+						selected_nodeId = param.nodeId;
 						console.log('updated node data: ', tree.getNodeData(param.nodeId))
 					}
+					tree.select(selected_nodeId);
+					loadContent(selected_tab, selected_nodeId);
 				}else{
 					alert('해당 부서 수정을 실패했습니다.');
 				}
@@ -465,20 +491,15 @@
 	// method
 	// 트리 생성
 	function createTree(list){
-		// 부서코드 순으로 리스트 정렬
-		list.sort(function(a, b){
-			let tcA = Number(a.team_name.substring(1));
-			let tcB = Number(b.team_name.substring(1));
-			return tcA - tcB;
-		});
-		
-		// 정렬한 리스트 순서대로 조직화
 		list.forEach(function (data, idx){
 			console.log(idx,'data:', data);
 			//var code = 1+Number(data.team_code.substring(1));
 			addNode(data)
+			
 			console.log('====================================================')
 		});
+		selected_nodeId = 'tui-tree-node-1';
+		tree.select(selected_nodeId);
 	}
 	// 노드 추가
 	function addNode(data){
@@ -486,7 +507,7 @@
 			var nodeId = 'tui-tree-node-'+i;
 			var nodeData = tree.getNodeData(nodeId);
 			if(nodeData == null){
-				continue;	
+				continue;
 			}else if(nodeData.team_code == data.upper_code){
 				var addedNodeId = tree.add({text:data.team_name}, nodeId);
 				tree.setNodeData(addedNodeId, {
@@ -499,7 +520,9 @@
 				console.log('added node data: ',tree.getNodeData(addedNodeId))
 				console.log('upper:',nodeData.team_code,'-',data.upper_code,'=>',nodeId);
 			}
-		}		
+		}
+		selected_nodeId = addedNodeId;
+		tree.select(selected_nodeId);
 	}
 	// team code 중복 체크
 	function checkOverlap(newTC){
@@ -516,58 +539,71 @@
 		}
 		return false;		
 	}
-	// 수정중
+
 	function loadContent(type, nodeId){
 		if(type == 'deptInfo'){
 			var now = tree.getNodeData(nodeId);
 			var parent = tree.getNodeData(tree.getParentId(nodeId));
 			var child = tree.getNodeData(tree.getChildIds(nodeId)[0]);
-			var og_table = $('#deptInfo_table_sample tbody').clone(true);
-			var new_table = $('#deptInfo_table');
+			var ogTable = $('#deptInfo_table_sample tbody').clone(true);
+			var newTable = $('#deptInfo_table');
 			console.log('::load deptInfo table::');
 			console.log(nodeId,':',now);
-			console.log('parent:',parent.team_name);
-			console.log('child:',child);
+			//console.log('parent:',parent.team_name);
+			//console.log('child:',child);
 			
-			og_table.find('td').eq(0).text(now.team_name);
-			og_table.find('td').eq(1).text(now.team_code);
+			ogTable.find('td').eq(0).text(now.team_name);
+			ogTable.find('td').eq(1).text(now.team_code);
 
 			if(now.reg_date == null || now.reg_date == "" || now.reg_date == "defined"){
-				og_table.find('td').eq(2).text('-');
+				ogTable.find('td').eq(2).text('-');
 			}else{
 				var dt = new Date(now.reg_date);
 				var dt_form = dt.getFullYear()+'년 '+(dt.getMonth()+1)+'월 '+dt.getDate()+'일';
-				og_table.find('td').eq(2).text(dt_form);
+				ogTable.find('td').eq(2).text(dt_form);
 			}			
 			if(parent.team_name == null || parent.team_name == "" || parent.team_name == "defined"){
-				og_table.find('td').eq(3).text('-');
+				ogTable.find('td').eq(3).text('-');
 			}else{
-				og_table.find('td').eq(3).text(parent.team_name);
+				ogTable.find('td').eq(3).text(parent.team_name);
 			}
 			if(child == null || child == "" || child == "defined"){
-				og_table.find('td').eq(4).text('-');
+				ogTable.find('td').eq(4).text('-');
 			}else{
-				og_table.find('td').eq(4).text(child.team_name+' 외');
+				ogTable.find('td').eq(4).text(child.team_name+' 외');
 			}
 			
-			new_table.empty();
-			new_table.append(og_table);
-			new_table.attr('style', "display:'';");
-			//new_table.attr('style', "display:'none';");
-		
+			newTable.empty();
+			newTable.append(ogTable);
+			newTable.attr('style', "display:'';");
+		// 수정중
 		} else if(type='deptUser'){
-			var code = tree.getNodeData(nodeId).team_code;
-			var og_list = $('#deptUser_list_sample li').clone(true);
-			var new_list = $('#deptUser_list');
 			console.log('::load deptUser list::');
+			var code = tree.getNodeData(nodeId).team_code;
 			console.log('code: ', code);
-			getUser_ajax(code);
-
-			console.log('before: ', og_list.html())
-			new_list.empty();
-			new_list.append(og_list);
-			console.log('after: ', new_list.html())
-			new_list.attr('style', "display:'';");
+			var userList = getUser_ajax(code);
+			console.log('userList: ',userList);
+			var ogList = $('#deptUser_list_sample li').clone(true);
+			var newList = $('#deptUser_list');
+			
+			newList.empty();
+			console.log(ogList.html());
+			console.log(newList);
+			if(userList.length > 0){
+				userList.forEach(function(data, i){
+					//ogList.find('li').addClass(data.team_code+'-'+i);
+					ogList.find('input').addClass(data.user_code);
+					ogList.find('span').text(data.name+' '+data.class_name);
+					if(data.position_code == 'P01'){
+						newList.prependTo(ogList);
+					}else{
+						newList.appendTo(ogList);
+					}
+				});	
+			}else{
+				newList.append(ogList);
+			}
+			newList.attr('style', "display:'';");
 		}
 	}
 	// tab click
