@@ -19,12 +19,19 @@ public class ApprovalDTO {
 	private Timestamp end_date;
 	private int va_type;
 	
+	private int apv_no;
+	private int state;
+	private Timestamp apv_date;
+	
 	private String team_code;
 	private String team_name;
 	private String upper_code;
 	
 	private String user_name;
 	private String class_name;
+	
+	private int is_my_turn;
+	private int total_order_state;
 	
 	public String getTeam_code() {
 		return team_code;
@@ -121,6 +128,36 @@ public class ApprovalDTO {
 	}
 	public void setVa_type(int va_type) {
 		this.va_type = va_type;
+	}
+	public int getApv_no() {
+		return apv_no;
+	}
+	public int getState() {
+		return state;
+	}
+	public Timestamp getApv_date() {
+		return apv_date;
+	}
+	public int getIs_my_turn() {
+		return is_my_turn;
+	}
+	public int getTotal_order_state() {
+		return total_order_state;
+	}
+	public void setApv_no(int apv_no) {
+		this.apv_no = apv_no;
+	}
+	public void setState(int state) {
+		this.state = state;
+	}
+	public void setApv_date(Timestamp apv_date) {
+		this.apv_date = apv_date;
+	}
+	public void setIs_my_turn(int is_my_turn) {
+		this.is_my_turn = is_my_turn;
+	}
+	public void setTotal_order_state(int total_order_state) {
+		this.total_order_state = total_order_state;
 	}
 	
 }

@@ -43,8 +43,8 @@ public class MailService {
 		Map<String, Object> result = new HashMap<String, Object>();
 		List<MailDTO> list = mailDAO.receivedMailListCall(start, pagePerCnt, user_code, condition, content);
 		
-		logger.info("list : {}", list);
-		logger.info("list size : " + list.size());
+		// logger.info("list : {}", list);
+		// logger.info("list size : " + list.size());
 		result.put("list", list);
 		result.put("totalPage", mailDAO.receivedMailPageCnt(pagePerCnt, user_code, condition, content));
 		
@@ -73,8 +73,8 @@ public class MailService {
 		Map<String, Object> result = new HashMap<String, Object>();
 		List<MailDTO> list = mailDAO.writtenMailListCall(start, pagePerCnt, user_code, condition, content);
 		
-		logger.info("list : {}", list);
-		logger.info("list size : " + list.size());
+		// logger.info("list : {}", list);
+		// logger.info("list size : " + list.size());
 		result.put("list", list);
 		result.put("totalPage", mailDAO.writtenMailPageCnt(pagePerCnt, user_code, condition, content));
 		
