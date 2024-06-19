@@ -17,7 +17,7 @@
 <script src="https://uicdn.toast.com/tui-tree/latest/tui-tree.js"></script>
 
 <style>
-#msg,#length-msg,#pattern-msg{
+#msg,#length-msg,#pattern-msg,#email-msg{
 	margin-left: 50px;
 }
 
@@ -210,6 +210,7 @@ label[for="id"]{
                  <div class="form-group">
                      <label for="email">이메일:</label>
                      <input type="text" id="email" name="email" required>
+                     <br/><span id="email-msg"></span>
                  </div>
                  <div class="form-group">
                      <label for="phone">연락처:</label>
@@ -526,6 +527,19 @@ function reg(){
 
 			return false;
 		
+		}
+		
+		// 비밀번호 유효성 검사
+		var regex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[!@#$%^&*()_+={}[\]:;'"<>,./?\\|~-]).{8,16}$/;
+	    
+		if(!regex.test($pw.val())){
+			alert("비밀번호는 8-16자리, 숫자, 소문자, 특수문자를 모두 포함해야 합니다.")
+			$pw.focus();
+			return false;
+		}else if($pw.val().indexOf(" ") !== -1){
+			alert("비밀번호는 공백을 포함할 수 없습니다.")
+			$pw.focus();
+			return false;
 		}else{
 			alert("사원 등록에 성공했습니다.");
 			$('form').submit();
@@ -575,6 +589,7 @@ $('#pw').on('keyup', function(){
         $('#pattern-msg').css({'color': 'green'});
     }
 });
+
 
 // 연락처 입력 시 하이픈 자동생성
 $(document).on("keyup", "#phone", function() {
