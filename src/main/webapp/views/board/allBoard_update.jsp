@@ -172,7 +172,8 @@ const editor = new toastui.Editor({
 
     <c:forEach var="file" items="${attachFileList}">
     fileList.push({
-        file_no: "${file.file_no}"
+        file_no: "${file.file_no}",
+		name : "${file.ori_filename}"
     });
 </c:forEach>
 console.log(fileList);
@@ -219,7 +220,9 @@ console.log(fileList);
 	function updateAttachFile() {
 	    var dataTransfer = new DataTransfer();
 	    fileList.forEach(file => {
-	        dataTransfer.items.add(file);
+			if(file.file_no === undefined) {
+				dataTransfer.items.add(file);
+			}
 	    });
 	    $('#attachFile')[0].files = dataTransfer.files;
 	}
