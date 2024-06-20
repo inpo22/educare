@@ -34,6 +34,7 @@ public class MailDTO {
 	private String team_name;
 	private String upper_code;
 	private String user_name;
+	private String receive_user_code;
 
 	public int getMail_no() {
 		return mail_no;
@@ -217,6 +218,14 @@ public class MailDTO {
 
 	public void setUser_name(String user_name) {
 		this.user_name = user_name;
+	}
+
+	public String getReceive_user_code() {
+		return receive_user_code;
+	}
+
+	public void setReceive_user_code(String receive_user_code) {
+		this.receive_user_code = receive_user_code;
 	}
 
 }

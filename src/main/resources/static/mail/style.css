@@ -1,0 +1,162 @@
+@charset "UTF-8";
+.display-flex {
+	display: flex;
+}
+	
+#left-section {
+	width: 15%;
+	height: 100%;
+}
+	
+#right-section {
+	width: 84%;
+	height: 100%;
+	background-color: white;
+	padding: 30px;
+}
+	
+a {
+	color: black;
+}
+	
+.blue-color {
+	color: rgb(88, 88, 255);
+}
+	
+.text-bold {
+	font-weight: bold;
+}
+	
+#second-sidebar td {
+	padding: 5px 0;
+}
+#search-condition {
+	width: 150px;
+	display: inline;
+}
+#search-content {
+	width: 400px;
+	display: inline;
+}
+.text-align-center {
+	text-align: center;
+}
+.text-align-right {
+	text-align: right;
+}
+.table-left-section {
+	width: 96%;
+	height: 100%;
+}
+.table-right-section {
+	width: 3%;
+	height: 100%;
+}
+.table-bordered th {
+	text-align: center;	
+}
+#subject {
+	width: 100%;
+}
+#attachFile {
+	display: none;
+}
+#fileList {
+	border: solid 1px gray;
+	border-radius: 5px;
+	min-height: 28px;
+	height: auto;
+}
+#fileList li {
+	list-style-type: none;
+}
+.remove-x, .load-remove-x {
+	color: gray;
+	cursor: pointer;
+}
+.remove-x:hover, .load-remove-x:hover {
+	color: black;
+}
+.modal {
+	display: none;
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: rgba(0,0,0,0.4);
+}
+.modal-content {
+	margin: 0 auto;
+	padding: 20px;
+	height: 600px;
+	width: 900px;
+	top: 150px;
+	background-color: white;
+}
+.close {
+	color: #aaa;
+	float: right;
+	font-size: 28px;
+	font-weight: bold;
+}
+.close:hover {
+	color: black;
+	text-decoration: none;
+	cursor: pointer;
+}
+.modal-title {
+	font-weight: bold;
+	font-size: 25px;
+}
+.tui-tree-wrap, .modal-add-list {
+	height: 400px;
+	width: 360px;
+	overflow-y: auto;
+}
+.modal-add-list {
+	background-color: #f9f9f9;
+	padding: 20px;
+}
+.modal-inner-button {
+	height: 400px;
+	width: 100px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	white-space: pre-line;
+}
+.modal-inner-button-child {
+	display: block;
+}
+.receiver-add-button, .receiver-remove-button {
+	width: 30px;
+}
+.disabled-button {
+	pointer-events: none;
+	opacity: 0.5;
+	cursor: not-allowed; 
+}
+.add-list {
+	list-style-type: none;
+}
+.add-list li {
+	cursor: pointer;
+	padding-left: 10px;
+}
+.add-list li:hover {
+	background-color: rgba(75, 150, 230, 0.1);
+	background: #e7eff7;
+}
+.selected-value {
+	background-color: rgba(75, 150, 230, 0.1);
+	background: #e7eff7;
+	color: #4b96e6;
+}
+.right-padding {
+	padding-right: 40px;
+}
+#viewer {
+	min-height: 300px;
+}

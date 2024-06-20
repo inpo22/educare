@@ -46,6 +46,11 @@
 			)
 	</insert>
 	
+	<update id="minusRemainVaca">
+		UPDATE vacation_history SET remain = remain - (SELECT a.va_days FROM approval a WHERE a.au_code = #{param2})
+			WHERE user_code = #{param1} AND year = YEAR(CURDATE())
+	</update>
+	
 	<insert id="busiApprovalWrite" parameterType="approval">
 		INSERT INTO 
 			approval(
@@ -142,7 +147,7 @@
 				END AS is_my_turn
 			FROM approval a JOIN approval_order_rank aor ON a.au_code = aor.au_code JOIN user u ON a.user_code = u.user_code
 			WHERE aor.user_code = #{param2}) AS subquery
-		WHERE is_my_turn = 1
+		WHERE is_my_turn = 1 AND state = 0
 		<if test="param4 != ''">
 			AND
 			<if test="param3 == 'subject'">
@@ -267,6 +272,491 @@
 				u.name LIKE CONCAT('%', #{param4}, '%')
 			</if>
 		</if>
+	</select>
+	
+	<select id="reqeustApprovalListCall" resultType="approval">
+		WITH approval_order_check AS (
+			SELECT 
+				* 
+				, ROW_NUMBER() OVER (PARTITION BY au_code ORDER BY apv_no) AS row_num
+				, COUNT(apv_no) OVER (PARTITION BY au_code) AS order_count
+				, SUM(state) OVER (PARTITION BY au_code) AS approval_state
+				, MAX(state) OVER (PARTITION BY au_code) AS is_rejected
+			FROM approval_order
+		)
+		SELECT
+			*
+			FROM
+			(SELECT
+				a.au_code
+				, a.au_type
+				, aoc.row_num
+				<![CDATA[
+				, CASE 
+					WHEN aoc.order_count > 1
+						THEN CONCAT(u.name, ' ', (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code), ' 외')
+					ELSE CONCAT(u.name, ' ', (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code))
+					END AS approvers_name
+				, CASE 
+					WHEN aoc.order_count > 1
+						THEN CONCAT((SELECT d.team_name FROM department d WHERE d.team_code = u.team_code), ' 외')
+					ELSE (SELECT d.team_name FROM department d WHERE d.team_code = u.team_code)
+					END AS approvers_team
+				]]>
+				, a.title
+				, a.contents
+				, a.reg_date
+				, CASE 
+					WHEN is_rejected = 2 THEN 2
+					WHEN is_rejected != 2 AND order_count = approval_state THEN 1
+					WHEN is_rejected != 2 AND order_count > approval_state THEN 0
+				END AS total_order_state
+				, (SELECT GROUP_CONCAT(u.name SEPARATOR ', ')
+						FROM approval_order ao JOIN user u ON ao.user_code = u.user_code 
+					WHERE ao.au_code = a.au_code) AS all_approvers
+			FROM approval a JOIN approval_order_check aoc ON a.au_code = aoc.au_code JOIN user u ON aoc.user_code = u.user_code
+			WHERE a.user_code = #{param3} AND aoc.row_num = 1) AS subquery
+		WHERE total_order_state = 0
+		<if test="param5 != ''">
+			AND
+			<if test="param4 == 'subject'">
+				title LIKE CONCAT('%', #{param5}, '%')
+			</if>
+			<if test="param4 == 'content'">
+				contents LIKE CONCAT('%', #{param5}, '%')
+			</if>
+			<if test="param4 == 'all_approvers'">
+				all_approvers LIKE CONCAT('%', #{param5}, '%')
+			</if>
+		</if>
+		ORDER BY reg_date DESC LIMIT #{param2} OFFSET #{param1}
+	</select>
+	
+	<select id="requestApprovalPageCnt" resultType="Integer">
+		WITH approval_order_check AS (
+			SELECT 
+				* 
+				, ROW_NUMBER() OVER (PARTITION BY au_code ORDER BY apv_no) AS row_num
+				, COUNT(apv_no) OVER (PARTITION BY au_code) AS order_count
+				, SUM(state) OVER (PARTITION BY au_code) AS approval_state
+				, MAX(state) OVER (PARTITION BY au_code) AS is_rejected
+			FROM approval_order
+		)
+		SELECT
+			CEIL(COUNT(au_code)/#{param1})
+			FROM
+			(SELECT
+				a.au_code
+				, aoc.row_num
+				<![CDATA[
+				, CASE 
+					WHEN aoc.order_count > 1
+						THEN CONCAT(u.name, ' ', (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code), ' 외')
+					ELSE CONCAT(u.name, ' ', (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code))
+					END AS approvers_name
+				, CASE 
+					WHEN aoc.order_count > 1
+						THEN CONCAT((SELECT d.team_name FROM department d WHERE d.team_code = u.team_code), ' 외')
+					ELSE (SELECT d.team_name FROM department d WHERE d.team_code = u.team_code)
+					END AS approvers_team
+				]]>
+				, a.title
+				, a.contents
+				, a.reg_date
+				, CASE 
+					WHEN is_rejected = 2 THEN 2
+					WHEN is_rejected != 2 AND order_count = approval_state THEN 1
+					WHEN is_rejected != 2 AND order_count > approval_state THEN 0
+				END AS total_order_state
+				, (SELECT GROUP_CONCAT(u.name SEPARATOR ', ')
+						FROM approval_order ao JOIN user u ON ao.user_code = u.user_code 
+					WHERE ao.au_code = a.au_code) AS all_approvers
+			FROM approval a JOIN approval_order_check aoc ON a.au_code = aoc.au_code JOIN user u ON aoc.user_code = u.user_code
+			WHERE a.user_code = #{param2} AND aoc.row_num = 1) AS subquery
+		WHERE total_order_state = 0
+		<if test="param4 != ''">
+			AND
+			<if test="param3 == 'subject'">
+				title LIKE CONCAT('%', #{param4}, '%')
+			</if>
+			<if test="param3 == 'content'">
+				contents LIKE CONCAT('%', #{param4}, '%')
+			</if>
+			<if test="param3 == 'all_approvers'">
+				all_approvers LIKE CONCAT('%', #{param4}, '%')
+			</if>
+		</if>
+	</select>
+	
+	<select id="finishApprovalListCall" resultType="approval">
+		WITH approval_order_check AS (
+			SELECT 
+				* 
+				, ROW_NUMBER() OVER (PARTITION BY au_code ORDER BY apv_no) AS row_num
+				, COUNT(apv_no) OVER (PARTITION BY au_code) AS order_count
+				, SUM(state) OVER (PARTITION BY au_code) AS approval_state
+				, MAX(state) OVER (PARTITION BY au_code) AS is_rejected
+			FROM approval_order
+		)
+		SELECT
+			*
+			FROM
+			(SELECT
+				a.au_code
+				, a.au_type
+				, aoc.row_num
+				<![CDATA[
+				, CASE 
+					WHEN aoc.order_count > 1
+						THEN CONCAT(u.name, ' ', (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code), ' 외')
+					ELSE CONCAT(u.name, ' ', (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code))
+					END AS approvers_name
+				, CASE 
+					WHEN aoc.order_count > 1
+						THEN CONCAT((SELECT d.team_name FROM department d WHERE d.team_code = u.team_code), ' 외')
+					ELSE (SELECT d.team_name FROM department d WHERE d.team_code = u.team_code)
+					END AS approvers_team
+				]]>
+				, a.title
+				, a.contents
+				, a.reg_date
+				, CASE 
+					WHEN is_rejected = 2 THEN 2
+					WHEN is_rejected != 2 AND order_count = approval_state THEN 1
+					WHEN is_rejected != 2 AND order_count > approval_state THEN 0
+				END AS total_order_state
+				, (SELECT GROUP_CONCAT(u.name SEPARATOR ', ')
+						FROM approval_order ao JOIN user u ON ao.user_code = u.user_code 
+					WHERE ao.au_code = a.au_code) AS all_approvers
+			FROM approval a JOIN approval_order_check aoc ON a.au_code = aoc.au_code JOIN user u ON aoc.user_code = u.user_code
+			WHERE a.user_code = #{param3} AND aoc.row_num = 1) AS subquery
+		WHERE total_order_state = 1
+		<if test="param5 != ''">
+			AND
+			<if test="param4 == 'subject'">
+				title LIKE CONCAT('%', #{param5}, '%')
+			</if>
+			<if test="param4 == 'content'">
+				contents LIKE CONCAT('%', #{param5}, '%')
+			</if>
+			<if test="param4 == 'all_approvers'">
+				all_approvers LIKE CONCAT('%', #{param5}, '%')
+			</if>
+		</if>
+		ORDER BY reg_date DESC LIMIT #{param2} OFFSET #{param1}
+	</select>
+	
+	<select id="finishApprovalPageCnt" resultType="Integer">
+		WITH approval_order_check AS (
+			SELECT 
+				* 
+				, ROW_NUMBER() OVER (PARTITION BY au_code ORDER BY apv_no) AS row_num
+				, COUNT(apv_no) OVER (PARTITION BY au_code) AS order_count
+				, SUM(state) OVER (PARTITION BY au_code) AS approval_state
+				, MAX(state) OVER (PARTITION BY au_code) AS is_rejected
+			FROM approval_order
+		)
+		SELECT
+			CEIL(COUNT(au_code)/#{param1})
+			FROM
+			(SELECT
+				a.au_code
+				, aoc.row_num
+				<![CDATA[
+				, CASE 
+					WHEN aoc.order_count > 1
+						THEN CONCAT(u.name, ' ', (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code), ' 외')
+					ELSE CONCAT(u.name, ' ', (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code))
+					END AS approvers_name
+				, CASE 
+					WHEN aoc.order_count > 1
+						THEN CONCAT((SELECT d.team_name FROM department d WHERE d.team_code = u.team_code), ' 외')
+					ELSE (SELECT d.team_name FROM department d WHERE d.team_code = u.team_code)
+					END AS approvers_team
+				]]>
+				, a.title
+				, a.contents
+				, a.reg_date
+				, CASE 
+					WHEN is_rejected = 2 THEN 2
+					WHEN is_rejected != 2 AND order_count = approval_state THEN 1
+					WHEN is_rejected != 2 AND order_count > approval_state THEN 0
+				END AS total_order_state
+				, (SELECT GROUP_CONCAT(u.name SEPARATOR ', ')
+						FROM approval_order ao JOIN user u ON ao.user_code = u.user_code 
+					WHERE ao.au_code = a.au_code) AS all_approvers
+			FROM approval a JOIN approval_order_check aoc ON a.au_code = aoc.au_code JOIN user u ON aoc.user_code = u.user_code
+			WHERE a.user_code = #{param2} AND aoc.row_num = 1) AS subquery
+		WHERE total_order_state = 1
+		<if test="param4 != ''">
+			AND
+			<if test="param3 == 'subject'">
+				title LIKE CONCAT('%', #{param4}, '%')
+			</if>
+			<if test="param3 == 'content'">
+				contents LIKE CONCAT('%', #{param4}, '%')
+			</if>
+			<if test="param3 == 'all_approvers'">
+				all_approvers LIKE CONCAT('%', #{param4}, '%')
+			</if>
+		</if>
+	</select>
+	
+	<select id="rejectedApprovalListCall" resultType="approval">
+		WITH approval_order_check AS (
+			SELECT 
+				* 
+				, ROW_NUMBER() OVER (PARTITION BY au_code ORDER BY apv_no) AS row_num
+				, COUNT(apv_no) OVER (PARTITION BY au_code) AS order_count
+				, SUM(state) OVER (PARTITION BY au_code) AS approval_state
+				, MAX(state) OVER (PARTITION BY au_code) AS is_rejected
+			FROM approval_order
+		)
+		SELECT
+			*
+			FROM
+			(SELECT
+				a.au_code
+				, a.au_type
+				, aoc.row_num
+				<![CDATA[
+				, CASE 
+					WHEN aoc.order_count > 1
+						THEN CONCAT(u.name, ' ', (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code), ' 외')
+					ELSE CONCAT(u.name, ' ', (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code))
+					END AS approvers_name
+				, CASE 
+					WHEN aoc.order_count > 1
+						THEN CONCAT((SELECT d.team_name FROM department d WHERE d.team_code = u.team_code), ' 외')
+					ELSE (SELECT d.team_name FROM department d WHERE d.team_code = u.team_code)
+					END AS approvers_team
+				]]>
+				, a.title
+				, a.contents
+				, a.reg_date
+				, CASE 
+					WHEN is_rejected = 2 THEN 2
+					WHEN is_rejected != 2 AND order_count = approval_state THEN 1
+					WHEN is_rejected != 2 AND order_count > approval_state THEN 0
+				END AS total_order_state
+				, (SELECT GROUP_CONCAT(u.name SEPARATOR ', ')
+						FROM approval_order ao JOIN user u ON ao.user_code = u.user_code 
+					WHERE ao.au_code = a.au_code) AS all_approvers
+			FROM approval a JOIN approval_order_check aoc ON a.au_code = aoc.au_code JOIN user u ON aoc.user_code = u.user_code
+			WHERE a.user_code = #{param3} AND aoc.row_num = 1) AS subquery
+		WHERE total_order_state = 2
+		<if test="param5 != ''">
+			AND
+			<if test="param4 == 'subject'">
+				title LIKE CONCAT('%', #{param5}, '%')
+			</if>
+			<if test="param4 == 'content'">
+				contents LIKE CONCAT('%', #{param5}, '%')
+			</if>
+			<if test="param4 == 'all_approvers'">
+				all_approvers LIKE CONCAT('%', #{param5}, '%')
+			</if>
+		</if>
+		ORDER BY reg_date DESC LIMIT #{param2} OFFSET #{param1}
+	</select>
+	
+	<select id="rejectedApprovalPageCnt" resultType="Integer">
+		WITH approval_order_check AS (
+			SELECT 
+				* 
+				, ROW_NUMBER() OVER (PARTITION BY au_code ORDER BY apv_no) AS row_num
+				, COUNT(apv_no) OVER (PARTITION BY au_code) AS order_count
+				, SUM(state) OVER (PARTITION BY au_code) AS approval_state
+				, MAX(state) OVER (PARTITION BY au_code) AS is_rejected
+			FROM approval_order
+		)
+		SELECT
+			CEIL(COUNT(au_code)/#{param1})
+			FROM
+			(SELECT
+				a.au_code
+				, aoc.row_num
+				<![CDATA[
+				, CASE 
+					WHEN aoc.order_count > 1
+						THEN CONCAT(u.name, ' ', (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code), ' 외')
+					ELSE CONCAT(u.name, ' ', (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code))
+					END AS approvers_name
+				, CASE 
+					WHEN aoc.order_count > 1
+						THEN CONCAT((SELECT d.team_name FROM department d WHERE d.team_code = u.team_code), ' 외')
+					ELSE (SELECT d.team_name FROM department d WHERE d.team_code = u.team_code)
+					END AS approvers_team
+				]]>
+				, a.title
+				, a.contents
+				, a.reg_date
+				, CASE 
+					WHEN is_rejected = 2 THEN 2
+					WHEN is_rejected != 2 AND order_count = approval_state THEN 1
+					WHEN is_rejected != 2 AND order_count > approval_state THEN 0
+				END AS total_order_state
+				, (SELECT GROUP_CONCAT(u.name SEPARATOR ', ')
+						FROM approval_order ao JOIN user u ON ao.user_code = u.user_code 
+					WHERE ao.au_code = a.au_code) AS all_approvers
+			FROM approval a JOIN approval_order_check aoc ON a.au_code = aoc.au_code JOIN user u ON aoc.user_code = u.user_code
+			WHERE a.user_code = #{param2} AND aoc.row_num = 1) AS subquery
+		WHERE total_order_state = 2
+		<if test="param4 != ''">
+			AND
+			<if test="param3 == 'subject'">
+				title LIKE CONCAT('%', #{param4}, '%')
+			</if>
+			<if test="param3 == 'content'">
+				contents LIKE CONCAT('%', #{param4}, '%')
+			</if>
+			<if test="param3 == 'all_approvers'">
+				all_approvers LIKE CONCAT('%', #{param4}, '%')
+			</if>
+		</if>
+	</select>
+	
+	<select id="approvalDetail" resultType="approval">
+		SELECT
+			a.au_code 
+			, a.au_type
+			, a.user_code
+			, u.name AS user_name
+			, (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code) AS class_name
+			, u.team_code
+			, (SELECT d.team_name FROM department d WHERE d.team_code = u.team_code) AS team_name
+			, a.title
+			, a.contents
+			, a.reg_date
+			, a.enf_date
+			, a.va_days
+			, a.start_date
+			, a.end_date
+			, a.va_type
+		FROM approval a JOIN user u ON a.user_code = u.user_code
+		WHERE a.au_code = #{param1}
+	</select>
+	
+	<select id="orderList" resultType="approval">
+		WITH approval_order_check AS (
+			SELECT 
+				ao.*
+				, u.name AS user_name
+				, (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code) AS class_name
+				, ROW_NUMBER() OVER (PARTITION BY ao.au_code ORDER BY ao.apv_no) AS row_num
+				, MAX(ao.state) OVER (PARTITION BY ao.au_code) AS is_rejected
+			FROM approval_order ao JOIN user u ON ao.user_code = u.user_code
+		)
+		SELECT
+			*
+			, CASE
+				WHEN aoc.row_num = 1 AND aoc.state = 0 AND aoc.user_code = #{param2} THEN 1
+				WHEN aoc.row_num = 1 AND aoc.state = 1 AND aoc.user_code = #{param2} THEN 0
+				WHEN aoc.row_num != 1 AND aoc.user_code = #{param2}
+					AND (SELECT ao.state FROM approval_order ao WHERE ao.apv_no = (aoc.apv_no - 1)) = 0 THEN 1
+				WHEN aoc.row_num != 1 AND aoc.user_code = #{param2}
+					AND (SELECT ao.state FROM approval_order ao WHERE ao.apv_no = (aoc.apv_no - 1)) = 1 THEN 0
+				WHEN aoc.is_rejected = 2 THEN 0
+				ELSE 0
+			END AS is_my_turn
+		FROM approval_order_check aoc
+		WHERE aoc.au_code = #{param1}
+	</select>
+	
+	<select id="attachFileList" resultType="approval">
+		SELECT
+			af.file_no
+			, af.ori_filename
+			, af.new_filename
+		FROM attach_file af
+		WHERE af.post_no = #{param1} AND af.board_type = 'approval'
+	</select>
+	
+	<select id="receiveTeamList" resultType="approval">
+		SELECT
+			(SELECT d.team_name FROM department d WHERE d.team_code = ar.receive_team_code) AS team_name
+		FROM approval_recipient ar WHERE ar.au_code = #{param1}
+	</select>
+	
+	<select id="remainVaca" resultType="Integer">
+		SELECT vh.remain FROM vacation_history vh WHERE vh.user_code = #{param1} AND vh.year = YEAR(#{param2})
+	</select>
+	
+	<select id="getOriFileName" resultType="String">
+		SELECT af.ori_filename FROM attach_file af WHERE af.file_no = #{param1} AND af.new_filename = #{param2}
+	</select>
+	
+	<update id="approve">
+		UPDATE approval_order SET state = 1, apv_date = CURRENT_TIMESTAMP() WHERE apv_no = #{param1}
+	</update>
+	
+	<update id="reject">
+		UPDATE approval_order SET state = 2, apv_date = CURRENT_TIMESTAMP() WHERE apv_no = #{param1}
+	</update>
+	
+	<update id="plusRemainVaca">
+		UPDATE vacation_history SET remain = remain + #{param1}
+			WHERE user_code = #{param2} AND year = YEAR(#{param3})
+	</update>
+	
+	<select id="orderCompCheck" resultType="Integer">
+		WITH approval_order_check AS (
+			SELECT 
+				* 
+				, COUNT(apv_no) OVER (PARTITION BY au_code) AS order_count
+				, SUM(state) OVER (PARTITION BY au_code) AS approval_state
+			FROM approval_order
+			WHERE au_code = #{param1}
+		)
+		SELECT
+			CASE
+				WHEN aoc.order_count != aoc.approval_state THEN 0
+				WHEN aoc.order_count = aoc.approval_state THEN 1
+			END AS is_comp
+		FROM approval_order_check aoc
+		WHERE aoc.apv_no = #{param2}
+	</select>
+	
+	<insert id="scheduleWrite" parameterType="approval">
+		INSERT INTO schedule(user_code, team_code, title, contents, start_date, end_date, sked_type)
+			VALUES(
+				#{user_code}
+				, #{team_code}
+				, CONCAT(#{user_name}, ' ', #{class_name}, ' 휴가')
+				<if test="va_type == 0">
+					, '연차'
+				</if>
+				<if test="va_type == 1">
+					, '오전 반차'
+				</if>
+				<if test="va_type == 2">
+					, '오후 반차'
+				</if>
+				<if test="va_type == 3">
+					, '경조사'
+				</if>
+				<if test="va_type == 4">
+					, '공가'
+				</if>
+				<if test="va_type == 5">
+					, '병가'
+				</if>
+				<if test="va_type == 6">
+					, '대체휴가'
+				</if>
+				, #{start_date}
+				<if test="va_type == 1 or va_type == 2">
+					, #{start_date}
+				</if>
+				<if test="va_type != 1 and va_type != 2">
+					, #{end_date}
+				</if>
+				, 'SKED_TP02'
+			)
+	</insert>
+	
+	<select id="notiReceiveUser" resultType="String">
+		SELECT ao.user_code FROM approval_order ao WHERE ao.apv_no = (#{param1} + 1)
 	</select>
 	
 </mapper>

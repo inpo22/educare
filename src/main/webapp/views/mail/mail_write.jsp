@@ -13,157 +13,19 @@
 <jsp:include page="/views/common/head.jsp"></jsp:include>
 <!-- css -->
 <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"/>
-<link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui-tree/latest/tui-tree.css" />
+<link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui-tree/latest/tui-tree.css"/>
+<link href="/resources/mail/style.css" rel="stylesheet">
 <!-- js -->
 <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 <script src="https://uicdn.toast.com/tui-tree/latest/tui-tree.js"></script>
 
 <style>
-	.display-flex {
-		display: flex;
-	}
-	#left-section {
-		width: 15%;
-		height: 100%;
-	}
-	#right-section {
-		width: 84%;
-		height: 100%;
-		background-color: white;
-		padding: 30px;
-	}
-	a {
-		color: black;
-	}
-	.table-left-section {
-		width: 96%;
-		height: 100%;
-	}
-	.table-right-section {
-		width: 3%;
-		height: 100%;
-	}
-	#second-sidebar td {
-		padding: 5px 0;
-	}
 	.first-col {
 		width: 15%;
 	}
 	.second-col {
 		width: 74%;
 	}
-	.table-bordered th {
-		text-align: center;	
-	}
-	.text-align-center {
-		text-align: center;
-	}
-	.text-align-right {
-		text-align: right;
-	}
-	#subject {
-		width: 100%;
-	}
-	#attachFile {
-		display: none;
-	}
-	#fileList {
-		border: solid 1px gray;
-		border-radius: 5px;
-		min-height: 28px;
-		height: auto;
-	}
-	#fileList li {
-		list-style-type: none;
-	}
-	.remove-x {
-		color: gray;
-		cursor: pointer;
-	}
-	.remove-x:hover {
-		color: black;
-	}
-	.modal {
-	    display: none;
-	    position: fixed;
-	    left: 0;
-	    top: 0;
-	    width: 100%;
-	    height: 100%;
-	    overflow: auto;
-	    background-color: rgba(0,0,0,0.4);
-	}
-	.modal-content {
-	    margin: 0 auto;
-	    padding: 20px;
-	    height: 600px;
-	    width: 900px;
-	    top: 150px;
-	    background-color: white;
-	}
-	.close {
-	    color: #aaa;
-	    float: right;
-	    font-size: 28px;
-	    font-weight: bold;
-	}
-	.close:hover {
-	    color: black;
-	    text-decoration: none;
-	    cursor: pointer;
-	}
-	.modal-title {
-		font-weight: bold;
-		font-size: 25px;
-	}
-	.tui-tree-wrap, .modal-add-list {
-		height: 400px;
-		width: 360px;
-		overflow-y: auto;
-	}
-	.modal-add-list {
-		background-color: #f9f9f9;
-		padding: 20px;
-	}
-	.modal-inner-button {
-		height: 400px;
-		width: 100px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		white-space: pre-line;
-	}
-	.modal-inner-button-child {
-		display: block;
-	}
-	.receiver-add-button, .receiver-remove-button {
-		width: 30px;
-	}
-	.disabled-button {
-		pointer-events: none;
-      	opacity: 0.5;
-      	cursor: not-allowed; 
-	}
-	.add-list {
-		list-style-type: none;
-	}
-	.add-list li {
-		cursor: pointer;
-		padding-left: 10px;
-	}
-	.add-list li:hover {
-		background-color: rgba(75, 150, 230, 0.1);
-		background: #e7eff7;
-	}
-	.selected-value {
-		background-color: rgba(75, 150, 230, 0.1);
-		background: #e7eff7;
-		color: #4b96e6;
-	}
-	.right-padding {
-		padding-right: 40px;
-	}
-	
 </style>
 </head>
 
@@ -200,7 +62,16 @@
 							<th class="table-active first-col">받는 사람</th>
 							<td class="second-col">
 								<div class="display-flex">
-									<div class="table-left-section receiver-visual"></div>
+									<div class="table-left-section receiver-visual">
+										<c:if test="${receiverList.size() > 0}">
+											<c:forEach items="${receiverList}" var="receiver">
+												<span class="badge bg-primary receiver-${receiver.receive_user_code}">
+													${receiver.receiver_name}&nbsp;${receiver.class_name}
+												</span>
+												&nbsp;&nbsp;
+											</c:forEach>
+										</c:if>
+									</div>
 									<div class="table-right-section"><button class="btn btn-secondary btn-sm" type="button" onclick="openReceiverModal()">+</button></div>
 								</div>
 							</td>
@@ -209,7 +80,16 @@
 							<th class="table-active">참조</th>
 							<td>
 								<div class="display-flex">
-									<div class="table-left-section cc-visual"></div>
+									<div class="table-left-section cc-visual">
+										<c:if test="${ccList.size() > 0}">
+											<c:forEach items="${ccList}" var="cc">
+												<span class="badge bg-primary cc-${cc.receive_user_code}">
+													${cc.cc_name}&nbsp;${cc.class_name}
+												</span>
+												&nbsp;&nbsp;
+											</c:forEach>
+										</c:if>
+									</div>
 									<div class="table-right-section"><button class="btn btn-secondary btn-sm" type="button" onclick="openCcModal()">+</button></div>
 								</div>
 							</td>
@@ -232,13 +112,24 @@
 								<button type="button" id="fileInputButton" class="btn btn-secondary btn-sm">파일 첨부</button>
 							</th>
 							<td class="second-col">
-								<ul id="fileList"></ul>
+								<ul id="fileList">
+									<c:if test="${attachFileList.size() > 0}">
+										<c:forEach items="${attachFileList}" var="attachFile">
+											<li class="loadFiles no-${attachFile.file_no}">
+												${attachFile.ori_filename}
+												&nbsp;&nbsp;&nbsp;
+												<span class="load-remove-x">X</span>
+											</li>
+										</c:forEach>
+									</c:if>
+								</ul>
 							</td>
 						</tr>
 					</table>
 					<input type="file" name="attachFile" id="attachFile" multiple="multiple"/>
 					<input type="hidden" name="receiverList" id="receiverList"/>
 					<input type="hidden" name="ccList" id="ccList"/>
+					<input type="hidden" name="loadFileList" id="loadFileList"/>
 					<input type="hidden" name="content" id="content"/>
 					<br/>
 					<div class="text-align-right">
@@ -296,6 +187,7 @@
 	editor.removeToolbarItem('codeblock');
 	
 	var fileList = [];
+	var loadFileList = [];
 	
 	$('#fileInputButton').click(function() {
 		$('#attachFile').click();
@@ -311,7 +203,13 @@
 	});
 	
 	function updateFileList() {
-		$('#fileList').empty();
+		var startRemove = $('.loadFiles').length;
+		
+		var childElems = $('#fileList').children('li');
+		
+		for (var i = startRemove; i < childElems.length; i++) {
+			childElems[i].remove();
+		}
 		
 		fileList.forEach((file, index) => {
             var li = $('<li></li>').text(file.name);
@@ -336,6 +234,15 @@
         });
         $('#attachFile')[0].files = dataTransfer.files;
     }
+	
+	$('.load-remove-x').click(function() {
+		// console.log($(this).parents('li'));
+		
+		var file_no = $(this).parent().attr('class').split(' ')[1].substring(3);
+		loadFileList.splice(loadFileList.indexOf(file_no), 1);
+		$('#loadFileList').val(loadFileList.toString());
+		$(this).parent().remove();
+	});
 	
 	// 받는 사람 모달 창 열기
 	function openReceiverModal() {
@@ -532,10 +439,40 @@
 	if (writeType == 1) {
 		$('#subject').val('RE: ');
 		editor.setHTML('${original_message}');
+		
+		$('.cc-visual span').each(function() {
+			var user_code = $(this).attr('class').split(' ')[2].substring(3);
+			// console.log($(this).attr('class'));
+			// console.log(user_code);
+			receiverValueList.push(user_code);
+		});
+		$('#ccList').val(receiverValueList.toString());
+		receiverValueList = [];
+		
+		$('.receiver-visual span').each(function() {
+			var user_code = $(this).attr('class').split(' ')[2].substring(9);
+			// console.log($(this).attr('class'));
+			// console.log(user_code);
+			receiverValueList.push(user_code);
+		});
+		$('#receiverList').val(receiverValueList.toString());
+		receiverValueList = [];
+		
+		// console.log($('#ccList').val());
+		// console.log($('#receiverList').val());
 	}
+	
 	if (writeType == 2) {
 		$('#subject').val('FW: ');
 		editor.setHTML('${original_message}');
+		
+		$('.loadFiles').each(function() {
+			var file_no = $(this).attr('class').split(' ')[1].substring(3);
+			console.log($(this).attr('class'));
+			console.log(file_no);
+			loadFileList.push(file_no);
+		});
+		$('#loadFileList').val(loadFileList.toString());
 	}
 	
 	function mailSubmit() {
