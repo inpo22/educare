@@ -7,28 +7,22 @@
 <title>부서 관리</title>
 <meta content="" name="description">
 <meta content="" name="keywords">
+<style>
+</style>
 <jsp:include page="/views/common/head.jsp"></jsp:include>
-<!-- tree css -->
+
+<!-- style css -->
+<link href="/resources/dept/style.css" rel="stylesheet">
+
+<!-- tui-tree -->
 <link rel="stylesheet" href="https://uicdn.toast.com/tui.context-menu/latest/tui-context-menu.css"/>
-<link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui-tree/latest/tui-tree.css" />
-<!-- tree js -->
+<link href="/resources/dept/tui-tree/css/tree.css" rel="stylesheet">
 <script src="https://uicdn.toast.com/tui.context-menu/latest/tui-context-menu.js"></script>	
 <script src="https://uicdn.toast.com/tui-tree/latest/tui-tree.js"></script>
-<style>
-.invalidation {
-	color: red;
-	display: none;
-}
-#deptInfo_table_sample{
-	display: none;
-}
-#deptUser_list_sample{
-	display: none;
-}
-.tui-tree-wrap{
-      width: auto;
-   }
-</style>
+
+<!-- 
+<link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui-tree/latest/tui-tree.css" />
+ -->
 </head>
 <body>
 	<jsp:include page="/views/common/header.jsp"></jsp:include>
@@ -102,8 +96,8 @@
 									</div>
 									<div class="tab-pane fade" id="deptUser_tab_content" role="tabpanel" aria-labelledby="deptUser_tab">
 										<input class="form-check-input all" type="checkbox">
-										<button type="button" class="btn btn-outline-primary btn-sm">부서장 위임</button>
-										<button type="button" class="btn btn-outline-primary btn-sm">부서 이동</button>
+										<button type="button" id="changeLeader_btn" class="btn btn-outline-primary btn-sm">부서장 위임</button>
+										<button type="button" id="changeDept_btn" class="btn btn-outline-primary btn-sm">부서 이동</button>
 										<br/><br/>
 										<ul id="deptUser_list" class="list-group">
 										</ul>
@@ -202,21 +196,22 @@
 		console.log('select:',selected_nodeId);
 	});
 	
-	// 변수
+	
 	var selected_nodeId = 'tui-tree-node-1';
 	var selected_tab = 'deptInfo';
-
+	var checked = new Set();
+	
 	// 부서 트리 객체 생성
 	var tree = new tui.Tree('#deptTree', {
 		data: [{id: 'T00', text: '에듀케어'}],
 		nodeDefaultState: 'opened'
-	});
+		});
 	
 	// modal 객체
 	var createDeptModal = new bootstrap.Modal(
 			document.getElementById('createDeptModal'), { keyboard: false });
 	
-	//event
+	// event
 	// tree event
 	tree.enableFeature('Selectable', {
 		selectedClassName: 'tui-tree-selected',
@@ -227,13 +222,14 @@
 	}).enableFeature('Editable', {
 		dataKey: 'text'
 	}).enableFeature('ContextMenu', {
-		menuData: [
-			{title: 'menu1'},
-			{title: 'menu2', disable: true}
+		 menuData: [
+			{title: 'create', command: 'create'},
+			{title: 'update', command: 'update'},
+			{title: 'remove', command: 'remove'}
 		]
 	});
 	
-	// root node data	
+	// root node data
 	tree.setNodeData('tui-tree-node-1', {
 		team_code: 'T00',
 		team_name: '에듀케어',
@@ -241,6 +237,24 @@
 		reg_date: '2002-02-02',
 	});
 
+	tree.on('selectContextMenu', function(e) {
+		var command = e.command;
+		var nodeId = e.nodeId;
+		var data = tree.getNodeData(nodeId);
+		console.log('selectContextMenu :',command,'-',data.team_name);
+		switch (command) {
+			case 'create':
+				tree.createChildNode(nodeId);
+				break;
+			case 'update':
+				tree.editNode(nodeId);
+				break;
+			case 'remove':
+				tree.remove(nodeId);
+				break;
+		}
+	});
+	
 	// tree-select event
 	tree.on('select', function(e){
 		selected_nodeId = e.nodeId;
@@ -301,6 +315,7 @@
 	});
 
 	// basic event
+	// 수정중
 	// create Dept
 	// open modal createDept 
 	$('#createDept_btn').on('click', function(){
@@ -312,7 +327,7 @@
 			$('#add_upper_input').val(data.team_name);
 			$('#add_upper_input').attr('name', data.team_code);
 			$('.invalidation').attr('style','display:none;');
-			createDeptModal.show();	
+			//createDeptModal.show();	
 		}else{
 			alert('추가할 부서의 위치를 선택해 주세요.');
 		}
@@ -324,7 +339,7 @@
 		var name_input = $('#add_name_input').val();
 		if(code_input == '' || name_input == ''){
 			alert('빈칸에 값을 입력해주세요.');
-		} else if(checkOverlap(code_input)){
+		} else if(checkOverlap('tui-tree-node-1',code_input)){
 			alert('이미 존재하는 부서 코드 입니다. 다시 입력해 주세요.');
 			var code_input = $('#add_code_input').val('');
 			var name_input = $('#add_name_input').val('');
@@ -338,7 +353,7 @@
 			}
 			console.log(':: create Dept -', add_param);
 			createDeptModal.hide();
-			createDept_ajax(add_param);
+			//createDept_ajax(add_param);
 		}
 	});
 	// remove Dept
@@ -350,7 +365,26 @@
 			removeDept_ajax(data.team_code);
 		}
 	});
-	 //eventEnd
+	//수정중
+	// change Dept
+	$('#changeDept_btn').on('click', function(){
+		
+	})
+	//수정중
+ 	$('.form-check-input').on('click', function(){
+		var code = $(this).attr('class').substring(16);
+ 		if(code == 'all'){
+			if($(this).is(':checked')){
+				$(".form-check-input").prop("checked", true);
+			}else{
+				$(".form-check-input").prop("checked", false);
+				checked.clear();
+			}
+		}else{
+		}
+ 		console.log('checked input: ', checked);
+	})
+ 	 //eventEnd
 
 	 //ajax
 	function getDept_ajax(){
@@ -359,10 +393,10 @@
 			url		: '/dept/list.ajax',
 			dataType: 'json',
 			success	: function(result){
-				console.log('deptList: ',result.deptList);
 	 			if(result.deptList.length > 0){
+	 				console.log('::init TREE::')
+					console.log('deptList: ',result.deptList);
 	 				createTree(result.deptList);
-		 			loadContent('deptInfo', selected_nodeId);
 				}else{
 					console.log('data empty');
 				}
@@ -412,7 +446,7 @@
 				console.log('createDept_ajax: ',result.msg);
 				if(result.msg == 'success'){
 					alert('해당 부서가 등록되었습니다.');
-					addNode(param);
+					addNode('tui-tree-node-1',param);
 					loadContent(selected_tab, selected_nodeId);
 					console.log('selected_nodeId: ', selected_nodeId);
 				}
@@ -491,53 +525,49 @@
 	// method
 	// 트리 생성
 	function createTree(list){
+		var root = 'tui-tree-node-1';
 		list.forEach(function (data, idx){
-			console.log(idx,'data:', data);
-			//var code = 1+Number(data.team_code.substring(1));
-			addNode(data)
-			
-			console.log('====================================================')
+			addNode(root, data);
+			//console.log(idx,'new:', data);
+ 			//console.log('====================================================')
 		});
-		selected_nodeId = 'tui-tree-node-1';
+		selected_nodeId = root;
 		tree.select(selected_nodeId);
 	}
-	// 노드 추가
-	function addNode(data){
-		for(var i=1; i<=100; i++){
-			var nodeId = 'tui-tree-node-'+i;
-			var nodeData = tree.getNodeData(nodeId);
-			if(nodeData == null){
-				continue;
-			}else if(nodeData.team_code == data.upper_code){
-				var addedNodeId = tree.add({text:data.team_name}, nodeId);
+	
+	function addNode(id, data){
+		var result;
+		if(tree.getNodeData(id)){
+			var code = tree.getNodeData(id).team_code;
+			//console.log('upper:',code,'-',data.upper_code);
+			
+			if(code == data.upper_code){
+				//console.log('match success');
+				var addedNodeId = tree.add({text:data.team_name}, id);
 				tree.setNodeData(addedNodeId, {
 					team_code: data.team_code,
 					team_name: data.team_name,
 					upper_code: data.upper_code,
 					reg_date: data.reg_date
 				});
-				console.log('added node Id:',addedNodeId);
-				console.log('added node data: ',tree.getNodeData(addedNodeId))
-				console.log('upper:',nodeData.team_code,'-',data.upper_code,'=>',nodeId);
+				//console.log('added node Id:',addedNodeId);
+				//console.log('added node data: ',tree.getNodeData(addedNodeId))
+				//console.log('upper:',code,'-',data.upper_code,'=>',id);
+				result = true;
+			}else{
+				//console.log('match fail');
+				tree.getChildIds(id).forEach(function(child, i){
+					addNode(child, data)
+				});
 			}
+		}else{
+			result = false;
 		}
-		selected_nodeId = addedNodeId;
-		tree.select(selected_nodeId);
+		return result;
 	}
-	// team code 중복 체크
-	function checkOverlap(newTC){
-		console.log('check team_code')
-		for(var i=1; i<=100; i++){
-			var nodeId = 'tui-tree-node-'+i;
-			var nodeData = tree.getNodeData(nodeId);
-			if(nodeData == null){
-				continue;	
-			}else if(nodeData.team_code == newTC){
-				console.log(nodeData.team_code,'-',newTC)
-				return true;
-			}
-		}
-		return false;		
+ 	// team code 중복 체크
+	function checkOverlap(id,newTC){
+		console.log('::check team_code::');
 	}
 
 	function loadContent(type, nodeId){
@@ -548,7 +578,7 @@
 			var ogTable = $('#deptInfo_table_sample tbody').clone(true);
 			var newTable = $('#deptInfo_table');
 			console.log('::load deptInfo table::');
-			console.log(nodeId,':',now);
+			console.log('load: ',nodeId,'/',now.team_code);
 			//console.log('parent:',parent.team_name);
 			//console.log('child:',child);
 			
@@ -580,28 +610,28 @@
 		} else if(type='deptUser'){
 			console.log('::load deptUser list::');
 			var code = tree.getNodeData(nodeId).team_code;
-			console.log('code: ', code);
+			//console.log('code: ', code);
 			var userList = getUser_ajax(code);
 			console.log('userList: ',userList);
-			var ogList = $('#deptUser_list_sample li').clone(true);
 			var newList = $('#deptUser_list');
 			
 			newList.empty();
-			console.log(ogList.html());
-			console.log(newList);
 			if(userList.length > 0){
 				userList.forEach(function(data, i){
-					//ogList.find('li').addClass(data.team_code+'-'+i);
+					var ogList = $('#deptUser_list_sample li').clone(true);
+					//console.log(i,':',data.name);
+					ogList.find('li').addClass(data.team_code+'-'+i);
 					ogList.find('input').addClass(data.user_code);
 					ogList.find('span').text(data.name+' '+data.class_name);
-					if(data.position_code == 'P01'){
-						newList.prependTo(ogList);
+					
+ 					if(data.position_code == 'P01'){
+						newList.prepend(ogList);
 					}else{
-						newList.appendTo(ogList);
+						newList.append(ogList);
 					}
 				});	
 			}else{
-				newList.append(ogList);
+				newList.append('<li class=\"list-group-item\"> no data </li>');
 			}
 			newList.attr('style', "display:'';");
 		}
@@ -615,10 +645,17 @@
 		}else if(type='deptUser'){
 			selected_tab = type;
 			loadContent(type, selected_nodeId);
-		}else {
-			
 		}
 	}
+	//수정중
+	function getCheckedList(){
+		$('.form-check-input:checked').each(function(i, item){
+ 			var code = $(item).attr('class').substring(16);
+ 			console.log(i,':',code);
+ 			checked.add(code);
+ 		})
+	}
+	
  // methodEnd
 
 </script>

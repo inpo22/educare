@@ -1,0 +1,15 @@
+/**
+* Template Name: dept
+*/
+
+.invalidation {
+	color: red;
+	display: none;
+}
+
+#deptInfo_table_sample{
+	display: none;
+}
+#deptUser_list_sample{
+	display: none;
+}
