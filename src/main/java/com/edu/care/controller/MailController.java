@@ -13,7 +13,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -131,10 +130,10 @@ public class MailController {
 		return map;
 	}
 	
-	@RequestMapping(value="/mail/download/{fileName}")
-	public ResponseEntity<Resource> download(@PathVariable String fileName) {
+	@GetMapping(value="/mail/download")
+	public ResponseEntity<Resource> download(String file_no, String new_filename) {
 		// logger.info("download fileName : " + fileName);
-		return mailService.download(fileName);
+		return mailService.download(file_no, new_filename);
 	}
 	
 	@GetMapping(value="/mail/deptList.ajax")

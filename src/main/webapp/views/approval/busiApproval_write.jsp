@@ -77,6 +77,7 @@
 	}
 	.order-second-col {
 		width: 120px;
+		height: 39px;
 	}
 	.order-third-row {
 		height: 39px;
@@ -618,30 +619,49 @@
 		var content = '';
 		
 		if ($('.dept-modal-title').html() == '결재선 추가') {
-			content += '<table class="table table-bordered display-inline text-align-right order-table">';
-			content += '<tr>';
-			content += '<th class="table-active order-first-col vertical-align-middle" rowspan="3">결<br/><br/>재</th>';
-			for (var orderText of textList) {
-				index = orderText.indexOf(' ');
-				// console.log(orderText.substring(index + 1, orderText.length));
-				content += '<td class="text-align-center order-second-col">' + orderText.substring(index + 1, orderText.length) + '</td>';
+			if (textList.length > 6) {
+				alert('결재선은 6명까지 지정 가능합니다.');
+				
+				textList = [];
+			    valueList = [];
+				selectedNodeText = '';
+				selectedNodeValue = '';
+				removeTag = '';
+				removeNodeValue = '';
+				removeNodeText = '';
+				$('.list-add-button').addClass('disabled-button');
+				$('.list-remove-button').addClass('disabled-button');
+				$('.tui-tree-selected').removeClass('tui-tree-selected');
+				$('.add-list').empty();
+				$('#order-list-div').empty();
+			} else {
+				content += '<table class="table table-bordered display-inline text-align-right order-table">';
+				content += '<tr>';
+				content += '<th class="table-active order-first-col vertical-align-middle" rowspan="3">결<br/><br/>재</th>';
+				for (var orderText of textList) {
+					index = orderText.indexOf(' ');
+					// console.log(orderText.substring(index + 1, orderText.length));
+					content += '<td class="text-align-center order-second-col">' + orderText.substring(index + 1, orderText.length) + '</td>';
+				}
+				content += '</tr>';
+				content += '<tr>';
+				for (var orderText of textList) {
+					content += '<td class="text-align-center vertical-align-bottom">' + orderText.substring(0, index) + '</td>';
+				}
+				content += '</tr>';
+				content += '<tr>';
+				for (var i = 0; i < textList.length; i++) {
+					content += '<td class="order-third-row"></td>';
+				}
+				content += '</tr>';
+				content += '</table>';
+				
+				$('#order-list-div').html(content);
+				
+				$('#orderList').val(valueList.toString());
+				
+				closeModal();
 			}
-			content += '</tr>';
-			content += '<tr>';
-			for (var orderText of textList) {
-				content += '<td class="text-align-center vertical-align-bottom">' + orderText.substring(0, index) + '</td>';
-			}
-			content += '</tr>';
-			content += '<tr>';
-			for (var i = 0; i < textList.length; i++) {
-				content += '<td class="order-third-row"></td>';
-			}
-			content += '</tr>';
-			content += '</table>';
-			
-			$('#order-list-div').html(content);
-			
-			$('#orderList').val(valueList.toString());
 		} else if ($('.dept-modal-title').html() == '수신부서 추가') {
 			for (var receiveText of textList) {
 				content += '<h5><span class="badge bg-primary">' + receiveText + '</span></h5>&nbsp;&nbsp;';
@@ -649,8 +669,9 @@
 			
 			$('.receive-list-div').html(content);
 			$('#receiveList').val(valueList.toString());
+			
+			closeModal();
 		}
-		closeModal();
 	});
 	
 	
