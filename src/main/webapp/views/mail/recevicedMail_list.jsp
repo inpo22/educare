@@ -10,65 +10,28 @@
 <meta content="" name="description">
 <meta content="" name="keywords">
 
-<!-- css -->
+
 <jsp:include page="/views/common/head.jsp"></jsp:include>
+<!-- css -->
+<link href="/resources/mail/style.css" rel="stylesheet">
+
 <!-- js -->
 
 <style>
-	.display-flex {
-		display: flex;
-	}
-	
-	#left-section {
-		width: 15%;
-		height: 100%;
-	}
-	
-	#right-section {
-		width: 84%;
-		height: 100%;
-		background-color: white;
-		padding: 30px;
-	}
-	
 	.first-col {
-		width: 100px;
+		width: 5%;
 	}
-	
+		
 	.second-col {
-		width: 300px;
+		width: 15%;
 	}
-	
+		
 	.third-col {
-		width: 800px;
+		width: 54%;
 	}
-	
+		
 	.fourth-col {
-		width: 500px;
-	}
-	
-	a {
-		color: black;
-	}
-	
-	.blue-color {
-		color: rgb(88, 88, 255);
-	}
-	
-	.text-bold {
-		font-weight: bold;
-	}
-	
-	#second-sidebar td {
-		padding: 5px 0;
-	}
-	#search-condition {
-		width: 150px;
-		display: inline;
-	}
-	#search-content {
-		width: 400px;
-		display: inline;
+		width: 25%;
 	}
 </style>
 </head>
@@ -275,7 +238,7 @@
 		} else {
 			for (var row of list) {
 				if (row.is_read_receiver == '0') {
-					content += '<tr class="text-bold"ocationMove(' + row.mail_no + ')">';
+					content += '<tr class="text-bold">';
 				}else {
 					content += '<tr>';
 				}

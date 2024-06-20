@@ -1,5 +1,6 @@
 package com.edu.care.dao;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -39,5 +40,46 @@ public interface ApprovalDAO {
 			String content);
 
 	int viewApprovalPageCnt(int pagePerCnt, String team_code, String condition, String content);
+
+	List<ApprovalDTO> reqeustApprovalListCall(int start, int pagePerCnt, String user_code, String condition,
+			String content);
+
+	int requestApprovalPageCnt(int pagePerCnt, String user_code, String condition, String content);
+
+	List<ApprovalDTO> finishApprovalListCall(int start, int pagePerCnt, String user_code, String condition,
+			String content);
+
+	int finishApprovalPageCnt(int pagePerCnt, String user_code, String condition, String content);
+
+	List<ApprovalDTO> rejectedApprovalListCall(int start, int pagePerCnt, String user_code, String condition,
+			String content);
+
+	int rejectedApprovalPageCnt(int pagePerCnt, String user_code, String condition, String content);
+
+	ApprovalDTO approvalDetail(String au_code);
+
+	List<ApprovalDTO> orderList(String au_code, String user_code);
+
+	List<ApprovalDTO> attachFileList(String au_code);
+
+	List<ApprovalDTO> receiveTeamList(String au_code);
+
+	int remainVaca(String detail_user_code, String reg_date);
+
+	void minusRemainVaca(String user_code, String au_code);
+
+	String getOriFileName(String file_no, String new_filename);
+
+	void approve(String au_code);
+
+	void reject(String apv_no);
+
+	void plusRemainVaca(double va_days, String user_code, Timestamp reg_date);
+
+	int orderCompCheck(String au_code, String apv_no);
+
+	void scheduleWrite(ApprovalDTO dto);
+
+	String notiReceiveUser(String apv_no);
 
 }

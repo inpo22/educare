@@ -77,6 +77,7 @@
 	}
 	.order-second-col {
 		width: 120px;
+		height: 39px;
 	}
 	.order-third-row {
 		height: 39px;
@@ -587,31 +588,49 @@
 	$('.send-list').click(function() {
 		var index = -1;
 		var content = '';
-		content += '<table class="table table-bordered display-inline text-align-right order-table">';
-		content += '<tr>';
-		content += '<th class="table-active order-first-col vertical-align-middle" rowspan="3">결<br/><br/>재</th>';
-		for (var orderText of orderTextList) {
-			index = orderText.indexOf(' ');
-			// console.log(orderText.substring(index + 1, orderText.length));
-			content += '<td class="text-align-center order-second-col">' + orderText.substring(index + 1, orderText.length) + '</td>';
-		}
-		content += '</tr>';
-		content += '<tr>';
-		for (var orderText of orderTextList) {
-			content += '<td class="text-align-center vertical-align-bottom">' + orderText.substring(0, index) + '</td>';
-		}
-		content += '</tr>';
-		content += '<tr>';
-		for (var i = 0; i < orderTextList.length; i++) {
-			content += '<td class="order-third-row"></td>';
-		}
-		content += '</tr>';
-		content += '</table>';
 		
-		$('#order-list-div').html(content);
-		
-		$('#orderList').val(orderValueList.toString());
-		closeModal();
+		if (orderTextList.length > 6) {
+			alert('결재선은 6명까지 지정 가능합니다.');
+			
+		    orderTextList = [];
+		    orderValueList = [];
+			selectedNodeText = '';
+			selectedNodeValue = '';
+			removeTag = '';
+			removeNodeValue = '';
+			removeNodeText = '';
+			$('.list-add-button').addClass('disabled-button');
+			$('.list-remove-button').addClass('disabled-button');
+			$('.tui-tree-selected').removeClass('tui-tree-selected');
+			$('.add-list').empty();
+			$('#order-list-div').empty();
+		} else {
+			content += '<table class="table table-bordered display-inline text-align-right order-table">';
+			content += '<tr>';
+			content += '<th class="table-active order-first-col vertical-align-middle" rowspan="3">결<br/><br/>재</th>';
+			for (var orderText of orderTextList) {
+				index = orderText.indexOf(' ');
+				// console.log(orderText.substring(index + 1, orderText.length));
+				content += '<td class="text-align-center order-second-col">' + orderText.substring(index + 1, orderText.length) + '</td>';
+			}
+			content += '</tr>';
+			content += '<tr>';
+			for (var orderText of orderTextList) {
+				content += '<td class="text-align-center vertical-align-bottom">' + orderText.substring(0, index) + '</td>';
+			}
+			content += '</tr>';
+			content += '<tr>';
+			for (var i = 0; i < orderTextList.length; i++) {
+				content += '<td class="order-third-row"></td>';
+			}
+			content += '</tr>';
+			content += '</table>';
+			
+			$('#order-list-div').html(content);
+			
+			$('#orderList').val(orderValueList.toString());
+			closeModal();
+		}
 	});
 	
 	$('#va_type').change(function() {
