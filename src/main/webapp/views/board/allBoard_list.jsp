@@ -11,38 +11,21 @@
 <meta content="" name="description">
 <meta content="" name="keywords">
 
-<!-- css -->
 <jsp:include page="/views/common/head.jsp"></jsp:include>
+<!-- css -->
+<link rel="stylesheet" href="/resources/board/board.css">
 <!-- js -->
 
 <style>
-#backBoard{
-	background-color: white;
-	width: 100%;
-    border-radius: 20px;
-	padding: 20px 0;
-}
-
-#allBoardTitle{
-	margin-left: 20px;
-}
-
 .table {
 	text-align: center;
 }
+
 .searchContainer{
 	float: right;
     margin-right: 20px;
 }
-/* #searchBtn{
-	background-color: rgba(52, 152, 219, 0.76);
-	color: white;
-	font-weight: bold;
-	border-radius: 10px;
-	border:none;
-	width:80px;
-	height:30px;
-} */
+
 .card-body{
 	display: flex;
     justify-content: center; /* 자식 요소들을 가로축 기준으로 가운데 정렬 */
@@ -55,14 +38,6 @@
 	border-radius: 10px;
 	width:80px;
 	height: 30px;
-}
-.table table-hover {
-	cursor: pointer;
-}
-
-#allBoardTitle:hover{
-	cursor: pointer;
-	color: rgba(52, 152, 219, 0.76);
 }
 
 .boardTableTr:hover{
@@ -81,7 +56,7 @@
 		<div id="backBoard">
 			<br/>
 			<div class="pagetitle">
-				<h1 id="allBoardTitle">전사 공지사항</h1>
+				<h1 id="BoardTitle">전사 공지사항</h1>
 			</div>
 			<div class="searchContainer">
 				<select id="searchCategory" >
@@ -93,7 +68,7 @@
 				<input type="button" id="searchBtn" value="검색" class="btn btn-primary"/>
 			</div>
 			<br/><br/>
-			<table class="table table-hover">
+			<table class="table">
 				<colgroup>
 					<col width="5%" />
 					<col width="25%" />
@@ -311,7 +286,7 @@ $('#searchBtn').click(function() {
 	listCall(page, searchCategory, searchWord);
 });
 
-$('#allBoardTitle').click(function(){
+$('#BoardTitle').click(function(){
 	searchFlag = false;
 	topFixed=false;
 	location.href='/allBoard/list.go';
@@ -327,7 +302,7 @@ $(document).on('mouseleave', '.boardTableTr', function() {
 
 //엔터 키로 검색 버튼 클릭 이벤트 트리거
 $('#searchWord').keypress(function(event) {
-	if (event.which == 13) { // 13은 Enter 키의 키코드입니다.
+	if (event.which == 13) {
 		$('#searchBtn').click();
 	}
 });

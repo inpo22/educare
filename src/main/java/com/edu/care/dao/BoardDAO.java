@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.edu.care.dto.BoardDTO;
 import com.edu.care.dto.EmpDTO;
@@ -33,9 +34,23 @@ public interface BoardDAO {
 
 	void fileSave(BoardDTO dto);
 
-	List<BoardDTO> oldFileList(String post_no);
+	List<BoardDTO> oldFileList(Object object);
 
 	void delAttachFile(String file_no);
+
+	void allBoardUpdate(Map<String, String> param);
+
+	String lastFileName(String string);
+
+	void newFileNameUpdate(BoardDTO dto);
+
+	List<String> teamBoardList();
+
+	List<BoardDTO> teamList(int currPage, int pagePerCnt, String searchCategory, String searchWord);
+
+	int teamListPageCnt(int pagePerCnt, String searchCategory, String searchWord);
+
+	List<BoardDTO> topFixedTeamList();
 
 
 

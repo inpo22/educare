@@ -10,43 +10,20 @@
 <meta content="" name="description">
 <meta content="" name="keywords">
 
+<jsp:include page="/views/common/head.jsp"></jsp:include>
 <!-- css -->
 <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
-<jsp:include page="/views/common/head.jsp"></jsp:include>
+<link rel="stylesheet" href="/resources/board/board.css">
 <!-- js -->
 <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 <style>
-#backBoard{
-	background-color: white;
-	width: 100%;
-	border-radius: 20px;
-	padding: 20px 0;
-}
-
-#allBoardTitle{
-	margin-left: 20px;
-}
-
 th.th{
 	background-color: lightgray;
 	text-align: center;
 }
-.content-wrapper {
-    margin-top: 20px;
-}
-.content-label {
-    display: inline-block;
-    vertical-align: top;
-	font-weight: bold;
-	margin-left: 50px;
-}
-textarea.content-textarea {
-	margin-left: 65px; 
-    display: inline-block;
-    vertical-align: top;
-    width: 80%;
-    height: auto;
-    
+
+td {
+	text-align: left;
 }
 
 .buttonCon{
@@ -66,10 +43,6 @@ textarea.content-textarea {
 	border-color: gray;
 }
 
-#allBoardTitle:hover{
-	cursor: pointer;
-	color: rgba(52, 152, 219, 0.76);
-}
 </style>
 </head>
 

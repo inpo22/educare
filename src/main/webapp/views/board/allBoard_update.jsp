@@ -10,23 +10,13 @@
 <meta content="" name="description">
 <meta content="" name="keywords">
 
+<jsp:include page="/views/common/head.jsp"></jsp:include>
 <!-- css -->
 <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"/>
-<jsp:include page="/views/common/head.jsp"></jsp:include>
+<link rel="stylesheet" href="/resources/board/board.css">
 <!-- js -->
 <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 <style>
-#backBoard{
-	background-color: white;
-	width: 100%;
-	border-radius: 20px;
-	padding: 20px 10px;
-}
-
-#allBoardTitle{
-	margin-left: 20px;
-}
-
 #fixedYn {
 	float: right;
 	margin-right: 30px;
@@ -170,12 +160,16 @@ const editor = new toastui.Editor({
 
 	var fileList = [];
 
+	if('${dto.fixed_yn}' == '1'){
+		$('#flexSwitchCheckChecked').prop('checked', true);
+	}
+	
     <c:forEach var="file" items="${attachFileList}">
-    fileList.push({
-        file_no: "${file.file_no}",
-		name : "${file.ori_filename}"
-    });
-</c:forEach>
+	    fileList.push({
+	        file_no: "${file.file_no}",
+			name : "${file.ori_filename}"
+	    });
+	</c:forEach>
 console.log(fileList);
 
 	$('#fileInputButton').click(function() {

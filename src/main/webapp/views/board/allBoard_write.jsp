@@ -10,23 +10,13 @@
 <meta content="" name="description">
 <meta content="" name="keywords">
 
+<jsp:include page="/views/common/head.jsp"></jsp:include>
 <!-- css -->
 <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"/>
-<jsp:include page="/views/common/head.jsp"></jsp:include>
+<link rel="stylesheet" href="/resources/board/board.css">
 <!-- js -->
 <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 <style>
-#backBoard{
-	background-color: white;
-	width: 100%;
-	border-radius: 20px;
-	padding: 20px 10px;
-}
-
-#allBoardTitle{
-	margin-left: 20px;
-}
-
 #fixedYn {
 	float: right;
 	margin-right: 30px;
@@ -46,6 +36,7 @@
 .writeLabel{
 	margin-left: 20px;
 }
+
 .buttonCon{
 	display: flex;
     justify-content: center;
