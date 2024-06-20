@@ -12,6 +12,7 @@
 
 <!-- css -->
 <jsp:include page="/views/common/head.jsp"></jsp:include>
+<link href="/resources/emp/emp.css" rel="stylesheet">
 <!-- js -->
 
 <style>
@@ -23,22 +24,13 @@
 	width: 250px;
 	margin : 7px 0;
 }
-#search_btn
+#search_btn,#reset_btn
 {
 	margin : 7px 5px;
 }	
 .chk,#chkAll{
 	margin:3px 0;
 	border: 1px solid black;
-}
-#backBoard{
-	background-color: white;
-	width:100%;
-	height:1000px;
-	border-radius: 10px;
-	position: relative;
-	margin: 20px auto;
-	box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 #empReg_btn,#quitList_btn{
 	margin : 7px 0 7px 10px;
@@ -49,13 +41,11 @@
 #inputdate,#searchdate_btn{
 	margin:7px 0;
 }
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-}
 #quit_btn{
 	margin-right: 10px;
+}
+.bi.bi-arrow-clockwise{
+	font-size: 24px;
 }
 </style>
 </head>
@@ -92,28 +82,27 @@ body {
 	                  <option value="team">부서</option>
 	                  <option value="class">직책</option>
 	                  <option value="position">직급</option>
+	                  <option value="name">이름</option>
 	              </select>   
 			      <input id="searchbox" type="text" class="form-control" placeholder="검색어를 입력하세요." aria-label="Recipient's username" aria-describedby="button-addon2">
-				  <button id="search_btn" class="btn btn-outline-secondary" type="button">검색</button>
+				  <button id="search_btn" class="btn btn-outline-dark" type="button">검색</button>
 				  
 				  <div id="date" class="input-group date">
 				    <input id="startDate" type="date" class="form-control">
 				  </div>
 				  <div>
-				  <span id="inputdate" class="input-group-text">~</span>
+				  	<span id="inputdate" class="input-group-text">~</span>
 				  </div>
 				  <div id="date" class="input-group date">
 				    <input id="endDate" type="date" class="form-control">
 				  </div>
 				  <button id="searchdate_btn" type="button" class="btn btn-outline-dark">검색</button>
-				  
+				  <button id="reset_btn" class="btn btn-outline-dark" type="button"><i class="bi bi-arrow-clockwise"></i></button>
 				  
 				  <div id="del" class="ms-auto">
-				  	<button id="quit_btn" type="button" class="btn btn-dark" onclick="quit()">퇴사처리</button>
+				  	<button id="quit_btn" type="button" class="btn btn-dark" onclick="quit()">퇴사처리</button>																  
 				  </div>
-	          </div>
-	          
-	          
+	          </div>  
 	      	</div>
 			
 			<!-- End 버튼 및 필터링 -->
@@ -310,7 +299,7 @@ $('#search_btn').click(function(){
 		alert("검색어를 입력해주세요.");
 		return;
 	}
-	listCall(page, type, searchbox);
+	listCall(page, type, searchbox, startDate, endDate);
 });
 
 // 날짜 검색 버튼 함수
@@ -370,6 +359,11 @@ function quit(){
 		}
 	}
 }
+
+//리셋버튼 함수
+$('#reset_btn').click(function(){
+	window.location.href = '/emp/list.go';
+});
 
 </script>
 </html>

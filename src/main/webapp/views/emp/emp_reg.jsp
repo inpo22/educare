@@ -13,52 +13,30 @@
 <!-- css -->
 <link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui-tree/latest/tui-tree.css" />
 <jsp:include page="/views/common/head.jsp"></jsp:include>
+<link href="/resources/emp/emp.css" rel="stylesheet">
 <!-- js -->
 <script src="https://uicdn.toast.com/tui-tree/latest/tui-tree.js"></script>
 
 <style>
-#msg{
+#msg,#length-msg,#pattern-msg,#email-msg{
 	margin-left: 50px;
 }
+
 #team_btn{
 	margin-left: 50px;
 }
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-}
 #no_btn{
-	margin:0 10px;
+	margin:10px 15px;
 }
-#backBoard{
-	background-color: white;
-	width:100%;
-	height:1000px;
-	border-radius: 10px;
-	position: relative;
-	margin: 20px auto;
-	box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+#reg_btn{
+	margin:10px 0;
 }
 .form-select,#photo{
 	width: 80%;
 }
-#photo-preview{
-	display: none;
-	width : 250px;
-	height:250px;
-	margin:0 0 0 200px;
-}
 h1{
 	margin:10px 20px;
 }
-.btn_group{
-	display: flex;
-	position: absolute;
-	bottom: 20px;
-    right: 20px; 
-}
-
 .form-row {
     display: flex;
     gap: 20px;
@@ -98,13 +76,12 @@ input:focus, select:focus {
 	margin:0 50px;
 }
 #name, #id {
-    width: 90%;
+    width: 70%;
 }
 #id{
-	margin-left: 110px;
+	margin-left: 100px;
 	width:500px;
 }
-
 /* 아이디 중복 체크 버튼 위치 조정 */
 #idchk {
 	margin-top:30px;
@@ -113,52 +90,10 @@ input:focus, select:focus {
 	height:50px;
 }
 label[for="id"]{
-	margin-left: 110px;
+	margin-left: 100px;
 }
 #name{
-	width:600px;
-}
-/* Modal css */
-.modal {
-    display: none;
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4);
-}
-.modal-content {
-    margin: 0 auto;
-    padding: 20px;
-    height: 600px;
-    width: 400px;
-    top: 150px;
-    background-color: white;
-}
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-.close:hover {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-.modal-title {
-	font-weight: bold;
-	font-size: 25px;
-}
-.tui-tree-wrap {
-	height: 400px;
-	width: 360px;
-	overflow-y: auto;
-}
-.text-align-right {
-	text-align: right;
+	width:590px;
 }
 </style>
 
@@ -196,6 +131,8 @@ label[for="id"]{
                  <div class="form-group">
                      <label for="pw">비밀번호:</label>
                      <input type="password" id="pw" name="pw" required>
+                     <br/><span id="length-msg"></span>
+                     <br/><span id="pattern-msg"></span>
                  </div>
                  <div class="form-group">
                      <label for="pwchk">비밀번호 확인:</label>
@@ -207,6 +144,7 @@ label[for="id"]{
                  <div class="form-group">
                      <label for="email">이메일:</label>
                      <input type="text" id="email" name="email" required>
+                     <br/><span id="email-msg"></span>
                  </div>
                  <div class="form-group">
                      <label for="phone">연락처:</label>
@@ -272,10 +210,13 @@ label[for="id"]{
 	             </div>
 	                          
 	         </div>	
-	         <div class="btn_group">
-        	<button id="reg_btn" class="btn btn-dark" type="button" onclick="reg()">등록</button>
-        	<button id="no_btn" class="btn btn-dark" type="button">취소</button>
-        </div>	
+	         <div class="row mt-3">
+            	<div class="col-md-6"></div>
+	            <div class="col-md-6 d-flex justify-content-end">
+	           		<button id="reg_btn" class="btn btn-dark" type="button" onclick="reg()">등록</button>
+	            	<button id="no_btn" class="btn btn-dark" type="button">취소</button>
+	            </div>
+	        </div>	
         </form>
         
         
@@ -524,6 +465,7 @@ function reg(){
 			return false;
 		
 		}
+		
 		// 비밀번호 유효성 검사
 		var regex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[!@#$%^&*()_+={}[\]:;'"<>,./?\\|~-]).{8,16}$/;
 	    
@@ -551,13 +493,40 @@ $('#pwchk').on('keyup', function(){
     var pwchk = $(this).val();
 
     if(pw === pwchk){
-        $('#msg').html("비밀번호가 일치합니다.");
+        $('#msg').html("☺ 비밀번호가 일치합니다.");
         $('#msg').css({'color': 'green'});
     } else {
-        $('#msg').html('비밀번호가 일치하지 않습니다.');
+        $('#msg').html('☹ 비밀번호가 일치하지 않습니다.');
         $('#msg').css({'color': 'red'});
     }
 });
+
+// 비밀번호 유효성검사
+$('#pw').on('keyup', function(){
+	var pw = $('input[name="pw"]').val();
+	
+	// 비밀번호 길이 확인 (8-16자)
+    if (pw.length < 8 || pw.length > 16) {
+        $('#length-msg').html("☹ 비밀번호는 8자 이상 16자 이하여야 합니다.");
+        $('#length-msg').css({'color': 'red'});
+    } else {
+    	 $('#length-msg').html("☺ 비밀번호는 8자 이상 16자 이하여야 합니다.");
+         $('#length-msg').css({'color': 'green'});
+    }
+	
+ 	// 비밀번호 패턴 확인 (영어, 소문자, 특수문자 포함)
+    var pattern = /^(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[a-zA-Z\d!@#$%^&*(),.?":{}|<>]{8,}$/;
+
+ 
+    if (!pattern.test(pw)) {
+        $('#pattern-msg').html("☹ 영어 소문자, 숫자, 특수문자를 포함해야 합니다.");
+        $('#pattern-msg').css({'color': 'red'});
+    } else {
+    	$('#pattern-msg').html("☺ 영어 소문자, 숫자, 특수문자를 포함해야 합니다.");
+        $('#pattern-msg').css({'color': 'green'});
+    }
+});
+
 
 // 연락처 입력 시 하이픈 자동생성
 $(document).on("keyup", "#phone", function() {

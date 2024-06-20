@@ -3,5 +3,86 @@
    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.edu.care.dao.StuDAO">
+
+<!-- 학생 리스트 가져오는 쿼리문 -->
+<select id="stdList" resultType="stu">
+	SELECT
+		user_code,
+		name,
+		phone,
+		gender,
+		reg_date
+	FROM
+		user
+	WHERE 
+		classify_code='U03'
+		<if test="param4 != null and param4 != ''">
+			AND(
+				<choose>
+					<when test="param3 == 'name'">
+						name LIKE CONCAT('%', #{param4}, '%')
+					</when>
+					<when test="param3 == 'gender'">
+						gender LIKE CONCAT('%', #{param4}, '%')
+					</when>
+				</choose>
+			)
+		</if>
+		<if test="param5 != null and param5 != ''">
+			AND reg_date &gt;= #{param5}
+		</if>
+		<if test="param6 != null and param6 != ''">
+			AND reg_date &lt;= #{param6}
+		</if>
+	ORDER BY 
+        reg_date ASC
+    LIMIT #{param1}, #{param2}
+</select>
+
+<!-- 학생 리스트 페이징 쿼리문 -->
+<select id="stdListPageCnt" resultType="Integer">
+	SELECT
+		CEIL(COUNT(user_code)/#{param1})
+	From 
+		user
+	WHERE 
+		classify_code='U03'
+		<if test="param3 != null and param3 != ''">
+			AND(
+				<choose>
+					<when test="param2 == 'name'">
+						name LIKE CONCAT('%', #{param3}, '%')
+					</when>
+					<when test="param2 == 'gender'">
+						gender LIKE CONCAT('%', #{param3}, '%')
+					</when>
+				</choose>
+			)
+		</if>
+		<if test="param4 != null and param4 != ''">
+			AND reg_date &gt;= #{param4}
+		</if>
+		<if test="param5 != null and param5 != ''">
+			AND reg_date &lt;= #{param5}
+		</if>
+	ORDER BY 
+        reg_date ASC
+</select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	
 </mapper>
