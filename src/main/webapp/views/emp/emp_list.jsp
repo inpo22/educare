@@ -91,7 +91,7 @@
 				    <input id="startDate" type="date" class="form-control">
 				  </div>
 				  <div>
-				  <span id="inputdate" class="input-group-text">~</span>
+				  	<span id="inputdate" class="input-group-text">~</span>
 				  </div>
 				  <div id="date" class="input-group date">
 				    <input id="endDate" type="date" class="form-control">
@@ -102,9 +102,7 @@
 				  <div id="del" class="ms-auto">
 				  	<button id="quit_btn" type="button" class="btn btn-dark" onclick="quit()">퇴사처리</button>																  
 				  </div>
-	          </div>
-	          
-	          
+	          </div>  
 	      	</div>
 			
 			<!-- End 버튼 및 필터링 -->
