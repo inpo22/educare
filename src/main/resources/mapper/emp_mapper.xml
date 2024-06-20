@@ -9,34 +9,35 @@
     SELECT 
         u.user_code, 
         u.name, 
-        tc.code_name AS team_name, 
+        d.team_name, 
         cc.code_name AS class_name, 
         pc.code_name AS position_name,
         u.reg_date
     FROM 
         `user` u
     LEFT JOIN 
-        all_code tc ON u.team_code = tc.code
+        department d ON u.team_code = d.team_code
     LEFT JOIN 
         all_code cc ON u.class_code = cc.code
     LEFT JOIN 
         all_code pc ON u.position_code = pc.code
     WHERE 
         pc.code_name IN ('팀장', '팀원')
-        AND quit_date is null
-        ORDER BY 
-    	u.reg_date ASC
+        AND u.quit_date is null
         <if test="param4 != null and param4 != ''">
             AND (
                 <choose>
                     <when test="param3 == 'team'">
-                        tc.code_name LIKE CONCAT('%', #{param4}, '%')
+                        d.team_name LIKE CONCAT('%', #{param4}, '%')
                     </when>
                     <when test="param3 == 'class'">
                         cc.code_name LIKE CONCAT('%', #{param4}, '%')
                     </when>
                     <when test="param3 == 'position'">
                         pc.code_name LIKE CONCAT('%', #{param4}, '%')
+                    </when>
+                    <when test="param3 == 'name'">
+                        u.name LIKE CONCAT('%', #{param4}, '%')
                     </when>
                 </choose>
             )
@@ -47,7 +48,9 @@
 		<if test="endDate != null and endDate != ''">
 			AND u.reg_date &lt;= #{endDate}
 		</if>
-	LIMIT #{param1}, #{param2}
+	ORDER BY 
+        u.reg_date ASC
+    LIMIT #{param1}, #{param2}
         
 </select>
 
@@ -56,24 +59,25 @@
 <select id="empListPageCnt" resultType="Integer">
     SELECT CEIL(COUNT(u.user_code) / #{param1})
     FROM `user` u
-    LEFT JOIN all_code tc ON u.team_code = tc.code
+    LEFT JOIN department d ON u.team_code = d.team_code 
     LEFT JOIN all_code cc ON u.class_code = cc.code
     LEFT JOIN all_code pc ON u.position_code = pc.code
     WHERE u.position_code IN ('P01', 'P02')
-    AND quit_date is null
-    ORDER BY 
-    u.reg_date ASC
+    AND u.quit_date is null
         <if test="param3 != null and param3 != ''">
             AND (
                 <choose>
                     <when test="param2 == 'team'">
-                        tc.code_name LIKE CONCAT('%', #{param3}, '%')
+                        d.team_name LIKE CONCAT('%', #{param3}, '%')
                     </when>
                     <when test="param2 == 'class'">
                         cc.code_name LIKE CONCAT('%', #{param3}, '%')
                     </when>
                     <when test="param2 == 'position'">
                         pc.code_name LIKE CONCAT('%', #{param3}, '%')
+                    </when>
+                    <when test="param2 == 'name'">
+                        u.name LIKE CONCAT('%', #{param3}, '%')
                     </when>
                 </choose>
             )
@@ -84,7 +88,8 @@
 		<if test="endDate != null and endDate != ''">
 			AND u.reg_date &lt;= #{endDate}
 		</if>
-        
+	ORDER BY 
+    u.reg_date ASC 
 </select>
 
 <!-- 퇴사처리 쿼리문 -->
@@ -99,27 +104,22 @@
 	SELECT COUNT(id) FROM user WHERE id=#{param}
 </select>
 
+<!-- 회원 번호 생성 쿼리문 -->
+<select id="createUserCode" resultType="String">
+	SELECT
+		CONCAT(SUBSTR(CAST(CURDATE() AS CHAR), 1, 4), 
+			#{param1}, RIGHT(CONCAT("000" , 
+	        (SELECT (COUNT(u.user_code) + 1) FROM user u WHERE YEAR(u.reg_date) = YEAR(CURDATE()) 
+	    	AND u.classify_code = #{param1})), 4))
+</select>
+
 <!-- 사원 등록 쿼리문 -->
 <insert id="reg" parameterType="map">
     INSERT INTO user (
         user_code, name, id, pw, email, phone, birth, gender, class_code, classify_code, position_code, reg_date, team_code, photo, status
     ) 
     VALUES (
-        CONCAT(
-            YEAR(CURDATE()),
-            #{classify_code},
-            LPAD(
-                IFNULL(
-                    (SELECT MAX(CAST(RIGHT(u.user_code, 4) AS UNSIGNED)) + 1 
-                     FROM user u 
-                     WHERE YEAR(u.reg_date) = YEAR(CURDATE()) AND u.classify_code = #{classify_code}
-                    ),
-                    1
-                ),
-                4,
-                '0'
-            )
-        ),
+        #{user_code},
         #{name},
         #{id},
         #{pw},
@@ -142,8 +142,13 @@
     )
 </insert>
 
+<!-- 휴가테이블 사원등록 쿼리문 -->
+<insert id="regVaca" parameterType="String">
+	INSERT INTO vacation_history (year, user_code, remain)
+		VALUES (YEAR(CURDATE()),#{user_code},15)
+</insert>
 
-
+<!-- 부서 리스트 쿼리문 -->
 <select id="deptList" resultType="emp">
 	SELECT d.team_code, d.team_name, d.upper_code FROM department d
 </select>
@@ -172,7 +177,7 @@
     FROM 
 	    `user` u
 	LEFT JOIN 
-	    department d ON d.team_code = u.team_code
+	    department d ON u.team_code = d.team_code
 	LEFT JOIN 
 	    all_code cc ON u.class_code = cc.code
 	LEFT JOIN 

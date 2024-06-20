@@ -105,6 +105,7 @@ body {
 							<option value="team">부서</option>
 							<option value="class">직책</option>
 							<option value="position">직급</option>
+							<option value="name">이름</option>
 						</select>
 						<input id="searchbox" type="text" class="form-control" placeholder="검색어를 입력하세요." aria-label="Recipient's username" aria-describedby="button-addon2">
 						<button id="search_btn" class="btn btn-outline-secondary" type="button">검색</button>

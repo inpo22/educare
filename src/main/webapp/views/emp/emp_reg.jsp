@@ -556,10 +556,10 @@ $('#pwchk').on('keyup', function(){
     var pwchk = $(this).val();
 
     if(pw === pwchk){
-        $('#msg').html("비밀번호가 일치합니다.");
+        $('#msg').html("☺ 비밀번호가 일치합니다.");
         $('#msg').css({'color': 'green'});
     } else {
-        $('#msg').html('비밀번호가 일치하지 않습니다.');
+        $('#msg').html('☹ 비밀번호가 일치하지 않습니다.');
         $('#msg').css({'color': 'red'});
     }
 });
