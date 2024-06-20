@@ -135,13 +135,14 @@ public class BoardService {
 			for (String fileNumber : fileNumbers) {
 				if (boardDTO.getFile_no().equals(fileNumber) == true) {
 					isFileNameSame = true;
+					break;
 				}
-				if(isFileNameSame == false) {
-					boardDAO.delAttachFile(boardDTO.getFile_no());
-					File file = new File(root+boardDTO.getNew_filename());
-					if (file.exists()) {
-						file.delete();
-					}						
+			}
+			if(isFileNameSame == false) {
+				boardDAO.delAttachFile(boardDTO.getFile_no());
+				File file = new File(root+boardDTO.getNew_filename());
+				if (file.exists()) {
+					file.delete();
 				}
 			}
 			isFileNameSame = false;
