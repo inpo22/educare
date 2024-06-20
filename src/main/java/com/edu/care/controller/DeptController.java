@@ -35,9 +35,10 @@ public class DeptController {
 
 	@GetMapping(value = "/dept/user/list.ajax")
 	@ResponseBody
-	public Map<String, Object> getUser(){
+	public Map<String, Object> getUser(@RequestParam Map<String, Object> param){
 		logger.info(":: 부서원 리스트 ::");
-		return deptService.getUser();
+		logger.info("param: "+param);
+		return deptService.getUser(param);
 	}
 	
 	@PostMapping(value = "/dept/register.ajax")
@@ -51,7 +52,7 @@ public class DeptController {
 	@GetMapping(value = "/dept/delete.ajax")
 	@ResponseBody
 	public Map<String, Object> removeDept(@RequestParam Map<String, Object> param){
-		logger.info(":: 부서 제거 ::");
+		logger.info(":: 부서 삭제 ::");
 		logger.info("param: "+param);
 		return deptService.removeDept(param);
 	}
