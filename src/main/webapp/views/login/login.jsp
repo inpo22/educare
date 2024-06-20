@@ -117,9 +117,9 @@ body {
 	
 	
 	<script>
-	var msgdo = '${msgdo}'; 
-	if(msgdo != ''){
-		alert(msgdo);
+	var msg = '${msg}'; 
+	if(msg != ''){
+		alert(msg);
 	}
     </script>
 </body>

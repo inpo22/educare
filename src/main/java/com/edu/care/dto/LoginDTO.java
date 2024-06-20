@@ -9,25 +9,14 @@ public class LoginDTO {
 	
 	private String user_code;
 	private String name;
-	private String class_code;
+	private String class_name;
 	private String team_code;
 	private String classify_code;
 	private String team_name;
 	private String photo;
+	private String id;
+	private String pw;
 	
-
-	public String getPhoto() {
-		return photo;
-	}
-	public void setPhoto(String photo) {
-		this.photo = photo;
-	}
-	public String getTeam_name() {
-		return team_name;
-	}
-	public void setTeam_name(String team_name) {
-		this.team_name = team_name;
-	}
 	public String getUser_code() {
 		return user_code;
 	}
@@ -40,11 +29,11 @@ public class LoginDTO {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getClass_code() {
-		return class_code;
+	public String getClass_name() {
+		return class_name;
 	}
-	public void setClass_code(String class_code) {
-		this.class_code = class_code;
+	public void setClass_name(String class_name) {
+		this.class_name = class_name;
 	}
 	public String getTeam_code() {
 		return team_code;
@@ -58,6 +47,32 @@ public class LoginDTO {
 	public void setClassify_code(String classify_code) {
 		this.classify_code = classify_code;
 	}
+	public String getTeam_name() {
+		return team_name;
+	}
+	public void setTeam_name(String team_name) {
+		this.team_name = team_name;
+	}
+	public String getPhoto() {
+		return photo;
+	}
+	public void setPhoto(String photo) {
+		this.photo = photo;
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	public String getPw() {
+		return pw;
+	}
+	public void setPw(String pw) {
+		this.pw = pw;
+	}
+
+	
 	
 	
 }

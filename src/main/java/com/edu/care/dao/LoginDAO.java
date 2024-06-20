@@ -3,12 +3,14 @@ package com.edu.care.dao;
 import org.apache.ibatis.annotations.Mapper;
 
 
-import com.edu.care.dto.LoginDTO;
+
 
 @Mapper
 public interface LoginDAO {
+
+	String loginAccess(String id);
+
 	
-	LoginDTO loginAccess(String id, String pw);
 
 	
 }
