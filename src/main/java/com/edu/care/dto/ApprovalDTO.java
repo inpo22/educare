@@ -31,7 +31,17 @@ public class ApprovalDTO {
 	private String class_name;
 	
 	private int is_my_turn;
+	private int is_comp;
 	private int total_order_state;
+	
+	private int row_num;
+	private String approvers_name;
+	private String approvers_team;
+	private String all_approvers;
+	
+	private int file_no;
+	private String ori_filename;
+	private String new_filename;
 	
 	public String getTeam_code() {
 		return team_code;
@@ -158,6 +168,54 @@ public class ApprovalDTO {
 	}
 	public void setTotal_order_state(int total_order_state) {
 		this.total_order_state = total_order_state;
+	}
+	public int getRow_num() {
+		return row_num;
+	}
+	public String getApprovers_name() {
+		return approvers_name;
+	}
+	public String getApprovers_team() {
+		return approvers_team;
+	}
+	public String getAll_approvers() {
+		return all_approvers;
+	}
+	public void setRow_num(int row_num) {
+		this.row_num = row_num;
+	}
+	public void setApprovers_name(String approvers_name) {
+		this.approvers_name = approvers_name;
+	}
+	public void setApprovers_team(String approvers_team) {
+		this.approvers_team = approvers_team;
+	}
+	public void setAll_approvers(String all_approvers) {
+		this.all_approvers = all_approvers;
+	}
+	public int getFile_no() {
+		return file_no;
+	}
+	public String getOri_filename() {
+		return ori_filename;
+	}
+	public String getNew_filename() {
+		return new_filename;
+	}
+	public void setFile_no(int file_no) {
+		this.file_no = file_no;
+	}
+	public void setOri_filename(String ori_filename) {
+		this.ori_filename = ori_filename;
+	}
+	public void setNew_filename(String new_filename) {
+		this.new_filename = new_filename;
+	}
+	public int getIs_comp() {
+		return is_comp;
+	}
+	public void setIs_comp(int is_comp) {
+		this.is_comp = is_comp;
 	}
 	
 }

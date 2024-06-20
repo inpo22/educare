@@ -10,47 +10,20 @@
 <meta content="" name="description">
 <meta content="" name="keywords">
 
+<jsp:include page="/views/common/head.jsp"></jsp:include>
 <!-- css -->
 <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
-
-<jsp:include page="/views/common/head.jsp"></jsp:include>
+<link href="/resources/mail/style.css" rel="stylesheet">
 
 <!-- js -->
 <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 
 <style>
-	.display-flex {
-		display: flex;
-	}
-	
-	#left-section {
-		width: 15%;
-		height: 100%;
-	}
-	
-	#right-section {
-		width: 84%;
-		height: 100%;
-		background-color: white;
-		padding: 30px;
-	}
-	#second-sidebar td {
-		padding: 5px 0;
-	}
 	.first-col {
 		width: 15%;
 	}
 	.second-col {
 		width: 74%;
-	}
-	.table-bordered th {
-		text-align: center;	
-	}
-	.text-align-right {
-		text-align: right;
-	}
-	a {
-		color: black;
 	}
 </style>
 </head>
@@ -115,7 +88,7 @@
 						<th class="table-active">첨부파일</th>
 						<td>
 							<c:forEach items="${attachFileList}" var="file">
-								<a href="/mail/download/${file.new_filename}">
+								<a href="/mail/download?file_no=${file.file_no}&new_filename=${file.new_filename}">
 									<i class="bi bi-download"></i>&nbsp;${file.ori_filename}
 								</a>
 								<br/>
@@ -169,7 +142,5 @@
 	$('.btn-newMail').click(function() {
 		location.href = '/mail/write.go';
 	});
-
-
 </script>
 </html>

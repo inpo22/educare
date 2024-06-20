@@ -186,11 +186,11 @@
 			, af.ori_filename
 			, af.new_filename
 		FROM attach_file af
-		WHERE af.board_no = #{param1} AND af.board_type = 'mail'
+		WHERE af.post_no = #{param1} AND af.board_type = 'mail'
 	</select>
 	
 	<select id="getOriFileName" resultType="String">
-		SELECT af.ori_filename FROM attach_file af WHERE af.new_filename = #{param1}
+		SELECT af.ori_filename FROM attach_file af WHERE af.file_no = #{param1} AND af.new_filename = #{param2}
 	</select>
 	
 	<select id="deptList" resultType="mail">
@@ -229,6 +229,17 @@
 	<insert id="fileSave">
 		INSERT INTO attach_file(user_code, ori_filename, new_filename, board_no, board_type)
 			VALUES(#{param1}, #{param2}, #{param3}, #{param4}, #{param5})
+	</insert>
+	
+	<insert id="mailLoadFileWrite">
+		INSERT INTO attach_file(user_code, ori_filename, new_filename, board_no, board_type)
+			VALUES(
+				#{param1}
+				, (SELECT af.ori_filename FROM attach_file af WHERE af.file_no = #{param3})
+				, (SELECT af2.new_filename FROM attach_file af2 WHERE af2.file_no = #{param3})
+				, #{param2}
+				, 'mail'
+			)
 	</insert>
 	
 </mapper>

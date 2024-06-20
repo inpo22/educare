@@ -7,12 +7,15 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.edu.care.service.ApprovalService;
 
@@ -61,6 +64,13 @@ public class ApprovalController {
 	@GetMapping(value="/busiApproval/write.go")
 	public String busiApprovalWriteForm() {
 		return "approval/busiApproval_write";
+	}
+	
+	@GetMapping(value="/approval/detail.go")
+	public ModelAndView approvalDetail(String au_code, HttpSession session) {
+		String user_code = (String) session.getAttribute("user_code");
+		
+		return approvalService.approvalDetail(au_code, user_code);
 	}
 	
 	@GetMapping(value="/approval/deptList.ajax")
@@ -119,6 +129,26 @@ public class ApprovalController {
 		Map<String, Object> map = approvalService.approvalListCall(currPage, pagePerCnt, user_code, team_code, condition, content, listType);
 		
 		return map;
+	}
+	
+	@GetMapping(value="/approval/download")
+	public ResponseEntity<Resource> download(String file_no, String new_filename) {
+		// logger.info("download fileName : " + fileName);
+		return approvalService.download(file_no, new_filename);
+	}
+
+	@GetMapping(value="/approval/approve.do")
+	public String approve(String au_code, String apv_no, HttpSession session) {
+		approvalService.approve(apv_no, au_code);
+		
+		return "redirect:/approval/detail.go?au_code=" + au_code;
+	}
+	
+	@GetMapping(value="/approval/reject.do")
+	public String reject(String au_code, String apv_no) {
+		approvalService.reject(au_code, apv_no);
+		
+		return "redirect:/approval/detail.go?au_code=" + au_code;
 	}
 	
 }
