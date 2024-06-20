@@ -10,27 +10,126 @@
 <meta content="" name="description">
 <meta content="" name="keywords">
 
-<jsp:include page="/views/common/head.jsp"></jsp:include>
 <!-- css -->
-<link href="/resources/mail/style.css" rel="stylesheet">
-
+<jsp:include page="/views/common/head.jsp"></jsp:include>
 <!-- js -->
 
 <style>
-	.first-col {
-		width: 5%;
+	.display-flex {
+		display: flex;
 	}
-		
-	.second-col {
+	#left-section {
 		width: 15%;
+		height: 100%;
 	}
-		
+	#right-section {
+		width: 84%;
+		height: 100%;
+		background-color: white;
+		padding: 30px;
+	}
+	.text-align-right {
+		text-align: right;
+	}
+	.second-sidebar td {
+		padding: 5px 0;
+	}
+	a {
+		color: black;
+	}
+	.blue-color {
+		color: rgb(88, 88, 255);
+	}
+	.modal {
+	    display: none;
+	    position: fixed;
+	    left: 0;
+	    top: 0;
+	    width: 100%;
+	    height: 100%;
+	    overflow: auto;
+	    background-color: rgba(0,0,0,0.4);
+	}
+	.modal-content {
+	    margin: 0 auto;
+	    padding: 20px;
+	    height: 600px;
+	    width: 400px;
+	    top: 150px;
+	    background-color: white;
+	}
+	.close {
+	    color: #aaa;
+	    float: right;
+	    font-size: 28px;
+	    font-weight: bold;
+	}
+	.close:hover {
+	    color: black;
+	    text-decoration: none;
+	    cursor: pointer;
+	}
+	.modal-title {
+		font-weight: bold;
+		font-size: 25px;
+	}
+	.approval-type-list {
+		height: 400px;
+		width: 360px;
+		overflow-y: auto;
+		background-color: #f9f9f9;
+		padding: 20px;
+	}
+	.approval-type-list ul {
+		list-style-type: none;
+	}
+	.approval-type-list li {
+		cursor: pointer;
+		padding-left: 10px;
+	}
+	.approval-type-list li:hover {
+		background-color: rgba(75, 150, 230, 0.1);
+		background: #e7eff7;
+	}
+	.selected-value {
+		background-color: rgba(75, 150, 230, 0.1);
+		background: #e7eff7;
+		color: #4b96e6;
+	}
+	.right-padding {
+		padding-right: 40px;
+	}
+	#search-condition {
+		width: 150px;
+		display: inline;
+	}
+	#search-content {
+		width: 400px;
+		display: inline;
+	}
+	.table th, .table td {
+		text-align: center;
+	}
+	.first-col {
+		width: 10%;
+	}
+	.second-col {
+		width: 45%;
+	}
 	.third-col {
-		width: 54%;
+		width: 10%;
 	}
-		
 	.fourth-col {
-		width: 25%;
+		width: 14%;
+	}
+	.fifth-col {
+		width: 10%;
+	}
+	.sixth-col {
+		width: 10%;
+	}
+	.badge {
+		width: 70px;
 	}
 </style>
 </head>
@@ -44,16 +143,37 @@
 		<div class="display-flex">
 			<div id="left-section">
 				<div class="pagetitle">
-					<h1>메일</h1>
+					<h1>전자 결재</h1>
 				</div>
-				<button class="btn btn-primary btn-newMail">메일 작성</button>
+				<button class="btn btn-primary btn-newApproval">새 결재 작성</button>
 				<br/><br/><br/>
-				<table id="second-sidebar">
+				<table class="second-sidebar">
 					<tr>
-						<td><a href="/receivedMail/list.go">받은 메일함</a></td>
+						<td><b>결재하기</b></td>
 					</tr>
 					<tr>
-						<td><a href="/writtenMail/list.go" class="blue-color"><b>보낸 메일함</b></a></td>
+						<td>&nbsp;&nbsp;&nbsp;<a href="/getApproval/list.go">결재 요청 받은 문서</a></td>
+					</tr>
+					<tr>
+						<td>&nbsp;&nbsp;&nbsp;<a href="/compApproval/list.go">결재 완료한 문서</a></td>
+					</tr>
+					<tr>
+						<td>&nbsp;&nbsp;&nbsp;<a href="/viewApproval/list.go">열람 가능한 문서</a></td>
+					</tr>
+				</table>
+				<br/>
+				<table class="second-sidebar">
+					<tr>
+						<td><b>상신한 결재</b></td>
+					</tr>
+					<tr>
+						<td>&nbsp;&nbsp;&nbsp;<a href="/requestApproval/list.go" class="blue-color"><b>결재 요청한 문서</b></a></td>
+					</tr>
+					<tr>
+						<td>&nbsp;&nbsp;&nbsp;<a href="/finishApproval/list.go">결재 완료된 문서</a></td>
+					</tr>
+					<tr>
+						<td>&nbsp;&nbsp;&nbsp;<a href="/rejectedApproval/list.go">반려된 문서</a></td>
 					</tr>
 				</table>
 			</div>
@@ -61,7 +181,7 @@
 				<select id="search-condition" class="form-select">
 					<option value="subject">제목</option>
 					<option value="content">내용</option>
-					<option value="receivers_name">받는 사람</option>
+					<option value="all_approvers">결재자</option>
 				</select> 
 				<input type="text" id="search-content" class="form-control"/>
 				<button class="btn btn-secondary" onclick="search()">검색</button>
@@ -70,12 +190,12 @@
 				<table class="table">
 					<thead>
 						<tr>
-							<th scope="col" class="first-col"><input type="checkbox" id="select-all"/></th>
-							<td scope="col" class="second-col">
-								<button class="btn btn-outline-danger btn-sm" onclick="del()">삭제</button>
-							</td>
-							<th scope="col" class="third-col"></th>
-							<th scope="col" class="fourth-col"></th>
+							<th class="table-active first-col">문서 종류</th>
+							<th class="table-active second-col">제목</th>
+							<th class="table-active third-col">기안일</th>
+							<th class="table-active fourth-col">기안자</th>
+							<th class="table-active fifth-col">부서</th>
+							<th class="table-active sixth-col">결재 상태</th>
 						</tr>
 					</thead>
 					<tbody id="drawList"></tbody>
@@ -87,43 +207,27 @@
 		</div>
 	</main>
 	<!-- End #main -->
-
 	<jsp:include page="/views/common/footer.jsp"></jsp:include>
-
+	<jsp:include page="/views/approval/newApproval_modal.jsp"></jsp:include>
+	
 </body>
 <script>
-	$('#select-all').click(function() {
-		var $chk = $('.select-box');
-
-		if ($(this).is(":checked")) {
-			$chk.prop('checked', true);
-		} else {
-			$chk.prop('checked', false);
-		}
-	});
-
-	$(document).on('click', '.select-box', function() {
-		if ($('.select-box:checked').length == $('.select-box').length) {
-			$('#select-all').prop('checked', true);
-		} else {
-			$('#select-all').prop('checked', false);
-		}
-	});
-
 	var page = 1;
 	var totalPage = 0;
 	var searchCondition = '';
 	var searchContent = '';
+	var listType = 'request';
 	listCall(page, searchCondition, searchContent);
-
+	
 	function listCall(page, searchCondition, searchContent) {
 		$.ajax({
 			type:'get',
-			url:'/writtenMail/list.ajax',
+			url:'/approval/list.ajax',
 			data:{
 				'page':page,
 				'condition':searchCondition,
-				'content':searchContent
+				'content':searchContent,
+				'listType':listType
 			},
 			dataType:'json',
 			success:function(data) {
@@ -229,22 +333,28 @@
 		var content = '';
 		if (list.length == 0) {
 			content += '<tr>';
-			content += '<th colspan="4">보낸 메일이 없습니다.</th>';
+			content += '<td colspan="6">결재 요청한 문서가 없습니다.</td>';
 			content += '</tr>';
 			
-			$('#pagination').css('display', 'none');
+			$('#pagination-div').css('display', 'none');
 		} else {
+			$('#pagination-div').css('display', 'block');
 			for (var row of list) {
-				
 				content += '<tr>';
-				content += '<th scope="row" class="first-col"><input type="checkbox" class="select-box" value="' + row.mail_no + '"/></th>';
-				content += '<td>' + row.receivers_name + '</td>';
-				content += '<td><a class="list-title" href="/mail/detail.go?mail_no=' + row.mail_no + '">' + row.subject + '</a></td>';
+				if (row.au_type == 0) {
+					content += '<td>업무 기안</td>';
+				} else if (row.au_type == 1) {
+					content += '<td>휴가신청서</td>';
+				}
+				content += '<td><a href="/approval/detail.go?au_code=' + row.au_code + '">' + row.title + '</a></td>';
 				
-				var date = new Date(row.send_date);
-			    var dateStr = date.toLocaleString("ko-KR");
+				var date = new Date(row.reg_date);
+			    var dateStr = date.toLocaleDateString("ko-KR");
 			    content += '<td>' + dateStr + '</td>';
-				
+			    
+				content += '<td>' + row.approvers_name + '</td>';
+				content += '<td>' + row.approvers_team + '</td>';
+				content += '<td><span class="badge bg-success">진행중</span></td>';
 				content += '</tr>';
 			}
 		}
@@ -257,48 +367,5 @@
 		
 		listCall(page, searchCondition, searchContent);
 	}
-	
-	
-	function del() {
-		var delArr = [];
-		
-		$('.select-box').each(function(idx, item) {
-			if ($(item).is(":checked")) {
-				var val = $(this).val();
-				//console.log(val);
-				delArr.push(val);
-			}
-		});
-		// console.log('delArr : ', delArr);
-		
-		if (delArr.length > 0) {
-			var result = confirm('선택하신 메일 ' + delArr.length + '건을 삭제하시겠습니까?');
-			if (result) {
-				$.ajax({
-					type:'post',
-					url:'/writtenMail/delete.ajax',
-					data:{
-						delList:delArr
-					},
-					dataType:'JSON',
-					success:function(data) {
-						if (data.cnt > 0) {
-							alert('선택하신 메일 ' + data.cnt + '건 삭제 완료했습니다.');
-						}
-						
-						$('#drawList').empty();
-						listCall(page, searchCondition, searchContent);
-					},
-					error:function(error) {
-						console.log(error);
-					}
-				});
-			}
-		}
-	}
-	
-	$('.btn-newMail').click(function() {
-		location.href = '/mail/write.go';
-	});
 </script>
 </html>

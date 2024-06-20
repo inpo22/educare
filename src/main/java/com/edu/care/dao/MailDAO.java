@@ -31,7 +31,7 @@ public interface MailDAO {
 
 	List<MailDTO> mailAttachFileList(String mail_no);
 
-	String getOriFileName(String fileName);
+	String getOriFileName(String file_no, String new_filename);
 
 	List<MailDTO> deptList();
 
@@ -44,5 +44,7 @@ public interface MailDAO {
 	void mailCcWrite(int mail_no, String cc);
 
 	void fileSave(String user_code, String ori_filename, String new_filename, int mail_no, String file_type);
+
+	void mailLoadFileWrite(String user_code, int mail_no, String file_no, int i);
 
 }

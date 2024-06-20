@@ -1,5 +1,6 @@
 package com.edu.care.service;
 
+import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,9 +16,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.edu.care.dao.ApprovalDAO;
 import com.edu.care.dao.NotiDAO;
@@ -93,6 +100,8 @@ public class ApprovalService {
 				notiDAO.sendNoti(arr[i], user_code, au_code, noti_type);
 			}
 		}
+		
+		approvalDAO.minusRemainVaca(user_code, au_code);
 		
 		fileSave(au_code, attachFile, user_code);
 		
@@ -205,6 +214,15 @@ public class ApprovalService {
 		} else if (listType.equals("view")) {
 			list = approvalDAO.viewApprovalListCall(start, pagePerCnt, team_code, condition, content);
 			totalPage = approvalDAO.viewApprovalPageCnt(pagePerCnt, team_code, condition, content);
+		} else if (listType.equals("request")) {
+			list = approvalDAO.reqeustApprovalListCall(start, pagePerCnt, user_code, condition, content);
+			totalPage = approvalDAO.requestApprovalPageCnt(pagePerCnt, user_code, condition, content);
+		} else if (listType.equals("request")) {
+			list = approvalDAO.finishApprovalListCall(start, pagePerCnt, user_code, condition, content);
+			totalPage = approvalDAO.finishApprovalPageCnt(pagePerCnt, user_code, condition, content);
+		} else if (listType.equals("rejected")) {
+			list = approvalDAO.rejectedApprovalListCall(start, pagePerCnt, user_code, condition, content);
+			totalPage = approvalDAO.rejectedApprovalPageCnt(pagePerCnt, user_code, condition, content);
 		}
 		
 		result.put("list", list);
@@ -213,4 +231,83 @@ public class ApprovalService {
 		return result;
 	}
 	
+	@Transactional
+	public ModelAndView approvalDetail(String au_code, String user_code) {
+		ModelAndView mav = new ModelAndView();
+		
+		ApprovalDTO dto = approvalDAO.approvalDetail(au_code);
+		List<ApprovalDTO> orderList = approvalDAO.orderList(au_code, user_code);
+		List<ApprovalDTO> attachFileList = approvalDAO.attachFileList(au_code);
+		
+		int au_type = dto.getAu_type();
+		
+		if (au_type == 0) {
+			mav.setViewName("/approval/busiApproval_detail");
+			
+			List<ApprovalDTO> receiveTeamList = approvalDAO.receiveTeamList(au_code);
+			mav.addObject("receiveTeamList", receiveTeamList);
+		} else if (au_type == 1) {
+			mav.setViewName("/approval/vacaApproval_detail");
+			String detail_user_code = dto.getUser_code();
+			String reg_date = dto.getReg_date().toString();
+			
+			int remainVaca = approvalDAO.remainVaca(detail_user_code, reg_date);
+			mav.addObject("remainVaca", remainVaca);
+		}
+		
+		mav.addObject("dto", dto);
+		mav.addObject("orderList", orderList);
+		mav.addObject("attachFileList", attachFileList);
+		
+		return mav;
+	}
+
+	public ResponseEntity<Resource> download(String file_no, String new_filename) {
+		String ori_fileName = approvalDAO.getOriFileName(file_no, new_filename);
+		
+		Resource resource  = new FileSystemResource(root + "/" + new_filename);
+		
+		HttpHeaders header = new HttpHeaders();
+		
+		try {
+			header.add("content-type", "application/ortet-stream");
+			String oriFile = URLEncoder.encode(ori_fileName, "UTF-8");
+			header.add("content-Disposition", "attachment;filename=\"" + oriFile + "\"");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+		return new ResponseEntity<Resource>(resource, header, HttpStatus.OK);
+	}
+
+	public void approve(String apv_no, String au_code) {
+		approvalDAO.approve(apv_no);
+		
+		int is_comp = approvalDAO.orderCompCheck(au_code, apv_no);
+		ApprovalDTO dto = approvalDAO.approvalDetail(au_code);
+		
+		if (is_comp == 0) {
+			String to_user_code = approvalDAO.notiReceiveUser(apv_no);
+			String from_user_code = dto.getUser_code();
+			String noti_content_no = au_code;
+			int noti_type = 0;
+			
+			notiDAO.sendNoti(to_user_code, from_user_code, noti_content_no, noti_type);
+		} else if (is_comp == 1 && dto.getAu_type() == 1) {
+			approvalDAO.scheduleWrite(dto);
+		}
+	}
+
+	public void reject(String au_code, String apv_no) {
+		approvalDAO.reject(apv_no);
+		
+		ApprovalDTO dto = approvalDAO.approvalDetail(au_code);
+		
+		if (dto.getAu_type() == 1) {
+			double va_days = dto.getVa_days();
+			String user_code = dto.getUser_code();
+			Timestamp reg_date = dto.getReg_date();
+			
+			approvalDAO.plusRemainVaca(va_days, user_code, reg_date);
+		}
+	}
 }

@@ -128,6 +128,9 @@
 	.sixth-col {
 		width: 10%;
 	}
+	.badge {
+		width: 70px;
+	}
 </style>
 </head>
 
