@@ -204,5 +204,121 @@
 		photo = CASE WHEN #{photo} IS NULL THEN photo ELSE #{photo} END
 	WHERE user_code=#{user_code}
 </update>
+
+<!-- 퇴사자 리스트 불러오기 쿼리문 -->
+<select id="quitList" resultType="emp">
+	SELECT
+		u.user_code,
+		u.name,
+		d.team_name,
+		cc.code_name AS class_name,
+		pc.code_name AS position_name,
+		u.reg_date,
+		u.quit_date
+	FROM 
+		user u
+	LEFT JOIN 
+		department d ON u.team_code = d.team_code
+	LEFT JOIN
+		all_code cc ON u.class_code = cc.code
+	LEFT JOIN
+		all_code pc ON u.position_code = pc.code
+	WHERE u.position_code IN ('P01', 'P02')
+		AND u.quit_date is not null
+		<if test="param5 != null and param5 != ''">
+            AND (
+                <choose>
+                    <when test="param4 == 'team'">
+                        d.team_name LIKE CONCAT('%', #{param5}, '%')
+                    </when>
+                    <when test="param4 == 'class'">
+                        cc.code_name LIKE CONCAT('%', #{param5}, '%')
+                    </when>
+                    <when test="param4 == 'position'">
+                        pc.code_name LIKE CONCAT('%', #{param5}, '%')
+                    </when>
+                    <when test="param4 == 'name'">
+                        u.name LIKE CONCAT('%', #{param5}, '%')
+                    </when>
+                </choose>
+            )
+        </if>
+        <choose>
+            <when test="param3 == 'reg_date'">
+                <if test="param6 != null and param6 != ''">
+                    AND u.reg_date &gt;= #{param6}
+                </if>
+                <if test="param7 != null and param7 != ''">
+                    AND u.reg_date &lt;= #{param7}
+                </if>
+            </when>
+            <when test="param3 == 'quit_date'">
+                <if test="param6 != null and param6 != ''">
+                    AND u.quit_date &gt;= #{param6}
+                </if>
+                <if test="param7 != null and param7 != ''">
+                    AND u.quit_date &lt;= #{param7}
+                </if>
+            </when>
+        </choose>
+    ORDER BY 
+        u.reg_date ASC
+    LIMIT #{param1}, #{param2}	
+</select>
+
+<!-- 퇴사자 리스트 페이징 처리 쿼리문 -->
+<select id="quitListPageCnt" resultType="Integer">
+	SELECT 
+		CEIL(COUNT(u.user_code) / #{param1})
+    FROM 
+    	`user` u
+    LEFT JOIN 
+    	department d ON u.team_code = d.team_code
+    LEFT JOIN
+		all_code cc ON u.class_code = cc.code
+	LEFT JOIN
+		all_code pc ON u.position_code = pc.code
+	WHERE u.position_code IN ('P01', 'P02')
+		AND u.quit_date is not null
+		<if test="param4 != null and param4 != ''">
+            AND (
+                <choose>
+                    <when test="param3 == 'team'">
+                        d.team_name LIKE CONCAT('%', #{param4}, '%')
+                    </when>
+                    <when test="param3 == 'class'">
+                        cc.code_name LIKE CONCAT('%', #{param4}, '%')
+                    </when>
+                    <when test="param3 == 'position'">
+                        pc.code_name LIKE CONCAT('%', #{param4}, '%')
+                    </when>
+                    <when test="param3 == 'name'">
+                        u.name LIKE CONCAT('%', #{param4}, '%')
+                    </when>
+                </choose>
+            )
+        </if>
+        <choose>
+            <when test="param2 == 'reg_date'">
+                <if test="param5 != null and param5 != ''">
+                    AND u.reg_date &gt;= #{param5}
+                </if>
+                <if test="param6 != null and param6 != ''">
+                    AND u.reg_date &lt;= #{param6}
+                </if>
+            </when>
+            <when test="param2 == 'quit_date'">
+                <if test="param5 != null and param5 != ''">
+                    AND u.quit_date &gt;= #{param5}
+                </if>
+                <if test="param6 != null and param6 != ''">
+                    AND u.quit_date &lt;= #{param6}
+                </if>
+            </when>
+        </choose>
+    ORDER BY 
+    	u.reg_date ASC
+        
+</select>
 	
 </mapper>

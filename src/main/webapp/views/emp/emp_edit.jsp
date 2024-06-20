@@ -13,6 +13,7 @@
 <!-- css -->
 <link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui-tree/latest/tui-tree.css" />
 <jsp:include page="/views/common/head.jsp"></jsp:include>
+<link href="/resources/emp/emp.css" rel="stylesheet">
 <!-- js -->
 <script src="https://uicdn.toast.com/tui-tree/latest/tui-tree.js"></script>
 
@@ -20,41 +21,12 @@
 #team_btn{
 	margin-left: 50px;
 }
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-}
 #no_btn{
 	margin:0 10px;
-}
-#backBoard {
-    background-color: white;
-    width: 100%;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
 }
 .form-select,#photo{
 	width: 80%;
 }
-#photo-preview{
-	display: none;
-	width : 250px;
-	height:250px;
-	margin:0 0 0 200px;
-}
-h1{
-	margin:10px 20px;
-}
-.btn_group{
-	display: flex;
-	position: absolute;
-	bottom: 20px;
-    right: 20px; 
-}
-
 .form-row {
     display: flex;
     gap: 20px;
@@ -93,56 +65,18 @@ input:focus, select:focus {
 .form-check{
 	margin:0 50px;
 }
-/* Modal css */
-.modal {
-    display: none;
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4);
-}
-.modal-content {
-    margin: 0 auto;
-    padding: 20px;
-    height: 600px;
-    width: 400px;
-    top: 150px;
-    background-color: white;
-}
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-.close:hover {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-.modal-title {
-	font-weight: bold;
-	font-size: 25px;
-}
-.tui-tree-wrap {
-	height: 400px;
-	width: 360px;
-	overflow-y: auto;
-}
-.text-align-right {
-	text-align: right;
-}
 #empDetail_go{
 	margin:0 7px;
 }
 #pw_reset{
 	width:155px;
 }
-input[type="text"]:readonly {
-	font-weight: bold;
+input[readonly] {
+    background-color: white; /* 배경색 */
+    /* border: none; */ /* 테두리 없앰 */
+    outline: none; 
+    pointer-events: none;
+    font-weight: bold;
 }
 #status{
 	width:39%;
@@ -224,7 +158,7 @@ input[type="text"]:readonly {
                  </div>
                  <div class="form-group">
                      <label for="quit_date">퇴사일:</label>
-                     <input type="date" value="${empDto.quit_date}" id="quit_date" name="quit_date">
+                     <input type="text" value="${empDto.quit_date}" id="quit_date" name="quit_date" readonly>
                  </div>                
              </div>
              <div class="form-row">

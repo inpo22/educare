@@ -30,6 +30,12 @@ public interface EmpDAO {
 
 	void regVaca(String user_code);
 
+	List<EmpDTO> quitList(int start, int pagePerCnt, String dateType, String type, String searchbox, String startDate,
+			String endDate);
+
+	int quitListPageCnt(int pagePerCnt, String dateType, String type, String searchbox, String startDate,
+			String endDate);
+
 
 
 }

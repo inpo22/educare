@@ -13,6 +13,7 @@
 <!-- css -->
 <link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui-tree/latest/tui-tree.css" />
 <jsp:include page="/views/common/head.jsp"></jsp:include>
+<link href="/resources/emp/emp.css" rel="stylesheet">
 <!-- js -->
 <script src="https://uicdn.toast.com/tui-tree/latest/tui-tree.js"></script>
 
@@ -24,42 +25,18 @@
 #team_btn{
 	margin-left: 50px;
 }
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-}
 #no_btn{
-	margin:0 10px;
+	margin:10px 15px;
 }
-#backBoard{
-	background-color: white;
-	width:100%;
-	height:1000px;
-	border-radius: 10px;
-	position: relative;
-	margin: 20px auto;
-	box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+#reg_btn{
+	margin:10px 0;
 }
 .form-select,#photo{
 	width: 80%;
 }
-#photo-preview{
-	display: none;
-	width : 250px;
-	height:250px;
-	margin:0 0 0 200px;
-}
 h1{
 	margin:10px 20px;
 }
-.btn_group{
-	display: flex;
-	position: absolute;
-	bottom: 20px;
-    right: 20px; 
-}
-
 .form-row {
     display: flex;
     gap: 20px;
@@ -99,13 +76,12 @@ input:focus, select:focus {
 	margin:0 50px;
 }
 #name, #id {
-    width: 90%;
+    width: 70%;
 }
 #id{
-	margin-left: 110px;
+	margin-left: 100px;
 	width:500px;
 }
-
 /* 아이디 중복 체크 버튼 위치 조정 */
 #idchk {
 	margin-top:30px;
@@ -114,52 +90,10 @@ input:focus, select:focus {
 	height:50px;
 }
 label[for="id"]{
-	margin-left: 110px;
+	margin-left: 100px;
 }
 #name{
-	width:600px;
-}
-/* Modal css */
-.modal {
-    display: none;
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4);
-}
-.modal-content {
-    margin: 0 auto;
-    padding: 20px;
-    height: 600px;
-    width: 400px;
-    top: 150px;
-    background-color: white;
-}
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-.close:hover {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-.modal-title {
-	font-weight: bold;
-	font-size: 25px;
-}
-.tui-tree-wrap {
-	height: 400px;
-	width: 360px;
-	overflow-y: auto;
-}
-.text-align-right {
-	text-align: right;
+	width:590px;
 }
 </style>
 
@@ -276,10 +210,13 @@ label[for="id"]{
 	             </div>
 	                          
 	         </div>	
-	         <div class="btn_group">
-        	<button id="reg_btn" class="btn btn-dark" type="button" onclick="reg()">등록</button>
-        	<button id="no_btn" class="btn btn-dark" type="button">취소</button>
-        </div>	
+	         <div class="row mt-3">
+            	<div class="col-md-6"></div>
+	            <div class="col-md-6 d-flex justify-content-end">
+	           		<button id="reg_btn" class="btn btn-dark" type="button" onclick="reg()">등록</button>
+	            	<button id="no_btn" class="btn btn-dark" type="button">취소</button>
+	            </div>
+	        </div>	
         </form>
         
         

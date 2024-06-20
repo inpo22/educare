@@ -149,6 +149,21 @@ public class EmpService {
 		return empDAO.edit(param);
 	}
 
+	public Map<String, Object> quitList(int currPage, int pagePerCnt, String dateType, String type, String searchbox,
+			String startDate, String endDate) {
+		int start = (currPage-1) * pagePerCnt;
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		
+		List<EmpDTO> Qlist = empDAO.quitList(start, pagePerCnt,dateType,type,searchbox,startDate,endDate);
+		logger.info("Qlist : {}", Qlist);
+		logger.info("Qlist size : " + Qlist.size());
+		result.put("Qlist", Qlist);
+		result.put("totalPage", empDAO.quitListPageCnt(pagePerCnt,dateType,type,searchbox,startDate,endDate));
+		
+		return result;
+	}
+
 
 	
 	

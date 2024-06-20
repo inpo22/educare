@@ -12,34 +12,15 @@
 
 <!-- css -->
 <jsp:include page="/views/common/head.jsp"></jsp:include>
+<link href="/resources/emp/emp.css" rel="stylesheet">
 <!-- js -->
 
 <style>
-#backBoard {
-    background-color: white;
-    width: 100%;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
-}
-
-h1 {
-    margin: 10px 20px;
-}
-
 h3 {
     margin-left: 40px;
     margin-top: 10px;
     font-weight: bold;
 }
-
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-}
-
 .emp-profile {
     display: flex;
     align-items: flex-start; /* 세로 정렬 시작점을 맞추기 위해 */
@@ -142,8 +123,6 @@ input[readonly] {
 #empList_go{
 	height:38px;
 }
-
-
 </style>
 </head>
 
@@ -278,6 +257,17 @@ $('#empList_go').click(function(){
 // 수정 페이지 이동
 $('#edit_go').click(function(){
 	window.location.href = '/emp/edit.go';
+});
+
+// 퇴사자일 경우 수정 버튼 비활성화
+document.addEventListener('DOMContentLoaded',function(){
+	var quit_date = "${empDto.quit_date}"; //퇴사일 가져옴
+	var edit_btn = document.getElementById('edit_go'); 
+	
+	// quit_date가 null이 아닌 경우 버튼을 비활성화합니다.
+    if (quit_date !== null && quit_date !== '') {
+    	edit_btn.disabled = true;
+    }
 });
 </script>
 </html>
