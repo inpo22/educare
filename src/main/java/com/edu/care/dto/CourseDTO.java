@@ -15,6 +15,7 @@ public class CourseDTO {
 	private int course_price;
 	private int is_confirm;
 	private int is_del;
+	private String name;
 	
 	public int getCourse_no() {
 		return course_no;
@@ -69,5 +70,11 @@ public class CourseDTO {
 	}
 	public void setIs_del(int is_del) {
 		this.is_del = is_del;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 }

@@ -146,11 +146,11 @@ function drawList(list){
 	var con = '';
 	for(var list of list){
 		con += '<tr>';
-		con += '<td>'+list.user_code+'</td>';
+		con += '<td>'+list.name+'</td>';
 		con += '<td>'+list.course_name+'</td>';
 		con += '<td>'+list.course_con+'</td>';
-		con += '<td>'+list.course_start+'</td>';
-		con += '<td>'+list.course_end+'</td>';
+		con += '<td>'+list.course_start.substring(0,10)+'</td>';
+		con += '<td>'+list.course_end.substring(0,10)+'</td>';
 		con += '</tr>';
 	}
 	$('#drawList').html(con);

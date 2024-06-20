@@ -4,6 +4,9 @@
 
 <mapper namespace="com.edu.care.dao.CourseDAO">
 	<select id="courseList" resultType="course">
-		SELECT * FROM course
+		SELECT c.*
+				, u.name 
+		FROM course c
+		JOIN user u on u.user_code  = c.user_code
 	</select>
 </mapper>
