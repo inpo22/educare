@@ -115,10 +115,10 @@ public class MailService {
 		return mav;
 	}
 
-	public ResponseEntity<Resource> download(String fileName) {
-		String ori_fileName = mailDAO.getOriFileName(fileName);
+	public ResponseEntity<Resource> download(String file_no, String new_filename) {
+		String ori_fileName = mailDAO.getOriFileName(file_no, new_filename);
 		
-		Resource resource  = new FileSystemResource(root + "/" + fileName);
+		Resource resource  = new FileSystemResource(root + "/" + new_filename);
 		
 		HttpHeaders header = new HttpHeaders();
 		
@@ -171,10 +171,18 @@ public class MailService {
 			}
 			
 			String ccList = param.get("ccList");
-			if (ccList.equals("") || ccList != null) {
+			if (ccList != null) {
 				arr = ccList.split(",");
 				for (String cc : arr) {
 					mailDAO.mailCcWrite(mail_no, cc);
+				}
+			}
+			String loadFileList = param.get("loadFileList");
+			if (loadFileList != null) {
+				arr = loadFileList.split(",");
+				
+				for (int i = 0; i < arr.length; i++) {
+					mailDAO.mailLoadFileWrite(user_code, mail_no, arr[i], i);
 				}
 			}
 			fileSave(mail_no, attachFile, user_code);
@@ -229,19 +237,33 @@ public class MailService {
 			original_message += "<p>-------- Original Message --------</p>";
 			original_message += "<p><b>From: </b>" + dto.getSend_user_name() + "</p>";
 			original_message += "<p><b>To: </b>";
-			for (MailDTO receiver : receiverList) {
-				original_message += receiver.getReceiver_name() + " " + receiver.getClass_name();
+			for (int i = 0; i < receiverList.size(); i++) {
+				original_message += receiverList.get(i).getReceiver_name() + " " + receiverList.get(i).getClass_name();
+				if (i != (receiverList.size() - 1)) {
+					original_message += ", ";
+				}
 			}
 			original_message += "</p>";
 			original_message += "<p><b>cc: </b>";
-			for (MailDTO cc : ccList) {
-				original_message += cc.getCc_name() + " " + cc.getClass_name();
+			for (int i = 0; i < ccList.size(); i++) {
+				original_message += ccList.get(i).getCc_name() + " " + ccList.get(i).getClass_name();
+				if (i != (ccList.size() - 1)) {
+					original_message += ", ";
+				}
 			}
 			original_message += "</p>";
 			original_message += "<p><b>Send: </b>" + dto.getSend_date() + "</p>";
 			original_message += "<p><b>Subject: </b>" + dto.getSubject() + "</p>";
 			original_message += dto.getContent();
 			
+			if (writeType.equals("1")) {
+				mav.addObject("receiverList", receiverList);
+				mav.addObject("ccList", ccList);
+			} else if (writeType.equals("2")) {
+				List<MailDTO> attachFileList = mailDAO.mailAttachFileList(mail_no);
+				
+				mav.addObject("attachFileList", attachFileList);
+			}
 			mav.addObject("original_message", original_message);
 			mav.addObject("writeType", writeType);
 		}
