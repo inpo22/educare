@@ -6,13 +6,14 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.edu.care.dto.DeptDTO;
+import com.edu.care.dto.EmpDTO;
 
 @Mapper
 public interface DeptDAO {
 
 	List<DeptDTO> getDept();
 
-	List<DeptDTO> getUser();
+	List<EmpDTO> getUser(Map<String, Object> param);
 
 	int createDept(Map<String, Object> param);
 
