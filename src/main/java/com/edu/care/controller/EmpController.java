@@ -164,6 +164,25 @@ public class EmpController {
 		return map;
 	};
 	
+	// 퇴사자 리스트 불러오기(비동기)
+	@ResponseBody
+	@PostMapping(value="/emp/quitList.ajax")
+	public Map<String, Object> quitListCall(String page, String dateType, String type, String searchbox, String startDate, String endDate){
+		logger.info("page: "+page);
+		logger.info("dateType: "+dateType);
+		logger.info("type: "+type);
+		logger.info("searchbox: "+searchbox);
+		logger.info("startDate: "+startDate);
+		logger.info("endDate: "+endDate);
+		
+		int currPage = Integer.parseInt(page);
+		int pagePerCnt = 10;
+		
+		Map<String, Object> map = empService.quitList(currPage, pagePerCnt,dateType, type,searchbox,startDate,endDate);
+		
+		return map;
+	}
+	
 	
 	
 	

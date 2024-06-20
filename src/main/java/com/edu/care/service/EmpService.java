@@ -83,11 +83,20 @@ public class EmpService {
                 // 파일 저장 실패 시 처리 로직 추가
             }
         }
+        String classify_code = param.get("classify_code");
+        
+        // 회원 번호 생성
+        String user_code = empDAO.createUserCode(classify_code);
         
         // 파일 이름을 param에 추가
         param.put("photo", newFileName);
+        param.put("user_code", user_code);
         
-		return empDAO.reg(param);
+        int row = empDAO.reg(param);
+        
+        empDAO.regVaca(user_code);
+        
+		return row;
     }
 
 	public Map<String, Object> deptList() {
@@ -138,6 +147,21 @@ public class EmpService {
         param.put("user_code", user_code);
         
 		return empDAO.edit(param);
+	}
+
+	public Map<String, Object> quitList(int currPage, int pagePerCnt, String dateType, String type, String searchbox,
+			String startDate, String endDate) {
+		int start = (currPage-1) * pagePerCnt;
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		
+		List<EmpDTO> Qlist = empDAO.quitList(start, pagePerCnt,dateType,type,searchbox,startDate,endDate);
+		logger.info("Qlist : {}", Qlist);
+		logger.info("Qlist size : " + Qlist.size());
+		result.put("Qlist", Qlist);
+		result.put("totalPage", empDAO.quitListPageCnt(pagePerCnt,dateType,type,searchbox,startDate,endDate));
+		
+		return result;
 	}
 
 

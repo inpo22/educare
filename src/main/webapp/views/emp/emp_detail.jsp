@@ -12,34 +12,15 @@
 
 <!-- css -->
 <jsp:include page="/views/common/head.jsp"></jsp:include>
+<link href="/resources/emp/emp.css" rel="stylesheet">
 <!-- js -->
 
 <style>
-#backBoard {
-    background-color: white;
-    width: 100%;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
-}
-
-h1 {
-    margin: 10px 20px;
-}
-
 h3 {
     margin-left: 40px;
     margin-top: 10px;
     font-weight: bold;
 }
-
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-}
-
 .emp-profile {
     display: flex;
     align-items: flex-start; /* 세로 정렬 시작점을 맞추기 위해 */
@@ -50,7 +31,7 @@ body {
     margin-right: 20px;
 }
 
-.emp-profile img {
+.emp-profile img{
     width: 250px; /* 사진의 너비 조정 */
     height: auto; /* 높이 자동 조정 */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
@@ -58,6 +39,15 @@ body {
     margin-bottom: 20px;
     margin-right: 10px;
 }
+.bi.bi-person-fill {
+    font-size: 250px;
+    width: 250px; /* 사진의 너비 조정 */
+    height: auto; 
+    margin-left: 30px;
+    margin-bottom: 20px;
+    margin-right: 10px;
+}
+
 
 .employee-info {
     flex: 1; /* 남은 공간을 모두 차지하도록 */
@@ -130,9 +120,9 @@ input[readonly] {
 .info-group input {
     flex: 1;
 }
-
-
-
+#empList_go{
+	height:38px;
+}
 </style>
 </head>
 
@@ -159,7 +149,7 @@ input[readonly] {
 			        </c:when>
 			        <c:otherwise>
 			            <!-- 기본 프로필 사진 또는 다른 대체 이미지 -->
-			            <img src="/resources/img/profile.png">
+			            <i class="bi bi-person-fill"></i>
 			        </c:otherwise>
 			    </c:choose>
                 <div class="employee-info">
@@ -267,6 +257,17 @@ $('#empList_go').click(function(){
 // 수정 페이지 이동
 $('#edit_go').click(function(){
 	window.location.href = '/emp/edit.go';
+});
+
+// 퇴사자일 경우 수정 버튼 비활성화
+document.addEventListener('DOMContentLoaded',function(){
+	var quit_date = "${empDto.quit_date}"; //퇴사일 가져옴
+	var edit_btn = document.getElementById('edit_go'); 
+	
+	// quit_date가 null이 아닌 경우 버튼을 비활성화합니다.
+    if (quit_date !== null && quit_date !== '') {
+    	edit_btn.disabled = true;
+    }
 });
 </script>
 </html>

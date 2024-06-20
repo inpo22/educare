@@ -13,6 +13,7 @@
 <!-- css -->
 <link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui-tree/latest/tui-tree.css" />
 <jsp:include page="/views/common/head.jsp"></jsp:include>
+<link href="/resources/emp/emp.css" rel="stylesheet">
 <!-- js -->
 <script src="https://uicdn.toast.com/tui-tree/latest/tui-tree.js"></script>
 
@@ -20,41 +21,12 @@
 #team_btn{
 	margin-left: 50px;
 }
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-}
 #no_btn{
 	margin:0 10px;
-}
-#backBoard {
-    background-color: white;
-    width: 100%;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
 }
 .form-select,#photo{
 	width: 80%;
 }
-#photo-preview{
-	display: none;
-	width : 250px;
-	height:250px;
-	margin:0 0 0 200px;
-}
-h1{
-	margin:10px 20px;
-}
-.btn_group{
-	display: flex;
-	position: absolute;
-	bottom: 20px;
-    right: 20px; 
-}
-
 .form-row {
     display: flex;
     gap: 20px;
@@ -93,59 +65,25 @@ input:focus, select:focus {
 .form-check{
 	margin:0 50px;
 }
-/* Modal css */
-.modal {
-    display: none;
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4);
-}
-.modal-content {
-    margin: 0 auto;
-    padding: 20px;
-    height: 600px;
-    width: 400px;
-    top: 150px;
-    background-color: white;
-}
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-.close:hover {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-.modal-title {
-	font-weight: bold;
-	font-size: 25px;
-}
-.tui-tree-wrap {
-	height: 400px;
-	width: 360px;
-	overflow-y: auto;
-}
-.text-align-right {
-	text-align: right;
-}
 #empDetail_go{
 	margin:0 7px;
 }
 #pw_reset{
 	width:155px;
 }
-input[type="text"]:readonly {
-	font-weight: bold;
+input[readonly] {
+    background-color: white; /* 배경색 */
+    /* border: none; */ /* 테두리 없앰 */
+    outline: none; 
+    pointer-events: none;
+    font-weight: bold;
 }
 #status{
 	width:39%;
+}
+#msg{
+	font-weight: bold;
+	color: red;
 }
 </style>
 
@@ -199,7 +137,7 @@ input[type="text"]:readonly {
                  <div class="form-group">
                      <label for="team" class="team-select">부서:${empDto.team_name}</label>
                      <button id="team_btn" class="btn btn-dark" type="button" onclick="openModal()">부서 선택</button>
-                     <input type="hidden" 	id="team_code" name="team_code" value="${empDto.team_name}"/>
+                     <input type="hidden" id="team_code" name="team_code" value="${empDto.team_code}"/>
                  </div>
                  <div class="form-group">
                      <label for="gender">성별:</label>
@@ -220,7 +158,7 @@ input[type="text"]:readonly {
                  </div>
                  <div class="form-group">
                      <label for="quit_date">퇴사일:</label>
-                     <input type="date" value="${empDto.quit_date}" id="quit_date" name="quit_date">
+                     <input type="text" value="${empDto.quit_date}" id="quit_date" name="quit_date" readonly>
                  </div>                
              </div>
              <div class="form-row">
@@ -266,13 +204,20 @@ input[type="text"]:readonly {
             	<div class="col-md-6"></div>
 	            <div class="d-flex justify-content-end">
 	            	<span id="msg"></span><br>
-	                <button id="pw_reset" class="btn btn-outline-danger" type="button">비밀번호 초기화</button>
+	            </div>
+	         </div>
+	         <div class="row mt-3">
+            	<div class="col-md-6"></div>
+	            <div class="d-flex justify-content-end">
+	            	<span id="msg"></span><br>
+	                <button id="pw_reset" class="btn btn-outline-danger" type="button" onclick="reset()">비밀번호 초기화</button>
+	            	<input type="hidden" id="pw" name="pw" value="${empDto.pw}"/>
 	            </div>
 	         </div>
 	         <div class="row mt-3">
             	<div class="col-md-6"></div>
 	            <div class="col-md-6 d-flex justify-content-end">
-	           		<button id="empDetail_go" class="btn btn-dark" type="button">취소</button>
+	           		<button id="empDetail_go" class="btn btn-dark" type="button" onclick="detail('${empDto.user_code}')">취소</button>
 	            	<button id="empDetail_fn" class="btn btn-dark" type="button" onclick="edit()">수정완료</button>
 	            </div>
 	        </div>
@@ -321,7 +266,6 @@ function previewImage(event) {
     };
     reader.readAsDataURL(event.target.files[0]);
 }
-
 
 
 // 부서 등록 모달 창 열기
@@ -470,6 +414,16 @@ function phoneNumber(e){
 	e.value=e.value.slice(0,13);	
     }
 }
+
+function detail(user_code){
+	window.location.href = '/emp/detail.go?user_code='+user_code;
+}
+
+// 비밀번호 초기화
+$('#pw_reset').on('click',function(){
+	$('#pw').val('00000000'); // 비밀번호를 '00000000'으로 설정
+	$('#msg').html("수정완료 버튼을 누르면 비밀번호 00000000 으로 초기화 됩니다.")
+});
 
 
 </script>
