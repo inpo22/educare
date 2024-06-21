@@ -1,9 +1,11 @@
 package com.edu.care.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.edu.care.dto.PaymentDTO;
 import com.edu.care.dto.StuDTO;
 
 @Mapper
@@ -12,5 +14,19 @@ public interface StuDAO {
 	List<StuDTO> stdList(int start, int pagePerCnt, String type, String searchbox, String startDate, String endDate);
 
 	int stdListPageCnt(int pagePerCnt, String type, String searchbox, String startDate, String endDate);
+
+	int overlay(String id);
+
+	String createUserCode(String classify_code);
+
+	int reg(Map<String, String> param);
+
+	int edit(Map<String, String> param);
+
+	StuDTO stuDetail(String user_code);
+
+	List<PaymentDTO> payList(int start, int pagePerCnt, String Psearchbox, String user_code);
+
+	int payListPageCnt(int pagePerCnt, String Psearchbox, String user_code);
 
 }

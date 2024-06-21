@@ -28,6 +28,9 @@ body {
     margin: 0;
     padding: 0;
 }
+h1{
+	margin-top: 10px;
+}
 .bi.bi-arrow-clockwise{
 	font-size: 24px;
 }
@@ -177,7 +180,7 @@ function drawStdList(stdList){
 	
 	for(data of stdList){
 		content += '<tr>';
-		content += '<td><a href="/emp/detail.go?user_code='+ data.user_code +'">' + data.user_code + '</td>';
+		content += '<td><a href="/std/detail.go?user_code='+ data.user_code +'">' + data.user_code + '</td>';
 		content += '<td>' + data.name + '</td>';
 		content += '<td>' + data.phone + '</td>';
 		content += '<td>' + data.gender + '</td>';
