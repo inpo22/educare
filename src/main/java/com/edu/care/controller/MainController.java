@@ -60,6 +60,20 @@ public class MainController {
 		return mainService.superAdminMain(user_code, team_code);
 	}
 	
+	@GetMapping(value="/main/adminMain.go")
+	public ModelAndView adminMain(HttpSession session) {
+		ModelAndView mav = new ModelAndView("main/adminMain");
+		
+		return mav;
+	}
+	
+	@GetMapping(value="/main/stuMain.go")
+	public ModelAndView stuMain(HttpSession session) {
+		ModelAndView mav = new ModelAndView("main/stuMain");
+		
+		return mav;
+	}
+	
 	@GetMapping(value="/mainChart/list.ajax")
 	@ResponseBody
 	public Map<String, Object> chartList(String months) {
