@@ -90,9 +90,9 @@
                 <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
                     <!--  <img src="/resources/assets/img/profile-img.jpg" alt="Profile" class="rounded-circle"> -->
                      
-               		 			    <c:choose>
+               		 			      <c:choose>
                     					<c:when test='${not empty sessionScope.photo}'>
-                       							${sessionScope.photo}
+                       						 <img src="/upload/${sessionScope.photo}" class="rounded-circle">
                     					</c:when>
                     					<c:otherwise>
                       							  <i class="bi bi-person-circle"></i>
@@ -106,9 +106,11 @@
                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                     <li class="dropdown-header">
                         <h6>${sessionScope.user_code}</h6>
+                        <span>${sessionScope.name}</span>
+                        <br>
                         <span>${sessionScope.team_name}</span>
                         <br>
-                        <span>${sessionScope.class_code}</span>
+                        <span>${sessionScope.class_name}</span>
                         <br>
                         <span>${sessionScope.team_code}</span>
                         <br>

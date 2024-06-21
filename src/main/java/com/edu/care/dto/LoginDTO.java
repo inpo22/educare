@@ -17,6 +17,14 @@ public class LoginDTO {
 	private String id;
 	private String pw;
 	
+	
+	
+	public String getClass_name() {
+		return class_name;
+	}
+	public void setClass_name(String class_name) {
+		this.class_name = class_name;
+	}
 	public String getUser_code() {
 		return user_code;
 	}
@@ -29,12 +37,7 @@ public class LoginDTO {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getClass_name() {
-		return class_name;
-	}
-	public void setClass_name(String class_name) {
-		this.class_name = class_name;
-	}
+
 	public String getTeam_code() {
 		return team_code;
 	}
