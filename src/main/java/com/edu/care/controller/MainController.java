@@ -1,5 +1,7 @@
 package com.edu.care.controller;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -7,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.edu.care.service.MainService;
 
@@ -19,6 +23,8 @@ public class MainController {
 	
 	@GetMapping(value="/")
 	public String main(HttpSession session) {
+		String page = "";
+		
 		if (session.getAttribute("user_code") == null) {
 			session.setAttribute("user_code", "2024U010001");
 			session.setAttribute("user_name", "관리자");
@@ -27,7 +33,39 @@ public class MainController {
 			session.setAttribute("team_code", "T06");
 			session.setAttribute("classify_code", "U01");
 		}
-		return "main/main";
+		
+		String team_code = (String) session.getAttribute("team_code");
+		String classify_code = (String) session.getAttribute("classify_code");
+		
+		if (team_code.equals("T01") || team_code.equals("T06")) {
+			page = "redirect:/main/superAdminMain.go";
+		} else if (team_code != null) {
+			if (!team_code.equals("T01") && !team_code.equals("T06")) {
+				page = "redirect:/main/adminMain.go";
+			}
+		}
+		
+		if (classify_code.equals("U03")) {
+			page = "redirect:/main/stuMain.go";
+		}
+		
+		return page;
+	}
+	
+	@GetMapping(value="/main/superAdminMain.go")
+	public ModelAndView superAdminMain(HttpSession session) {
+		String user_code = (String) session.getAttribute("user_code");
+		String team_code = (String) session.getAttribute("team_code");
+		
+		return mainService.superAdminMain(user_code, team_code);
+	}
+	
+	@GetMapping(value="/mainChart/list.ajax")
+	@ResponseBody
+	public Map<String, Object> chartList(String months) {
+		// logger.info(months);
+		Map<String, Object> map = mainService.chartList(months);
+		return map;
 	}
 	
 }

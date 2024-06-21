@@ -15,7 +15,7 @@
 			, m.send_date
 			, mr.is_read_receiver
 		FROM mail m JOIN mail_recipient mr ON m.mail_no = mr.mail_no
-		WHERE mr.receive_user_code = #{param3} AND mr.type = 0 AND mr.is_del_receiver = 0
+		WHERE mr.receive_user_code = #{param3} AND mr.is_del_receiver = 0
 		<if test="param5 != ''">
 			AND
 			<if test="param4 == 'subject'">
@@ -33,7 +33,7 @@
 	
 	<select id="receivedMailPageCnt" resultType="Integer">
 		SELECT CEIL(COUNT(m.mail_no)/#{param1}) FROM mail m JOIN mail_recipient mr ON m.mail_no = mr.mail_no
-		WHERE mr.receive_user_code = #{param2} AND mr.type = 0 AND mr.is_del_receiver = 0
+		WHERE mr.receive_user_code = #{param2} AND mr.is_del_receiver = 0
 		<if test="param4 != ''">
 			AND
 			<if test="param3 == 'subject'">
