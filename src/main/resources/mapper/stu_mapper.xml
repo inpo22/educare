@@ -69,8 +69,120 @@
         reg_date ASC
 </select>
 
+<!-- 아이디 중복체크 쿼리문 -->
+<select id="overlay" resultType="int">
+	SELECT COUNT(id) FROM user WHERE id=#{param}
+</select>
 
+<!-- 학생번호 생성 쿼리문 -->
+<select id="createUserCode" resultType="String">
+	SELECT
+		CONCAT(SUBSTR(CAST(CURDATE() AS CHAR), 1, 4), 
+			'U03', RIGHT(CONCAT("000" , 
+	        (SELECT (COUNT(u.user_code) + 1) FROM user u WHERE YEAR(u.reg_date) = YEAR(CURDATE()) 
+	    	AND u.classify_code='U03')), 4))
+</select>
 
+<!-- 학생등록 쿼리문 -->
+<insert id="reg" parameterType="map">
+	INSERT INTO user(
+		user_code, name, id, pw, email, phone, birth, gender,reg_date, classify_code,photo,status
+	)
+	VALUES(
+		#{user_code},
+		#{name},
+		#{id},
+		#{pw},
+		#{email},
+		#{phone},
+		#{birth},
+		#{gender},
+		#{reg_date},
+		'U03',
+		<if test="photo == null">
+            NULL
+        </if>
+        <if test="photo != null">
+            #{photo, jdbcType=VARCHAR}
+        </if>,
+        '0'
+	)
+		
+</insert>
+
+<!-- 학생 상세정보 쿼리문 -->
+<select id="stuDetail" parameterType="String" resultType="stu">
+	SELECT
+		user_code,
+		name, 
+		id,
+		email,
+		phone,
+		birth,
+		gender,
+		pw,
+		status,
+		photo
+	FROM 
+		user
+	WHERE
+		user_code=#{param}
+</select>
+
+<!-- 학생 정보 수정 쿼리문 -->
+<update id="edit" parameterType="map">
+	UPDATE user SET
+		email=#{email}, 
+		phone=#{phone},
+		birth=#{birth},
+		status=#{status},
+		gender=#{gender},
+		pw = CASE WHEN #{pw} IS NULL THEN pw ELSE #{pw} END
+	WHERE user_code=#{user_code}
+</update>
+
+<!-- 결제내역 리스트 -->
+<select id="payList" parameterType="String" resultType="payment">
+	SELECT 
+	    c.course_name AS course_name,
+	    u.name AS name,
+	    p.course_price,
+	    p.pay_date,
+	    p.user_code
+	FROM 
+	    payment p
+	LEFT JOIN 
+	    course c ON p.course_no = c.course_no
+	LEFT JOIN 
+	    `user` u ON c.user_code = u.user_code
+	WHERE 
+		p.user_code=#{param4}
+	<if test="param3 != null and param3 != ''">
+    	AND c.course_name LIKE CONCAT('%', #{param3}, '%')
+	</if>
+	ORDER BY
+		p.pay_date ASC
+	LIMIT #{param1}, #{param2}
+</select>
+
+<!-- 결제내역 페이징 쿼리문 -->
+<select id="payListPageCnt" parameterType="String" resultType="Integer">
+	SELECT
+		CEIL(COUNT(p.course_price)/#{param1})
+	FROM 
+		payment p
+	LEFT JOIN 
+	    course c ON p.course_no = c.course_no
+	LEFT JOIN 
+	    `user` u ON c.user_code = u.user_code
+	WHERE 
+		p.user_code=#{param3}
+	<if test="param2 != null and param2 != ''">
+    	AND c.course_name LIKE CONCAT('%', #{param2}, '%')
+	</if>
+	ORDER BY
+		p.pay_date ASC
+</select>
 
 
 
