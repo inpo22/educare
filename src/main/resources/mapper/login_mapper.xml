@@ -4,9 +4,35 @@
 
 <mapper namespace="com.edu.care.dao.LoginDAO">
 
-	<select id="loginAccess" resultType="String">
-		SELECT pw FROM user WHERE id = #{param1}
+	<select id="loginAccess" resultType="login">
+		  SELECT 
+    	    u.user_code,
+      		u.team_code,
+    	    u.position_code,
+    	    u.classify_code,
+    	    u.name,
+    	    u.id,
+    	    u.pw,
+     	    u.photo,
+       		 ac1.code_name AS class_name,
+       		 ac2.code_name AS position_name,
+       		 ac3.code_name AS team_name,
+      		 ac4.code_name AS classify_name
+    	FROM 
+		    user u
+		    LEFT JOIN 
+		        all_code ac1 ON u.class_code = ac1.code
+		    LEFT JOIN 
+		        all_code ac2 ON u.position_code = ac2.code
+		    LEFT JOIN 
+		        all_code ac3 ON u.team_code = ac3.code
+		    LEFT JOIN 
+		        all_code ac4 ON u.classify_code = ac4.code
+		WHERE 
+       		 u.id = #{param1}
+
 	</select>
+	
 
 
 </mapper>
