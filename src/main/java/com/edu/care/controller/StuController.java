@@ -1,15 +1,21 @@
 package com.edu.care.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.edu.care.dto.StuDTO;
 import com.edu.care.service.StuService;
 
 @Controller
@@ -17,6 +23,7 @@ public class StuController {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
 	
+	@Autowired PasswordEncoder encoder;
 	@Autowired StuService stuService;
 	
 	@GetMapping(value="/std/list.go")
@@ -48,10 +55,100 @@ public class StuController {
 		return "std/std_reg";
 	}
 	
+	// 중복체크
+	@ResponseBody
+	@PostMapping(value="/std/overlay.ajax")
+	public Map<String, Object> overlay(String id){
+		logger.info("id : "+id);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("use", stuService.overlay(id));
+		
+		return map;
+	}
+	
+	// 학생 등록
+	@PostMapping(value="/std/reg.do")
+	public String reg(MultipartFile photo ,Model model, @RequestParam Map<String, String> param) {
+		String page = "emp_reg";
+		String msg = "사원 등록에 실패했습니다.";
+		logger.info("param:"+param);
+		
+		// 비밀번호 암호화
+		String rawPassword = param.get("pw");
+        String encodedPassword = encoder.encode(rawPassword);
+        param.put("pw", encodedPassword);
+        
+        logger.info("rawPassword: " + rawPassword);
+        logger.info("encodedPassword: " + encodedPassword);
+        
+        int row = stuService.reg(photo, param);
+		logger.info("insert count:"+row);
+		
+		if(row==1) {
+			page="redirect:/std/list.go";
+			msg="사원 등록에 성공했습니다.";
+		}
+		model.addAttribute("msg", msg);
+		return page;
+	}
+	
 	// 학생 상세보기 페이지 이동
 	@GetMapping(value="/std/detail.go")
-	public String stdDetail() {
+	public String stdDetail(@RequestParam("user_code") String user_code, Model model) {
+		logger.info("detail user_code : "+user_code);
+		
+		StuDTO stdDto = stuService.stuDetail(user_code);
+		model.addAttribute("stdDto", stdDto);
+		
 		return "std/std_detail_course";
+	}
+	
+	// 결제내역 리스트(비동기)
+	@ResponseBody
+	@PostMapping(value="/std/detail_pay.ajax")
+	public Map<String, Object> payListCall(@RequestParam("user_code") String user_code, String page, String Psearchbox){
+		logger.info("결제내역 요청");
+		logger.info("page : " + page);
+		logger.info("Psearchbox : " + Psearchbox);
+		logger.info("user_code : " + user_code);
+		
+		int currPage = Integer.parseInt(page);
+		int pagePerCnt = 10;
+		
+		Map<String, Object> map = stuService.payList(currPage, pagePerCnt,Psearchbox,user_code);
+		
+		return map;
+	}
+	
+	
+	// 학생 정보 수정 페이지 이동
+	@GetMapping(value="/std/edit.go")
+	public String stdEdit(@RequestParam("user_code") String user_code, Model model) {
+		logger.info("edit user_code : "+user_code);
+		
+		StuDTO stdDto = stuService.stuDetail(user_code);
+		model.addAttribute("stdDto", stdDto);
+		
+		return "std/std_edit";
+	}
+	
+	// 학생 정보 수정
+	@PostMapping(value="/std/edit.do")
+	public String stdEditDo(Model model, @RequestParam Map<String, String> param, @RequestParam("user_code") String user_code) {
+		String page = "std_edit";
+		String msg = "정보수정에 실패했습니다.";
+		logger.info("param : "+param);
+		
+		int row = stuService.edit(param, user_code);
+		logger.info("insert count : "+row);
+		
+		if(row == 1) {
+			page="redirect:/std/detail.go?user_code="+user_code;
+			msg = "정보수정에 성공했습니다.";
+		}
+		model.addAttribute("msg", msg);
+		return page;
 	}
 	
 	

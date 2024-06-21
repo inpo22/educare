@@ -21,9 +21,6 @@
 #team_btn{
 	margin-left: 50px;
 }
-#no_btn{
-	margin:0 10px;
-}
 .form-select,#photo{
 	width: 80%;
 }
@@ -79,9 +76,9 @@ input[readonly] {
     font-weight: bold;
 }
 #status{
-	width:39%;
+	width:40%;
 }
-#msg{
+#pw_msg{
 	font-weight: bold;
 	color: red;
 }
@@ -203,13 +200,12 @@ input[readonly] {
 	         <div class="row mt-3">
             	<div class="col-md-6"></div>
 	            <div class="d-flex justify-content-end">
-	            	<span id="msg"></span><br>
+	            	<span id="pw_msg"></span><br>
 	            </div>
 	         </div>
 	         <div class="row mt-3">
             	<div class="col-md-6"></div>
 	            <div class="d-flex justify-content-end">
-	            	<span id="msg"></span><br>
 	                <button id="pw_reset" class="btn btn-outline-danger" type="button" onclick="reset()">비밀번호 초기화</button>
 	            	<input type="hidden" id="pw" name="pw" value="${empDto.pw}"/>
 	            </div>
@@ -361,7 +357,7 @@ $('.dept-reg').click(function() {
 
 
 
-// 등록버튼 (유효성 검사)
+// 수정버튼 (유효성 검사)
 var overChk = false;
 
 function edit(){
@@ -422,7 +418,7 @@ function detail(user_code){
 // 비밀번호 초기화
 $('#pw_reset').on('click',function(){
 	$('#pw').val('00000000'); // 비밀번호를 '00000000'으로 설정
-	$('#msg').html("수정완료 버튼을 누르면 비밀번호 00000000 으로 초기화 됩니다.")
+	$('#pw_msg').html("수정완료 버튼을 누르면 비밀번호 00000000 으로 초기화 됩니다.")
 });
 
 
