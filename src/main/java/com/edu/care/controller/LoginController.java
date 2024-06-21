@@ -31,10 +31,10 @@ public class LoginController {
 	
 	// 로그인
 	@PostMapping(value="/login.do")
-	public ModelAndView loginAccess(String id, String pw, HttpSession session) {
+	public ModelAndView loginAccess( HttpSession session, String id, String pw) {
 		logger.info("::최초 로그인 실행::");
 		logger.info("id : {}/ pw : {}", id, pw);
-		return loginService.loginAccess(id, pw,session);
+		return loginService.loginAccess(session, id, pw);
 	}
 	
 	/*
