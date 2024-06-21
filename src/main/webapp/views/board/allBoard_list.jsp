@@ -26,6 +26,13 @@
     margin-right: 20px;
 }
 
+#searchCategory, #searchWord{
+	height: 38px;
+	margin-right: 5px;
+	border-radius: 5px;
+}
+
+
 .card-body{
 	display: flex;
     justify-content: center; /* 자식 요소들을 가로축 기준으로 가운데 정렬 */

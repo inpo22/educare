@@ -11,10 +11,7 @@
 			, (SELECT ac.code_name FROM all_code ac WHERE ac.code = (SELECT u2.class_code FROM user u2 WHERE u2.user_code = p.user_code)) AS class_name
 			, p.title
 			, p.bHit
-			<![CDATA[
-			, CASE WHEN p.edit_date >= p.reg_date THEN p.edit_date
-				ELSE p.reg_date END AS reg_date
-			]]>
+			, p.reg_date
 			, p.fixed_yn
 			, (SELECT ac2.code_name FROM all_code ac2 WHERE ac2.code = (SELECT u3.team_code FROM user u3 WHERE u3.user_code = p.user_code)) AS team_name
 		FROM post p JOIN board b ON p.board_no = b.board_no
@@ -62,10 +59,7 @@
 			, (SELECT ac.code_name FROM all_code ac WHERE ac.code = (SELECT u2.class_code FROM user u2 WHERE u2.user_code = p.user_code)) AS class_name
 			, p.title
 			, p.bHit
-			<![CDATA[
-			, CASE WHEN p.edit_date >= p.reg_date THEN p.edit_date
-				ELSE p.reg_date END AS reg_date
-			]]>
+			, p.reg_date
 			, p.fixed_yn
 			, (SELECT ac2.code_name FROM all_code ac2 WHERE ac2.code = (SELECT u3.team_code FROM user u3 WHERE u3.user_code = p.user_code)) AS team_name
 		FROM post p JOIN board b ON p.board_no = b.board_no
@@ -79,10 +73,8 @@
 			, (SELECT u.name FROM user u WHERE u.user_code = p.user_code) AS user_name
 			, (SELECT ac.code_name FROM all_code ac WHERE ac.code = (SELECT u2.class_code FROM user u2 WHERE u2.user_code = p.user_code)) AS class_name
 			, (SELECT ac2.code_name FROM all_code ac2 WHERE ac2.code = (SELECT u3.team_code FROM user u3 WHERE u3.user_code = p.user_code)) AS team_name
-			<![CDATA[
-			, CASE WHEN p.edit_date >= p.reg_date THEN p.edit_date
-				ELSE p.reg_date END AS reg_date
-			]]>
+			, p.reg_date
+			, p.edit_date
 			, p.fixed_yn
 			, p.bHit
 			, p.contents
@@ -100,7 +92,7 @@
 			, af.ori_filename
 			, af.new_filename
 		FROM attach_file af
-		WHERE af.board_no = #{param1} AND af.board_type = 'board'
+		WHERE af.post_no = #{param1} AND af.board_type = 'board'
 	</select>
 	
 	<select id="getOriFileName" resultType="String">
@@ -146,7 +138,7 @@
 	</delete>
 
 	<update id="allBoardUpdate" parameterType="map">
-		UPDATE post SET title = #{title}, contents = #{contents}, edit_date = #{reg_date}, fixed_yn = #{fixed_yn}, edit_user_code = #{user_code} WHERE post_no = #{post_no}
+		UPDATE post SET title = #{title}, contents = #{contents}, edit_date = NOW(), fixed_yn = #{fixed_yn}, edit_user_code = #{user_code} WHERE post_no = #{post_no}
 	</update>
 
 	<update id="newFileNameUpdate" parameterType="board">
@@ -156,7 +148,12 @@
 	<!-- 부서공지 리스트 권한 조회-->
 	<select id="teamBoardList" resultType="String">
 		SELECT team_name FROM department 
-		WHERE upper_code IN ('T00','T02','T03')
+<!-- 		WHERE upper_code IN ('T00','T02','T03')  -->
+	</select>
+
+	<!-- T02에 속한 부서도 권한 추가  -->
+	<select id="isUpperCodeT02" resultType="String">
+		SELECT upper_code FROM department WHERE team_code = #{team_code}
 	</select>
 
 	<!-- 부서공지 리스트 불러오기 -->
@@ -167,15 +164,12 @@
 			, (SELECT ac.code_name FROM all_code ac WHERE ac.code = (SELECT u2.class_code FROM user u2 WHERE u2.user_code = p.user_code)) AS class_name
 			, p.title
 			, p.bHit
-			<![CDATA[
-			, CASE WHEN p.edit_date >= p.reg_date THEN p.edit_date
-				ELSE p.reg_date END AS reg_date
-			]]>
+			, p.reg_date
 			, p.fixed_yn
 		FROM post p JOIN board b ON p.board_no = b.board_no
 		WHERE p.is_del = 0 AND b.board_no = 2
 		<if test="param4 != ''">
-       		AND
+			AND (
 	        <choose>
 	            <when test="param3 == 'title'">
 	                p.title LIKE CONCAT('%', #{param4}, '%')
@@ -187,8 +181,10 @@
 	                p.contents LIKE CONCAT('%', #{param4}, '%')
 	            </when>
 	        </choose>
+	        )
     	</if>
-		ORDER BY p.post_no DESC LIMIT #{param2} OFFSET #{param1}
+		ORDER BY p.post_no DESC 
+		LIMIT #{param2} OFFSET #{param1}
 	</select>
 
 	<!-- 부서 페이지카운트 -->
@@ -196,7 +192,7 @@
 		SELECT CEIL(COUNT(p.post_no)/#{param1}) FROM post p JOIN board b ON p.board_no = b.board_no
 		WHERE p.is_del = 0 AND b.board_no = 2
 		<if test="param3 != ''">
-       		AND
+       		AND (
 	        <choose>
 	            <when test="param2 == 'title'">
 	                p.title LIKE CONCAT('%', #{param3}, '%')
@@ -208,6 +204,7 @@
 	                p.contents LIKE CONCAT('%', #{param3}, '%')
 	            </when>
 	        </choose>
+	        )
     	</if>
 	</select>
 
@@ -219,10 +216,7 @@
 			, (SELECT ac.code_name FROM all_code ac WHERE ac.code = (SELECT u2.class_code FROM user u2 WHERE u2.user_code = p.user_code)) AS class_name
 			, p.title
 			, p.bHit
-			<![CDATA[
-			, CASE WHEN p.edit_date >= p.reg_date THEN p.edit_date
-				ELSE p.reg_date END AS reg_date
-			]]>
+			, p.reg_date
 			, p.fixed_yn
 		FROM post p JOIN board b ON p.board_no = b.board_no
 		WHERE p.is_del = 0 AND b.board_no = 2 AND p.fixed_yn = 1

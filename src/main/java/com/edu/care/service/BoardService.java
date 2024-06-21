@@ -170,12 +170,17 @@ public class BoardService {
 			Map<String, Object> map = new HashMap<String, Object>();
 			int start = (currPage - 1) * pagePerCnt;
 			
-			List<BoardDTO> list = boardDAO.teamList(currPage, pagePerCnt, searchCategory, searchWord);
+			List<BoardDTO> list = boardDAO.teamList(start, pagePerCnt, searchCategory, searchWord);
 			map.put("list", list);
 			map.put("totalPage", boardDAO.teamListPageCnt(pagePerCnt, searchCategory, searchWord));
 			map.put("topFixedTeamList", boardDAO.topFixedTeamList());
 			
 			return map;
+		}
+
+		public boolean isUpperCodeT02(String teamCode) {
+			String upperCode = boardDAO.isUpperCodeT02(teamCode);
+			return "T02".equals(upperCode);
 		}
 }
 

@@ -4,10 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.edu.care.dto.BoardDTO;
-import com.edu.care.dto.EmpDTO;
 
 @Mapper
 public interface BoardDAO {
@@ -46,11 +44,13 @@ public interface BoardDAO {
 
 	List<String> teamBoardList();
 
-	List<BoardDTO> teamList(int currPage, int pagePerCnt, String searchCategory, String searchWord);
+	List<BoardDTO> teamList(int start, int pagePerCnt, String searchCategory, String searchWord);
 
 	int teamListPageCnt(int pagePerCnt, String searchCategory, String searchWord);
 
 	List<BoardDTO> topFixedTeamList();
+
+	String isUpperCodeT02(String teamCode);
 
 
 
