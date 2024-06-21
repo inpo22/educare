@@ -10,103 +10,14 @@
 <meta content="" name="description">
 <meta content="" name="keywords">
 
-<!-- css -->
 <jsp:include page="/views/common/head.jsp"></jsp:include>
+
+<!-- css -->
+<link href="/resources/approval/style.css" rel="stylesheet">
+
 <!-- js -->
 
 <style>
-	.display-flex {
-		display: flex;
-	}
-	#left-section {
-		width: 15%;
-		height: 100%;
-	}
-	#right-section {
-		width: 84%;
-		height: 100%;
-		background-color: white;
-		padding: 30px;
-	}
-	.text-align-right {
-		text-align: right;
-	}
-	.second-sidebar td {
-		padding: 5px 0;
-	}
-	a {
-		color: black;
-	}
-	.blue-color {
-		color: rgb(88, 88, 255);
-	}
-	.modal {
-	    display: none;
-	    position: fixed;
-	    left: 0;
-	    top: 0;
-	    width: 100%;
-	    height: 100%;
-	    overflow: auto;
-	    background-color: rgba(0,0,0,0.4);
-	}
-	.modal-content {
-	    margin: 0 auto;
-	    padding: 20px;
-	    height: 600px;
-	    width: 400px;
-	    top: 150px;
-	    background-color: white;
-	}
-	.close {
-	    color: #aaa;
-	    float: right;
-	    font-size: 28px;
-	    font-weight: bold;
-	}
-	.close:hover {
-	    color: black;
-	    text-decoration: none;
-	    cursor: pointer;
-	}
-	.modal-title {
-		font-weight: bold;
-		font-size: 25px;
-	}
-	.approval-type-list {
-		height: 400px;
-		width: 360px;
-		overflow-y: auto;
-		background-color: #f9f9f9;
-		padding: 20px;
-	}
-	.approval-type-list ul {
-		list-style-type: none;
-	}
-	.approval-type-list li {
-		cursor: pointer;
-		padding-left: 10px;
-	}
-	.approval-type-list li:hover {
-		background-color: rgba(75, 150, 230, 0.1);
-		background: #e7eff7;
-	}
-	.selected-value {
-		background-color: rgba(75, 150, 230, 0.1);
-		background: #e7eff7;
-		color: #4b96e6;
-	}
-	.right-padding {
-		padding-right: 40px;
-	}
-	#search-condition {
-		width: 150px;
-		display: inline;
-	}
-	#search-content {
-		width: 400px;
-		display: inline;
-	}
 	.table th, .table td {
 		text-align: center;
 	}
