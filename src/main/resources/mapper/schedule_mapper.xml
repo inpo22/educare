@@ -28,7 +28,7 @@
 		)	
 	</insert>
 	<select id="scheduleList" parameterType="schedule" resultType="schedule">
-		select 
+		SELECT 
 			sch.sked_no
 			, sch.user_code
 			, sch.title
@@ -38,22 +38,22 @@
 			, sch.sked_type
 			, usr.name as name
 			, (select team_name from department where team_code = usr.TEAM_CODE) as team_name
-		from schedule sch
-		left join user usr
-		on usr.user_code = sch.user_code
-		where 1=1
-			and sch.is_del = 0
+		FROM schedule sch
+		LEFT JOIN user usr
+		ON usr.user_code = sch.user_code
+		WHERE 1=1
+			AND sch.is_del = 0
 		<if test="sked_type != null">
-			and sch.sked_type = #{sked_type}
+			AND sch.sked_type = #{sked_type}
 			<choose>
 				<when test="sked_type == 'SKED_TP01'">
-				and sch.team_code = 'T01'
+				AND sch.team_code = 'T01'
 				</when>
 				<when test="sked_type == 'SKED_TP02'">
-				and sch.team_code = #{team_code}
+				AND sch.team_code = #{team_code}
 				</when>
 				<when test="sked_type == 'SKED_TP03'">
-				and sch.user_code = #{user_code}
+				AND sch.user_code = #{user_code}
 				</when>
 			</choose>
 		</if>

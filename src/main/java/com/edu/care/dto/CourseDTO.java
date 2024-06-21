@@ -16,6 +16,11 @@ public class CourseDTO {
 	private int is_confirm;
 	private int is_del;
 	private String name;
+	private int rez_no;
+	private String course_space;
+	private Date start_time;
+	private Date end_time;
+	private int time;
 	
 	public int getCourse_no() {
 		return course_no;
@@ -76,5 +81,35 @@ public class CourseDTO {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public int getRez_no() {
+		return rez_no;
+	}
+	public void setRez_no(int rez_no) {
+		this.rez_no = rez_no;
+	}
+	public String getCourse_space() {
+		return course_space;
+	}
+	public void setCourse_space(String course_space) {
+		this.course_space = course_space;
+	}
+	public Date getStart_time() {
+		return start_time;
+	}
+	public void setStart_time(Date start_time) {
+		this.start_time = start_time;
+	}
+	public Date getEnd_time() {
+		return end_time;
+	}
+	public void setEnd_time(Date end_time) {
+		this.end_time = end_time;
+	}
+	public int getTime() {
+		return time;
+	}
+	public void setTime(int time) {
+		this.time = time;
 	}
 }

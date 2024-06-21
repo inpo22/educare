@@ -35,11 +35,6 @@
 	font-weight: bold;
 }
 
-.form-select {
-	border: none;
-	box-shadow: -1px 1px 6px #929297;
-}
-
 .search-btn {
 	border: none;
 	box-shadow: 3px 1px 6px #929297;
@@ -136,6 +131,9 @@ textarea {
     border: none; 
 }
 
+.input-group .btn {
+    width: 70px;
+}
 </style>
 </head>
 
@@ -207,9 +205,7 @@ textarea {
 									<div class="row">
 										<div class="col-md-4">
 											<div class="input-group input-group">
-
-
-
+												
 												<!-- 캘린더 하는중..직접 만들어야하네.. =ㅅ=..언제하냐 -->
 												<div class="calendar" id="calendar">
 													<div class="cal-header">
@@ -238,9 +234,17 @@ textarea {
 											<div class="row">
 												<div class="col-md-12">
 													<div class="input-group input-group mb-3">
-														<button class="btn btn-outline-warning w-100"
-															type="button" data-bs-toggle="modal"
-															data-bs-target="#reservationModal">강의실 시간 선택</button>
+													
+														<label class="input-group-text">강의실</label>
+															<select class="form-select" id="select-space">
+																<option value="">강의실 선택</option>
+																<option value="A101">A101</option>
+																<option value="A101">A102</option>
+																<option value="B101">B101</option>
+																<option value="B102">B102</option>
+																<option value="C101">C101</option>
+																<option value="C101">C102</option>
+															</select>
 													</div>
 												</div>
 											</div>
@@ -340,13 +344,39 @@ function drawCalendar() {
         if (i < preMonthFirstDay || count > preMonthLastDate) {
             con += '<div class="emptyDay"></div>';
         } else {
-            con += '<div class="day">' + count + '</div>';
+            con += '<div class="day" id="select-day" data-day="'+count+'">' + count + '</div>';
             count++;
         }
     }
     con += '</div>';
 
     $('#daysData').html(con);
+    
+    // 날짜 클릭 이벤트 핸들러 등록
+    $('#daysData').on('click', '.day', function() {
+        var selectDay = $(this).data('day');
+        
+        var calMonth = preMonth+1;
+        if(calMonth.toString().length < 2){
+        	calMonth = '0' + calMonth;
+        }
+        
+        if(selectDay.toString().length < 2){
+        	selectDay = '0' + selectDay;
+        	console.log(selectDay);
+        }
+        
+        var formatDay = preYear +'-' + calMonth +'-'+selectDay; 
+        console.log('Selected day:', formatDay);
+        var seleteRoom = $('#select-space').val();
+        console.log('seleteRoom:', seleteRoom);
+        
+        if (seleteRoom) {
+            timeBtn(formatDay, seleteRoom); // 선택한 날짜와 강의실에 따라 시간 버튼 생성
+        } else {
+            alert('강의실을 먼저 선택해주세요.');
+        }
+    });
 }
 
 $('#prevBtn').on("click", function() {
@@ -395,7 +425,7 @@ function reDrawCalendar(){
         if (i < rePreMonthFirstDay || count > rePreMonthLastDate) {
             con += '<div class="emptyDay"></div>';
         } else {
-            con += '<div class="day" onclick="clickDay('+preYear+","+(preMonth+1)+","+count+')">' + count + '</div>';
+            con += '<div class="day" id="select-day" data-day="' + count + '">' + count + '</div>';
             count++;
         }
     }
@@ -405,34 +435,62 @@ function reDrawCalendar(){
 	
 }
 
-function clickDay(y,m,d){
-	var selectDay = y+'-'+m+'-'+d;
-	timeBtn(selectDay);
-}
-
-
 //날짜 클릭시 선택할 수 있는 시간 나오게 하기 ... 하는중입니다... 
 //캘린더 틀 만드느라 못했어유..
-function timeBtn(){
+function timeBtn(selectDay,selectRoom){
 	var newTimeBtn = document.createElement('button');
+	
+	 // 캘린더에서 날짜 클릭 시 이벤트 핸들러
+	//  $('#calendar').on('click', '.date', function() {
+	//    var selectedDate = $(this).data('date'); // 클릭한 날짜 가져오기, 예: '2024-06-20'
+	var paramData={
+		start_time: selectDay,
+		course_space: selectRoom
+	};
 	
 	$.ajax({
 		url: '/course/reservationTime.ajax',
-		type: 'GET',
+		type: 'POST',
 		dataType:'JSON',
+		data: JSON.stringify(paramData),
+		contentType: 'application/json',
 		success:function(data){
-			
+			console.log("datadatea",data.list[0].time);
+				 displayTimeButtons(data.list);
+				
+			 if(response < 0){
+				 alert('아직예약없음');
+			 }
 		},
-		
 		error:function(request, status, error){
 			console.log(error);
 		}
 		
 	});
-	newTimeBtn.innerHTML = '새버튼';
-	document.getElementById('buttonContainer').appendChild(newTimeBtn);
+}
 	
-	
+function displayTimeButtons(times) {
+    $('#buttonContainer').empty();
+    console.log("ttttttt",times[0]);
+    
+    var timess = {times};
+    console.log("tttrererert",timess[0]);
+    for (var i = 9; i < 23; i++) {
+        var disabledAttr = '';
+
+        for (var j = 0; j < times.length; j++) {
+            if (times[j].time == i) {
+                disabledAttr = 'disabled'; 
+                break;
+            }
+        }
+
+        var contentTime = '<button class="time-btn btn btn-outline-secondary mb-2 mx-1" data-time="' + i + '" ' + disabledAttr + '>';
+        contentTime += i + ":00";
+        contentTime += '</button>';
+
+        $('#buttonContainer').append(contentTime);
+    }
 }
 
 </script>
