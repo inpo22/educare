@@ -4,4 +4,141 @@
 
 <mapper namespace="com.edu.care.dao.MainDAO">
 	
+	<select id="chartDataList" resultType="main">
+		SELECT
+			IFNULL((SELECT ROUND(SUM(p.course_price)/1000000, 1) FROM payment p WHERE p.pay_state = 1 AND MONTH(p.pay_date) = #{param1}
+				AND CASE
+					WHEN #{param1} > #{param6} THEN YEAR(p.pay_date) = (YEAR(CURDATE()) - 1)
+					ELSE YEAR(p.pay_date) = YEAR(CURDATE()) END), 0) AS first
+			, IFNULL((SELECT ROUND(SUM(p.course_price)/1000000, 1) FROM payment p WHERE p.pay_state = 1 AND MONTH(p.pay_date) = #{param2}
+				AND CASE
+					WHEN #{param2} > #{param6} THEN YEAR(p.pay_date) = (YEAR(CURDATE()) - 1)
+					ELSE YEAR(p.pay_date) = YEAR(CURDATE()) END), 0) AS second
+			, IFNULL((SELECT ROUND(SUM(p.course_price)/1000000, 1) FROM payment p WHERE p.pay_state = 1 AND MONTH(p.pay_date) = #{param3}
+				AND CASE
+					WHEN #{param3} > #{param6} THEN YEAR(p.pay_date) = (YEAR(CURDATE()) - 1)
+					ELSE YEAR(p.pay_date) = YEAR(CURDATE()) END), 0) AS third
+			, IFNULL((SELECT ROUND(SUM(p.course_price)/1000000, 1) FROM payment p WHERE p.pay_state = 1 AND MONTH(p.pay_date) = #{param4}
+				AND CASE
+					WHEN #{param4} > #{param6} THEN YEAR(p.pay_date) = (YEAR(CURDATE()) - 1)
+					ELSE YEAR(p.pay_date) = YEAR(CURDATE()) END), 0) AS fourth
+			, IFNULL((SELECT ROUND(SUM(p.course_price)/1000000, 1) FROM payment p WHERE p.pay_state = 1 AND MONTH(p.pay_date) = #{param5}
+				AND CASE
+					WHEN #{param5} > #{param6} THEN YEAR(p.pay_date) = (YEAR(CURDATE()) - 1)
+					ELSE YEAR(p.pay_date) = YEAR(CURDATE()) END), 0) AS fifth
+			, IFNULL((SELECT ROUND(SUM(p.course_price)/1000000, 1) FROM payment p WHERE p.pay_state = 1 AND MONTH(p.pay_date) = #{param6}
+				AND YEAR(p.pay_date) = YEAR(CURDATE())), 0) AS sixth
+		UNION ALL
+		SELECT
+			IFNULL((SELECT ROUND(SUM(p.course_price)/1000000, 1) FROM payment p WHERE p.pay_state = 1 AND MONTH(p.pay_date) = #{param1}
+				AND CASE
+					WHEN #{param1} > #{param6} THEN YEAR(p.pay_date) = (YEAR(CURDATE()) - 2)
+					ELSE YEAR(p.pay_date) = (YEAR(CURDATE()) - 1) END), 0) AS first
+			, IFNULL((SELECT ROUND(SUM(p.course_price)/1000000, 1) FROM payment p WHERE p.pay_state = 1 AND MONTH(p.pay_date) = #{param2}
+				AND CASE
+					WHEN #{param2} > #{param6} THEN YEAR(p.pay_date) = (YEAR(CURDATE()) - 2)
+					ELSE YEAR(p.pay_date) = (YEAR(CURDATE()) - 1) END), 0) AS second
+			, IFNULL((SELECT ROUND(SUM(p.course_price)/1000000, 1) FROM payment p WHERE p.pay_state = 1 AND MONTH(p.pay_date) = #{param3}
+				AND CASE
+					WHEN #{param3} > #{param6} THEN YEAR(p.pay_date) = (YEAR(CURDATE()) - 2)
+					ELSE YEAR(p.pay_date) = (YEAR(CURDATE()) - 1) END), 0) AS third
+			, IFNULL((SELECT ROUND(SUM(p.course_price)/1000000, 1) FROM payment p WHERE p.pay_state = 1 AND MONTH(p.pay_date) = #{param4}
+				AND CASE
+					WHEN #{param4} > #{param6} THEN YEAR(p.pay_date) = (YEAR(CURDATE()) - 2)
+					ELSE YEAR(p.pay_date) = (YEAR(CURDATE()) - 1) END), 0) AS fourth
+			, IFNULL((SELECT ROUND(SUM(p.course_price)/1000000, 1) FROM payment p WHERE p.pay_state = 1 AND MONTH(p.pay_date) = #{param5}
+				AND CASE
+					WHEN #{param5} > #{param6} THEN YEAR(p.pay_date) = (YEAR(CURDATE()) - 2)
+					ELSE YEAR(p.pay_date) = YEAR(CURDATE()) END), 0) AS fifth
+			, IFNULL((SELECT ROUND(SUM(p.course_price)/1000000, 1) FROM payment p WHERE p.pay_state = 1 AND MONTH(p.pay_date) = #{param6}
+				AND YEAR(p.pay_date) = (YEAR(CURDATE()) - 1)), 0) AS sixth
+	</select>
+	
+	<select id="approvalList" resultType="main">
+		WITH approval_order_rank AS (
+			SELECT
+				*, ROW_NUMBER() OVER (PARTITION BY au_code ORDER BY apv_no) AS row_num
+			FROM approval_order
+		)
+		SELECT
+			*
+			FROM
+			(SELECT
+				a.au_code
+				, u.name AS user_name
+				, (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code) AS class_name
+				, a.title
+				, a.reg_date
+				, CASE 
+					WHEN aor.row_num != 1 THEN (SELECT ao.state FROM approval_order ao WHERE ao.apv_no = (aor.apv_no - 1))
+					WHEN aor.row_num = 1 THEN 1
+				END AS is_my_turn
+			FROM approval a JOIN approval_order_rank aor ON a.au_code = aor.au_code JOIN user u ON a.user_code = u.user_code
+			WHERE aor.user_code = #{param1}) AS subquery
+		WHERE is_my_turn = 1
+		ORDER BY reg_date DESC LIMIT 5
+	</select>
+	
+	<select id="mailList" resultType="main">
+		SELECT 
+			m.mail_no
+			, u.name AS user_name
+			, (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code) AS class_name
+			, m.subject
+			, m.send_date
+		FROM mail m JOIN mail_recipient mr ON m.mail_no = mr.mail_no JOIN user u ON m.send_user_code = u.user_code
+		WHERE mr.receive_user_code = #{param1} AND mr.is_del_receiver = 0
+		ORDER BY m.mail_no DESC LIMIT 5
+	</select>
+	
+	<select id="scheduleList" resultType="main">
+		SELECT
+			s.title
+			, s.start_date 
+			, s.end_date 
+			, s.sked_type
+			, CASE
+				WHEN YEAR(s.start_date) = YEAR(s.end_date) AND MONTH(s.start_date) = MONTH(s.end_date) AND DAY(s.start_date) = DAY(s.end_date)
+					THEN 0
+				ELSE 1 
+			END AS check_period
+		FROM schedule s
+		<![CDATA[
+		WHERE s.is_del = 0 AND TIMESTAMPDIFF(MINUTE, s.start_date, current_timestamp()) > 0 
+		]]>
+		AND (
+			(s.team_code = #{param2} AND s.sked_type = 'SKED_TP02') OR
+			(s.user_code = #{param1} AND s.sked_type = 'SKED_TP03') OR
+			(s.sked_type = 'SKED_TP01')
+		)
+		ORDER BY s.start_date ASC LIMIT 5
+	</select>
+	
+	<select id="boardList" resultType="main">
+		SELECT  
+			p.post_no
+			, u.name AS user_name
+			, (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code) AS class_name
+			, p.title
+			<![CDATA[
+			, CASE WHEN p.edit_date >= p.reg_date THEN p.edit_date
+				ELSE p.reg_date END AS reg_date
+			]]>
+		FROM post p JOIN board b ON p.board_no = b.board_no JOIN user u ON p.user_code = u.user_code
+		WHERE p.is_del = 0 AND b.board_no = 1
+		ORDER BY p.post_no DESC LIMIT 5
+	</select>
+	
+	<select id="thisMonthHRD" resultType="main">
+		SELECT
+			(SELECT COUNT(u.user_code) FROM user u WHERE u.classify_code IN('U01', 'U02')
+				AND YEAR(u.reg_date) = YEAR(CURDATE()) AND MONTH(u.reg_date) = MONTH(CURDATE())) AS new_emp
+			, (SELECT COUNT(u.user_code) FROM user u WHERE u.classify_code IN('U01', 'U02')
+				AND YEAR(u.quit_date) = YEAR(CURDATE()) AND MONTH(u.quit_date) = MONTH(CURDATE())) AS quit_emp
+			, (SELECT COUNT(o.user_code) FROM officehour o WHERE state = 0 OR state = 1) AS late_emp
+			, (SELECT COUNT(o.user_code) FROM officehour o WHERE state = 2) AS absent_emp
+			, (SELECT COUNT(u.user_code) FROM user u WHERE u.classify_code = 'U03'
+				AND YEAR(u.reg_date) = YEAR(CURDATE()) AND MONTH(u.reg_date) = MONTH(CURDATE())) AS new_stu
+	</select>
+	
 </mapper>
