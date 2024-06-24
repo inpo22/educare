@@ -30,8 +30,8 @@ public class MainController {
 			session.setAttribute("user_name", "관리자");
 			session.setAttribute("class_name", "대리");
 			session.setAttribute("team_name", "인사총무팀");
-			session.setAttribute("team_code", "T03");
-			session.setAttribute("classify_code", "U03");
+			session.setAttribute("team_code", "T06");
+			session.setAttribute("classify_code", "U01");
 		}
 		
 		String team_code = (String) session.getAttribute("team_code");
