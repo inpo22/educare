@@ -13,7 +13,7 @@
 			, p.bHit
 			, p.reg_date
 			, p.fixed_yn
-			, (SELECT ac2.code_name FROM all_code ac2 WHERE ac2.code = (SELECT u3.team_code FROM user u3 WHERE u3.user_code = p.user_code)) AS team_name
+			, (SELECT d.team_name FROM department d WHERE d.team_code = (SELECT u3.team_code FROM user u3 WHERE u3.user_code = p.user_code)) AS team_name
 		FROM post p JOIN board b ON p.board_no = b.board_no
 		WHERE p.is_del = 0 AND b.board_no = 1
 		<if test="param4 != ''">
@@ -61,18 +61,18 @@
 			, p.bHit
 			, p.reg_date
 			, p.fixed_yn
-			, (SELECT ac2.code_name FROM all_code ac2 WHERE ac2.code = (SELECT u3.team_code FROM user u3 WHERE u3.user_code = p.user_code)) AS team_name
+			, (SELECT d.team_name FROM department d WHERE d.team_code = (SELECT u3.team_code FROM user u3 WHERE u3.user_code = p.user_code)) AS team_name 
 		FROM post p JOIN board b ON p.board_no = b.board_no
 		WHERE p.is_del = 0 AND b.board_no = 1
 		AND p.fixed_yn = 1
 	</select> 
 
-	<select id="allDetail" resultType="board">
+	<select id="detail" resultType="board">
 		SELECT 
 			p.title
 			, (SELECT u.name FROM user u WHERE u.user_code = p.user_code) AS user_name
 			, (SELECT ac.code_name FROM all_code ac WHERE ac.code = (SELECT u2.class_code FROM user u2 WHERE u2.user_code = p.user_code)) AS class_name
-			, (SELECT ac2.code_name FROM all_code ac2 WHERE ac2.code = (SELECT u3.team_code FROM user u3 WHERE u3.user_code = p.user_code)) AS team_name
+			, (SELECT d.team_name FROM department d WHERE d.team_code = (SELECT u3.team_code FROM user u3 WHERE u3.user_code = p.user_code)) AS team_name 
 			, p.reg_date
 			, p.edit_date
 			, p.fixed_yn
@@ -114,7 +114,6 @@
 		WHERE post_no = #{param2}
 	</select>
 
-
 	<insert id="allBoardWrite" useGeneratedKeys="true" keyColumn="post_no"
 		keyProperty="post_no" parameterType="board" >
 		INSERT INTO post(title, contents, fixed_yn, user_code, board_no)
@@ -129,7 +128,7 @@
 
 
 	<select id="oldFileList" resultType="board">
-		SELECT file_no, new_filename FROM attach_file WHERE board_no=#{param1}
+		SELECT file_no, new_filename FROM attach_file WHERE post_no=#{param1}
 	</select>
 
 
@@ -137,7 +136,7 @@
 		DELETE FROM attach_file WHERE file_no = #{param1}
 	</delete>
 
-	<update id="allBoardUpdate" parameterType="map">
+	<update id="boardUpdate" parameterType="map">
 		UPDATE post SET title = #{title}, contents = #{contents}, edit_date = NOW(), fixed_yn = #{fixed_yn}, edit_user_code = #{user_code} WHERE post_no = #{post_no}
 	</update>
 
@@ -161,13 +160,17 @@
 		SELECT  
 			p.post_no
 			, (SELECT u.name FROM user u WHERE u.user_code = p.user_code) AS user_name
+			, (SELECT d.team_name FROM department d WHERE d.team_code = (SELECT u3.team_code FROM user u3 WHERE u3.user_code = p.user_code)) AS team_name 
 			, (SELECT ac.code_name FROM all_code ac WHERE ac.code = (SELECT u2.class_code FROM user u2 WHERE u2.user_code = p.user_code)) AS class_name
 			, p.title
 			, p.bHit
 			, p.reg_date
 			, p.fixed_yn
-		FROM post p JOIN board b ON p.board_no = b.board_no
-		WHERE p.is_del = 0 AND b.board_no = 2
+		FROM post p 
+		JOIN board b ON p.board_no = b.board_no
+		JOIN user u ON p.user_code = u.user_code
+		JOIN all_code ac2 ON u.team_code = ac2.code
+		WHERE p.is_del = 0 AND b.board_no = 2 AND u.team_code = #{param5}
 		<if test="param4 != ''">
 			AND (
 	        <choose>
@@ -175,7 +178,7 @@
 	                p.title LIKE CONCAT('%', #{param4}, '%')
 	            </when>
 	            <when test="param3 == 'writer'">
-	                EXISTS (SELECT 1 FROM user u WHERE u.user_code = p.user_code AND u.name LIKE CONCAT('%', #{param4}, '%'))
+	                EXISTS (SELECT 1 FROM user u2 WHERE u2.user_code = p.user_code AND u2.name LIKE CONCAT('%', #{param4}, '%'))
 	            </when>
 	            <when test="param3 == 'contents'">
 	                p.contents LIKE CONCAT('%', #{param4}, '%')
@@ -189,8 +192,12 @@
 
 	<!-- 부서 페이지카운트 -->
 	<select id="teamListPageCnt" resultType="Integer">
-		SELECT CEIL(COUNT(p.post_no)/#{param1}) FROM post p JOIN board b ON p.board_no = b.board_no
-		WHERE p.is_del = 0 AND b.board_no = 2
+		SELECT CEIL(COUNT(p.post_no)/#{param1}) 
+		FROM post p 
+		JOIN board b ON p.board_no = b.board_no
+		JOIN user u ON p.user_code = u.user_code
+   		JOIN all_code ac ON u.team_code = ac.code
+		WHERE p.is_del = 0 AND b.board_no = 2 AND u.team_code = #{param4}
 		<if test="param3 != ''">
        		AND (
 	        <choose>
@@ -214,19 +221,86 @@
 			p.post_no
 			, (SELECT u.name FROM user u WHERE u.user_code = p.user_code) AS user_name
 			, (SELECT ac.code_name FROM all_code ac WHERE ac.code = (SELECT u2.class_code FROM user u2 WHERE u2.user_code = p.user_code)) AS class_name
+			, (SELECT d.team_name FROM department d WHERE d.team_code = (SELECT u3.team_code FROM user u3 WHERE u3.user_code = p.user_code)) AS team_name
+			, p.title
+			, p.bHit
+			, p.reg_date
+			, p.fixed_yn
+		FROM post p 
+		JOIN board b ON p.board_no = b.board_no
+		JOIN user u ON p.user_code = u.user_code
+    	JOIN department d ON u.team_code = d.team_code
+		WHERE p.is_del = 0 AND b.board_no = 2 AND p.fixed_yn = 1 AND u.team_code = #{param1}
+	</select>
+
+	<!-- 부서 글작성 -->
+	<insert id="teamBoardWrite" useGeneratedKeys="true" keyColumn="post_no"
+		keyProperty="post_no" parameterType="board" >
+		INSERT INTO post(title, contents, fixed_yn, user_code, board_no)
+		VALUES(#{title},#{contents},#{fixed_yn}, #{user_code}, 2)
+	</insert>
+
+	<!-- 학생 글리스트 -->
+	<select id="stdList" resultType="board">
+			SELECT  
+				p.post_no
+				, (SELECT u.name FROM user u WHERE u.user_code = p.user_code) AS user_name
+				, (SELECT ac.code_name FROM all_code ac WHERE ac.code = (SELECT u2.class_code FROM user u2 WHERE u2.user_code = p.user_code)) AS class_name
+				, p.title
+				, p.bHit
+				, p.reg_date
+				, p.fixed_yn
+			FROM post p JOIN board b ON p.board_no = b.board_no
+			WHERE p.is_del = 0 AND b.board_no = 3
+			<if test="param4 != ''">
+	       		AND
+		        <choose>
+		            <when test="param3 == 'title'">
+		                p.title LIKE CONCAT('%', #{param4}, '%')
+		            </when>
+		            <when test="param3 == 'contents'">
+		                p.contents LIKE CONCAT('%', #{param4}, '%')
+		            </when>
+		        </choose>
+	    	</if>
+			ORDER BY p.post_no DESC LIMIT #{param2} OFFSET #{param1}
+	</select> 
+	
+	<select id="stdListPageCnt" resultType="Integer">
+		SELECT CEIL(COUNT(p.post_no)/#{param1}) FROM post p JOIN board b ON p.board_no = b.board_no
+		WHERE p.is_del = 0 AND b.board_no = 3
+		<if test="param3 != ''">
+       		AND
+	        <choose>
+	            <when test="param2 == 'title'">
+	                p.title LIKE CONCAT('%', #{param3}, '%')
+	            </when>
+	            <when test="param2 == 'contents'">
+	                p.contents LIKE CONCAT('%', #{param3}, '%')
+	            </when>
+	        </choose>
+    	</if>
+	</select>
+
+	<select id="topFixedStdList" resultType="board">
+		SELECT  
+			p.post_no
+			, (SELECT u.name FROM user u WHERE u.user_code = p.user_code) AS user_name
+			, (SELECT ac.code_name FROM all_code ac WHERE ac.code = (SELECT u2.class_code FROM user u2 WHERE u2.user_code = p.user_code)) AS class_name
 			, p.title
 			, p.bHit
 			, p.reg_date
 			, p.fixed_yn
 		FROM post p JOIN board b ON p.board_no = b.board_no
-		WHERE p.is_del = 0 AND b.board_no = 2 AND p.fixed_yn = 1
-	</select>
+		WHERE p.is_del = 0 AND b.board_no = 3
+		AND p.fixed_yn = 1
+	</select> 
 
-
-
-
-
-
+	<insert id="stdBoardWrite" useGeneratedKeys="true" keyColumn="post_no"
+		keyProperty="post_no" parameterType="board" >
+		INSERT INTO post(title, contents, fixed_yn, user_code, board_no)
+		VALUES(#{title},#{contents},#{fixed_yn}, #{user_code}, 3)
+	</insert>
 
 
 

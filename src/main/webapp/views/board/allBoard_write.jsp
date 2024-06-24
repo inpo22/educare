@@ -90,7 +90,7 @@
 	<main id="main" class="main">
 		<div id="backBoard">
 			<div class="pagetitle">
-				<h1 id="allBoardTitle">전사 공지글 작성</h1>
+				<h1 id="BoardTitle">전사 공지글 작성</h1>
 			</div>
 			<br/>
 			<div class="form-check form-switch" id="fixedYn">

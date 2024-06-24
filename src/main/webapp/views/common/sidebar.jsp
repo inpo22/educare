@@ -88,7 +88,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/stuBoard/list.go">
+                    <a href="/stdBoard/list.go">
                         <i class="bi bi-circle"></i><span>학생 공지사항</span>
                     </a>
                 </li>

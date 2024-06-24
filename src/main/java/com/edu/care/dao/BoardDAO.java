@@ -16,7 +16,7 @@ public interface BoardDAO {
 
 	List<BoardDTO> topFixedList();
 
-	BoardDTO allDetail(String post_no);
+	BoardDTO detail(String post_no);
 
 	List<BoardDTO> attachFileList(String post_no);
 
@@ -36,7 +36,7 @@ public interface BoardDAO {
 
 	void delAttachFile(String file_no);
 
-	void allBoardUpdate(Map<String, String> param);
+	void boardUpdate(Map<String, String> param);
 
 	String lastFileName(String string);
 
@@ -44,13 +44,27 @@ public interface BoardDAO {
 
 	List<String> teamBoardList();
 
-	List<BoardDTO> teamList(int start, int pagePerCnt, String searchCategory, String searchWord);
+	List<BoardDTO> teamList(int start, int pagePerCnt, String searchCategory, String searchWord, String teamCode);
 
-	int teamListPageCnt(int pagePerCnt, String searchCategory, String searchWord);
+	int teamListPageCnt(int pagePerCnt, String searchCategory, String searchWord, String teamCode);
 
-	List<BoardDTO> topFixedTeamList();
+	List<BoardDTO> topFixedTeamList(String teamCode);
 
 	String isUpperCodeT02(String teamCode);
+
+	void teamBoardWrite(BoardDTO dto);
+
+	List<BoardDTO> stdList(int start, int pagePerCnt, String searchCategory, String searchWord);
+
+	int stdListPageCnt(int pagePerCnt, String searchCategory, String searchWord);
+
+	List<BoardDTO> topFixedStdList();
+
+	void stdBoardWrite(BoardDTO dto);
+
+
+
+//	List<BoardDTO> getNoticesByTeamCode(String teamCode);
 
 
 

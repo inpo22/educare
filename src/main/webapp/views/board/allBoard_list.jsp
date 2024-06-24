@@ -30,6 +30,7 @@
 	height: 38px;
 	margin-right: 5px;
 	border-radius: 5px;
+	border-color: lightgray;
 }
 
 
