@@ -6,23 +6,17 @@
 	<select id="getDept" resultType="dept">
 		SELECT team_name, team_code, upper_code, reg_date
 		 FROM department 
-		  ORDER BY reg_date ASC
+		  ORDER BY team_code ASC
 	</select>
 	
-<!--  	<select id="getDept" resultType="dept">
-		WITH RECURSIVE cte AS (
-		 SELECT team_code , team_name, upper_code, reg_date, 1 AS dept_level
-		  FROM department  
-		   WHERE upper_code='T00' 
-		 UNION ALL 
-		 SELECT d.team_code, d.team_name, d.upper_code, d.reg_date,
-		  cte.dept_level + 1 AS dept_level
-		  FROM department d
-		   INNER JOIN cte ON cte.team_code = d.upper_code
-		)
-		 SELECT * FROM cte;
+	<select id="getNewTC">
+		SELECT
+		 IFNULL(
+		  CONCAT('T', RIGHT(CONCAT('00', (SUBSTRING(
+		   (select max(team_code) FROM department d), 2) + 1)), 3)), 'T001')
+		     as new_code;
 	</select>
- -->	
+	
 	<select id="getUser" resultType="emp">
 		SELECT name, user_code, position_code, team_code, 
 		 (SELECT ac.code_name FROM all_code ac WHERE class_code = ac.code) AS 'class_name'
@@ -31,7 +25,6 @@
 		  ORDER BY name ASC;
 	</select>
 	
-
 	<insert id="createDept" parameterType="map">
 		INSERT INTO department(team_code, team_name, upper_code) 
 		 VALUES(#{team_code}, #{team_name}, #{upper_code})
@@ -52,5 +45,13 @@
 		 WHERE team_code = #{team_code}
 	</update>
 
+	<update id="updateLeader" parameterType="map">
+		UPDATE `user` 
+		 SET position_code = CASE 
+		  WHEN user_code = #{user_code} THEN 'P01'
+		  WHEN position_code = 'P01' THEN 'P02' ELSE 'P02'
+		 END
+		  WHERE team_code = #{team_code}
+	</update>
 
 </mapper>
