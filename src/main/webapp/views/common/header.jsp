@@ -105,17 +105,15 @@
 
                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                     <li class="dropdown-header">
-                        <h6>${sessionScope.user_code}</h6>
+                        <h6>${sessionScope.user_code}</h6>                        
                         <span>${sessionScope.name}</span>
-                        <br>
-                        <span>${sessionScope.team_name}</span>
-                        <br>
+                        <br>                    
                         <span>${sessionScope.class_name}</span>
                         <br>
-                        <span>${sessionScope.team_code}</span>
+                        <span>${sessionScope.classify_name}</span>
                         <br>
-                        <span>${sessionScope.classify_code}</span>
-                    </li>
+                       </li>
+                    
                     <li>
                         <hr class="dropdown-divider">
                     </li>

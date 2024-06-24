@@ -39,6 +39,4 @@ public class InterCeptorConfig implements WebMvcConfigurer {
 		
 	}
 	
-	
-	
 }
