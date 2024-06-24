@@ -48,6 +48,7 @@ textarea {
 .reserv-textarea{
 	resize: none;
 	height: 280px;
+	overflow: auto; 
 }
 
 .modal-body{
@@ -61,7 +62,7 @@ textarea {
     display: flex;
     justify-content: space-between;
     text-align: center;
-    padding: 15px 5px;
+    padding: 10px 5px;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
 }
@@ -134,6 +135,59 @@ textarea {
 .input-group .btn {
     width: 70px;
 }
+
+.reservation-item {
+    display: inline-block;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    padding: 3px 8px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+
+.btn-remove {
+    font-size: 0.8rem;
+    padding: 0.2rem 0.4rem;
+    background-color: transparent;
+    border: none;
+    color: #333;
+    width: 20px !important;
+}
+
+.btn-remove:hover {
+    background-color: #ccc;
+    color: #fff; 
+    border-radius: 50%; 
+}
+
+.highlight {
+    background-color: #545fc8 !important;
+    color: white;
+    border-radius: 20px;
+}
+
+.today {
+    background-color: #f78686;
+    color: white;
+    border-radius: 20px;
+}
+
+.miniBox{
+ 	background-color: #545fc8;
+ 	font-size:8px;
+    color: white;
+    border-radius: 20px;
+}
+small{
+	font-size: 10px;
+}
+.todayBox{
+	background-color: #f78686;
+ 	font-size: 8px;
+    color: white;
+    border-radius: 20px;
+}
 </style>
 </head>
 
@@ -153,13 +207,13 @@ textarea {
 				<div class="row">
 					<div class="col-md-6">
 						<div class="input-group input-group mb-3">
-							<span class="input-group-text" id="basic-addon1">강의명</span> 
-							<input type="text" class="form-control" name="course_name" id="title" placeholder="강의명을 입력해주세요.">
+							<span class="input-group-text" id="basic-addon1">사원번호</span> 
+							<input type="text" class="form-control" name="user_name" id="name" placeholder="강사의 사원번호를 입력해주세요.">
 						</div>
 
 						<div class="input-group input-group mb-3">
-							<span class="input-group-text" id="basic-addon2">강사명</span> 
-							<input type="text" class="form-control" name="user_name" id="name" placeholder="강사명을 입력해주세요.">
+							<span class="input-group-text" id="basic-addon2">강의명</span> 
+							<input type="text" class="form-control" name="course_name" id="title" placeholder="강의명 입력해주세요.">
 						</div>
 
 						<div class="input-group input-group mb-3">
@@ -195,17 +249,19 @@ textarea {
 			<div class="modal-dialog modal-lg modal-dialog-centered">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h1 class="modal-title fs-5" id="reservationModalLabel">강의실 예약확인 및 선택</h1>
+						<h1 class="modal-title fs-5" id="reservationModalLabel">강의실 예약 선택</h1>
 						<button type="button" class="btn-close bg-white rounded-5" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
 						<form id="modalForm">
+						<input type="hidden" id="selectDate" name="selectDate" value=""/> 
 							<div class="row">
 								<div class="d-grid gap-2 col-12 mt-3">
 									<div class="row">
 										<div class="col-md-4">
 											<div class="input-group input-group">
-												
+											
+											
 												<!-- 캘린더 하는중..직접 만들어야하네.. =ㅅ=..언제하냐 -->
 												<div class="calendar" id="calendar">
 													<div class="cal-header">
@@ -223,6 +279,8 @@ textarea {
 														<div class="day">토</div>
 													</div>
 													<div id="daysData" class="daysData"></div>
+														<small>* 오늘날짜는 ' <small class="todayBox">&nbsp &nbsp &nbsp</small> ' 로 표시됩니다.</small></br>
+														<small>* 예약누르신날짜는 ' <small class="miniBox">&nbsp &nbsp &nbsp</small> ' 로 표시됩니다.</small>
 												</div>
 												<!--  캘린더 망치면 위에 부분까지 지우기  -->
 												
@@ -261,8 +319,7 @@ textarea {
 											<div class="row">
 												<div class="col-md-12">
 													<div class="input-group input-group mb-3">
-														<textarea class="form-control reserv-textarea" aria-label="With textarea"
-															placeholder="예약하실 날짜와 시간 선택시 예약정보가 출력됩니다." readonly></textarea>
+														<div class="form-control reserv-textarea" id="reserv-textarea" aria-label="With textarea"></div>
 													</div>
 												</div>
 											</div>
@@ -299,6 +356,7 @@ textarea {
 <script>
 $(document).ready(function () {
     drawCalendar();	//캘린더 그리깅
+    selectTimeBtnEvent(); //강의시간 선택 이벤트
 });
 
 function course_wirte() {
@@ -315,20 +373,20 @@ const editor = new toastui.Editor({
 editor.removeToolbarItem('code');
 editor.removeToolbarItem('codeblock');
 
-
-
-var today = new Date();	//오늘
-var preYear = today.getFullYear();	// 이번년
-var preMonth = today.getMonth();	// 이번달 
+/* 강의실 예약 : 캘린더, 예약시간버튼, 날짜+예약시간 창 */
+var today = new Date();	
+var preYear = today.getFullYear();	
+var preMonth = today.getMonth();
+var currentDay = today.getDate();
 
 var preMonthFirst = new Date(preYear, preMonth, 1);	
 var preMonthLast = new Date(preYear, preMonth + 1, 0); 
 
-var preMonthFirstDate = preMonthFirst.getDate(); // 현재 달 첫날 일
-var preMonthFirstDay = preMonthFirst.getDay(); // 현재 달 첫날 요일
+var preMonthFirstDate = preMonthFirst.getDate(); 
+var preMonthFirstDay = preMonthFirst.getDay(); 
 
-var preMonthLastDate = preMonthLast.getDate(); // 현재 달 마지막 일
-var preMonthLastDay = preMonthLast.getDay(); // 현재 달 마지막 요일
+var preMonthLastDate = preMonthLast.getDate(); 
+var preMonthLastDay = preMonthLast.getDay();
 
 function drawCalendar() {
 
@@ -344,19 +402,20 @@ function drawCalendar() {
         if (i < preMonthFirstDay || count > preMonthLastDate) {
             con += '<div class="emptyDay"></div>';
         } else {
-            con += '<div class="day" id="select-day" data-day="'+count+'">' + count + '</div>';
+        	var checkToday = (preYear === today.getFullYear() && preMonth === today.getMonth() && count === currentDay) ? ' today' : '';
+        	con += '<div class="day' + checkToday + '" id="select-day-' + count + '" data-day="' + count + '">' + count + '</div>';
             count++;
         }
     }
     con += '</div>';
-
+	
     $('#daysData').html(con);
     
-    // 날짜 클릭 이벤트 핸들러 등록
     $('#daysData').on('click', '.day', function() {
+    	
         var selectDay = $(this).data('day');
-        
         var calMonth = preMonth+1;
+
         if(calMonth.toString().length < 2){
         	calMonth = '0' + calMonth;
         }
@@ -367,21 +426,22 @@ function drawCalendar() {
         }
         
         var formatDay = preYear +'-' + calMonth +'-'+selectDay; 
-        console.log('Selected day:', formatDay);
         var seleteRoom = $('#select-space').val();
-        console.log('seleteRoom:', seleteRoom);
         
         if (seleteRoom) {
-            timeBtn(formatDay, seleteRoom); // 선택한 날짜와 강의실에 따라 시간 버튼 생성
+        	$('#selectDate').val(formatDay);
+            timeBtn(formatDay, seleteRoom);
         } else {
             alert('강의실을 먼저 선택해주세요.');
         }
     });
 }
 
+
+
 $('#prevBtn').on("click", function() {
 	event.preventDefault();
-    event.stopPropagation(); // 이벤트 버블링 제거
+    event.stopPropagation();
 	console.log('prevBtn 왜 닫히냐구');
 	
     preMonth--;
@@ -396,7 +456,7 @@ $('#prevBtn').on("click", function() {
 
 $('#nextBtn').on("click", function() {
 	event.preventDefault();
-    event.stopPropagation(); // 이벤트 버블링 제거
+    event.stopPropagation();
 	console.log('nextBtn 왜 닫히냐구');
 	
 	preMonth++;
@@ -408,7 +468,6 @@ $('#nextBtn').on("click", function() {
 	
 });
 
-
 function reDrawCalendar(){
 	var rePreMonthFirstDay = new Date(preYear, preMonth, 1).getDay();
 	var rePreMonthLastDate =  new Date(preYear, preMonth + 1, 0).getDate();
@@ -416,7 +475,7 @@ function reDrawCalendar(){
 	$('#year-month').html(preYear + "년 " + (preMonth + 1) + "월");
 	
 	var count = 1;
-    var total = 42; //공식인가봄?
+    var total = 42;
 
     var con = '';
     con += '<div class="days">';
@@ -425,42 +484,34 @@ function reDrawCalendar(){
         if (i < rePreMonthFirstDay || count > rePreMonthLastDate) {
             con += '<div class="emptyDay"></div>';
         } else {
-            con += '<div class="day" id="select-day" data-day="' + count + '">' + count + '</div>';
+        	var checkToday = (preYear === today.getFullYear() && preMonth === today.getMonth() && count === currentDay) ? ' today' : '';
+        	con += '<div class="day' + checkToday + '" id="select-day-' + count + '" data-day="' + count + '">' + count + '</div>';
             count++;
         }
     }
     con += '</div>';
 
     $('#daysData').html(con);
-	
+    
 }
 
-//날짜 클릭시 선택할 수 있는 시간 나오게 하기 ... 하는중입니다... 
-//캘린더 틀 만드느라 못했어유..
-function timeBtn(selectDay,selectRoom){
+function timeBtn(selectDay,selectRoom) {
 	var newTimeBtn = document.createElement('button');
 	
-	 // 캘린더에서 날짜 클릭 시 이벤트 핸들러
-	//  $('#calendar').on('click', '.date', function() {
-	//    var selectedDate = $(this).data('date'); // 클릭한 날짜 가져오기, 예: '2024-06-20'
-	var paramData={
+	var paramData = {
 		start_time: selectDay,
 		course_space: selectRoom
 	};
 	
+	console.log("paramData",paramData);
 	$.ajax({
 		url: '/course/reservationTime.ajax',
 		type: 'POST',
 		dataType:'JSON',
 		data: JSON.stringify(paramData),
 		contentType: 'application/json',
-		success:function(data){
-			console.log("datadatea",data.list[0].time);
-				 displayTimeButtons(data.list);
-				
-			 if(response < 0){
-				 alert('아직예약없음');
-			 }
+		success:function(data) {
+			displayTimeButtons(data.list);
 		},
 		error:function(request, status, error){
 			console.log(error);
@@ -470,11 +521,11 @@ function timeBtn(selectDay,selectRoom){
 }
 	
 function displayTimeButtons(times) {
+	
     $('#buttonContainer').empty();
-    console.log("ttttttt",times[0]);
     
     var timess = {times};
-    console.log("tttrererert",timess[0]);
+    
     for (var i = 9; i < 23; i++) {
         var disabledAttr = '';
 
@@ -484,14 +535,162 @@ function displayTimeButtons(times) {
                 break;
             }
         }
-
-        var contentTime = '<button class="time-btn btn btn-outline-secondary mb-2 mx-1" data-time="' + i + '" ' + disabledAttr + '>';
-        contentTime += i + ":00";
+		var formatTime = i < 10 ? '0'+i : i;
+       
+		var contentTime = '<button class="time-btn btn btn-outline-secondary mb-2 mx-1" data-time="' + formatTime + '" ' + disabledAttr + '>';
+        contentTime += formatTime + ":00";
         contentTime += '</button>';
-
+		
         $('#buttonContainer').append(contentTime);
     }
+    
+    // 텍스트 영역의 예약된 시간 업데이트 함수 호출
+    var selectDate = $('#selectDate').val();
+    checkReservTimeInReservTextArea(selectDate);
 }
+
+function checkReservTimeInReservTextArea(selectDate) {
+    $('.time-btn').removeClass('reserved-time').removeAttr('style');
+
+    $('.reservation-item').each(function() {
+        var findHtml = $(this).find('span').html();
+        var reservationDate = findHtml.substring(0,10);
+        var reservationTime = findHtml.substring(11,13);
+        
+        console.log("reservationDate",reservationDate);
+        console.log("reservationTime",reservationTime);
+
+        if (reservationDate === selectDate) {
+        	// 이렇게까지해야되나..?
+            $('.time-btn[data-time="' + reservationTime + '"]').addClass('reserved-time').css('background-color', 'gray');
+        }
+    });
+}
+
+
+function selectTimeBtnEvent() {
+	var selectedRoom = ''; 
+	
+	$(document).on('click', '.time-btn', function(event) {
+	    selectedRoom = $('#select-space').val();
+	    var selectDate =  $('#selectDate').val();
+	    var selectTime = $(this).attr('data-time');
+	    
+	    // 예약존재 확인
+	    if (alreadyReserv(selectDate, selectTime)) {
+	    	
+	        alert('이미 선택된 시간입니다.');
+		    event.preventDefault();
+	        event.stopPropagation(); 
+	        return;
+	    }
+	    
+	    var selectReserv = '<div class="reservation-item"><span>' + selectDate + ' ' + selectTime + ':00' + '</span><button type="button" class="btn btn-sm btn-remove">x</button></div>';
+	    $('#reserv-textarea').append(selectReserv);
+		
+	    // 눌린 예약시간인거 알려주는용도
+	    $(this).attr('style', 'background-color: gray;');
+	    
+	    // 눌린 날짜인거 알려주는 용도
+        reservCalendarDate(selectDate);
+	    
+	    event.stopPropagation();
+	    event.preventDefault();
+	});
+
+	$(document).on('click', '.btn-remove', function() {
+	    var removeData = $(this).parent('.reservation-item');
+	    var findHtml =  $(this).parent('.reservation-item').find('span').html();
+	    var removeDate = findHtml.substring(0,10);
+	    var removeTime = findHtml.substring(11,13);
+
+	    console.log('removeDate : ', removeDate);
+	    console.log('removeTime : ', removeTime);
+	    
+	    // 예약지우기
+	    removeData.remove();
+	    
+		// 없는날짜 스타일 제거
+	    if (!exDate(removeDate)) {
+	        removeReservCalendarDate(removeDate);
+	    }
+
+	    // 그시간의 시간버튼 스타일도 지우기
+	    $('.time-btn[data-time="' + removeTime + '"]').removeAttr('style');
+	});
+	
+	$(document).on('change', '#select-space', function(event) {
+		if(confirm("강의실 변경시 선택하셨던 일정은 모두 삭제됩니다. 정말 변경하시겠습니까?")){
+			$('.reservation-item').remove();
+			$('.day').removeClass('highlight');
+			$('.time-btn').removeAttr('style');
+		}else{
+			$(this).val(selectedRoom);
+			console.log('selectedRoom : ', selectedRoom);
+		}
+	});
+}
+
+
+
+function alreadyReserv(selectDate, selectTime) {
+    var already = false;
+    $('.reservation-item').each(function() {
+        var findHtml = $(this).find('span').html();
+        if (findHtml === selectDate + ' ' + selectTime + ':00') {
+        	$('.time-btn[data-time="' + selectTime + '"]').addClass('reserved-time');
+        	already = true;
+            return false;
+        }
+    });
+    return already;
+}
+
+function exDate(removeDate) {
+    var remove = false;
+    $('.reservation-item').each(function() {
+        if ($(this).find('span').html().includes(removeDate)) {
+        	remove = true;
+            return false;
+        }
+    });
+    return remove;
+}
+
+function reservCalendarDate(date) {
+    $('.day').each(function() {
+        var day = $(this).data('day'); 
+        var selectDate = $('#selectDate').val(); 
+        var untilMonth = selectDate.substring(0, 7);
+        var fullDate = untilMonth + '-' + (day < 10 ? '0' + day : day);
+
+        console.log('day : ', day);
+        console.log('fullDate : ', fullDate);
+
+        if (fullDate === date) {
+            $(this).addClass('highlight'); 
+        }
+    });
+}
+
+function removeReservCalendarDate(date) {
+    $('.day').each(function() {
+        var day = $(this).data('day');
+        var selectDate = $('#selectDate').val(); 
+        var untilMonth = selectDate.substring(0, 7);
+        var fullDate = untilMonth + '-' + (day < 10 ? '0' : '') + day;
+
+        if (fullDate === date) {
+            $(this).removeClass('highlight');
+        }
+    });
+}
+
+// 다음달 전달로가도 기록남게....
+// 현재날짜보다 이전날짜 클릭안되게하는거...
+// 하..
+
+
 
 </script>
 

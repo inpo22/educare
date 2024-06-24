@@ -12,6 +12,6 @@
 	
 	
 	<select id="reservationTime" resultType="course">
-		select HOUR(end_time) as time,course_space from course_rez where YEAR(start_time) = YEAR(#{param1}) and  MONTH(start_time) = MONTH(#{param1}) and  DAY(start_time) = DAY(#{param1}) and course_space = #{param2}
+		select HOUR(start_time) as time,course_space from course_rez where YEAR(start_time) = YEAR(#{param1}) and  MONTH(start_time) = MONTH(#{param1}) and  DAY(start_time) = DAY(#{param1}) and course_space = #{param2}
 	</select>
 </mapper>
