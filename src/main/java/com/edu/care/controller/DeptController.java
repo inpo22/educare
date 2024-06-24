@@ -65,4 +65,12 @@ public class DeptController {
 		return deptService.updateDept(param);
 	}
 
+	@GetMapping(value = "/dept/user/update.ajax")
+	@ResponseBody
+	public Map<String, Object> updateLeader(@RequestParam Map<String, Object> param){
+		logger.info(":: 부서장 수정 ::");
+		logger.info("param: "+param);
+		return deptService.updateLeader(param);
+	}
+
 }

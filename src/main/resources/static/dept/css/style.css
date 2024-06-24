@@ -1,0 +1,29 @@
+/**
+* Template Name: dept
+*/
+
+.tui-tree-root {
+	height: 450px;
+}
+
+#tabContent {
+	height: 450px;
+}
+
+
+#deptInfo_table_sample{
+	display: none;
+}
+
+#deptUser_list_sample{
+	display: none;
+}
+
+#changeDept_modal {
+	display: none;
+}
+
+.invalidation {
+	color: red;
+	display: none;
+}
