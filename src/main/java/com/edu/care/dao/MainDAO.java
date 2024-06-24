@@ -21,4 +21,18 @@ public interface MainDAO {
 
 	MainDTO thisMonthHRD();
 
+	MainDTO todayAtt(String user_code);
+
+	void attendance(String user_code);
+
+	void leaveWork(String user_code);
+
+	int stateCheck(String user_code);
+
+	void stateUpdate(String user_code, int state);
+
+	List<MainDTO> stdNotiBoardList();
+
+	List<MainDTO> stdRefBoardList();
+
 }
