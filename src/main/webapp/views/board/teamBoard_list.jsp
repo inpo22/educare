@@ -28,14 +28,29 @@
     width: 100%;
 }
 
-#searchCategory{
-	float: right;
-    margin-right: 20px;
+.selectBox {
+	display: flex;
+	justify-content: space-between;
+	align-items: center; /* 수직 가운데 정렬 */
+	margin-right: 20px;
+	margin-left: 20px;
 }
 
-#hiddenTeamCategory{
-	display:flex;
-	justify-content: center;
+.searchContainer {
+	display: flex;
+	align-items: center;
+}
+
+#searchCategory, #hiddenTeamCategory, #searchWord{
+	height: 38px;
+	margin-right: 5px;
+	border-radius: 5px;
+}
+
+.teamSelectContainer {
+	display: flex;
+	align-items: center;
+	
 }
 
 .write{
@@ -63,23 +78,25 @@
 			<div class="pagetitle">
 				<h1 id="BoardTitle">부서 공지사항</h1>
 			</div>
-			<div class="category" id="hiddenTeamCategory">
-				<c:if test="${isPerm}">
-					<select>
-						<c:forEach items="${teamList}" var="team">
-							<option value="${team}">${team}</option>
-						</c:forEach>
+			<div class="selectBox">
+				<div class="teamSelectContainer" >
+					<c:if test="${isPerm}">
+						<select id="hiddenTeamCategory">
+							<c:forEach items="${teamList}" var="team">
+								<option value="${team}">${team}</option>
+							</c:forEach>
+						</select>
+					</c:if>
+				</div>
+				<div class="searchContainer" >
+					<select id="searchCategory">
+						<option value="title">제목</option>
+						<option value="writer">작성자</option>
+						<option value="contents">내용</option>
 					</select>
-				</c:if>
-			</div>
-			<div class="category" id="searchCategory">
-				<select>
-					<option value="title">제목</option>
-					<option value="writer">작성자</option>
-					<option value="contents">내용</option>
-				</select>
-				<input type="text" id="searchWord" placeholder="검색단어입력" maxlength="30"/>
-				<input type="button" id="searchBtn" value="검색" class="btn btn-primary"/>
+					<input type="text" id="searchWord" placeholder="검색단어입력" maxlength="30"/>
+					<input type="button" id="searchBtn" value="검색" class="btn btn-primary"/>
+				</div>
 			</div>
 			<br/><br/>
 			<table class="table">

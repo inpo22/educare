@@ -36,7 +36,7 @@
 		INSERT INTO approval(au_code, user_code, au_type, title, contents, va_days, start_date, end_date, va_type)
 			VALUES(
 				#{au_code}, #{user_code}, #{au_type}, #{title}, #{contents},
-            	<if test="va_days == 0.5">
+				<if test="va_days == 0.5">
             		#{va_days},
             	</if>
             	<if test="va_days != 0.5">

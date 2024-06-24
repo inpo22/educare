@@ -132,8 +132,8 @@ public class BoardController {
 		String teamCode = (String)session.getAttribute("team_code");
 		logger.info(teamCode);
 		boolean isPerm = false;
-		// 대표이사, 인사총무팀만 권한부여
-		if(teamCode.equals("T01") || teamCode.equals("T06")) {
+		// 대표이사, 경영관리만 권한부여 + 상위부서가 T02인 경우
+		if(teamCode.equals("T01") || teamCode.equals("T02") || boardService.isUpperCodeT02(teamCode)) {
 			isPerm = true;
 			model.addAttribute("teamList", boardService.teamBoardList());
 		}

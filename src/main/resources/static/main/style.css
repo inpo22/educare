@@ -1,0 +1,144 @@
+@charset "UTF-8";
+.display-flex {
+	display: flex;
+}
+.space-between {
+	justify-content: space-between;
+}
+#left-section {
+	width: 59%;
+	height: 100%;
+}
+#right-section {
+	width: 40%;
+	height: 100%;
+	padding-left: 50px;
+}
+.section-title {
+	font-size: 20px;
+	font-weight: 600;
+	color: #012970;
+	padding-left: 10px;
+}
+.white-section {
+	background-color: white;
+	height: auto;
+	border-radius: 5px;
+	box-shadow: 4px 4px 2px -2px rgba(0, 0, 0, 0.2);
+}
+.medium-white-section {
+	background-color: white;
+	height: 150px;
+	width: 48%;
+	display: inline-block;
+	border-radius: 5px;
+	box-shadow: 4px 4px 2px -2px rgba(0, 0, 0, 0.2);
+	padding: 20px;
+	text-align: center;
+}
+.medium-white-section span {
+	font-size: 1.25rem;
+}
+.small-white-section {
+	background-color: white;
+	height: auto;
+	width: 23%;
+	display: inline-block;
+	border-radius: 5px;
+	box-shadow: 4px 4px 2px -2px rgba(0, 0, 0, 0.2);
+	padding: 20px;
+	text-align: center;
+}
+.small-white-section span {
+	font-size: 1.25rem;
+}
+.margin-right {
+	margin-right: 20px;
+}
+#chart {
+	padding-top: 10px;
+}
+.first-col {
+	width: 54%
+}
+.second-col {
+	width: 25%
+}
+.third-col {
+	width: 20%
+}
+.table th, .table td {
+	text-align: center;
+}
+a {
+	color: black;
+}
+.blue-color {
+	color: rgb(88, 88, 255);
+}
+.schedule-ul {
+	padding-top: 1px;
+}
+.schedule-ul li {
+	list-style-type: none;
+	margin: 20px 0;
+}
+.more-div {
+	padding-left: 30px;
+	padding-bottom: 10px;
+}
+.black-color {
+	color: black;
+}
+.red-color {
+	color: red;
+}
+.purple-color {
+	color: #e06efc
+}
+.green-color {
+	color: #6efcb3
+}
+.font-weight {
+	font-weight: 900
+}
+.weather-div {
+	padding: 30px;
+}
+#weather-content {
+	font-size: 40px;
+	font-weight: 600;
+	color: #012970;
+}
+.top-weather-icon {
+	color: #012970;
+	font-size: 120px;
+}
+.bottom-weather-icon {
+	color: #012970;
+	font-size: 80px;
+} 
+.top-weather th {
+	width: 30%;
+}
+.bottom-weather th {
+	width: 15%;
+}
+.top-weather td {
+	font-weight: 600;
+	text-align: left;
+	vertical-align: middle;
+}
+.bottom-weather td {
+	font-weight: 600;
+	text-align: left;
+	width: 34%;
+	vertical-align: middle;
+}
+.top-temp {
+	font-weight: 600;
+	font-size: 50px;
+}
+.bottom-temp {
+	font-size: 25px;
+}

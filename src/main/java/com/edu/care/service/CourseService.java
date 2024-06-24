@@ -1,5 +1,6 @@
 package com.edu.care.service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,16 @@ public class CourseService {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<CourseDTO> list = courseDAO.courseList();
 		map.put("list",list);
+		return map;
+	}
+
+	public Map<String, Object> reservationTime(Date rez_date, String rez_room) {
+		
+		List<CourseDTO> dto = courseDAO.reservationTime(rez_date,rez_room);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("list", dto);
+		//강의실데이터없을 때 : 아직 예약이 없다는것
 		return map;
 	}
 	

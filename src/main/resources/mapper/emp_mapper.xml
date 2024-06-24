@@ -95,7 +95,7 @@
 <!-- 퇴사처리 쿼리문 -->
 <update id="quitEmp">
     UPDATE user
-    SET quit_date = CURRENT_DATE
+    SET quit_date = CURRENT_DATE, status = '1'
     WHERE user_code = #{param} AND quit_date IS NULL;
 </update>
 

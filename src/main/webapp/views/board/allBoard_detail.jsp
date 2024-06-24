@@ -80,6 +80,10 @@ td {
 					<td scope="col" id="reg_date">${dto.reg_date}</td>
 				</tr>
 				<tr>
+					<th class="th" scope="col">수정날짜</th>
+					<td scope="col" id="edit_date">${dto.edit_date}</td>
+				</tr>
+				<tr>
 					<th class="th" scope="col">조회수</th>
 					<td scope="col">${dto.bHit}</td>
 				</tr>
@@ -133,8 +137,12 @@ function formatDate(dateStr) {
 // 시간안보이게
 const regDateElement = document.getElementById('reg_date');
 const regDateText = regDateElement.innerText;
+const editDateElement = document.getElementById('edit_date');
+const editDateText = editDateElement.innerText;
 const formattedDate = formatDate(regDateText);
+const formattedDate2 = formatDate(editDateText);
 regDateElement.innerText = formattedDate;
+editDateElement.innerText = formattedDate2;
 
 // 뒤로가기
 function allBoardList(){
