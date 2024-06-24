@@ -157,65 +157,7 @@
 	<main id="main" class="main">
 		<div class="display-flex">
 			<div id="left-section">
-				<div class="section-title">오늘의 근태</div>
-				<div class="display-flex space-between">
-					<div class="medium-white-section">
-						<h5 class="font-weight">출근</h5>
-						<br/>
-						<c:if test="${att.start_time eq null}">
-							<button class="btn btn-primary btn-lg" onclick="attendance()">출근하기</button>
-						</c:if>
-						<c:if test="${att.start_time ne null}">
-							<span><fmt:formatDate value="${att.start_time}" pattern="HH:mm:ss"/></span>
-						</c:if>
-					</div>
-					<div class="medium-white-section">
-						<h5 class="font-weight">퇴근</h5>
-						<br/>
-						<c:if test="${att.start_time ne null and att.end_time eq null}">
-							<button class="btn btn-primary btn-lg" onclick="leaveWork()">퇴근하기</button>
-						</c:if>
-						<c:if test="${att.end_time ne null}">
-							<span><fmt:formatDate value="${att.end_time}" pattern="HH:mm:ss"/></span>
-						</c:if>
-					</div>
-				</div>
-				<br/><br/>
-				<div class="section-title">결재 대기 문서</div>
-				<div>
-					<div class="white-section">
-						<table class="table">
-							<thead>
-								<tr>
-									<th class="first-col table-active">제목</th>
-									<th class="second-col table-active">기안자</th>
-									<th class="third-col table-active">기안일자</th>
-								</tr>
-							</thead>
-							<tbody>
-								<c:if test="${approvalList.size() < 1}">
-									<tr>
-										<td colspan="3">결재 대기 문서가 없습니다.</td>
-									</tr>
-								</c:if>
-								<c:forEach items="${approvalList}" var="approval">
-									<tr>
-										<td><a href="/approval/detail.go?au_code=${approval.au_code}">${approval.title}</a></td>
-										<td>${approval.user_name}&nbsp;${approval.class_name}</td>
-										<td><fmt:formatDate value="${approval.reg_date}" pattern="yyyy.MM.dd"/></td>
-									</tr>
-								</c:forEach>
-							</tbody>
-						</table>
-						<c:if test="${approvalList.size() > 0}">
-							<div class="more-div">
-								<a class="blue-color" href="/getApproval/list.go">더보기</a>
-							</div>
-						</c:if>
-					</div>
-				</div>
-				<br/><br/>
-				<div class="section-title">최근 메일</div>
+				<div class="section-title">공지사항</div>
 				<div>
 					<div class="white-section">
 						<table class="table">
@@ -227,26 +169,59 @@
 								</tr>
 							</thead>
 							<tbody>
-								<c:if test="${mailList.size() < 1}">
+								<c:if test="${notiBoardList.size() < 1}">
 									<tr>
-										<td colspan="3">받은 메일이 없습니다.</td>
+										<td colspan="3">게시글이 없습니다.</td>
 									</tr>
 								</c:if>
-								<c:forEach items="${mailList}" var="mail">
+								<c:forEach items="${notiBoardList}" var="post">
 									<tr>
-										<td><a href="/mail/detail.go?mail_no=${mail.mail_no}">${mail.subject}</a></td>
-										<td>${mail.user_name}&nbsp;${mail.class_name}</td>
-										<td><fmt:formatDate value="${mail.send_date}" pattern="yyyy.MM.dd"/></td>
+										<td><a href="/allBoard/detail.go?post_no=${post.post_no}">${post.title}</a></td>
+										<td>${post.user_name}</td>
+										<td><fmt:formatDate value="${post.reg_date}" pattern="yyyy.MM.dd"/></td>
 									</tr>
 								</c:forEach>
 							</tbody>
 						</table>
-						<c:if test="${mailList.size() > 0}">
+						<c:if test="${notiBoardList.size() > 0}">
 							<div class="more-div">
-								<a class="blue-color" href="/receivedMail/list.go">더보기</a>
+								<a class="blue-color" href="/allBoard/list.go">더보기</a>
 							</div>
 						</c:if>
-						
+					</div>
+				</div>
+				<br/><br/>
+				<div class="section-title">자료실</div>
+				<div>
+					<div class="white-section">
+						<table class="table">
+							<thead>
+								<tr>
+									<th class="first-col table-active">제목</th>
+									<th class="second-col table-active">작성자</th>
+									<th class="third-col table-active">작성일자</th>
+								</tr>
+							</thead>
+							<tbody>
+								<c:if test="${refBoardList.size() < 1}">
+									<tr>
+										<td colspan="3">게시글이 없습니다.</td>
+									</tr>
+								</c:if>
+								<c:forEach items="${refBoardList}" var="post">
+									<tr>
+										<td><a href="/allBoard/detail.go?post_no=${post.post_no}">${post.title}</a></td>
+										<td>${post.user_name}</td>
+										<td><fmt:formatDate value="${post.reg_date}" pattern="yyyy.MM.dd"/></td>
+									</tr>
+								</c:forEach>
+							</tbody>
+						</table>
+						<c:if test="${refBoardList.size() > 0}">
+							<div class="more-div">
+								<a class="blue-color" href="/allBoard/list.go">더보기</a>
+							</div>
+						</c:if>
 					</div>
 				</div>
 			</div>
@@ -257,6 +232,7 @@
 					</div>
 				</div>
 				<br/><br/>
+				<!-- 강의실 예약이 완료되고 난 후 작업 -->
 				<div class="section-title">다가오는 일정</div>
 				<div>
 					<div class="white-section">
@@ -299,41 +275,6 @@
 								<a class="blue-color" href="/schedule.go">더보기</a>
 							</div>
 						</c:if>
-					</div>
-				</div>
-				<br/><br/>
-				<div class="section-title">전사 공지사항</div>
-				<div>
-					<div class="white-section">
-						<table class="table">
-							<thead>
-								<tr>
-									<th class="first-col table-active">제목</th>
-									<th class="second-col table-active">작성자</th>
-									<th class="third-col table-active">작성일자</th>
-								</tr>
-							</thead>
-							<tbody>
-								<c:if test="${boardList.size() < 1}">
-									<tr>
-										<td colspan="3">게시글이 없습니다.</td>
-									</tr>
-								</c:if>
-								<c:forEach items="${boardList}" var="post">
-									<tr>
-										<td><a href="/allBoard/detail.go?post_no=${post.post_no}">${post.title}</a></td>
-										<td>${post.user_name}&nbsp;${post.class_name}</td>
-										<td><fmt:formatDate value="${post.reg_date}" pattern="yyyy.MM.dd"/></td>
-									</tr>
-								</c:forEach>
-							</tbody>
-						</table>
-						<c:if test="${boardList.size() > 0}">
-							<div class="more-div">
-								<a class="blue-color" href="/allBoard/list.go">더보기</a>
-							</div>
-						</c:if>
-						
 					</div>
 				</div>
 			</div>

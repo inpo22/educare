@@ -30,8 +30,8 @@ public class MainController {
 			session.setAttribute("user_name", "관리자");
 			session.setAttribute("class_name", "대리");
 			session.setAttribute("team_name", "인사총무팀");
-			session.setAttribute("team_code", "T06");
-			session.setAttribute("classify_code", "U01");
+			session.setAttribute("team_code", "T03");
+			session.setAttribute("classify_code", "U03");
 		}
 		
 		String team_code = (String) session.getAttribute("team_code");
@@ -46,7 +46,7 @@ public class MainController {
 		}
 		
 		if (classify_code.equals("U03")) {
-			page = "redirect:/main/stuMain.go";
+			page = "redirect:/main/stdMain.go";
 		}
 		
 		return page;
@@ -62,16 +62,17 @@ public class MainController {
 	
 	@GetMapping(value="/main/adminMain.go")
 	public ModelAndView adminMain(HttpSession session) {
-		ModelAndView mav = new ModelAndView("main/adminMain");
+		String user_code = (String) session.getAttribute("user_code");
+		String team_code = (String) session.getAttribute("team_code");
 		
-		return mav;
+		return mainService.adminMain(user_code, team_code);
 	}
 	
-	@GetMapping(value="/main/stuMain.go")
-	public ModelAndView stuMain(HttpSession session) {
-		ModelAndView mav = new ModelAndView("main/stuMain");
+	@GetMapping(value="/main/stdMain.go")
+	public ModelAndView stdMain(HttpSession session) {
+		String user_code = (String) session.getAttribute("user_code");
 		
-		return mav;
+		return mainService.stdMain(user_code);
 	}
 	
 	@GetMapping(value="/mainChart/list.ajax")
@@ -80,6 +81,22 @@ public class MainController {
 		// logger.info(months);
 		Map<String, Object> map = mainService.chartList(months);
 		return map;
+	}
+	
+	@GetMapping(value="/main/attendance.do")
+	public String attendance(HttpSession session) {
+		String user_code = (String) session.getAttribute("user_code");
+		mainService.attendance(user_code);
+		
+		return "redirect:/main/adminMain.go";
+	}
+	
+	@GetMapping(value="/main/leaveWork.do")
+	public String leaveWork(HttpSession session) {
+		String user_code = (String) session.getAttribute("user_code");
+		mainService.leaveWork(user_code);
+		
+		return "redirect:/main/adminMain.go";
 	}
 	
 }

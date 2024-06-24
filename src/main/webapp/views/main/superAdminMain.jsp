@@ -88,6 +88,12 @@
 		padding-left: 30px;
 		padding-bottom: 10px;
 	}
+	.black-color {
+		color: black;
+	}
+	.red-color {
+		color: red;
+	}
 	.purple-color {
 		color: #e06efc
 	}
@@ -96,6 +102,46 @@
 	}
 	.font-weight {
 		font-weight: 900
+	}
+	.weather-div {
+		padding: 30px;
+	}
+	#weather-content {
+		font-size: 40px;
+		font-weight: 600;
+		color: #012970;
+	}
+	.top-weather-icon {
+		color: #012970;
+		font-size: 120px;
+	}
+	.bottom-weather-icon {
+		color: #012970;
+		font-size: 80px;
+	} 
+	.top-weather th {
+		width: 30%;
+	}
+	.bottom-weather th {
+		width: 15%;
+	}
+	.top-weather td {
+		font-weight: 600;
+		text-align: left;
+		vertical-align: middle;
+	}
+	.bottom-weather td {
+		font-weight: 600;
+		text-align: left;
+		width: 34%;
+		vertical-align: middle;
+	}
+	.top-temp {
+		font-weight: 600;
+		font-size: 50px;
+	}
+	.bottom-temp {
+		font-size: 25px;
 	}
 </style>
 </head>
@@ -209,8 +255,7 @@
 			<div id="right-section">
 				<div class="section-title">날씨</div>
 				<div>
-					<div class="white-section">
-						<br/><br/><br/>
+					<div class="white-section weather-div">
 					</div>
 				</div>
 				<br/><br/>
@@ -399,8 +444,118 @@
 		}
 	});
 	
-
-
-
+	var formattedDate  = now.toISOString().slice(0, 10).replaceAll('-', '');
+	var xhr = new XMLHttpRequest();
+	var url = 'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst'; /*URL*/
+	var queryParams = '?' + encodeURIComponent('serviceKey') + '='+'UmhF950FSvXPa7p0fpc8kZ3e5Tv8DxDU1Gb7xvlC4VJZyRvOxCJVU%2BVoYTAoNdNe%2FqlyOsdt%2B8NBz%2BY8xlT4eg%3D%3D'; /*Service Key*/
+	queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('*'); /**/
+	queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('1000'); /**/
+	queryParams += '&' + encodeURIComponent('dataType') + '=' + encodeURIComponent('JSON'); /**/
+	queryParams += '&' + encodeURIComponent('base_date') + '=' + encodeURIComponent(formattedDate); /**/
+	queryParams += '&' + encodeURIComponent('base_time') + '=' + encodeURIComponent('0500'); /**/
+	queryParams += '&' + encodeURIComponent('nx') + '=' + encodeURIComponent('58'); /**/
+	queryParams += '&' + encodeURIComponent('ny') + '=' + encodeURIComponent('125'); /**/
+	
+	$.ajax({
+		url: url + queryParams,
+		dataType: "json",
+		type: "GET",
+		success: function(data) {
+			var items = data.response.body.items.item;
+	        var filteredItems = items.filter(function(item) {
+	            return (item.fcstTime == "0600" || item.fcstTime == "1500") && (item.category == 'TMN' || item.category == 'TMX' || item.category == 'SKY' || item.category == 'PTY');
+	        });
+	        // console.log(filteredItems);
+	        
+	        var weatherContent = '';
+	        weatherContent += '<table class="table table-borderless top-weather">';
+	        weatherContent += '<tr>';
+	        weatherContent += '<th>';
+	        
+	        if (filteredItems[3].fcstValue == 1 || filteredItems[3].fcstValue == 4) {
+	        	weatherContent += '<span class="top-weather-icon"><i class="bi bi-cloud-rain"></i></span>';
+			} else if (filteredItems[3].fcstValue == 2) {
+				weatherContent += '<span class="top-weather-icon"><i class="bi bi-cloud-sleet"></i></span>';
+			} else if (filteredItems[3].fcstValue == 3 ) {
+				weatherContent += '<span class="top-weather-icon"><i class="bi bi-snow3"></i></span>';
+			} else {
+				if (filteredItems[2].fcstValue == 1) {
+					weatherContent += '<span class="top-weather-icon"><i class="bi bi-sun"></i></span>';
+				} else {
+					weatherContent += '<span class="top-weather-icon"><i class="bi bi-clouds"></i></span>';
+				}
+			}
+	        
+	        weatherContent += '</th>';
+	        weatherContent += '<td>';
+	        weatherContent += filteredItems[2].fcstDate.substring(0, 4) + '-' + filteredItems[2].fcstDate.substring(4, 6) + '-' + filteredItems[2].fcstDate.substring(6);
+	        weatherContent += '<br/>';
+	        weatherContent += '<span class="top-temp blue-color">' + items[0].fcstValue + '℃</span>&nbsp;&nbsp;&nbsp;&nbsp;';
+	        weatherContent += '<span class="top-temp black-color">/</span>&nbsp;&nbsp;&nbsp;&nbsp;';
+	        weatherContent += '<span class="top-temp red-color">' + Math.round(filteredItems[4].fcstValue) + '℃</span>';
+	        weatherContent += '</td>';
+	        weatherContent += '</tr>';
+	        weatherContent += '</table>';
+	        weatherContent += '<br/>';
+	        weatherContent += '<table class="table table-borderless bottom-weather">';
+	        weatherContent += '<tr>';
+	        weatherContent += '<th>';
+	        
+	        if (filteredItems[9].fcstValue == 1 || filteredItems[9].fcstValue == 4) {
+	        	weatherContent += '<span class="bottom-weather-icon"><i class="bi bi-cloud-rain"></i></span>';
+			} else if (filteredItems[9].fcstValue == 2) {
+				weatherContent += '<span class="bottom-weather-icon"><i class="bi bi-cloud-sleet"></i></span>';
+			} else if (filteredItems[9].fcstValue == 3) {
+				weatherContent += '<span class="bottom-weather-icon"><i class="bi bi-snow3"></i></span>';
+			} else {
+				if (filteredItems[8].fcstValue == 1) {
+					weatherContent += '<span class="bottom-weather-icon"><i class="bi bi-sun"></i></span>';
+				} else {
+					weatherContent += '<span class="bottom-weather-icon"><i class="bi bi-clouds"></i></span>';
+				}
+			}
+	        
+	        weatherContent += '</th>';
+	        weatherContent += '<td>';
+	        weatherContent += filteredItems[9].fcstDate.substring(0, 4) + '-' + filteredItems[9].fcstDate.substring(4, 6) + '-' + filteredItems[9].fcstDate.substring(6);
+	        weatherContent += '<br/>';
+	        weatherContent += '<span class="bottom-temp blue-color">' + Math.round(filteredItems[7].fcstValue) + '℃</span>&nbsp;&nbsp;';
+	        weatherContent += '<span class="bottom-temp black-color">/</span>&nbsp;&nbsp;';
+	        weatherContent += '<span class="bottom-temp red-color">' + Math.round(filteredItems[10].fcstValue) + '℃</span>';
+	        weatherContent += '</td>';
+	        weatherContent += '<th>';
+	        
+	        if (filteredItems[15].fcstValue == 1 || filteredItems[15].fcstValue == 4) {
+	        	weatherContent += '<span class="bottom-weather-icon"><i class="bi bi-cloud-rain"></i></span>';
+			} else if (filteredItems[15].fcstValue == 2) {
+				weatherContent += '<span class="bottom-weather-icon"><i class="bi bi-cloud-sleet"></i></span>';
+			} else if (filteredItems[15].fcstValue == 3) {
+				weatherContent += '<span class="bottom-weather-icon"><i class="bi bi-snow3"></i></span>';
+			} else {
+				if (filteredItems[14].fcstValue == 1) {
+					weatherContent += '<span class="bottom-weather-icon"><i class="bi bi-sun"></i></span>';
+				} else {
+					weatherContent += '<span class="bottom-weather-icon"><i class="bi bi-clouds"></i></span>';
+				}
+			}
+	        
+	        weatherContent += '</th>';
+	        weatherContent += '<td>';
+	        weatherContent += filteredItems[14].fcstDate.substring(0, 4) + '-' + filteredItems[14].fcstDate.substring(4, 6) + '-' + filteredItems[14].fcstDate.substring(6);
+	        weatherContent += '<br/>';
+	        weatherContent += '<span class="bottom-temp blue-color">' + Math.round(filteredItems[13].fcstValue) + '℃</span>&nbsp;&nbsp;';
+	        weatherContent += '<span class="bottom-temp black-color">/</span>&nbsp;&nbsp;';
+	        weatherContent += '<span class="bottom-temp red-color">' + Math.round(filteredItems[16].fcstValue) + '℃</span>';
+	        weatherContent += '</td>';
+	        weatherContent += '</tr>';
+	        weatherContent += '</table>';
+	        
+	        $('.weather-div').html(weatherContent);
+		},
+		error: function(e) {
+			console.log(e);
+		}
+	});
+	
 </script>
 </html>
