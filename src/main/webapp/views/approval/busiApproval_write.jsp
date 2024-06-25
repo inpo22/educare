@@ -188,7 +188,7 @@
 	        	</div>
 	        	<br/>
 	        	<div class="text-align-right right-padding">
-	        		<button class="btn btn-primary btn-sm send-list">추가</button>
+	        		<button class="btn btn-primary btn-sm send-list disabled-button">추가</button>
 	        	</div>
 			</div>
 	    </div>
@@ -293,6 +293,7 @@
 		$('.tui-tree-selected').removeClass('tui-tree-selected');
 		$('.add-list').empty();
 		$('.modal-content').css('width', '400px');
+		$('.send-list').addClass('disabled-button');
 		
 		var rootNode = tree.getRootNodeId();
 		var childIds = tree.getChildIds(rootNode);
@@ -373,14 +374,12 @@
 		.on('select', function(e) {
 			selectedNodeText = '';
 			selectedNodeValue = '';
+			$('.list-add-button').addClass('disabled-button');
+			$('.list-remove-button').addClass('disabled-button');
 			
 			$('.selected-value').removeClass('selected-value');
 			
-			if (tree.getChildIds(e.nodeId) == '' && $('.dept-modal-title').html() == '결재선 추가') {
-				selectedNodeText = tree.getNodeData(e.nodeId).text;
-				selectedNodeValue = tree.getNodeData(e.nodeId).value;
-				$('.list-add-button').removeClass('disabled-button');
-			} else if ($('.dept-modal-title').html() == '수신부서 추가') {
+			if (tree.getChildIds(e.nodeId) == '') {
 				selectedNodeText = tree.getNodeData(e.nodeId).text;
 				selectedNodeValue = tree.getNodeData(e.nodeId).value;
 				$('.list-add-button').removeClass('disabled-button');
@@ -402,8 +401,15 @@
 		
 		$('.list-add-button').addClass('disabled-button');
 		$('.tui-tree-selected').removeClass('tui-tree-selected');
+		
 		selectedNodeText = '';
 		selectedNodeValue = '';
+		
+		if (valueList != '') {
+			$('.send-list').removeClass('disabled-button');
+		} else {
+			$('.send-list').addClass('disabled-button');
+		}
 	});
 	
 	$('.add-list').on('click', 'li', function(e) {
@@ -411,8 +417,11 @@
 		removeTag = '';
 		removeNodeValue = '';
 		
+		$('.list-add-button').addClass('disabled-button');
+		$('.list-remove-button').addClass('disabled-button');
 		$('.tui-tree-selected').removeClass('tui-tree-selected');
 		$('.selected-value').removeClass('selected-value');
+		
 		removeTag = $(this);
 		// console.log(e);
 		removeNodeText = $(this).html();
@@ -436,6 +445,12 @@
 		removeNodeValue = '';
 		$('.selected-value').removeClass('selected-value');
 		$('.list-remove-button').addClass('disabled-button');
+		
+		if (valueList != '') {
+			$('.send-list').removeClass('disabled-button');
+		} else {
+			$('.send-list').addClass('disabled-button');
+		}
 	});
 	
 	$('.send-list').click(function() {
@@ -470,6 +485,7 @@
 				content += '</tr>';
 				content += '<tr>';
 				for (var orderText of textList) {
+					index = orderText.indexOf(' ');
 					content += '<td class="text-align-center vertical-align-bottom">' + orderText.substring(0, index) + '</td>';
 				}
 				content += '</tr>';

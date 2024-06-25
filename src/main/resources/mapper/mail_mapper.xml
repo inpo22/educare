@@ -227,12 +227,12 @@
 	</insert>
 	
 	<insert id="fileSave">
-		INSERT INTO attach_file(user_code, ori_filename, new_filename, board_no, board_type)
+		INSERT INTO attach_file(user_code, ori_filename, new_filename, post_no, board_type)
 			VALUES(#{param1}, #{param2}, #{param3}, #{param4}, #{param5})
 	</insert>
 	
 	<insert id="mailLoadFileWrite">
-		INSERT INTO attach_file(user_code, ori_filename, new_filename, board_no, board_type)
+		INSERT INTO attach_file(user_code, ori_filename, new_filename, post_no, board_type)
 			VALUES(
 				#{param1}
 				, (SELECT af.ori_filename FROM attach_file af WHERE af.file_no = #{param3})

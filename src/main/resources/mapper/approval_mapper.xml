@@ -77,7 +77,7 @@
 	</insert>
 	
 	<insert id="fileSave">
-		INSERT INTO attach_file(user_code, ori_filename, new_filename, board_no, board_type)
+		INSERT INTO attach_file(user_code, ori_filename, new_filename, post_no, board_type)
 			VALUES(#{param1}, #{param2}, #{param3}, #{param4}, #{param5})
 	</insert>
 	
@@ -678,7 +678,7 @@
 		FROM approval_recipient ar WHERE ar.au_code = #{param1}
 	</select>
 	
-	<select id="remainVaca" resultType="Integer">
+	<select id="remainVaca" resultType="Double">
 		SELECT vh.remain FROM vacation_history vh WHERE vh.user_code = #{param1} AND vh.year = YEAR(#{param2})
 	</select>
 	

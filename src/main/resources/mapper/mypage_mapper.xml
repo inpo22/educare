@@ -159,4 +159,16 @@
 	WHERE u.user_code = #{param1}
 </select>
 	
+	<update id="empProfileEdit" parameterType="mypage">
+		UPDATE user
+			SET email = #{email}, phone = #{phone}
+		WHERE user_code = #{user_code}
+	</update>
+	
+	<update id="profileImgSave">
+		UPDATE user
+			SET photo = #{param2}
+		WHERE user_code = #{param1}
+	</update>
+	
 </mapper>
