@@ -166,19 +166,20 @@ public class MailService {
 			
 			String[] arr = receiverList.split(",");
 			for (String receiver : arr) {
+				// logger.info("receiver : " + receiver);
 				mailDAO.mailReceiverWrite(mail_no, receiver);
 				notiDAO.sendNoti(receiver, user_code, noti_content_no, noti_type);
 			}
 			
 			String ccList = param.get("ccList");
-			if (ccList != null) {
+			if (!ccList.equals("")) {
 				arr = ccList.split(",");
 				for (String cc : arr) {
 					mailDAO.mailCcWrite(mail_no, cc);
 				}
 			}
 			String loadFileList = param.get("loadFileList");
-			if (loadFileList != null) {
+			if (!loadFileList.equals("")) {
 				arr = loadFileList.split(",");
 				
 				for (int i = 0; i < arr.length; i++) {

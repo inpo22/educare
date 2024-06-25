@@ -31,47 +31,37 @@ public class MypageController {
 		String classify_code = (String) session.getAttribute("classify_code");
 		
 		if (classify_code.equals("U03")) {
-			path = "redirect:/mypage/stdMypage.go";
+			path = "redirect:/mypageStd.go";
 		} else {
-			path = "redirect:/mypage/empMypage.go";
+			path = "redirect:/mypageEmp.go";
 		}
 		
 		return path;
 	}
 	
-	@GetMapping(value="/mypage/empMypage.go")
+	@GetMapping(value="/mypageEmp.go")
 	public ModelAndView empMypage(HttpSession session) {
 		String user_code = (String) session.getAttribute("user_code");
 		
 		return mypageService.empMypage(user_code);
 	}
 	
-	@GetMapping(value="/mypage/stdMypage.go")
-	public ModelAndView stdMypage() {
-		return null;
-	}
-	
-	@PostMapping(value="/mypage/empProfile/edit.do")
+	@PostMapping(value="/mypageEmp/profile/update.do")
 	public String empProfileEdit(@RequestParam(value="photo") MultipartFile photo
 			, @RequestParam Map<String, String> param, HttpSession session) {
 		String user_code = (String) session.getAttribute("user_code");
 		mypageService.empProfileEdit(photo, param, user_code);
 		
-		return "redirect:/mypage/empMypage.go";
+		return "redirect:/mypageEmp.go";
 	}
 	
-	@PostMapping(value="/mypage/empPw/edit.do")
+	@PostMapping(value="/mypageEmp/pw/update.do")
 	public String empPwEdit(@RequestParam Map<String, String> param, HttpSession session) {
-		String page = "";
 		String user_code = (String) session.getAttribute("user_code");
 		
-		int row = mypageService.empPwEdit(param, user_code);
+		mypageService.empPwEdit(param, user_code);
 		
-		if (row > 0) {
-			
-		}
-		
-		return "redirect:/mypage/empMypage.go";
+		return "redirect:/mypageEmp.go";
 	}
 	
 	

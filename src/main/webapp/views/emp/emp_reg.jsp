@@ -237,7 +237,7 @@ label[for="id"]{
 	        	<div id="dept-tree" class="tui-tree-wrap"></div>
 	        	<br/>
 	        	<div class="text-align-right">
-	        		<button class="btn btn-primary btn-sm dept-reg">추가</button>
+	        		<button class="btn btn-primary btn-sm dept-reg disabled-button">추가</button>
 	        	</div>
 			</div>
 	    </div>
@@ -276,12 +276,13 @@ function closeModal() {
 	selectedNodeText = '';
 	selectedNodeValue = '';
 	$('.tui-tree-selected').removeClass('tui-tree-selected');
+	$('.dept-reg').addClass('disabled-button');
 }
 
 // 부서 Tree
 var data = [{
 	text: '에듀케어',
-	value: 'T00'
+	value: 'T000'
 }];
 
 const tree = new tui.Tree('#dept-tree', {
@@ -341,8 +342,22 @@ tree
 		
 		$('.selected-value').removeClass('selected-value');
 		
-		selectedNodeText = tree.getNodeData(e.nodeId).text;
-		selectedNodeValue = tree.getNodeData(e.nodeId).value;
+		var childIds = tree.getChildIds(e.nodeId);
+		
+		// console.log(childIds);
+		
+		if (childIds == '') {
+			selectedNodeText = tree.getNodeData(e.nodeId).text;
+			selectedNodeValue = tree.getNodeData(e.nodeId).value;
+			
+			// console.log('테스트 완료');
+			$('.dept-reg').removeClass('disabled-button');
+		} else {
+			selectedNodeText = '';
+			selectedNodeValue = '';
+			
+			$('.dept-reg').addClass('disabled-button');
+		}
 		
 		// console.log('nodeText : ' + selectedNodeText);
 		// console.log('nodeValue : ' + selectedNodeValue);

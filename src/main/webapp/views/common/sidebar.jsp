@@ -127,7 +127,7 @@
 
 </aside><!-- End Sidebar-->
 <script>
-var superadmin_team_code = ['T01', 'T06'];
+var superadmin_team_code = ['T001', 'T006'];
 var pm_classify_code = '${sessionScope.classify_code}';
 
 if (!superadmin_team_code.includes('${sessionScope.team_code}')) {
