@@ -81,12 +81,8 @@ body {
 	line-height:1.2;
 	margin-top:10px;
 }
-
-
-
-
-
 </style>
+
 </head>
 <body>
 	<div class="login-container">
