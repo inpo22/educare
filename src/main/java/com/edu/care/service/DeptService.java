@@ -34,9 +34,9 @@ public class DeptService {
 		return result;
 	}
 	// 부서원 리스트 조회
-	public Map<String, Object> getUser(Map<String, Object> param) {
+	public Map<String, Object> getMember(Map<String, Object> param) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		List<EmpDTO> userList = deptDAO.getUser(param);
+		List<EmpDTO> userList = deptDAO.getMember(param);
 		
 		if(userList.size() < 0) {
 			logger.info("userList is empty ");

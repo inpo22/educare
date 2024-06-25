@@ -17,7 +17,7 @@
 		     as new_code;
 	</select>
 	
-	<select id="getUser" resultType="emp">
+	<select id="getMember" resultType="emp">
 		SELECT name, user_code, position_code, team_code, 
 		 (SELECT ac.code_name FROM all_code ac WHERE class_code = ac.code) AS 'class_name'
 		 FROM user
