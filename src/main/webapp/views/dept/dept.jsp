@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html>
 <head>
@@ -15,9 +16,11 @@
 <link href="/resources/dept/css/style.css" rel="stylesheet">
 
 <!-- tui-tree -->
-<link rel="stylesheet" href="https://uicdn.toast.com/tui.context-menu/latest/tui-context-menu.css"/>
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/tui.context-menu/latest/tui-context-menu.css" />
 <link href="/resources/dept/tui-tree/css/tree.css" rel="stylesheet">
-<script src="https://uicdn.toast.com/tui.context-menu/latest/tui-context-menu.js"></script>	
+<script
+	src="https://uicdn.toast.com/tui.context-menu/latest/tui-context-menu.js"></script>
 <script src="https://uicdn.toast.com/tui-tree/latest/tui-tree.js"></script>
 
 <!-- 
@@ -30,7 +33,7 @@
 
 	<main id="main" class="main">
 		<div class="pagetitle">
-		<h1>부서 관리</h1>
+			<h1>부서 관리</h1>
 		</div>
 		<!-- End Page Title -->
 		<div class="content">
@@ -44,10 +47,12 @@
 									<h3 class="card-title">조직도</h3>
 								</div>
 								<div>
-									<button id="createDept_btn" type="button" class="btn btn-outline-success">
+									<button id="createDept_btn" type="button"
+										class="btn btn-outline-success">
 										<i class="bi bi-folder-plus"></i>
 									</button>
-									<button id="removeDept_btn" type="button" onclick="removeDept()" class="btn btn-outline-danger">
+									<button id="removeDept_btn" type="button"
+										onclick="removeDept()" class="btn btn-outline-danger">
 										<i class="bi bi-folder-minus"></i>
 									</button>
 								</div>
@@ -61,9 +66,9 @@
 						<!-- card End -->
 					</div>
 					<!-- 조직도 End -->
-					
+
 					<div class="col-md-auto"></div>
-					
+
 					<!-- 부서 card -->
 					<div class="col-lg-6">
 						<div class="card">
@@ -71,34 +76,46 @@
 								<div class="d-flex justify-content-between">
 									<h3 class="card-title">부서 관리</h3>
 								</div>
-								
+
 								<!-- Tabs -->
-								<ul class="nav nav-tabs nav-tabs-bordered d-flex" id="tabList" role="tablist">
+								<ul class="nav nav-tabs nav-tabs-bordered d-flex" id="tabList"
+									role="tablist">
 									<li class="nav-item flex-fill" role="presentation">
-										<button class="nav-link w-100 active" id="deptInfo_tab" onclick="clickTab('deptInfo')" data-bs-toggle="tab" data-bs-target="#deptInfo_tab_content" type="button" role="tab" 
-										aria-controls="deptInfo" aria-selected="true">부서 정보</button>
+										<button class="nav-link w-100 active" id="deptInfo_tab"
+											onclick="clickTab('deptInfo')" data-bs-toggle="tab"
+											data-bs-target="#deptInfo_tab_content" type="button"
+											role="tab" aria-controls="deptInfo" aria-selected="true">부서
+											정보</button>
 									</li>
 									<li class="nav-item flex-fill" role="presentation">
-										<button class="nav-link w-100" id="deptUser_tab" onclick="clickTab('deptUser')" data-bs-toggle="tab" data-bs-target="#deptUser_tab_content" type="button" role="tab" 
-										aria-controls="deptUser" aria-selected="false">부서원 리스트</button>
+										<button class="nav-link w-100" id="deptUser_tab"
+											onclick="clickTab('deptUser')" data-bs-toggle="tab"
+											data-bs-target="#deptUser_tab_content" type="button"
+											role="tab" aria-controls="deptUser" aria-selected="false">부서원
+											리스트</button>
 									</li>
 								</ul>
- 								<!-- TabsEnd -->
-								
+								<!-- TabsEnd -->
+
 							</div>
 							<!-- care-header End -->
 							<div id="card-body-list" class="card-body">
 								<!-- 부서 card body 내용 -->
 								<div class="tab-content pt-2" id="tabContent">
-									<div class="tab-pane fade show active" id="deptInfo_tab_content" role="tabpanel" aria-labelledby="deptInfo_tab">
+									<div class="tab-pane fade show active"
+										id="deptInfo_tab_content" role="tabpanel"
+										aria-labelledby="deptInfo_tab">
 										<table id="deptInfo_table" class="table table-borderless">
 										</table>
 									</div>
-									<div class="tab-pane fade" id="deptUser_tab_content" role="tabpanel" aria-labelledby="deptUser_tab">
+									<div class="tab-pane fade" id="deptUser_tab_content"
+										role="tabpanel" aria-labelledby="deptUser_tab">
 										<input class="form-check-input" type="checkbox" name="all">
-										<button type="button" id="changeLeader_btn" class="btn btn-outline-primary btn-sm">부서장 위임</button>
-										<button type="button" id="changeDept_btn" class="btn btn-outline-primary btn-sm">부서 이동</button>
-										<br/><br/>
+										<button type="button" id="changeLeader" onclick="changeLeader()"
+											class="btn btn-outline-primary btn-sm">부서장 위임</button>
+										<button type="button" id="changeUserDept_modal"
+											class="btn btn-outline-primary btn-sm">부서 이동</button>
+										<br /> <br />
 										<ul id="deptUser_list" class="list-group">
 										</ul>
 									</div>
@@ -146,33 +163,37 @@
 
 	<!-- deptUser List -->
 	<ul id="deptUser_list_sample" class="list-group">
-		<li class="list-group-item">
-			<input class="form-check-input" type="checkbox">
-			<i class="ri-account-circle-fill"></i>
-			<span>name</span>
+		<li class="list-group-item"><input class="form-check-input"
+			type="checkbox"> <i class="ri-account-circle-fill"></i> <span>name</span>
 		</li>
 	</ul>
 	<!-- deptUser List End -->
 
+	<jsp:include page="/views/common/footer.jsp"></jsp:include>
+
 	<!-- changeDept_Modal -->
 	<div class="modal fade" id="changeDept_modal" tabindex="-1">
-	<div class="modal-dialog">
-	<div class="modal-content">
-		<div class="modal-header">
-			<h5 class="modal-title">부서 이동</h5>
-			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">부서 이동</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div id="modalTree" class="tui-tree-wrap" data-bs-spy="scroll"></div>
+
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary btn-sm" onclick="changeUserDept()">저장</button>
+				</div>
+			</div>
 		</div>
-		<div class="modal-body">
-		</div>
-		<div class="modal-footer">
-		</div>
-	</div>
-	</div>
 	</div>
 	<!-- End changeDept_Modal -->
-	
-	<jsp:include page="/views/common/footer.jsp"></jsp:include>
-	
+
+
+
 </body>
 <script>
 	$(document).ready(function() {
@@ -182,44 +203,26 @@
 	var rootId = 'tui-tree-node-1';
 	var newTC;
 	var selected_tab;
+	var selected_nodeId;
+	var selected_modal;
 	var checked = new Set();
-	var treeData = [];
 	
 	// modal 객체
 	var modal = new bootstrap.Modal(
 			document.getElementById('changeDept_modal'), { keyboard: false });
-	
+
+	// tree 객체
 	var tree = new tui.Tree('#deptTree', {
-		data: [{id: 'T00', text: '에듀케어'}],
+		data: [{text: '에듀케어'}],
+		nodeDefaultState: 'opened'
+	});
+	
+	var modalTree = new tui.Tree('#modalTree', {
+		data: [{text: '에듀케어'}],
 		nodeDefaultState: 'opened'
 	});
 
 	// event
-	// root node data
-	tree.setNodeData(rootId, {
-		team_code: 'T000',
-		team_name: '에듀케어',
-		upper_code: 'T00',
-		reg_date: '2002-02-02'
-	});
-
-	// tree event
-	tree.enableFeature('Selectable', {
-		selectedClassName: 'tui-tree-selected',
-	}).enableFeature('Draggable', {
-		helperClassName: 'tui-tree-drop',
-		lineClassName: 'tui-tree-line',
-		isSortable: true
-	}).enableFeature('Editable', {
-		dataKey: 'text'
-	}).enableFeature('ContextMenu', {
-		 menuData: [
-			{title: 'create', command: 'create'},
-			{title: 'update', command: 'update'},
-			{title: 'remove', command: 'remove'}
-		]
-	});
-	
 	// tree-contextmenu event
 	tree.on('selectContextMenu', function(e) {
 		var command = e.command;
@@ -250,6 +253,16 @@
 		loadContent(selected_tab, e.nodeId);
 	});
 	
+	modalTree.on('select', function(e){
+		console.log('click: '+e.nodeId);
+		selected_modal = e.nodeId;
+		var data = modalTree.getNodeData(selected_modal);
+		console.log(selected_modal)
+		console.log('selected node data: '+data.team_code,'/'+data.team_name,'/'+data.upper_code);
+		
+	});
+
+
 	tree.on('beforeCreateChildNode', function(e) {
 		if (event.cause === 'blur') {
 			tree.finishEditing();
@@ -294,8 +307,8 @@
 							'team_code'	: data.team_code,
 							'team_name'	: edit_name,
 							'type'	: 'name'
-						}
-						updateDept_ajax(edit_param);	// update DB
+					}
+					updateDept_ajax(edit_param);	// update DB
 					
 				}else{
 					console.log('update fail');
@@ -337,8 +350,9 @@
 		}
 	});
 
+	
 	//부서장 위임
-	$('#changeLeader_btn').on('click', function(){
+/* 	$('#changeLeader_btn').on('click', function(){
 		console.log('checked list:',checked.size,'/',checked);
 		var result = confirm('해당 사원을 부서장으로 위임하시겠습니까?')
 		if(result){
@@ -353,17 +367,25 @@
 			}			
 		}
 	});
-
-	//수정중
-	// 부서 이동
-	$('#changeDept_btn').on('click', function(){
+ */
+	// 수정중
+	// 부서원 부서 이동 모달 오픈
+	$('#changeUserDept_modal').on('click', function(){
 		console.log('checked list:',checked.size,'/',checked);
 		if(checked.size == null){
 			alert('선택된 항목이 없습니다.')
 		} else{
 			modal.show();
+			modalTree.select(selected_modal);
 		}
+
 	});
+	
+	$('.btn-close').on('click',function(){
+		console.log('close');
+		modal.hide();
+		selected_modal = modalTree.getRootNodeId();
+	})
 	
  	$('.form-check-input').on('click', function(){
 		var code = $(this).attr('name');
@@ -416,11 +438,11 @@
 		});
 	 }
 
- 	function getUser_ajax(code){
+ 	function getMember_ajax(code){
 		var result_data;
 		$.ajax({
 			type	: 'get',
-			url		: '/dept/user/list.ajax',
+			url		: '/dept/member/list.ajax',
 			data	:	{
 				'team_code'	: code
 			},
@@ -524,20 +546,19 @@
 			}
 		});
 	}
-	
-	
-	function changeLeader_ajax(param){
-		console.log('::changeLeader_ajax::');
-		console.log('param:',param);
 
+	function updateMember_ajax(param){
+		console.log('::updateMember_ajax::');
+		console.log('param:',param);
 		$.ajax({
 			type	: 'get',
-			url		: '/dept/user/update.ajax',
+			url		: '/dept/member/update.ajax',
 			data	: param,
 			dataType: 'json',
 			success	: function(result){
-				console.log('changeLeader_ajax: ',result.msg);
+				console.log('updateMember_ajax ajax: ',result.msg);
 				if(result.msg == 'success'){
+					alert('변경 완료');
 					loadContent(selected_tab,selected_nodeId);
 				}
 	 		},
@@ -545,68 +566,24 @@
 				console.log(error);
 			}
 		});
-	}	
-
+	}
 	//ajaxEnd
 	
 	
 	// method
-	// 트리 생성
-	function createTree(list){
-		tree.removeAllChildren(rootId);
-		
-		list.forEach(function (data, idx){
-			//console.log(idx,':', data);
-			addNode(rootId, data);
- 			//console.log('====================================================')
-		});
-
-		selected_nodeId = rootId;
-		selected_tab = 'deptInfo';
-		tree.select(selected_nodeId);
-	}
-
-	function addNode(id, data){
-		var result;
-		if(tree.getNodeData(id)){
-			var code = tree.getNodeData(id).team_code;
-			//console.log(code,':',data.team_code);
-			
-			if(code == data.upper_code){
-				var addedNodeId = tree.add({text:data.team_name}, id);
-				tree.setNodeData(addedNodeId, {
-					team_code: data.team_code,
-					team_name: data.team_name,
-					upper_code: data.upper_code,
-					reg_date: data.reg_date
-				});
-				//console.log('added node Id:',addedNodeId);
-				//console.log('added node data: ',tree.getNodeData(addedNodeId))
-				//console.log('upper:',code,'-',data.upper_code,'=>',id);
-				result = true;
-			}else{
-				tree.getChildIds(id).forEach(function(child, i){
-					//console.log(i,'child: ',child)
-					addNode(child, data)
-				});
-			}
-		}else{
-			result = false;
+	// tab click
+	function clickTab(type){
+		console.log('click tab: ',type);
+		if(type == 'deptInfo'){
+			selected_tab = type;
+			loadContent(type, selected_nodeId);
+		}else if(type='deptUser'){
+			selected_tab = type;
+			loadContent(type, selected_nodeId);
 		}
-		return result;
 	}
-
-	// remove Dept
- 	function removeDept(){
- 		var data = tree.getNodeData(selected_nodeId);
-		var result = confirm('해당 부서를 삭제 하시겠습니까?');
-		if(result){
-			console.log('remove param:',data.team_code)
-			removeDept_ajax(data.team_code);
-		}		
-	}
-
-	 function loadContent(type, nodeId){
+	
+	function loadContent(type, nodeId){
 		if(type == 'deptInfo'){
 			var now = tree.getNodeData(nodeId);
 			var parent = tree.getNodeData(tree.getParentId(nodeId));
@@ -646,7 +623,7 @@
 		} else if(type='deptUser'){
 			console.log('::load deptUser list::');
 			var code = tree.getNodeData(nodeId).team_code;
-			var userList = getUser_ajax(code);
+			var userList = getMember_ajax(code);
 			var newList = $('#deptUser_list');
 			//console.log('code: ', code);
 			console.log('userList: ',userList);
@@ -682,17 +659,150 @@
 			newList.attr('style', "display:'';");
 		}
 	}
-	// tab click
-	function clickTab(type){
-		console.log('click tab: ',type);
-		if(type == 'deptInfo'){
-			selected_tab = type;
-			loadContent(type, selected_nodeId);
-		}else if(type='deptUser'){
-			selected_tab = type;
-			loadContent(type, selected_nodeId);
-		}
+
+	// 트리 생성
+	function createTree(list){
+		var modal_rootId = modalTree.getRootNodeId();
+		//console.log(rootId,':',modal_rootId)
+
+		// clear node
+		tree.removeAllChildren(rootId);
+		modalTree.removeAllChildren(modal_rootId);
+		
+		// set root node data
+		tree.setNodeData(rootId, {
+			team_code: 'T000',
+			team_name: '에듀케어',
+			upper_code: 'T000',
+			reg_date: '2002-02-02'
+		});
+		
+		modalTree.setNodeData(modal_rootId, {
+			team_code: 'T000',
+			team_name: '에듀케어',
+			upper_code: 'T000',
+			reg_date: '2002-02-02'
+		});
+		
+		// add tree option
+		tree.enableFeature('Selectable', {
+			selectedClassName: 'tui-tree-selected',
+		}).enableFeature('Draggable', {
+			helperClassName: 'tui-tree-drop',
+			lineClassName: 'tui-tree-line',
+			isSortable: true
+		}).enableFeature('Editable', {
+			dataKey: 'text'
+		}).enableFeature('ContextMenu', {
+			 menuData: [
+				{title: 'create', command: 'create'},
+				{title: 'update', command: 'update'},
+				{title: 'remove', command: 'remove'}
+			]
+		});
+		
+		modalTree.enableFeature('Selectable', {
+			selectedClassName: 'tui-tree-selected',
+		});
+		
+
+		list.forEach(function (data, idx, tree){
+			//console.log(idx,':', data);
+			addNode(rootId, data);
+ 			//console.log('====================================================')
+		});
+
+		selected_nodeId = rootId;
+		selected_tab = 'deptInfo';
+		tree.select(selected_nodeId);
 	}
+
+	function addNode(id, data){
+		var result;
+		var mt = Number(id.substring(14))+1;
+		
+		if(tree.getNodeData(id)){
+			var code = tree.getNodeData(id).team_code;
+			
+			if(code == data.upper_code){
+				// 기본 tree에 생성
+				var addedId = tree.add({text: data.team_name}, id);
+				tree.setNodeData(addedId, {
+					team_code: data.team_code,
+					team_name: data.team_name,
+					upper_code: data.upper_code,
+					reg_date: data.reg_date
+				});
+				// modalTree에 생성
+				var mt_id = 'tui-tree-node-'+mt;
+				var mt_data = tree.getNodeData(addedId);
+				var mt_addId = modalTree.add({text: data.team_name}, mt_id);
+				modalTree.setNodeData(mt_addId, mt_data);
+				
+				//console.log('id: ',id,'-',mt_id);				
+				//console.log('added node Id:',addedId,'-',mt_addId);
+				//console.log('added node data: ',tree.getNodeData(addedId))
+				//console.log('upper:',code,'-',data.upper_code,'=>',id);
+				result = true;
+			}else{
+				tree.getChildIds(id).forEach(function(child, i){
+					//console.log(i,'child: ',child)
+					addNode(child, data)
+				});
+			}
+		}else{
+			result = false;
+		}
+		return result;
+	}
+
+	// remove Dept
+ 	function removeDept(){
+ 		var data = tree.getNodeData(selected_nodeId);
+		var result = confirm('해당 부서를 삭제 하시겠습니까?');
+		if(result){
+			console.log('remove param:',data.team_code)
+			removeDept_ajax(data.team_code);
+		}		
+	}
+	// 부서장 변경
+ 	function changeLeader(){
+		console.log('checked list:',checked.size,'/',checked);
+		var result = confirm('해당 사원을 부서장으로 위임하시겠습니까?')
+		if(result){
+			if(checked.size != 1){
+				alert('부서장으로 위임할 사람을 1명 선택해주세요.')
+			}else{
+				var update_param = {
+					'team_code'	: tree.getNodeData(selected_nodeId).team_code,
+					'user_code'	: Array.from(checked)[0].
+					'type'		: 'position'
+				}
+				updateMember_ajax(update_param);
+			}			
+		}
+		
+	}
+ 	// 수정중
+ 	// 부서원 부서 이동
+ 	function changeUserDept(){
+		console.log('checked list:',checked.size,'/',checked);
+		var result = confirm('해당 부서로 이동시키겠습니까?')
+		if(result){
+			if(checked.size != 1){
+				alert('부서장으로 위임할 사람을 1명 선택해주세요.')
+			}else{
+				var data = modalTree.getNodeData(selected_modal);
+				var update_param = {
+						'team_code'	: data.team_code,
+						'user_code'	: Array.from(checked)[0],
+						'type'		: 'dept'
+				}
+				console.log(update_param);
+				updateMember_ajax(update_param);
+			}			
+		}
+ 	}
 	
  // methodEnd
 
