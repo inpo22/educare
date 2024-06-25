@@ -64,3 +64,8 @@ body {
 	height:250px;
 	margin:0 0 0 200px;
 }
+.disabled-button {
+	pointer-events: none;
+	opacity: 0.5;
+	cursor: not-allowed; 
+}
