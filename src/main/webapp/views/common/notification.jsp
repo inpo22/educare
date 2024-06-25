@@ -7,7 +7,7 @@
 			<i class="bi bi-bell"></i>
 			<span class="badge bg-primary badge-number">4</span>
 		</a>
-		<!-- End noti cnt -->	
+		<!-- End noti cnt -->
 		<!-- noti list -->
 		<ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
 			<li class="dropdown-header">
@@ -35,16 +35,14 @@
 </div>
 <script>
 
-	const toggleButton = document.querySelector('#notiBtn');
+	const toggleButton = document.querySelector;
 	const menu = document.querySelector('.dropdown-menu');
 
-	toggleButton.on('click', function () {
-		menu.classList.toggle('show');
-		if(menu.classList.contains('show')){
+	$('.notiBtn').on('click', function () {
+		console.log('open the noti')
+		//menu.classList.toggle('show');
+/* 		if(menu.classList.contains('show')){
 			console.log('open noti menu');
 		}
-	})
-
+ */	})
 </script>
-<!-- <script src="/resources/noti/js/app.js"></script>
- -->
