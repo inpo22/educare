@@ -83,6 +83,9 @@ input:focus, select:focus {
 #mypageStd_go{
 	margin:0 7px;
 }
+#id{
+	width:39.5%;
+}
 </style>
 </head>
 
@@ -92,8 +95,8 @@ input:focus, select:focus {
 	<jsp:include page="/views/common/sidebar.jsp"></jsp:include>
 
 	<main id="main" class="main">
-
-		<div class="pagetitle">
+		<div id="backBoard">
+			<div class="pagetitle">
 			<h1>개인 정보 수정</h1>
 		</div>
 		<!-- End Page Title -->
@@ -102,36 +105,36 @@ input:focus, select:focus {
 				<div class="form-row">
 	                 <div class="form-group">
 	                     <label for="name">성명:</label>
-	                     <input type="text" value="${stdDto.name}" id="name" name="name" readonly>
+	                     <input type="text" value="${mypageDto.name}" id="name" name="name" readonly>
 	                 </div>
 	                 <div class="form-group">
 	                     <label for="user_code">학생번호:</label>
-	                     <input type="text" value="${stdDto.user_code}" id="user_code" name="user_code" readonly>
+	                     <input type="text" value="${mypageDto.user_code}" id="user_code" name="user_code" readonly>
 	                 </div>                 
 	             </div>
 	             <div class="form-row">
 	                 <div class="form-group">
 	                     <label for="email">이메일:</label>
-	                     <input type="text" value="${stdDto.email}" id="email" name="email" required>
+	                     <input type="text" value="${mypageDto.email}" id="email" name="email" required>
 	                 </div>
 	                 <div class="form-group">
 	                     <label for="phone">연락처:</label>
-	                     <input type="text" value="${stdDto.phone}" id="phone" name="phone" oninput="phoneNumber(this)" placeholder="숫자만 입력하세요">
+	                     <input type="text" value="${mypageDto.phone}" id="phone" name="phone" oninput="phoneNumber(this)" placeholder="숫자만 입력하세요">
 	                 </div>
 	             </div>
 	             <div class="form-row">
 	                 <div class="form-group">
 	                     <label for="birth">생년월일:</label>
-	                     <input type="date" value="${stdDto.birth}" id="birth" name="birth" required>
+	                     <input type="date" value="${mypageDto.birth}" id="birth" name="birth" required>
 	                 </div>
 	                 <div class="form-group">
 	                     <label for="gender">성별:</label>
 	                     <div class="form-check form-check-inline">
-						  <input class="form-check-input" type="radio" name="gender" id="male" value="남" ${stdDto.gender == '남' ? 'checked' : ''}>
+						  <input class="form-check-input" type="radio" name="gender" id="male" value="남" ${mypageDto.gender == '남' ? 'checked' : ''}>
 						  <label class="form-check-label" for="male">남성</label>
 						</div>
 						<div class="form-check form-check-inline">
-						  <input class="form-check-input" type="radio" name="gender" id="female" value="여" ${stdDto.gender == '여' ? 'checked' : ''}>
+						  <input class="form-check-input" type="radio" name="gender" id="female" value="여" ${mypageDto.gender == '여' ? 'checked' : ''}>
 						  <label class="form-check-label" for="female">여성</label>
 						</div>
 	                 </div>
@@ -139,7 +142,7 @@ input:focus, select:focus {
 	             <div class="form-row">
 	                 <div class="form-group">
 	                     <label for="id">아이디:</label>
-	                     <input type="text" value="${stdDto.id}" id="id" name="id" readonly>
+	                     <input type="text" value="${mypageDto.id}" id="id" name="id" readonly>
 	                 </div>                 
 	             </div>   
 		         <div class="form-row">
@@ -167,19 +170,14 @@ input:focus, select:focus {
 		         </div>	
 		         <div class="row mt-3">
 	            	<div class="col-md-6"></div>
-		            <div class="d-flex justify-content-end">
-		                <button id="pw_reset" class="btn btn-outline-danger" type="button" onclick="reset()">비밀번호 초기화</button>
-		            	<input type="hidden" id="pw" name="pw" value="${stdDto.pw}"/>
-		            </div>
-		         </div>
-		         <div class="row mt-3">
-	            	<div class="col-md-6"></div>
 		            <div class="col-md-6 d-flex justify-content-end">
-		           		<button id="mypageStd_go" class="btn btn-dark" type="button" onclick="detail('${stdDto.user_code}')">취소</button>
+		           		<button id="mypageStd_go" class="btn btn-dark" type="button" onclick="detail('${mypageDto.user_code}')">취소</button>
 		            	<button id="stdUpdate_fn" class="btn btn-dark" type="button" onclick="edit()">수정완료</button>
 		            </div>
 		        </div>
 	        </form>
+		</div>
+		
 
 	</main>
 	<!-- End #main -->
@@ -286,6 +284,11 @@ function phoneNumber(e){
     if(e.value.length>13){
 	e.value=e.value.slice(0,13);	
     }
+}
+
+// 취소 버튼
+function detail(user_code){
+	window.location.href='/mypageStd.go?user_code='+user_code;
 }
 </script>
 </html>

@@ -26,7 +26,6 @@ public class EmpController {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
 	
-	@Autowired PasswordEncoder encoder;
 	
 	@Autowired EmpService empService;
 	
@@ -77,14 +76,6 @@ public class EmpController {
 		String page = "emp_reg";
 		String msg = "사원 등록에 실패했습니다.";
 		logger.info("param:"+param);
-		
-		// 비밀번호 암호화
-		String rawPassword = param.get("pw");
-        String encodedPassword = encoder.encode(rawPassword);
-        param.put("pw", encodedPassword);
-        
-        logger.info("rawPassword: " + rawPassword);
-        logger.info("encodedPassword: " + encodedPassword);
 		
 		int row = empService.reg(photo, param);
 		logger.info("insert count:"+row);

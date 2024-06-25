@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.edu.care.dto.StuDTO;
 import com.edu.care.service.StuService;
@@ -23,7 +24,6 @@ public class StuController {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
 	
-	@Autowired PasswordEncoder encoder;
 	@Autowired StuService stuService;
 	
 	@GetMapping(value="/std/list.go")
@@ -74,14 +74,6 @@ public class StuController {
 		String msg = "사원 등록에 실패했습니다.";
 		logger.info("param:"+param);
 		
-		// 비밀번호 암호화
-		String rawPassword = param.get("pw");
-        String encodedPassword = encoder.encode(rawPassword);
-        param.put("pw", encodedPassword);
-        
-        logger.info("rawPassword: " + rawPassword);
-        logger.info("encodedPassword: " + encodedPassword);
-        
         int row = stuService.reg(photo, param);
 		logger.info("insert count:"+row);
 		
@@ -114,22 +106,23 @@ public class StuController {
 		return map;
 	}
 	
-	// 강의 등록(모달)
-	/*
+	// 강의 등록(모달)	
 	@PostMapping(value="/std/course_reg.do")
-	public String courseReg(@RequestParam Map<String, String> param, Model model) {
+	public String courseReg(@RequestParam Map<String, String> param, RedirectAttributes reAttr, @RequestParam("user_code") String user_code) {
+		String msg = "강의등록 실패";
 		logger.info("param:"+param);
 		
-		int row = stuService.courseReg(param);
+		int row = stuService.courseReg(param, user_code);
 		logger.info("insert count : "+row);
 		
 		if(row == 1) {
-			String msg = "강의등록 성공";
-			
+			msg = "강의등록 성공";	
 		}
-		return null;
+		reAttr.addFlashAttribute("msg", msg);
+		
+		return "redirect:/std/detail.go?user_code="+user_code;
 	}
-	*/
+	
 	// 수강이력 리스트(비동기)
 	@ResponseBody
 	@PostMapping(value="/std/detail_course.ajax")
