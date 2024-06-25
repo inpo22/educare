@@ -24,7 +24,6 @@ public class StuController {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
 	
-	@Autowired PasswordEncoder encoder;
 	@Autowired StuService stuService;
 	
 	@GetMapping(value="/std/list.go")
@@ -75,14 +74,6 @@ public class StuController {
 		String msg = "사원 등록에 실패했습니다.";
 		logger.info("param:"+param);
 		
-		// 비밀번호 암호화
-		String rawPassword = param.get("pw");
-        String encodedPassword = encoder.encode(rawPassword);
-        param.put("pw", encodedPassword);
-        
-        logger.info("rawPassword: " + rawPassword);
-        logger.info("encodedPassword: " + encodedPassword);
-        
         int row = stuService.reg(photo, param);
 		logger.info("insert count:"+row);
 		
