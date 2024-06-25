@@ -26,11 +26,67 @@
                 </choose>
             	)
 			</if>
+		 GROUP BY c.course_no
 		 LIMIT #{param1}, #{param2}
 	</select>
 	
 	
 	<select id="reservationTime" resultType="course">
-		select HOUR(start_time) as time,course_space from course_rez where YEAR(start_time) = YEAR(#{param1}) and  MONTH(start_time) = MONTH(#{param1}) and  DAY(start_time) = DAY(#{param1}) and course_space = #{param2}
+		SELECT HOUR(start_time) as time
+				, course_space 
+		FROM course_rez 
+		WHERE YEAR(start_time) = YEAR(#{param1}) 
+		AND  MONTH(start_time) = MONTH(#{param1}) 
+		AND  DAY(start_time) = DAY(#{param1}) 
+		AND course_space = #{param2}
+	</select>
+	
+	<insert id="courseWrite" parameterType="course" useGeneratedKeys="true" keyProperty="course_no">
+		INSERT 
+		INTO course ( 
+			user_code
+			, course_name
+			, course_start
+			, course_end
+			, course_con
+			, course_price )
+		VALUES ( 
+			#{user_code}
+			, #{course_name}
+			, #{min_start}
+			, #{max_end}
+			, #{course_con}
+			, #{course_price} )
+	</insert>
+	
+	<insert id="reservationCourseWrite" parameterType="course">
+		INSERT 
+		INTO course_rez ( 
+			course_no
+			, course_space
+			, start_time
+			, end_time )
+		VALUES ( 
+			#{course_no}
+			, #{course_space}
+			, #{start_time}
+			, #{end_time} )
+	</insert>
+	
+	<select id="courseDetail" resultType="course">
+		SELECT u.name
+			, c.course_no
+			, c.course_name
+			, c.course_start
+			, c.course_end
+			, c.course_con
+			, c.course_price
+			, cr.course_space
+			, cr.start_time
+			, cr.end_time as end_time_array
+		FROM course c
+		JOIN user u ON c.user_code = u.user_code 
+		JOIN course_rez cr ON c.course_no = cr.course_no 
+		WHERE c.course_no = #{param1}
 	</select>
 </mapper>

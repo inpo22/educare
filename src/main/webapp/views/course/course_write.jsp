@@ -747,6 +747,21 @@ function submitCourseWrite(){
 	var formatContent = $('#content').val(editorContent);
 	var content = formatContent.val();
 	
+	var minStart = startTimeArray.reduce((prev,curr) => {
+		return new Date(prev).getTime() <= new Date(curr).getTime() ? prev : curr;
+	})
+	
+	var maxEnd = endTimeArray.reduce((prev,curr) => {
+		return new Date(prev).getTime() <= new Date(curr).getTime() ? curr : prev;
+	})
+	
+	console.log("++++++++++++++++++++++");
+	console.log("minStart==>"+minStart);
+	
+	console.log("++++++++++++++++++++++");
+	console.log("maxEnd==>"+maxEnd);
+	
+	
 	var paramData = {
 		user_code: userCode,
 		course_name: courseTitle,
@@ -754,7 +769,9 @@ function submitCourseWrite(){
 		course_space: selectRoom,
 		start_time_array: startTimeArray,
 		end_time_array: endTimeArray,
-		course_con: content
+		course_con: content,
+		min_start: minStart,
+		max_end : maxEnd
 	};
 		
 	console.log("paramData",paramData);

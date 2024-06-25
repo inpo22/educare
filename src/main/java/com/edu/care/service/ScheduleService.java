@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.edu.care.dao.NotiDAO;
 import com.edu.care.dao.ScheduleDAO;
 import com.edu.care.dto.ScheduleDTO;
 
@@ -18,9 +19,16 @@ public class ScheduleService {
 	Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Autowired ScheduleDAO scheduleDAO;
+	@Autowired NotiDAO notiDAO;
 
 	public int scheduleWrite(ScheduleDTO scheduleDTO) {
-		return scheduleDAO.scheduleWrite(scheduleDTO);
+		int row = scheduleDAO.scheduleWrite(scheduleDTO);
+		if(row > 0) {
+			String userCode = scheduleDTO.getUser_code();
+			String skedNo = ""+scheduleDTO.getSked_no();
+			notiDAO.sendNoti(userCode, userCode, skedNo, 3);
+		}
+		return row;
 	}
 
 	public Map<String, Object> scheduleList(ScheduleDTO scheduleDTO) {

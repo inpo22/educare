@@ -14,8 +14,10 @@ public interface CourseDAO {
 
 	List<CourseDTO> reservationTime(Date rez_date, String rez_room);
 
-	void courseWrite(CourseDTO courseDTO);
+	int courseWrite(CourseDTO courseDTO);
 
-	void reservationCourseWrite(String user_code, String course_space, Date start_time, Date end_time);
+	void reservationCourseWrite(int course_no, String course_space, Date start_time, Date end_time);
+
+	List<CourseDTO> courseDetail(String course_no);
 
 }
