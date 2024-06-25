@@ -1,8 +1,6 @@
 package com.edu.care.controller;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,9 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.edu.care.dto.CourseDTO;
-import com.edu.care.dto.ScheduleDTO;
 import com.edu.care.service.CourseService;
 
 @Controller
@@ -77,7 +75,7 @@ public class CourseController {
 	public String reservationWrite(@RequestBody CourseDTO courseDTO, HttpSession session) {
 		logger.info("##### course reservationWrite ajax controller IN #####");
 		
-		boolean result = courseService.reservationWrite(courseDTO);
+		Boolean result = courseService.reservationWrite(courseDTO);
 		logger.info("##### result=> ",result);
 		
 		if(result) {
@@ -88,5 +86,18 @@ public class CourseController {
 		
 	}
 	
+	@GetMapping(value="/course/detail.go")
+	public ModelAndView courseDetail(@RequestParam("course_no") String course_no, ModelAndView mv) {
+		logger.info("##### course courseDetail controller IN #####");
+		logger.info("##### course_no >>> "+course_no);
+		
+		//int course_no_int = Integer.parseInt(String.valueOf(course_no));
+		List<CourseDTO> courseDTO = courseService.courseDetail(course_no);
+		logger.info("##### courseDTO:{}",courseDTO);
+		
+		mv.addObject("courseDTO",courseDTO);
+		mv.setViewName("course/course_detail");
+		return mv;
+	}
 	
 }

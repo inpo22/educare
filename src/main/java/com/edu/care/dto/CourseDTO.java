@@ -26,6 +26,8 @@ public class CourseDTO {
 	private List<Date> start_time_array;
 	private List<Date> end_time_array;
 	private int pay_state;
+	private Date min_start;
+	private Date max_end;
 	
 	public int getCourse_no() {
 		return course_no;
@@ -142,5 +144,17 @@ public class CourseDTO {
 	}
 	public void setPay_state(int pay_state) {
 		this.pay_state = pay_state;
+	}
+	public Date getMin_start() {
+		return min_start;
+	}
+	public void setMin_start(Date min_start) {
+		this.min_start = min_start;
+	}
+	public Date getMax_end() {
+		return max_end;
+	}
+	public void setMax_end(Date max_end) {
+		this.max_end = max_end;
 	}
 }

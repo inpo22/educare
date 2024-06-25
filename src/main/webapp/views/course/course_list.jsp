@@ -242,11 +242,10 @@ $('#pagination').on('click', '.page-link', function(e) {
 	read_courseList(page, searchCondition, searchContent);
 });
 
-
 function drawList(list){
 	var con = '';
 	for(var list of list){
-		con += '<tr>';
+		con += '<tr onclick="location.href=\'/course/detail.go?course_no=' + list.course_no + '\'">';
 		con += '<td>'+list.name+'</td>';
 		con += '<td>'+list.course_name+'</td>';
 		con += '<td>'+list.course_space+'</td>';
