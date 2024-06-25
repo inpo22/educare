@@ -46,10 +46,15 @@ public class CourseController {
 	
 	@GetMapping(value="/course/list.ajax")
 	@ResponseBody
-	public Map<String, Object> courseList(HttpSession session) {
+	public Map<String, Object> courseList(String page, String searchFilter, String searchContent, HttpSession session) {
 		logger.info("##### course list ajax controller IN #####");
+		logger.info("searchFilter : " + searchFilter);
+		logger.info("searchContent : "+ searchContent);
 		
-		Map<String, Object> map =  courseService.courseList();
+		int currPage = Integer.parseInt(page);
+		int pagePerCnt = 10;
+		
+		Map<String, Object> map =  courseService.courseList(currPage,pagePerCnt,searchFilter,searchContent);
 		
 		return map;
 	}
@@ -59,13 +64,28 @@ public class CourseController {
 	public Map<String, Object> reservationTime(@RequestBody CourseDTO courseDTO, HttpSession session) {
 		logger.info("##### course reservationTime ajax controller IN #####");
 		
-		 
 		Date rez_date = courseDTO.getStart_time();
 		String rez_room = courseDTO.getCourse_space();
 		
 		Map<String, Object> result = courseService.reservationTime(rez_date,rez_room);
 		
 		return result;
+	}
+	
+	@PostMapping(value="/course/reservationWrite.ajax")
+	@ResponseBody
+	public String reservationWrite(@RequestBody CourseDTO courseDTO, HttpSession session) {
+		logger.info("##### course reservationWrite ajax controller IN #####");
+		
+		boolean result = courseService.reservationWrite(courseDTO);
+		logger.info("##### result=> ",result);
+		
+		if(result) {
+			return "success";
+		}else {
+			return "fail";
+		}
+		
 	}
 	
 	

@@ -6,8 +6,27 @@
 	<select id="courseList" resultType="course">
 		SELECT c.*
 				, u.name 
+				, cr.course_space
 		FROM course c
+		JOIN course_rez cr on cr.course_no  = c.course_no
 		JOIN user u on u.user_code  = c.user_code
+		WHERE 1=1
+			<if test="param4 != null and param4 != ''">
+				 AND (
+                <choose>
+                    <when test="param3 == 'name'">
+                        u.name LIKE CONCAT('%', #{param4}, '%')
+                    </when>
+                    <when test="param3 == 'course_name'">
+                       	c.course_name LIKE CONCAT('%', #{param4}, '%')
+                    </when>
+                    <when test="param3 == 'course_space'">
+                        cr.course_space LIKE CONCAT('%', #{param4}, '%')
+                    </when>
+                </choose>
+            	)
+			</if>
+		 LIMIT #{param1}, #{param2}
 	</select>
 	
 	
