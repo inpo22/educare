@@ -82,7 +82,7 @@ public class MypageService {
 		
 		dto.setUser_code(user_code);
 		dto.setEmail(param.get("email"));
-		dto.setPhoto(param.get("phone"));
+		dto.setPhone(param.get("phone"));;
 		
 		mypageDAO.empProfileEdit(dto);
 		
@@ -113,10 +113,11 @@ public class MypageService {
 			}
 		}
 	}
-
-	public int empPwEdit(Map<String, String> param, String user_code) {
-		
-		return 0;
+	
+	public void empPwEdit(Map<String, String> param, String user_code) {
+		String currentPassword = param.get("currentPassword");
+		String newPassword = param.get("newPassword");
+		String reNewPassword = param.get("reNewPassword");
 	}
 	
 }

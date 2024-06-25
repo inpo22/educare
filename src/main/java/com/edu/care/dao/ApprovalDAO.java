@@ -64,7 +64,7 @@ public interface ApprovalDAO {
 
 	List<ApprovalDTO> receiveTeamList(String au_code);
 
-	int remainVaca(String detail_user_code, String reg_date);
+	double remainVaca(String detail_user_code, String reg_date);
 
 	void minusRemainVaca(String user_code, String au_code);
 
