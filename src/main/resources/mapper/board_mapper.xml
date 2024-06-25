@@ -149,12 +149,16 @@
 	    SELECT team_name FROM department WHERE team_code = #{param1}
 	</select>
 
+	<select id="teamSelectList" resultType="board">
+		SELECT team_code, team_name FROM department
+	</select>
+	
 	<!-- 부서공지 리스트 불러오기 -->
 	<select id="teamList" resultType="board">
     SELECT  
         p.post_no
         , u.name AS user_name
-        , d.team_name AS team_name 
+        , (SELECT d.team_name FROM department d WHERE d.team_code = p.team_code) AS team_name
         , (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code) AS class_name
         , p.title
         , p.bHit
@@ -163,12 +167,11 @@
     FROM post p 
     JOIN board b ON p.board_no = b.board_no
     JOIN user u ON p.user_code = u.user_code
-    JOIN department d ON u.team_code = d.team_code
-    WHERE p.is_del = 0 AND b.board_no = 2 
-    <if test="param5 != null">
-        AND u.team_code = #{param5}
+    WHERE p.is_del = 0 AND b.board_no = 2 AND p.fixed_yn = 0 
+    <if test="param5 != ''">
+        AND p.team_code = #{param5}
     </if>
-    <if test="param4 != null and param4 != ''">
+    <if test="param4 != ''">
         AND (
             <choose>
                 <when test="param3 == 'title'">
@@ -193,12 +196,11 @@
 	FROM post p
 	JOIN board b ON p.board_no = b.board_no
 	JOIN user u ON p.user_code = u.user_code
-	JOIN department d ON u.team_code = d.team_code
 	WHERE p.is_del = 0 AND b.board_no = 2
-	<if test="param4 != null">
-		AND u.team_code = #{param4}
+	<if test="param4 != ''">
+		AND p.team_code = #{param4}
 	</if>
-	<if test="param3 != null and param3 != ''">
+	<if test="param3 != ''">
 		AND (
 		<choose>
 			<when test="param2 == 'title'">
@@ -221,7 +223,7 @@
     SELECT  
 	        p.post_no
 	        ,  u.name AS user_name
-	        , d.team_name AS team_name 
+	        , (SELECT d.team_name FROM department d WHERE d.team_code = p.team_code) AS team_name
 	        , (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code) AS class_name
 	        , p.title
 	        , p.bHit
@@ -230,11 +232,12 @@
     FROM post p 
     JOIN board b ON p.board_no = b.board_no
     JOIN user u ON p.user_code = u.user_code
-    JOIN department d ON u.team_code = d.team_code
     WHERE p.is_del = 0 AND b.board_no = 2 AND p.fixed_yn = 1 
-    <if test="param1 != null">
-        AND u.team_code = #{param1}
+    <if test="param1 != ''">
+        AND p.team_code = #{param1}
     </if>
+    ORDER BY p.post_no DESC 
+	LIMIT 5
 	</select>
 
 	<!-- 부서 글작성 -->

@@ -148,11 +148,13 @@ function formatDate(dateStr) {
 // 시간안보이게
 const regDateElement = document.getElementById('reg_date');
 const regDateText = regDateElement.innerText;
+const formattedDate = formatDate(regDateText);
+regDateElement.innerText = formattedDate;
+
+
 const editDateElement = document.getElementById('edit_date');
 const editDateText = editDateElement.innerText;
-const formattedDate = formatDate(regDateText);
 const formattedDate2 = formatDate(editDateText);
-regDateElement.innerText = formattedDate;
 editDateElement.innerText = formattedDate2;
 
 // 뒤로가기

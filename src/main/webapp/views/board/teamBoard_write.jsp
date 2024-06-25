@@ -82,6 +82,14 @@
 .remove-x {
 	cursor: pointer;
 }
+
+.selectBox {
+	display: flex;
+	justify-content: space-between;
+	align-items: center; /* 수직 가운데 정렬 */
+	margin-right: 20px;
+	margin-left: 20px;
+}
 </style>
 </head>
 
@@ -102,7 +110,7 @@
 					<c:if test="${isPerm}">
 						<select id="hiddenTeamCategory">
 							<c:forEach items="${teamList}" var="team">
-								<option value="${team}">${team}</option>
+								<option value="${team.team_code}">${team.team_name}</option>
 							</c:forEach>
 						</select>
 					</c:if>

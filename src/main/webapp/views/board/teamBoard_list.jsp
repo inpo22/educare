@@ -84,7 +84,7 @@
 						<select id="hiddenTeamCategory">
 							<option value="">전체</option>
 							<c:forEach items="${teamList}" var="team">
-								<option value="${team}">${team}</option>
+								<option value="${team.team_code}">${team.team_name}</option>
 							</c:forEach>
 						</select>
 					</c:if>
@@ -136,14 +136,14 @@
 
 </body>
 <script>
-var topFixedContext = '';
 var page = 1;
 var totalPage = 0;
 var searchCategory = '';
 var searchWord = '';
 var topFixed = false;
 var searchFlag = false;
-
+var teamCode = '';
+listCall(page, searchCategory, searchWord, teamCode);
 
 function formatDate(dateStr) {
 	const options = {year: 'numeric', month: '2-digit', day: '2-digit' };
@@ -152,20 +152,29 @@ function formatDate(dateStr) {
 }
 
 function listCall(page, searchCategory, searchWord, teamCode){
+	console.log("listCall function called");
+    console.log("page:", page, "searchCategory:", searchCategory, "searchWord:", searchWord, "teamCode:", teamCode);
+
 	$.ajax({
 		type: 'post',
 		url: '/teamBoard/list.ajax',
 		data: {
 			'page': page,
 			'searchCategory':searchCategory,
-			'searchWord':searchWord
+			'searchWord':searchWord,
 			'selectedTeamCode': teamCode
 		},
 		dataType: 'JSON',
 		success: function(data){
+			console.log("AJAX request successful");
 			console.log(data);
 			var context = '';
+			var topFixedContext = '';
 			totalPage = data.totalPage;
+			if (page == 1) {
+				topFixed = false;
+			}
+			
 			if(topFixed == false){
 				for (item of data.topFixedTeamList){
 					topFixedContext += '<tr class="boardTableTr" onclick="locationMove('+item.post_no+')">'
@@ -179,40 +188,28 @@ function listCall(page, searchCategory, searchWord, teamCode){
 				}
 				topFixed = true;
 			}
-			if(searchFlag == true){
-				for (item of data.list){
-						context += '<tr class="boardTableTr" onclick="locationMove('+item.post_no+')">'
-						context += '<td scope="col">'+ item.post_no +'</td>'
-						context += '<td scope="col">' + item.title + '</td>'
-						context += '<td scope="col">' + item.user_name + ' ' + item.class_name + '</b></td>'
-						context += '<td scope="col">' + item.team_name + '</td>'
-						context += '<td scope="col">' + formatDate(item.reg_date) + '</td>'
-						context += '<td scope="col">' + item.bHit + '</td>'
-						context += '</tr>';
-				}			
-			}else{
-				for (item of data.list){
-					if(item.fixed_yn == 0){
-						context +=  '<tr class="boardTableTr" onclick="locationMove('+item.post_no+')">'
-						context += '<td scope="col">'+ item.post_no +'</td>'
-						context += '<td scope="col">' + item.title + '</td>'
-						context += '<td scope="col">' + item.user_name + ' ' + item.class_name + '</b></td>'
-						context += '<td scope="col">' + item.team_name + '</td>'
-						context += '<td scope="col">' + formatDate(item.reg_date) + '</td>'
-						context += '<td scope="col">' + item.bHit + '</td>'
-						context += '</tr>';
-					}
-				}			
+			for (var item of data.list) {
+				context += '<tr class="boardTableTr" onclick="locationMove('+item.post_no+')">'
+				context += '<td scope="col">'+ item.post_no +'</td>'
+				context += '<td scope="col">' + item.title + '</td>'
+				context += '<td scope="col">' + item.user_name + ' ' + item.class_name + '</b></td>'
+				context += '<td scope="col">' + item.team_name + '</td>'
+				context += '<td scope="col">' + formatDate(item.reg_date) + '</td>'
+				context += '<td scope="col">' + item.bHit + '</td>'
+				context += '</tr>';
 			}
-			if(page > 1 || searchFlag){
+			
+			if(page > 1){
 				$('#list').html(context);
 			}else{
 			$('#list').html(topFixedContext+context);
 			}
 			setupPagination(page, totalPage);
 		},
-		error: function(error){
-			console.log(error);
+		error: function(request, status, error){
+			console.log("code: " + request.status)
+			console.log("message: " + request.responseText)
+			console.log("error: " + error);
 		}
 	});
 }
@@ -304,20 +301,15 @@ $('#pagination').on('click', '.page-link', function(e) {
 		page = parseInt($(this).html());
 	}
 	// console.log(page);
-	listCall(page, searchCategory, searchWord);
+	listCall(page, searchCategory, searchWord, $('#hiddenTeamCategory').val());
 	
 });
 
 $('#searchBtn').click(function() {
-	searchFlag = true;
 	searchCategory = $('#searchCategory').val();
 	searchWord = $('#searchWord').val();
-	var teamCode = $('#hiddenTeamCategory').val();
-	if(searchWord == ''){
-		alert("검색어를 입력해주세요.");
-		return;
-	}
-	listCall(page, searchCategory, searchWord);
+	teamCode = $('#hiddenTeamCategory').val();
+	listCall(page, searchCategory, searchWord, teamCode);
 });
 
 $('#BoardTitle').click(function(){
@@ -342,7 +334,7 @@ $('#searchWord').keypress(function(event) {
 });
 
 $('#hiddenTeamCategory').change(function() {
-    var teamCode = $(this).val(); 
+    var teamCode = $(this).val();
     listCall(page, searchCategory, searchWord, teamCode);
 });
 </script>

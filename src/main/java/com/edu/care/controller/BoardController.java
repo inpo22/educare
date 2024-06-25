@@ -86,10 +86,10 @@ public class BoardController {
 
 	// 전사 공지사항 수정페이지 이동
 	@GetMapping(value = "/allBoard/update.go")
-	public ModelAndView allBoardUpdateGo(String post_no) {
+	public String allBoardUpdateGo(String post_no, Model model) {
 		logger.info("공지사항 글수정 페이지 접속");
-
-		return boardService.detail(post_no);
+		boardService.detail(post_no, model);
+		return "board/allBoard_update";
 	}
 
 	// 전사 공지사항 수정
@@ -137,38 +137,25 @@ public class BoardController {
 		boolean isPerm = false;
 
 		// 권한 체크: 대표이사(T001) 또는 인사총무팀(T06)만 모든 게시글 조회 권한 부여
-		if (teamCode.equals("T001") || teamCode.equals("T06")) {
+		if (teamCode.equals("T001") || teamCode.equals("T006")) {
 			isPerm = true;
 		}
-
-		// 게시글 조회
-		Map<String, Object> result = boardService.teamList(1, 10, null, null, teamCode);
-		model.addAttribute("list", result.get("list"));
-		model.addAttribute("totalPage", result.get("totalPage"));
-		model.addAttribute("topFixedTeamList", result.get("topFixedTeamList"));
+		
 		model.addAttribute("isPerm", isPerm);
-
+		model.addAttribute("teamList", boardService.teamSelectList());
 		return "board/teamBoard_list";
 	}
 
 	// 부서 공지사항 리스트 AJAX 호출
 	@PostMapping(value = "/teamBoard/list.ajax")
 	@ResponseBody
-	public Map<String, Object> teamList(HttpSession session, @RequestParam(value = "page", defaultValue = "1") int page,
-			@RequestParam(value = "searchCategory", required = false) String searchCategory,
-			@RequestParam(value = "searchWord", required = false) String searchWord,
-			@RequestParam(value = "selectedTeamCode", required = false) String selectedTeamCode) {
-		String teamCode = (String) session.getAttribute("team_code");
-
-		// 선택된 팀 코드가 있을 경우 해당 팀 코드로 변경
-		if (selectedTeamCode != null && !selectedTeamCode.isEmpty()) {
-			teamCode = selectedTeamCode;
-		}
-
+	public Map<String, Object> teamList(@RequestParam Map<String, String> map, HttpSession session) {
+		logger.info("selectedTeamCode ={}", map);
+		String my_team_code = (String) session.getAttribute("team_code");
+		
 		// 게시글 조회
-		Map<String, Object> result = boardService.teamList(page, 10, searchCategory, searchWord, teamCode);
-		result.put("isPerm", teamCode.equals("T001") || teamCode.equals("T06")); // 권한 여부 추가
-
+		Map<String, Object> result = boardService.teamList(map, my_team_code);
+		
 		return result;
 	}
 
@@ -182,8 +169,18 @@ public class BoardController {
 
 	// 부서 공지사항 글작성페이지 이동
 	@GetMapping(value = "/teamBoard/write.go")
-	public String teamWriteGo() {
+	public String teamWriteGo(HttpSession session, Model model) {
 		logger.info("부서 글작성 페이지 접속");
+		String teamCode = (String) session.getAttribute("team_code");
+		boolean isPerm = false;
+		
+		if(teamCode.equals("T001") || teamCode.equals("T006")) {
+			isPerm = true;
+		}
+										
+		model.addAttribute("isPerm", isPerm);
+		model.addAttribute("teamList", boardService.teamSelectList());
+		
 		return "board/teamBoard_write";
 	}
 
@@ -202,15 +199,15 @@ public class BoardController {
 		dto.setUser_code(user_code);
 		boardService.teamBoardWrite(attachFile, dto);
 
-		return "redirect:/teamBoard/detail.go?post_no=" + dto.getPost_no();
+		return "redirect:/teamBoard/detail.go	?post_no=" + dto.getPost_no();
 	}
 
 	// 부서 글수정 페이지 이동
 	@GetMapping(value = "/teamBoard/update.go")
-	public ModelAndView teamBoardUpdateGo(String post_no) {
+	public String teamBoardUpdateGo(String post_no, Model model) {
 		logger.info("부서 글수정 페이지 접속");
-
-		return boardService.detail(post_no);
+		boardService.detail(post_no, model);
+		return "board/teamBoard_update";
 	}
 
 	// 부서 공지사항 수정
@@ -282,10 +279,10 @@ public class BoardController {
 
 	// 핛생 공지사항 수정페이지 이동
 	@GetMapping(value = "/stdBoard/update.go")
-	public ModelAndView stdBoardUpdateGo(String post_no) {
+	public String stdBoardUpdateGo(String post_no, Model model) {
 		logger.info("학생 글수정 페이지 접속");
-
-		return boardService.detail(post_no);
+		boardService.detail(post_no, model);
+		return "board/stdBoard_update";
 	}
 
 	// 학생 공지사항 수정

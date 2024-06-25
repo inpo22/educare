@@ -6,6 +6,7 @@ import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -92,14 +94,12 @@ public class BoardService {
 		logger.info("데이터 추가 후 현재 글번호 = " + dto.getPost_no());
 	}
 
-	public ModelAndView detail(String post_no) {
-		ModelAndView mav = new ModelAndView("board/allBoard_update");
+	public void detail(String post_no, Model model) {
 		BoardDTO dto = boardDAO.detail(post_no);
 		List<BoardDTO> attachFileList = boardDAO.attachFileList(post_no);
 		dto.setPost_no(Integer.parseInt(post_no));
-		mav.addObject("dto", dto);
-		mav.addObject("attachFileList", attachFileList);
-		return mav;
+		model.addAttribute("dto", dto);
+		model.addAttribute("attachFileList",attachFileList);
 	}
 
 	@Transactional
@@ -163,17 +163,28 @@ public class BoardService {
 		List<String> list = boardDAO.teamBoardList(teamCode);
 		return list;
 	}
-
+	/*
 	public Map<String, Object> teamList(int currPage, int pagePerCnt, String searchCategory, String searchWord,
 			String teamCode) {
 		Map<String, Object> map = new HashMap<>();
 		int start = (currPage - 1) * pagePerCnt;
-
+		logger.info("\n::::::::::::::::::::::::::::::::::::::::::::::::currPag="+ currPage
+				+"\n::::::::::::::::::::::::::::::::::::::::::::::::pagePerCnt="+ pagePerCnt
+				+"\n::::::::::::::::::::::::::::::::::::::::::::::::searchCategory="+ searchCategory
+				+"\n::::::::::::::::::::::::::::::::::::::::::::::::searchWord="+ searchWord
+				+"\n::::::::::::::::::::::::::::::::::::::::::::::::teamCode="+ teamCode
+				);
+		
 		List<BoardDTO> list;
 		int totalPage;
 		List<BoardDTO> topFixedTeamList;
-
-		if (teamCode != null && (teamCode.equals("T001") || teamCode.equals("T06"))) {
+		
+		list = boardDAO.teamList(start, pagePerCnt, searchCategory, searchWord, teamCode);
+		totalPage = boardDAO.teamListPageCnt(pagePerCnt, searchCategory, searchWord, teamCode);
+		topFixedTeamList = boardDAO.topFixedTeamList(teamCode);
+		
+		
+		if (teamCode != null && (teamCode.equals("T001") || teamCode.equals("T006"))) {
 			// 권한 있는 부서의 경우 모든 게시글 조회
 			list = boardDAO.teamList(start, pagePerCnt, searchCategory, searchWord, null);
 			totalPage = boardDAO.teamListPageCnt(pagePerCnt, searchCategory, searchWord, null);
@@ -185,12 +196,52 @@ public class BoardService {
 			topFixedTeamList = boardDAO.topFixedTeamList(teamCode);
 			logger.info(teamCode);
 		}
-
+		 
 		map.put("list", list);
 		map.put("totalPage", totalPage);
 		map.put("topFixedTeamList", topFixedTeamList);
 
 		return map;
+	}
+	*/
+	
+	public Map<String, Object> teamList(Map<String, String> map, String my_team_code) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		int pagePerCnt = 10;
+		int start = (Integer.parseInt(map.get("page")) - 1) * pagePerCnt;
+		String searchCategory = map.get("searchCategory");
+		String searchWord = map.get("searchWord");
+		String teamCode = "";
+		
+		if (my_team_code.equals("T001") || my_team_code.equals("T006")) {
+			teamCode = map.get("selectedTeamCode");
+		} else {
+			teamCode = my_team_code;
+		}
+		
+		
+		List<BoardDTO> topFixedTeamList = new ArrayList<BoardDTO>();
+		int fixCnt = 0;
+		
+		if (searchWord == "") {
+			topFixedTeamList = boardDAO.topFixedTeamList(teamCode);
+			fixCnt = topFixedTeamList.size();
+		}
+		int totalPage = boardDAO.teamListPageCnt(pagePerCnt, searchCategory, searchWord, teamCode);
+		
+		if (start == 0) {
+			pagePerCnt -= fixCnt;
+		} else {
+			start -= fixCnt;
+		}
+		
+		List<BoardDTO> list = boardDAO.teamList(start, pagePerCnt, searchCategory, searchWord, teamCode);
+		
+		result.put("list", list);
+		result.put("totalPage", totalPage);
+		result.put("topFixedTeamList", topFixedTeamList);
+		
+		return result;
 	}
 
 //		public List<BoardDTO> getNoticesByTeamCode(String teamCode) {
@@ -252,5 +303,12 @@ public class BoardService {
 		}
 		logger.info("데이터 추가 후 현재 글번호 = " + dto.getPost_no());
 	}
+
+	public List<BoardDTO> teamSelectList() {
+
+		return boardDAO.teamSelectList();
+	}
+
+
 
 }

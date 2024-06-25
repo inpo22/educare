@@ -60,6 +60,8 @@ public interface BoardDAO {
 
 	void stdBoardWrite(BoardDTO dto);
 
+	List<BoardDTO> teamSelectList();
+
 
 
 //	List<BoardDTO> getNoticesByTeamCode(String teamCode);
