@@ -256,7 +256,7 @@
 		
 		tree.add([{
 			text: '에듀케어',
-			value: 'T00'
+			value: 'T000'
 		}]);
 		
 		$('.dept-modal-title').html('결재선 추가');
@@ -270,7 +270,7 @@
 		
 		tree.add([{
 			text: '에듀케어',
-			value: 'T00'
+			value: 'T000'
 		}]);
 		
 		$('.dept-modal-title').html('수신부서 추가');
