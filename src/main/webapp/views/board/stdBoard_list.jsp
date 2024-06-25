@@ -1,7 +1,6 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<jsp:useBean id="now" class="java.util.Date" />
 <html>
 <head>
 <meta charset="utf-8">
@@ -16,43 +15,29 @@
 <link rel="stylesheet" href="/resources/board/board.css">
 <!-- js -->
 
-
 <style>
 .table {
 	text-align: center;
 }
+
+.searchContainer{
+	float: right;
+    margin-right: 20px;
+}
+
+#searchCategory, #searchWord{
+	height: 38px;
+	margin-right: 5px;
+	border-radius: 5px;
+	border-color: lightgray;
+}
+
 
 .card-body{
 	display: flex;
     justify-content: center; /* 자식 요소들을 가로축 기준으로 가운데 정렬 */
     width: 100%;
 }
-
-.selectBox {
-	display: flex;
-	justify-content: space-between;
-	align-items: center; /* 수직 가운데 정렬 */
-	margin-right: 20px;
-	margin-left: 20px;
-}
-
-.searchContainer {
-	display: flex;
-	align-items: center;
-}
-
-#searchCategory, #hiddenTeamCategory, #searchWord{
-	height: 38px;
-	margin-right: 5px;
-	border-radius: 5px;
-}
-
-.teamSelectContainer {
-	display: flex;
-	align-items: center;
-	
-}
-
 .write{
 	float:right;
 	margin-right: 20px;
@@ -69,41 +54,31 @@
 </head>
 
 <body>
+
 	<jsp:include page="/views/common/header.jsp"></jsp:include>
+
 	<jsp:include page="/views/common/sidebar.jsp"></jsp:include>
 
 	<main id="main" class="main">
+
 		<div id="backBoard">
 			<br/>
 			<div class="pagetitle">
-				<h1 id="BoardTitle">부서 공지사항</h1>
+				<h1 id="BoardTitle">학생 공지사항</h1>
 			</div>
-			<div class="selectBox">
-				<div class="teamSelectContainer" >
-					<c:if test="${isPerm}">
-						<select id="hiddenTeamCategory">
-							<c:forEach items="${teamList}" var="team">
-								<option value="${team}">${team}</option>
-							</c:forEach>
-						</select>
-					</c:if>
-				</div>
-				<div class="searchContainer" >
-					<select id="searchCategory">
-						<option value="title">제목</option>
-						<option value="writer">작성자</option>
-						<option value="contents">내용</option>
-					</select>
-					<input type="text" id="searchWord" placeholder="검색단어입력" maxlength="30"/>
-					<input type="button" id="searchBtn" value="검색" class="btn btn-primary"/>
-				</div>
+			<div class="searchContainer">
+				<select id="searchCategory" >
+					<option value="title">제목</option>
+					<option value="contents">내용</option>
+				</select>
+				<input type="text" id="searchWord" placeholder="검색단어입력" maxlength="30"/>
+				<input type="button" id="searchBtn" value="검색" class="btn btn-primary"/>
 			</div>
 			<br/><br/>
 			<table class="table">
 				<colgroup>
 					<col width="5%" />
 					<col width="25%" />
-					<col width="10%" />
 					<col width="10%" />
 					<col width="15%" />
 					<col width="5%" />
@@ -113,7 +88,6 @@
 					<th scope="col">No.</th>
 					<th scope="col">제목</th>
 					<th scope="col">작성자</th>
-					<th scope="col">부서명</th>
 					<th scope="col">작성일자</th>
 					<th scope="col">조회수</th>
 				  </tr>
@@ -122,9 +96,10 @@
 				  
 				</tbody>
 			</table>
-			<button class="write" onclick="location.href='/teamBoard/write.go'">글쓰기</button>
+			<c:if test="${isPerm}">
+				<button class="write" onclick="location.href='/stdBoard/write.go'">글쓰기</button>
+			</c:if>
 			<ul class="pagination d-flex justify-content-center" id="pagination"></ul>
-			  
 		</div>
 		<!-- End Page Title -->
 
@@ -153,7 +128,7 @@ function formatDate(dateStr) {
 function listCall(page, searchCategory, searchWord){
 	$.ajax({
 		type: 'post',
-		url: '/teamBoard/list.ajax',
+		url: '/stdBoard/list.ajax',
 		data: {
 			'page': page,
 			'searchCategory':searchCategory,
@@ -165,12 +140,11 @@ function listCall(page, searchCategory, searchWord){
 			var context = '';
 			totalPage = data.totalPage;
 			if(topFixed == false){
-				for (item of data.topFixedTeamList){
+				for (item of data.topFixedList){
 					topFixedContext += '<tr class="boardTableTr" onclick="locationMove('+item.post_no+')">'
 					topFixedContext += '<td scope="col"><b>'+ item.post_no +'</b></td>'
 					topFixedContext += '<td scope="col"><b>' + item.title + '</b></td>'
 					topFixedContext += '<td scope="col"><b>' + item.user_name + ' ' + item.class_name + '</b></td>'
-					topFixedContext += '<td scope="col"><b>' + item.team_name + '</b></td>'
 					topFixedContext += '<td scope="col"><b>' + formatDate(item.reg_date) + '</b></td>'
 					topFixedContext += '<td scope="col"><b>' + item.bHit + '</b></td>'
 					topFixedContext += '</tr>';
@@ -183,7 +157,6 @@ function listCall(page, searchCategory, searchWord){
 						context += '<td scope="col">'+ item.post_no +'</td>'
 						context += '<td scope="col">' + item.title + '</td>'
 						context += '<td scope="col">' + item.user_name + ' ' + item.class_name + '</b></td>'
-						context += '<td scope="col">' + item.team_name + '</td>'
 						context += '<td scope="col">' + formatDate(item.reg_date) + '</td>'
 						context += '<td scope="col">' + item.bHit + '</td>'
 						context += '</tr>';
@@ -195,7 +168,6 @@ function listCall(page, searchCategory, searchWord){
 						context += '<td scope="col">'+ item.post_no +'</td>'
 						context += '<td scope="col">' + item.title + '</td>'
 						context += '<td scope="col">' + item.user_name + ' ' + item.class_name + '</b></td>'
-						context += '<td scope="col">' + item.team_name + '</td>'
 						context += '<td scope="col">' + formatDate(item.reg_date) + '</td>'
 						context += '<td scope="col">' + item.bHit + '</td>'
 						context += '</tr>';
@@ -216,10 +188,10 @@ function listCall(page, searchCategory, searchWord){
 }
 
 function locationMove(post_no){
-	location.href='/teamBoard/detail.go?post_no='+post_no;
+	location.href='/allBoard/detail.go?post_no='+post_no;
 }
-
 //totalPage 활용하여 Pagination 버튼 설정
+// totalPage 활용하여 Pagination 버튼 설정
 	function setupPagination(page, totalPage) {
 		var pagination = $('#pagination');
 		var count = 0;
@@ -320,7 +292,7 @@ $('#searchBtn').click(function() {
 $('#BoardTitle').click(function(){
 	searchFlag = false;
 	topFixed=false;
-	location.href='/teamBoard/list.go';
+	location.href='/allBoard/list.go';
 });
 
 $(document).on('mouseenter', '.boardTableTr', function() {
@@ -339,14 +311,3 @@ $('#searchWord').keypress(function(event) {
 });
 </script>
 </html>
-
-
-
-
-
-
-
-
-
-
-

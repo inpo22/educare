@@ -24,17 +24,20 @@ public class DeptService {
 	public Map<String, Object> getDept() {
 		Map<String, Object> result = new HashMap<String, Object>();
 		List<DeptDTO> deptList = deptDAO.getDept();
+		String newTC = deptDAO.getNewTC();
+		
 		if(deptList.size() < 0) {
 			logger.info("deptList is empty ");
 		}
-		logger.info("deptList: "+deptList);
 		result.put("deptList", deptList);
+		result.put("newTC", newTC);
 		return result;
 	}
 	// 부서원 리스트 조회
 	public Map<String, Object> getUser(Map<String, Object> param) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		List<EmpDTO> userList = deptDAO.getUser(param);
+		
 		if(userList.size() < 0) {
 			logger.info("userList is empty ");
 		}
@@ -48,6 +51,7 @@ public class DeptService {
 		Map<String, Object> result = new HashMap<String, Object>();
 		String msg = "fail";
 		int row = deptDAO.createDept(param);
+		
 		if(row > 0) {
 			msg = "success";
 		}
@@ -61,6 +65,7 @@ public class DeptService {
 		Map<String, Object> result = new HashMap<String, Object>();
 		String msg = "fail";
 		int row = deptDAO.removeDept(param);
+		
 		if(row > 0) {
 			msg = "success";
 		}
@@ -77,6 +82,7 @@ public class DeptService {
 		String type = param.get("type").toString();
 		logger.info("수정 코드: "+param.get("team_code").toString());
 		logger.info("수정 유형: "+type);
+		
 		if(type.equals("name")) {	// edit: 부서명 수정
 			row = deptDAO.updateDeptName(param);
 			logger.info("수정 값: "+param.get("team_name").toString());
@@ -89,6 +95,20 @@ public class DeptService {
 			msg = "success";
 		}
 		logger.info("부서 수정 결과: "+msg);
+		result.put("msg", msg);
+		return result;
+	}
+	
+	// 부서장 수정
+	public Map<String, Object> updateLeader(Map<String, Object> param) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		String msg = "fail";
+		int row = deptDAO.updateLeader(param);
+		
+		if(row > 0) {
+			msg = "success";
+		}
+		logger.info("부서장 수정 결과: "+msg);
 		result.put("msg", msg);
 		return result;
 	}

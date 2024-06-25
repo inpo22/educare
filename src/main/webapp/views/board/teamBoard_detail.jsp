@@ -55,7 +55,7 @@ td {
 		<div id="backBoard">
 			<br/>	
 			<div class="pagetitle">
-				<h1 id="BoardTitle">전사 공지사항</h1>
+				<h1 id="BoardTitle">부서 공지사항</h1>
 			</div>
 			<br/>
 			<table class="table">
@@ -157,12 +157,12 @@ editDateElement.innerText = formattedDate2;
 
 // 뒤로가기
 function BoardList(){
-	location.href = '/allBoard/list.go';
+	location.href = '/teamBoard/list.go';
 }
 
 // 수정
 function BoardUpdate(){
-	location.href = '/allBoard/update.go?post_no='+${dto.post_no};
+	location.href = '/teamBoard/update.go?post_no='+${dto.post_no};
 }
 // 삭제
 function boardDel(){
@@ -178,7 +178,7 @@ function boardDel(){
 				console.log(data);
 				if(data.row > 0){
 					alert("삭제 되었습니다.");
-					location.href = '/allBoard/list.go';
+					location.href = '/teamBoard/list.go';
 				}
 			},error:function(error){
 				console.log(error);	
@@ -189,7 +189,7 @@ function boardDel(){
 
 // 타이틀 클릭시 리스트페이지로
 $('#BoardTitle').click(function(){
-	location.href='/allBoard/list.go';
+	location.href='/teamBoard/list.go';
 });
 
 </script>

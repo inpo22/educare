@@ -96,7 +96,7 @@
 	<main id="main" class="main">
 		<div id="backBoard">
 			<div class="pagetitle">
-				<h1 id="BoardTitle">전사 공지글 수정</h1>
+				<h1 id="BoardTitle">학생 공지글 수정</h1>
 			</div>
 			<br/>
 			<div class="form-check form-switch" id="fixedYn">
@@ -104,7 +104,7 @@
 				<label class="form-check-label" for="flexSwitchCheckChecked" id="fixedText">상단 고정 여부</label>
 			</div>
 			<br/>
-			<form action="/allBoard/update.do" method="post" id="updateForm" enctype="multipart/form-data">
+			<form action="/stdBoard/update.do" method="post" id="updateForm" enctype="multipart/form-data">
 				<table class="table table-borderless">
 					<tr>
 						<th class="first-col">제목</th>
@@ -223,7 +223,7 @@ console.log(fileList);
 
 	// 수정취소
 	function updateCancle(){
-		location.href = '/allBoard/list.go';
+		location.href = '/stdBoard/list.go';
 	}
 	
 	// 수정완료

@@ -31,7 +31,7 @@ public class BoardController {
 
 	@Autowired
 	BoardService boardService;
-
+//////////////////////////////////////////////////////// 전사 //////////////////////////////////////////////////////////////////////////
 	// 전사 공지사항 리스트 페이지
 	@GetMapping(value = "/allBoard/list.go")
 	public String allBoardList() {
@@ -55,7 +55,7 @@ public class BoardController {
 	public ModelAndView allBoardDetail(String post_no, HttpSession session) {
 		logger.info(post_no);
 		String user_code = (String) session.getAttribute("user_code");
-		return boardService.allDetail(post_no, user_code);
+		return boardService.detail(post_no, user_code);
 	}
 
 	// 전사 공지사항 작성페이지 이동
@@ -88,7 +88,7 @@ public class BoardController {
 	public ModelAndView allBoardUpdateGo(String post_no) {
 		logger.info("공지사항 글수정 페이지 접속");
 
-		return boardService.allDetail(post_no);
+		return boardService.detail(post_no);
 	}
 	
 	// 전사 공지사항 수정
@@ -101,10 +101,11 @@ public class BoardController {
 		String[] fileNumbers = param.get("fileNumbers").split(",");
 		param.put("user_code", user_code);
 		boardService.fileDelete(fileNumbers, param.get("post_no"));
-		boardService.allBoardUpdate(attachFile, param);
+		boardService.boardUpdate(attachFile, param);
 		return "redirect:/allBoard/detail.go?post_no="+param.get("post_no");
 	}
 	
+//////////////////////////////////////////////////////// 공통 //////////////////////////////////////////////////////////////////////////
 	// 파일 다운로드
 	@RequestMapping(value = "/board/download/{fileName}")
 	public ResponseEntity<Resource> download(@PathVariable String fileName) {
@@ -126,12 +127,14 @@ public class BoardController {
 		return map;
 	}
 
+//////////////////////////////////////////////////////// 부서 //////////////////////////////////////////////////////////////////////////
 	// 부서 공지사항 리스트 페이지 이동
 	@GetMapping(value = "/teamBoard/list.go")
 	public String teamBoardList(Model model, HttpSession session) {
 		String teamCode = (String)session.getAttribute("team_code");
 		logger.info(teamCode);
 		boolean isPerm = false;
+		
 		// 대표이사, 경영관리만 권한부여 + 상위부서가 T02인 경우
 		if(teamCode.equals("T01") || teamCode.equals("T02") || boardService.isUpperCodeT02(teamCode)) {
 			isPerm = true;
@@ -139,27 +142,155 @@ public class BoardController {
 		}
 		model.addAttribute("isPerm", isPerm);
 		
+//		List<BoardDTO> notice = boardService.getNoticesByTeamCode(teamCode);
+//		 model.addAttribute("notice", notice);
+		
 		return "board/teamBoard_list";
 	}
 	
 	// 부서 공지사항 리스트 불러오기
 	@PostMapping(value="/teamBoard/list.ajax")
 	@ResponseBody
-	public Map<String, Object> teamList(String page, String searchCategory, String searchWord){
+	public Map<String, Object> teamList(HttpSession session, String page, String searchCategory, String searchWord){
+		String teamCode = (String)session.getAttribute("team_code");
 		
 		int currPage = Integer.parseInt(page);
 		int pagePerCnt = 10;
 		
-		return boardService.teamList(currPage, pagePerCnt, searchCategory, searchWord);
+		return boardService.teamList(currPage, pagePerCnt, searchCategory, searchWord, teamCode);
 	}
 	
-
-	// 학생 공지사항 리스트 페이지 이동
-	@GetMapping(value = "/stuBoard/list.go")
-	public String stuBoardList() {
-		return "board/stuBoard_list";
+	// 부서 공지사항 상세페이지 접속
+	@GetMapping(value = "/teamBoard/detail.go")
+	public ModelAndView teamBoardDetail(String post_no, HttpSession session) {
+		logger.info(post_no);
+		String user_code = (String) session.getAttribute("user_code");
+		return boardService.teamDetail(post_no, user_code);
 	}
+	
+	// 부서 공지사항 글작성페이지 이동
+	@GetMapping(value="/teamBoard/write.go")
+	public String teamWriteGo() {
+		logger.info("부서 글작성 페이지 접속");
+		return "board/teamBoard_write";
+	}
+	
+	// 부서 공지사항 글작성
+	@PostMapping(value = "/teamBoard/write.do")
+	public String teamBoardWrite(@RequestParam("attachFile") MultipartFile[] attachFile, BoardDTO dto,
+			HttpSession session) {
+		String user_code = (String) session.getAttribute("user_code");
+		logger.info("\n DTO Title :{}", dto.getTitle());
+		logger.info("\n DTO contents :{}", dto.getContents());
+		logger.info("\n DTO fixed_yn :{}", dto.getFixed_yn());
+		logger.info("attachFile =" + attachFile[0].getContentType());
+		logger.info("attachFile =" + attachFile[0].getOriginalFilename());
+		logger.info("attachFile =" + attachFile[0].getSize());
 
+		dto.setUser_code(user_code);
+		boardService.teamBoardWrite(attachFile, dto);
+
+		return "redirect:/teamBoard/detail.go?post_no=" + dto.getPost_no();
+	}
+	
+	// 부서 글수정 페이지 이동
+	@GetMapping(value = "/teamBoard/update.go")
+	public ModelAndView teamBoardUpdateGo(String post_no) {
+		logger.info("부서 글수정 페이지 접속");
+
+		return boardService.detail(post_no);
+	}
+	
+	// 부서 공지사항 수정
+	@PostMapping(value = "/teamBoard/update.do")
+	public String teamBoardUpdate(@RequestParam("attachFile") MultipartFile[] attachFile, @RequestParam Map<String, String> param, HttpSession session) {
+		String user_code = (String) session.getAttribute("user_code");
+		logger.info("\n param  :{}", param);
+		logger.info("fileNameList="+param.get("fileNumbers")); 
+		logger.info("attachFile =" + attachFile.length);
+		String[] fileNumbers = param.get("fileNumbers").split(",");
+		param.put("user_code", user_code);
+		boardService.fileDelete(fileNumbers, param.get("post_no"));
+		boardService.boardUpdate(attachFile, param);
+		return "redirect:/teamBoard/detail.go?post_no="+param.get("post_no");
+	}
+	
+//////////////////////////////////////////////////////// 학생 //////////////////////////////////////////////////////////////////////////
+	// 학생 공지사항 리스트 페이지 이동
+	@GetMapping(value = "/stdBoard/list.go")
+	public String stuBoardList() {
+		logger.info("학생공지사항 리스트 페이지 이동");
+		return "board/stdBoard_list";
+	}
+	
+	// 학생 공지사항 리스트 불러오기
+	@PostMapping(value = "/stdBoard/list.ajax")
+	@ResponseBody
+	public Map<String, Object> stdList(String page, String searchCategory, String searchWord) {
+
+		int currPage = Integer.parseInt(page);
+		int pagePerCnt = 10;
+
+		return boardService.stdList(currPage, pagePerCnt, searchCategory, searchWord);
+	}	
+
+	// 학생 공지사항 상세페이지 접속
+	@GetMapping(value = "/stdBoard/detail.go")
+	public ModelAndView stdBoardDetail(String post_no, HttpSession session) {
+		logger.info(post_no);
+		String user_code = (String) session.getAttribute("user_code");
+		return boardService.stdDetail(post_no, user_code);
+	}
+	
+	// 학생 공지사항 작성페이지 이동
+	@GetMapping(value = "/stdBoard/write.go")
+	public String stdBoardWriteGo() {
+		logger.info("전사 공지사항 글작성 페이지 접속");
+		return "board/stdBoard_write";
+	}
+	
+	// 학생 공지사항 작성
+	@PostMapping(value = "/stdBoard/write.do")
+	public String stdBoardWrite(@RequestParam("attachFile") MultipartFile[] attachFile, BoardDTO dto,
+			HttpSession session) {
+		String user_code = (String) session.getAttribute("user_code");
+		logger.info("\n DTO Title :{}", dto.getTitle());
+		logger.info("\n DTO contents :{}", dto.getContents());
+		logger.info("\n DTO fixed_yn :{}", dto.getFixed_yn());
+		logger.info("attachFile =" + attachFile[0].getContentType());
+		logger.info("attachFile =" + attachFile[0].getOriginalFilename());
+		logger.info("attachFile =" + attachFile[0].getSize());
+
+		dto.setUser_code(user_code);
+		boardService.stdBoardWrite(attachFile, dto);
+
+		return "redirect:/stdBoard/detail.go?post_no=" + dto.getPost_no();
+	}
+	
+	// 핛생 공지사항 수정페이지 이동
+	@GetMapping(value = "/stdBoard/update.go")
+	public ModelAndView stdBoardUpdateGo(String post_no) {
+		logger.info("학생 글수정 페이지 접속");
+
+		return boardService.detail(post_no);
+	}
+	
+	// 학생 공지사항 수정
+		@PostMapping(value = "/stdBoard/update.do")
+		public String stdBoardUpdate(@RequestParam("attachFile") MultipartFile[] attachFile, @RequestParam Map<String, String> param, HttpSession session) {
+			String user_code = (String) session.getAttribute("user_code");
+			logger.info("\n param  :{}", param);
+			logger.info("fileNameList="+param.get("fileNumbers")); 
+			logger.info("attachFile =" + attachFile.length);
+			String[] fileNumbers = param.get("fileNumbers").split(",");
+			param.put("user_code", user_code);
+			boardService.fileDelete(fileNumbers, param.get("post_no"));
+			boardService.boardUpdate(attachFile, param);
+			return "redirect:/stdBoard/detail.go?post_no="+param.get("post_no");
+		}
+	
+	
+//////////////////////////////////////////////////////// 자료실 //////////////////////////////////////////////////////////////////////////
 	// 자료실 리스트 페이지 이동
 	@GetMapping(value = "/dataBoard/list.go")
 	public String dataBoardList() {

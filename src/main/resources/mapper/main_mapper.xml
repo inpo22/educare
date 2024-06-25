@@ -49,7 +49,7 @@
 			, IFNULL((SELECT ROUND(SUM(p.course_price)/1000000, 1) FROM payment p WHERE p.pay_state = 1 AND MONTH(p.pay_date) = #{param5}
 				AND CASE
 					WHEN #{param5} > #{param6} THEN YEAR(p.pay_date) = (YEAR(CURDATE()) - 2)
-					ELSE YEAR(p.pay_date) = YEAR(CURDATE()) END), 0) AS fifth
+					ELSE YEAR(p.pay_date) = (YEAR(CURDATE()) - 1) END), 0) AS fifth
 			, IFNULL((SELECT ROUND(SUM(p.course_price)/1000000, 1) FROM payment p WHERE p.pay_state = 1 AND MONTH(p.pay_date) = #{param6}
 				AND YEAR(p.pay_date) = (YEAR(CURDATE()) - 1)), 0) AS sixth
 	</select>
@@ -120,10 +120,7 @@
 			, u.name AS user_name
 			, (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code) AS class_name
 			, p.title
-			<![CDATA[
-			, CASE WHEN p.edit_date >= p.reg_date THEN p.edit_date
-				ELSE p.reg_date END AS reg_date
-			]]>
+			, p.reg_date
 		FROM post p JOIN board b ON p.board_no = b.board_no JOIN user u ON p.user_code = u.user_code
 		WHERE p.is_del = 0 AND b.board_no = 1
 		ORDER BY p.post_no DESC LIMIT 5
@@ -139,6 +136,65 @@
 			, (SELECT COUNT(o.user_code) FROM officehour o WHERE state = 2) AS absent_emp
 			, (SELECT COUNT(u.user_code) FROM user u WHERE u.classify_code = 'U03'
 				AND YEAR(u.reg_date) = YEAR(CURDATE()) AND MONTH(u.reg_date) = MONTH(CURDATE())) AS new_stu
+	</select>
+	
+	<select id="todayAtt" resultType="main">
+		SELECT 
+			o.start_time
+			, o.end_time
+		FROM officehour o
+		WHERE o.user_code = #{param1} AND o.work_date LIKE CONCAT(CURDATE(), '%')
+	</select>
+	
+	<insert id="attendance">
+		INSERT INTO officehour (user_code, work_date, start_time)
+			VALUES(#{param1}, CURDATE(), CURRENT_TIMESTAMP())
+	</insert>
+	
+	<update id="leaveWork">
+		UPDATE officehour
+			SET end_time = CURRENT_TIMESTAMP()
+		WHERE user_code = #{param1} AND work_date LIKE CONCAT(CURDATE(), '%')
+	</update>
+	
+	<select id="stateCheck" resultType="Integer">
+		SELECT
+			<![CDATA[
+			CASE
+				WHEN o.start_time > CONCAT(CURDATE(), ' 09:00:00') THEN 0
+				WHEN o.end_time < CONCAT(CURDATE(), ' 18:00:00') THEN 1
+				ELSE -1 END AS state_check
+			]]>
+		FROM officehour o
+		WHERE o.user_code = #{param1} AND o.work_date LIKE CONCAT(CURDATE(), '%')
+	</select>
+	
+	<update id="stateUpdate">
+		UPDATE officehour
+			SET state = #{param2}
+		WHERE user_code = #{param1} AND work_date LIKE CONCAT(CURDATE(), '%')
+	</update>
+	
+	<select id="stdNotiBoardList" resultType="main">
+		SELECT  
+			p.post_no
+			, u.name AS user_name
+			, p.title
+			, p.reg_date
+		FROM post p JOIN board b ON p.board_no = b.board_no JOIN user u ON p.user_code = u.user_code
+		WHERE p.is_del = 0 AND b.board_no = 3
+		ORDER BY p.post_no DESC LIMIT 5
+	</select>
+	
+	<select id="stdRefBoardList" resultType="main">
+		SELECT  
+			p.post_no
+			, u.name AS user_name
+			, p.title
+			, p.reg_date
+		FROM post p JOIN board b ON p.board_no = b.board_no JOIN user u ON p.user_code = u.user_code
+		WHERE p.is_del = 0 AND b.board_no = 4
+		ORDER BY p.post_no DESC LIMIT 5
 	</select>
 	
 </mapper>
