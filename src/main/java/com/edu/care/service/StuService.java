@@ -134,5 +134,10 @@ public class StuService {
 		result.put("mList", mList);
 		return result;
 	}
+
+	public int courseReg(Map<String, String> param, String user_code) {
+		param.put("user_code", user_code);
+		return stuDAO.courseReg(param);
+	}
 	
 }
