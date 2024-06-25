@@ -25,7 +25,7 @@ public class CourseDTO {
 	private String page;
 	private List<Date> start_time_array;
 	private List<Date> end_time_array;
-	
+	private int pay_state;
 	
 	public int getCourse_no() {
 		return course_no;
@@ -117,6 +117,7 @@ public class CourseDTO {
 	public void setTime(int time) {
 		this.time = time;
 	}
+	
 	public String getPage() {
 		return page;
 	}
@@ -134,5 +135,12 @@ public class CourseDTO {
 	}
 	public void setEnd_time_array(List<Date> end_time_array) {
 		this.end_time_array = end_time_array;
+	}
+	
+	public int getPay_state() {
+		return pay_state;
+	}
+	public void setPay_state(int pay_state) {
+		this.pay_state = pay_state;
 	}
 }

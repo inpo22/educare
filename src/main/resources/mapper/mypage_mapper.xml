@@ -3,6 +3,20 @@
    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.edu.care.dao.MypageDAO">
+
+<!-- 학생 개인정보수정 쿼리문 -->
+<update id="update" parameterType="map">
+	UPDATE user SET
+		email=#{email}, 
+		phone=#{phone},
+		birth=#{birth},
+		gender=#{gender},
+		pw = CASE WHEN #{pw} IS NULL THEN pw ELSE #{pw} END,
+		photo = CASE WHEN #{photo} IS NULL THEN photo ELSE #{photo} END
+	WHERE user_code=#{user_code}
+		
+</update>
+
 	
 	<select id="empMypage" resultType="mypage">
 		SELECT

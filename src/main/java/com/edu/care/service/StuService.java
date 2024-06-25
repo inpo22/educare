@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.edu.care.dao.StuDAO;
+import com.edu.care.dto.CourseDTO;
 import com.edu.care.dto.PaymentDTO;
 import com.edu.care.dto.StuDTO;
 
@@ -110,6 +111,27 @@ public class StuService {
 		result.put("list", list);
 		result.put("totalPage", stuDAO.payListPageCnt(pagePerCnt, Psearchbox,user_code));
 		
+		return result;
+	}
+
+	public Map<String, Object> courseList(int currPage, int pagePerCnt, String Csearchbox, String user_code) {
+		int start = (currPage-1) * pagePerCnt;
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		
+		List<CourseDTO> cList = stuDAO.courseList(start, pagePerCnt, Csearchbox,user_code);
+		logger.info("cList : {}", cList);
+		logger.info("cList size : " + cList.size());
+		result.put("cList", cList);
+		result.put("totalPage", stuDAO.courseListPageCnt(pagePerCnt, Csearchbox,user_code));
+		
+		return result;
+	}
+
+	public Map<String, Object> courseModalList() {
+		Map<String, Object> result = new HashMap<String, Object>();
+		List<CourseDTO> mList = stuDAO.courseModalList();
+		result.put("mList", mList);
 		return result;
 	}
 	

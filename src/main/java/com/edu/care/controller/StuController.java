@@ -104,6 +104,49 @@ public class StuController {
 		return "std/std_detail_course";
 	}
 	
+	// 강의 선택 모달 리스트 (비동기)
+	@ResponseBody
+	@PostMapping(value="/std/course_modal.ajax")
+	public Map<String, Object> CouseModalList(){
+		logger.info("강의 선택 모달 리스트");
+		
+		Map<String, Object> map = stuService.courseModalList();
+		return map;
+	}
+	
+	// 강의 등록(모달)
+	/*
+	@PostMapping(value="/std/course_reg.do")
+	public String courseReg(@RequestParam Map<String, String> param, Model model) {
+		logger.info("param:"+param);
+		
+		int row = stuService.courseReg(param);
+		logger.info("insert count : "+row);
+		
+		if(row == 1) {
+			String msg = "강의등록 성공";
+			
+		}
+		return null;
+	}
+	*/
+	// 수강이력 리스트(비동기)
+	@ResponseBody
+	@PostMapping(value="/std/detail_course.ajax")
+	public Map<String, Object> courseListCall(@RequestParam("user_code") String user_code, String page, String Csearchbox){
+		logger.info("수강이력 요청");
+		logger.info("page : " + page);
+		logger.info("Csearchbox : " + Csearchbox);
+		logger.info("user_code : " + user_code);
+		
+		int currPage = Integer.parseInt(page);
+		int pagePerCnt = 10;
+		
+		Map<String, Object> map = stuService.courseList(currPage, pagePerCnt,Csearchbox,user_code);
+		
+		return map;
+	}
+	
 	// 결제내역 리스트(비동기)
 	@ResponseBody
 	@PostMapping(value="/std/detail_pay.ajax")

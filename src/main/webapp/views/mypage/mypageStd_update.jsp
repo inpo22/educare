@@ -31,6 +31,13 @@ body {
 h1{
 	margin-top: 10px;
 }
+#photo-preview{
+	display: none;
+	width : 250px;
+	height:250px;
+	margin:0 0 0 200px;
+}
+
 
 
 .form-row {
@@ -42,7 +49,6 @@ h1{
     flex: 1;
     margin-bottom: 1rem;
 }
-
 label {
     display: block;
     font-weight: bold;
@@ -71,25 +77,11 @@ input:focus, select:focus {
 .form-check{
 	margin:0 50px;
 }
-input[readonly] {
-    background-color: white; /* 배경색 */
-    /* border: none; */ /* 테두리 없앰 */
-    outline: none; 
-    pointer-events: none;
-    font-weight: bold;
+#msg,#length-msg,#pattern-msg{
+	margin-left: 50px;
 }
-#pw_msg{
-	font-weight: bold;
-	color: red;
-}
-#pw_reset{
-	width:155px;
-}
-#stdDetail_go{
+#mypageStd_go{
 	margin:0 7px;
-}
-#status{
-	width:80%;
 }
 </style>
 </head>
@@ -100,13 +92,13 @@ input[readonly] {
 	<jsp:include page="/views/common/sidebar.jsp"></jsp:include>
 
 	<main id="main" class="main">
-		<div id="backBoard">
-			<div class="pagetitle">
-				<h1>학생 정보 수정</h1>
-			</div>
-			<!-- End Page Title -->
-			
-			<form action="/std/edit.do" method="post">
+
+		<div class="pagetitle">
+			<h1>개인 정보 수정</h1>
+		</div>
+		<!-- End Page Title -->
+		
+		<form action="/mypageStd/update.do" method="post" enctype="multipart/form-data">
 				<div class="form-row">
 	                 <div class="form-group">
 	                     <label for="name">성명:</label>
@@ -148,21 +140,31 @@ input[readonly] {
 	                 <div class="form-group">
 	                     <label for="id">아이디:</label>
 	                     <input type="text" value="${stdDto.id}" id="id" name="id" readonly>
+	                 </div>                 
+	             </div>   
+		         <div class="form-row">
+	                 <div class="form-group">
+	                     <label for="pw">비밀번호:</label>
+	                     <input type="password" id="pw" name="pw" required>
+	                     <br/><span id="length-msg"></span>
+	                     <br/><span id="pattern-msg"></span>
 	                 </div>
 	                 <div class="form-group">
-	                     <label for="status">계정상태:</label>
-					     <select id="status" name="status" class="form-select" aria-label="Default select example">
-					         <option value="0" ${stdDto.status == '0' ? 'selected' : ''}>정상</option>
-					         <option value="1" ${stdDto.status == '1' ? 'selected' : ''}>중지</option>
-					     </select>
-	                 </div>	                 
-	             </div>   
-		         <div class="row mt-3">
-	            	<div class="col-md-6"></div>
-		            <div class="d-flex justify-content-end">
-		            	<span id="pw_msg"></span><br>
-		            </div>
-		         </div>
+	                     <label for="pwchk">비밀번호 확인:</label>
+	                     <input type="password" id="pwchk" name="pwchk" required>
+	                     <br/><span id="msg"></span>
+	                 </div>
+	             </div>
+	             <div class="form-row">
+	             	<div class="form-group">
+	             		<label for="photo">등록한 사진:</label>
+		                 <img id="photo-preview" src="" alt="Photo Preview"> 
+		             </div>	
+		             <div class="form-group">
+		                 <label for="photo">Photo:</label>	                 
+		                 <input type="file" id="photo" name="photo" onchange="previewImage(event)" accept=".jpeg, .jpg, .png, .jfif">	                 	             	 
+		             </div>		                          
+		         </div>	
 		         <div class="row mt-3">
 	            	<div class="col-md-6"></div>
 		            <div class="d-flex justify-content-end">
@@ -173,13 +175,12 @@ input[readonly] {
 		         <div class="row mt-3">
 	            	<div class="col-md-6"></div>
 		            <div class="col-md-6 d-flex justify-content-end">
-		           		<button id="stdDetail_go" class="btn btn-dark" type="button" onclick="detail('${stdDto.user_code}')">취소</button>
-		            	<button id="stdDetail_fn" class="btn btn-dark" type="button" onclick="edit()">수정완료</button>
+		           		<button id="mypageStd_go" class="btn btn-dark" type="button" onclick="detail('${stdDto.user_code}')">취소</button>
+		            	<button id="stdUpdate_fn" class="btn btn-dark" type="button" onclick="edit()">수정완료</button>
 		            </div>
 		        </div>
 	        </form>
-			
-		</div>
+
 	</main>
 	<!-- End #main -->
 
@@ -187,47 +188,37 @@ input[readonly] {
 
 </body>
 <script>
-var msg = '${msg}'; // 쿼터 빠지면 넣은 문구가 변수로 인식됨.
-if(msg != ''){
-	alert(msg);
+
+//사진 미리보기
+function previewImage(event) {
+    var reader = new FileReader();
+    reader.onload = function(){
+        var output = document.getElementById('photo-preview');
+        output.src = reader.result;
+        output.style.display = 'block';
+    };
+    reader.readAsDataURL(event.target.files[0]);
 }
 
-//비밀번호 초기화
-$('#pw_reset').on('click',function(){
-	$('#pw').val('00000000'); // 비밀번호를 '00000000'으로 설정
-	$('#pw_msg').html("수정완료 버튼을 누르면 비밀번호 00000000 으로 초기화 됩니다.")
-});
-
-//연락처 입력 시 하이픈 자동생성
-$(document).on("keyup", "#phone", function() {
-    $(this).val( $(this).val().replace(/[^0-9]/g, "").replace(/(^02|^0505|^1[0-9]{3}|^0[0-9]{2})([0-9]+)?([0-9]{4})$/,"$1-$2-$3").replace("--", "-") ); 
-});
-// 하이픈 포함 13자리까지만 입력 가능하도록
-function phoneNumber(e){
-    if(e.value.length>13){
-	e.value=e.value.slice(0,13);	
-    }
-}
-
-//수정버튼 (유효성 검사)
+// 수정버튼 (유효성 검사)
 function edit(){
+	
 	var $email = $('input[name="email"]');
 	var $phone = $('input[name="phone"]');
 	var $birth = $('input[name="birth"]');
 	
-	if($email.val()==''){ // 이메일 값이 비었을 경우
+	if($email.val()==''){ 
 		alert('이메일을 입력해주세요.');
-		$email.focus(); // 커서가 나이로
+		$email.focus(); 
 	}
-	else if($phone.val()==''){ // 이메일 값이 비었을 경우
+	else if($phone.val()==''){ 
 		alert('핸드폰 번호를 입력해주세요.');
-		$phone.focus(); // 커서가 나이로
+		$phone.focus(); 
 	}
-	else if($birth.val()==''){ // 이메일 값이 비었을 경우
+	else if($birth.val()==''){ 
 		alert('생년월일을 입력해주세요.');
-		$birth.focus(); // 커서가 나이로
-	}
-	else{
+		$birth.focus(); 
+	}else{
 		// 이메일 유효성 검사
 		var regEmail = /^([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
 		if(regEmail.test($email.val())==false){			
@@ -244,12 +235,57 @@ function edit(){
 		}
 	
 	}
-	
 }
 
-// 취소버튼 클릭
-function detail(user_code){
-	window.location.href = '/std/detail.go?user_code='+user_code;
+//비밀번호 확인
+$('#pwchk').on('keyup', function(){
+    var pw = $('input[name="pw"]').val();
+    var pwchk = $(this).val();
+
+    if(pw === pwchk){
+        $('#msg').html("☺ 비밀번호가 일치합니다.");
+        $('#msg').css({'color': 'green'});
+    } else {
+        $('#msg').html('☹ 비밀번호가 일치하지 않습니다.');
+        $('#msg').css({'color': 'red'});
+    }
+});
+
+// 비밀번호 유효성검사
+$('#pw').on('keyup', function(){
+	var pw = $('input[name="pw"]').val();
+	
+	// 비밀번호 길이 확인 (8-16자)
+    if (pw.length < 8 || pw.length > 16) {
+        $('#length-msg').html("☹ 비밀번호는 8자 이상 16자 이하여야 합니다.");
+        $('#length-msg').css({'color': 'red'});
+    } else {
+    	 $('#length-msg').html("☺ 비밀번호는 8자 이상 16자 이하여야 합니다.");
+         $('#length-msg').css({'color': 'green'});
+    }
+	
+ 	// 비밀번호 패턴 확인 (영어, 소문자, 특수문자 포함)
+    var pattern = /^(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[a-zA-Z\d!@#$%^&*(),.?":{}|<>]{8,}$/;
+
+ 
+    if (!pattern.test(pw)) {
+        $('#pattern-msg').html("☹ 영어 소문자, 숫자, 특수문자를 포함해야 합니다.");
+        $('#pattern-msg').css({'color': 'red'});
+    } else {
+    	$('#pattern-msg').html("☺ 영어 소문자, 숫자, 특수문자를 포함해야 합니다.");
+        $('#pattern-msg').css({'color': 'green'});
+    }
+});
+
+//연락처 입력 시 하이픈 자동생성
+$(document).on("keyup", "#phone", function() {
+    $(this).val( $(this).val().replace(/[^0-9]/g, "").replace(/(^02|^0505|^1[0-9]{3}|^0[0-9]{2})([0-9]+)?([0-9]{4})$/,"$1-$2-$3").replace("--", "-") ); 
+});
+// 하이픈 포함 13자리까지만 입력 가능하도록
+function phoneNumber(e){
+    if(e.value.length>13){
+	e.value=e.value.slice(0,13);	
+    }
 }
 </script>
 </html>
