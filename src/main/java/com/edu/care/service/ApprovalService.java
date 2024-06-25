@@ -184,10 +184,12 @@ public class ApprovalService {
 		}
 		
 		String receiveList = param.get("receiveList");
-		arr = receiveList.split(",");
-		
-		for (String team : arr) {
-			approvalDAO.receiveTeamInsert(au_code, team);
+		if (!receiveList.equals("")) {
+			arr = receiveList.split(",");
+			
+			for (String team : arr) {
+				approvalDAO.receiveTeamInsert(au_code, team);
+			}
 		}
 		
 		fileSave(au_code, attachFile, user_code);
@@ -251,7 +253,7 @@ public class ApprovalService {
 			String detail_user_code = dto.getUser_code();
 			String reg_date = dto.getReg_date().toString();
 			
-			int remainVaca = approvalDAO.remainVaca(detail_user_code, reg_date);
+			double remainVaca = approvalDAO.remainVaca(detail_user_code, reg_date);
 			mav.addObject("remainVaca", remainVaca);
 		}
 		

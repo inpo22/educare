@@ -374,7 +374,7 @@
 		selectedNodeText = '';
 		selectedNodeValue = '';
 		
-		// console.log(receiverValueList);
+		console.log(receiverValueList);
 	});
 	
 	$('.add-list').on('click', 'li', function(e) {
@@ -407,7 +407,7 @@
 		removeNodeValue = '';
 		$('.selected-value').removeClass('selected-value');
 		$('.receiver-remove-button').addClass('disabled-button');
-		// console.log(receiverValueList);
+		console.log(receiverValueList);
 	});
 	
 	$('.send-receiver-list').click(function() {
@@ -417,7 +417,8 @@
 				content += '<span class="badge bg-primary">' + item + '</span>&nbsp;&nbsp;';
 			}
 			$('.receiver-visual').html(content);
-			
+
+			console.log(receiverValueList.toString());
 			$('#receiverList').val(receiverValueList.toString());
 			closeModal();
 		} else if ($('.modal-title').html() == '참조 추가') {

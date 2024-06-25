@@ -195,7 +195,7 @@
 	        	</div>
 	        	<br/>
 	        	<div class="text-align-right right-padding">
-	        		<button class="btn btn-primary btn-sm send-list">추가</button>
+	        		<button class="btn btn-primary btn-sm send-list disabled-button">추가</button>
 	        	</div>
 			</div>
 	    </div>
@@ -278,12 +278,13 @@
 		$('.tui-tree-selected').removeClass('tui-tree-selected');
 		$('.add-list').empty();
 		$('.modal-content').css('width', '400px');
+		$('.send-list').addClass('disabled-button');
 	}
 	
 	// 부서 Tree
 	var data = [{
 		text: '에듀케어',
-		value: 'T00'
+		value: 'T000'
 	}];
 	
 	const tree = new tui.Tree('#dept-tree', {
@@ -353,6 +354,8 @@
 		.on('select', function(e) {
 			selectedNodeText = '';
 			selectedNodeValue = '';
+			$('.list-add-button').addClass('disabled-button');
+			$('.list-remove-button').addClass('disabled-button');
 			
 			$('.selected-value').removeClass('selected-value');
 			
@@ -380,6 +383,12 @@
 		$('.tui-tree-selected').removeClass('tui-tree-selected');
 		selectedNodeText = '';
 		selectedNodeValue = '';
+		
+		if (orderValueList != '') {
+			$('.send-list').removeClass('disabled-button');
+		} else {
+			$('.send-list').addClass('disabled-button');
+		}
 	});
 	
 	$('.add-list').on('click', 'li', function(e) {
@@ -387,6 +396,8 @@
 		removeTag = '';
 		removeNodeValue = '';
 		
+		$('.list-add-button').addClass('disabled-button');
+		$('.list-remove-button').addClass('disabled-button');
 		$('.tui-tree-selected').removeClass('tui-tree-selected');
 		$('.selected-value').removeClass('selected-value');
 		removeTag = $(this);
@@ -412,6 +423,12 @@
 		removeNodeValue = '';
 		$('.selected-value').removeClass('selected-value');
 		$('.list-remove-button').addClass('disabled-button');
+		
+		if (orderValueList != '') {
+			$('.send-list').removeClass('disabled-button');
+		} else {
+			$('.send-list').addClass('disabled-button');
+		}
 	});
 	
 	$('.send-list').click(function() {
@@ -445,6 +462,7 @@
 			content += '</tr>';
 			content += '<tr>';
 			for (var orderText of orderTextList) {
+				index = orderText.indexOf(' ');
 				content += '<td class="text-align-center vertical-align-bottom">' + orderText.substring(0, index) + '</td>';
 			}
 			content += '</tr>';
