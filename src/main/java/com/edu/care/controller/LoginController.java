@@ -1,5 +1,8 @@
 package com.edu.care.controller;
 
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -10,9 +13,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.edu.care.dto.LoginDTO;
+
+
 import com.edu.care.service.LoginService;
 
 @Controller
@@ -28,19 +31,39 @@ public class LoginController {
 		logger.info("::최초 로그인 페이지::");
 		return "login/login";
 	}
-	
+
 	// 로그인
-	@PostMapping(value="/login.do")
-	public ModelAndView loginAccess( HttpSession session, String id, String pw) {
+	@PostMapping(value = "/login.do")
+	public ModelAndView loginAccess(HttpSession session, String id, String pw,
+		boolean rememberMe, HttpServletResponse response) {
 		logger.info("::최초 로그인 실행::");
 		logger.info("id : {}/ pw : {}", id, pw);
-		return loginService.loginAccess(session, id, pw);
-	}
-
+		 ModelAndView mav = loginService.loginAccess(session, id, pw);
+		
+		if (mav.getViewName().startsWith("redirect:")) {
+			if (rememberMe) {
+				Cookie cookie = new Cookie("saveId", id);
+				cookie.setMaxAge(7 * 24 * 60 * 60); //7일간 유효
+				response.addCookie(cookie);
+			} else {
+				Cookie cookie = new Cookie("saveId", null);
+				cookie.setMaxAge(0);
+				response.addCookie(cookie);
+			}
+			
+		}
+				return mav;
+			
+			
+		}
+		
+		 
+		 
+	
 
 	// 로그아웃
 	@GetMapping(value = "/logout.do")
-	public String logoutAccess(HttpSession session, Model model) {
+	public String logoutAccess(HttpSession session, Model model, HttpServletResponse response) {
 		logger.info("::로그아웃 실행::");
 		session.removeAttribute("user_code");
 		session.removeAttribute("user_name");
@@ -52,13 +75,19 @@ public class LoginController {
 		session.removeAttribute("photo");
 		model.addAttribute("msg", "로그아웃 되었습니다.");
 		session.invalidate();
+	
+		 Cookie cookie = new Cookie("savedId", null);
+	        cookie.setMaxAge(0);
+	        response.addCookie(cookie);
+		
+		
 		return "redirect:/login.go";
 	}
 
 	/*
 	 * //아이디 저장하기
 	 * 
-	 * @GetMapping(value = "/login.go") public String loginAccess(HttpServletRequest
+	 * @GetMapping(value = "/login.go") public String loginChekck(HttpServletRequest
 	 * request) {
 	 * 
 	 * String username = "";
@@ -69,4 +98,5 @@ public class LoginController {
 	 * 
 	 * }
 	 */
+	 
 }
