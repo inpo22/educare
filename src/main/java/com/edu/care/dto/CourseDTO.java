@@ -1,6 +1,7 @@
 package com.edu.care.dto;
 
 import java.util.Date;
+import java.util.List;
 
 import org.apache.ibatis.type.Alias;
 
@@ -21,6 +22,10 @@ public class CourseDTO {
 	private Date start_time;
 	private Date end_time;
 	private int time;
+	private String page;
+	private List<Date> start_time_array;
+	private List<Date> end_time_array;
+	
 	
 	public int getCourse_no() {
 		return course_no;
@@ -111,5 +116,23 @@ public class CourseDTO {
 	}
 	public void setTime(int time) {
 		this.time = time;
+	}
+	public String getPage() {
+		return page;
+	}
+	public void setPage(String page) {
+		this.page = page;
+	}
+	public List<Date> getStart_time_array() {
+		return start_time_array;
+	}
+	public void setStart_time_array(List<Date> start_time_array) {
+		this.start_time_array = start_time_array;
+	}
+	public List<Date> getEnd_time_array() {
+		return end_time_array;
+	}
+	public void setEnd_time_array(List<Date> end_time_array) {
+		this.end_time_array = end_time_array;
 	}
 }

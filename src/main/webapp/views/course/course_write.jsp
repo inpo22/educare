@@ -51,6 +51,13 @@ textarea {
 	overflow: auto; 
 }
 
+.reservTextareaGo{
+	resize: none;
+	height: 91px;
+	overflow: auto; 
+	pointer-events: none;
+}
+
 .modal-body{
 	padding: 0px 22px !important;
 }
@@ -208,17 +215,17 @@ small{
 					<div class="col-md-6">
 						<div class="input-group input-group mb-3">
 							<span class="input-group-text" id="basic-addon1">사원번호</span> 
-							<input type="text" class="form-control" name="user_name" id="name" placeholder="강사의 사원번호를 입력해주세요.">
+							<input type="text" class="form-control" name="user_code" id="user_code" placeholder="강사의 사원번호를 입력해주세요.">
 						</div>
 
 						<div class="input-group input-group mb-3">
 							<span class="input-group-text" id="basic-addon2">강의명</span> 
-							<input type="text" class="form-control" name="course_name" id="title" placeholder="강의명 입력해주세요.">
+							<input type="text" class="form-control" name="title" id="title" placeholder="강의명 입력해주세요.">
 						</div>
 
 						<div class="input-group input-group mb-3">
 							<span class="input-group-text" id="basic-addon3">강의료</span> 
-							<input type="text" class="form-control" name="course_price" id="pay" placeholder="강의료를 입력해주세요.">
+							<input type="text" class="form-control" name="course_price" id="course_price" placeholder="강의료를 입력해주세요.">
 						</div>
 					</div>
 
@@ -234,13 +241,17 @@ small{
 						<div class="row">
 							<div class="col-md-12">
 								<div class="input-group input-group mb-3">
-									<textarea class="form-control" aria-label="With textarea" placeholder="강의실 예약시 예약정보가 출력됩니다."></textarea>
+									<div class="form-control reservTextareaGo" id="reservTextareaGo" aria-label="With textarea"></div>
 								</div>
 							</div>
 						</div>
 					</div>
+					
+					<input type="hidden" name="content" id="content"/>
+					
 				</div>
 				<div id="editor"></div>
+					<button type="button" class="btn text-light bg-dark" id="submitButton" onclick="submitCourseWrite()">등록</button>
 			</div>
 		</div>
 
@@ -297,11 +308,11 @@ small{
 															<select class="form-select" id="select-space">
 																<option value="">강의실 선택</option>
 																<option value="A101">A101</option>
-																<option value="A101">A102</option>
+																<option value="A102">A102</option>
 																<option value="B101">B101</option>
 																<option value="B102">B102</option>
 																<option value="C101">C101</option>
-																<option value="C101">C102</option>
+																<option value="C102">C102</option>
 															</select>
 													</div>
 												</div>
@@ -334,7 +345,7 @@ small{
 						<button type="button" class="btn btn-secondary" id="closeButton"
 							data-bs-dismiss="modal">취소</button>
 						<button type="button" class="btn text-light bg-dark"
-							id="submitButton" onclick="sch_beforeSubmit()">등록</button>
+							id="submitModalButton" onclick="submitButton()">등록</button>
 						<button type="button" class="btn btn-secondary" id="deleteButton"
 							onclick="sch_del()" style="display: none;">삭제</button>
 						<button type="button" class="btn text-light bg-dark"
@@ -586,7 +597,9 @@ function selectTimeBtnEvent() {
 	    }
 	    
 	    var selectReserv = '<div class="reservation-item"><span>' + selectDate + ' ' + selectTime + ':00' + '</span><button type="button" class="btn btn-sm btn-remove">x</button></div>';
+	    var readonlyReserv = '<div class="reservation-item"><span>' + selectDate + ' ' + selectTime + ':00' + '</span></div>';
 	    $('#reserv-textarea').append(selectReserv);
+	    $('#reservTextareaGo').append(readonlyReserv);
 		
 	    // 눌린 예약시간인거 알려주는용도
 	    $(this).attr('style', 'background-color: gray;');
@@ -603,12 +616,20 @@ function selectTimeBtnEvent() {
 	    var findHtml =  $(this).parent('.reservation-item').find('span').html();
 	    var removeDate = findHtml.substring(0,10);
 	    var removeTime = findHtml.substring(11,13);
-
+	    
 	    console.log('removeDate : ', removeDate);
 	    console.log('removeTime : ', removeTime);
+	    console.log('==============================');
 	    
 	    // 예약지우기
 	    removeData.remove();
+	    
+	    $('#reservTextareaGo .reservation-item').each(function() { 
+	    	if ($(this).find('span').html() === findHtml) { 
+	    		$(this).remove(); 
+	    	} 
+	    });
+	    
 	    
 		// 없는날짜 스타일 제거
 	    if (!exDate(removeDate)) {
@@ -620,15 +641,19 @@ function selectTimeBtnEvent() {
 	});
 	
 	$(document).on('change', '#select-space', function(event) {
+		 var selectDate =  $('#selectDate').val();
+		 var selectedRoom = $(this).val();
 		if(confirm("강의실 변경시 선택하셨던 일정은 모두 삭제됩니다. 정말 변경하시겠습니까?")){
 			$('.reservation-item').remove();
 			$('.day').removeClass('highlight');
 			$('.time-btn').removeAttr('style');
+			timeBtn(selectDate,selectedRoom);
 		}else{
 			$(this).val(selectedRoom);
 			console.log('selectedRoom : ', selectedRoom);
 		}
 	});
+	
 }
 
 
@@ -690,8 +715,69 @@ function removeReservCalendarDate(date) {
 // 현재날짜보다 이전날짜 클릭안되게하는거...
 // 하..
 
+function submitButton(){
+	$('#reservationModal').modal('hide');
+}
 
 
+function submitCourseWrite(){
+	var userCode = $('#user_code').val();
+	var courseTitle = $('#title').val();
+	var coursePrice = $('#course_price').val();
+	var selectRoom = $('#select-space').val();
+	
+	var rezCourse = $('#reservTextareaGo .reservation-item span');
+	var startTimeArray = [];
+	var endTimeArray = [];
+	rezCourse.each(function(){
+		var endDay =  $(this).html().substring(0,10);
+		var endTime = parseInt($(this).html().substring(11,13))+1;
+		var fullFormatEnd = endDay + ' ' + endTime + ':00';
+		var formatFullEnd= new Date(fullFormatEnd);
+		var formatFullStart= new Date($(this).html());
+		startTimeArray.push(formatFullStart);
+		console.log("------------------");
+		console.log("endDay==>"+endDay);
+		console.log("------------------");
+		console.log("endTime==>"+endTime);
+		endTimeArray.push(formatFullEnd);
+	});
+	
+	var editorContent = editor.getHTML();
+	var formatContent = $('#content').val(editorContent);
+	var content = formatContent.val();
+	
+	var paramData = {
+		user_code: userCode,
+		course_name: courseTitle,
+		course_price: coursePrice,
+		course_space: selectRoom,
+		start_time_array: startTimeArray,
+		end_time_array: endTimeArray,
+		course_con: content
+	};
+		
+	console.log("paramData",paramData);
+	 $.ajax({
+		url: '/course/reservationWrite.ajax',
+		type: 'POST',
+		dataType:'JSON',
+		data: JSON.stringify(paramData),
+		contentType: 'application/json',
+		success:function(data) {
+			if(data === "success" ){
+				alert('등록이 완료되었습니다.');
+			}else{
+				alert('등록에 실패하였습니다.');
+			}
+		},
+		error:function(request, status, error){
+			console.log(error);
+		}
+		
+	}); 
+	
+}
 </script>
 
 </html>
