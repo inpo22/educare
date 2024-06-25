@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.edu.care.dto.CourseDTO;
 import com.edu.care.dto.PaymentDTO;
 import com.edu.care.dto.StuDTO;
 
@@ -28,5 +29,11 @@ public interface StuDAO {
 	List<PaymentDTO> payList(int start, int pagePerCnt, String Psearchbox, String user_code);
 
 	int payListPageCnt(int pagePerCnt, String Psearchbox, String user_code);
+
+	List<CourseDTO> courseList(int start, int pagePerCnt, String Csearchbox, String user_code);
+
+	int courseListPageCnt(int pagePerCnt, String Csearchbox, String user_code);
+
+	List<CourseDTO> courseModalList();
 
 }

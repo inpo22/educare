@@ -21,6 +21,7 @@ public class CourseDTO {
 	private Date start_time;
 	private Date end_time;
 	private int time;
+	private int pay_state;
 	
 	public int getCourse_no() {
 		return course_no;
@@ -111,5 +112,11 @@ public class CourseDTO {
 	}
 	public void setTime(int time) {
 		this.time = time;
+	}
+	public int getPay_state() {
+		return pay_state;
+	}
+	public void setPay_state(int pay_state) {
+		this.pay_state = pay_state;
 	}
 }

@@ -107,7 +107,7 @@ label[for="id"]{
 #reg_btn{
 	margin:10px 0;
 }
-#msg,#length-msg,#pattern-msg,#email-msg{
+#msg,#length-msg,#pattern-msg{
 	margin-left: 50px;
 }
 </style>

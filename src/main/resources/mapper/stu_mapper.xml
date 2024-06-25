@@ -184,10 +184,58 @@
 		p.pay_date ASC
 </select>
 
+<!-- 수강이력 쿼리문 -->
+<select id="courseList" parameterType="String" resultType="course">
+	SELECT 
+		c.course_name ,
+		u.name,
+		c.course_start ,
+		c.course_end,
+		p.pay_state
+	FROM 
+		course c 
+	LEFT JOIN
+		`user` u ON c.user_code = u.user_code
+	LEFT JOIN 
+		payment p ON c.course_no = p.course_no 
+	WHERE 
+		p.user_code = #{param4} 
+	<if test="param3 != null and param3 != ''">
+    	AND c.course_name LIKE CONCAT('%', #{param3}, '%')
+	</if>
+	LIMIT #{param1}, #{param2}
+</select>
 
+<!-- 수강이력 페이징 쿼리문 -->
+<select id="courseListPageCnt" parameterType="String" resultType="Integer">
+	SELECT 	
+		CEIL(COUNT(p.pay_state)/#{param1})
+	FROM 
+		course c 
+	LEFT JOIN
+		`user` u ON c.user_code = u.user_code
+	LEFT JOIN 
+		payment p ON c.course_no = p.course_no 
+	WHERE 
+		p.user_code = #{param3}
+	<if test="param2 != null and param2 != ''">
+    	AND c.course_name LIKE CONCAT('%', #{param2}, '%')
+	</if>
+</select>
 
-
-
+<!-- 강의선택 모달 리스트 -->
+<select id="courseModalList" resultType="course">
+	SELECT 
+		c.course_name,
+		u.name,
+		cr.course_space
+	FROM 
+		course c
+	LEFT JOIN 
+		`user` u ON c.user_code = u.user_code 
+	LEFT JOIN 
+		course_rez cr ON c.course_no = cr.course_no
+</select>
 
 
 
