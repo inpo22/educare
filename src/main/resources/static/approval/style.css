@@ -188,3 +188,6 @@ a {
 #viewer {
 	min-height: 300px;
 }
+h5 {
+	display: inline-block;
+}
