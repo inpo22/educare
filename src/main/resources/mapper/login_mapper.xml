@@ -6,26 +6,25 @@
 
 	<select id="loginAccess" resultType="login">
 		SELECT
-		u.user_code,
-		u.name,
-		u.team_code,
-		u.classify_code,
-		ac1.code_name AS class_name,
-		d.team_name,
-		ac2.code_name AS classify_name,
-		u.photo,
-		u.pw
+		  u.user_code,
+		  u.name,
+		  u.team_code,
+		  u.classify_code,
+		  ac1.code_name AS class_name,
+		  d.team_name,
+		  ac2.code_name AS classify_name,
+		  u.photo,
+		  u.pw
 		FROM
-		user u
+		  user u
 		LEFT JOIN
-		all_code ac1 ON u.class_code = ac1.code
+		  all_code ac1 ON u.class_code = ac1.code
 		LEFT JOIN
-		all_code ac2 ON u.classify_code = ac2.code
+		  all_code ac2 ON u.classify_code = ac2.code
 		LEFT JOIN
-		department d ON u.team_code = d.team_code
+		  department d ON u.team_code = d.team_code
 		WHERE
-		u.id = #{param1}
-	
+		  u.id = #{param1}
 	</select>
 
 

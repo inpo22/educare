@@ -1,82 +1,157 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
 	String memId = (String) session.getAttribute("mem_id");
 %>
-<!-- 세션에서 가져온 mem_id 값을 페이지에 출력 -->
-<p>Session mem_id: <%= memId %></p>
 <!-- ======= Header ======= -->
 <header id="header" class="header fixed-top d-flex align-items-center">
 	<div class="d-flex align-items-center justify-content-between">
-		<a href="/" class="logo d-flex align-items-center">
-			<img src="/resources/img/EDUcare_logo.png" alt="">
+		<a href="/" class="logo d-flex align-items-center"> <img
+			src="/resources/img/EDUcare_logo.png" alt="">
 		</a>
 		<!-- <i class="bi bi-list toggle-sidebar-btn"></i> -->
-	</div><!-- End Logo -->
+	</div>
+	<!-- End Logo -->
 
 	<nav class="header-nav ms-auto">
 		<ul class="d-flex align-items-center">
 			<!-- 알림 -->
 			<jsp:include page="/views/common/notification.jsp"></jsp:include>
-			
+
 			<!-- 프로필 -->
-			<li class="nav-item dropdown pe-3">
-				<a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-					<!--  <img src="/resources/assets/img/profile-img.jpg" alt="Profile" class="rounded-circle"> -->
-				 
-			  		 				  <c:choose>
-									<c:when test='${not empty sessionScope.photo}'>
-				   						 <img src="/upload/${sessionScope.photo}" class="rounded-circle">
-									</c:when>
-									<c:otherwise>
-				  							  <i class="bi bi-person-circle"></i>
-									</c:otherwise>
-			   						</c:choose>
-				
-					<!--  <span>${sessionScope.photo}</span>-->
-					<span class="d-none d-md-block dropdown-toggle ps-2">${sessionScope.name}</span>
-				</a><!-- 프로필 아이콘 끝 -->
+			<li class="nav-item dropdown pe-3"><a
+				class="nav-link nav-profile d-flex align-items-center pe-0" href="#"
+				data-bs-toggle="dropdown"> <!--  <img src="/resources/assets/img/profile-img.jpg" alt="Profile" class="rounded-circle"> -->
 
-				<ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+					<c:choose>
+						<c:when test='${not empty sessionScope.photo}'>
+							<img src="/upload/${sessionScope.photo}" class="rounded-circle">
+						</c:when>
+						<c:otherwise>
+							<i class="bi bi-person-circle"></i>
+						</c:otherwise>
+					</c:choose> <!--  <span>${sessionScope.photo}</span>--> <span
+					class="d-none d-md-block dropdown-toggle ps-2">${sessionScope.name}</span>
+			</a>
+			<!-- 프로필 아이콘 끝 -->
+
+				<ul
+					class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
 					<li class="dropdown-header">
-						<h6>${sessionScope.user_code}</h6>						
-						<span>${sessionScope.name}</span>
-						<br>					
-						<span>${sessionScope.class_name}</span>
+						<h6>${sessionScope.user_code}</h6> <span>${sessionScope.name}</span>
+						<br> <span>${sessionScope.class_name}</span> <br> <span>${sessionScope.classify_name}</span>
 						<br>
-						<span>${sessionScope.classify_name}</span>
-						<br>
-					   </li>
-					
+					</li>
+
 					<li>
 						<hr class="dropdown-divider">
 					</li>
 
-					<li>
-						<a class="dropdown-item d-flex align-items-center" href="/mypage.go">
-							<i class="bi bi-person"></i>
-							<span>마이페이지</span>
-						</a>
-					</li>
+					<li><a class="dropdown-item d-flex align-items-center"
+						href="/mypage.go"> <i class="bi bi-person"></i> <span>마이페이지</span>
+					</a>
+					<li class="notification-item"><i
+						class="bi bi-exclamation-circle text-warning"></i>
+						<div>
+							<h4>Lorem Ipsum</h4>
+							<p>Quae dolorem earum veritatis oditseno</p>
+							<p>30 min. ago</p>
+						</div></li>
+
 					<li>
 						<hr class="dropdown-divider">
 					</li>
 
+					<li class="notification-item"><i
+						class="bi bi-x-circle text-danger"></i>
+						<div>
+							<h4>Atque rerum nesciunt</h4>
+							<p>Quae dolorem earum veritatis oditseno</p>
+							<p>1 hr. ago</p>
+						</div></li>
+
 					<li>
-						<a href="/logout.do" class="dropdown-item d-flex align-items-center" onclick="logoutAccess()">
-							<i class="bi bi-box-arrow-right"></i>
+						<hr class="dropdown-divider">
+					</li>
+
+					<li class="notification-item"><i
+						class="bi bi-check-circle text-success"></i>
+						<div>
+							<h4>Sit rerum fuga</h4>
+							<p>Quae dolorem earum veritatis oditseno</p>
+							<p>2 hrs. ago</p>
+						</div></li>
+
+					<li>
+						<hr class="dropdown-divider">
+					</li>
+
+					<li class="notification-item"><i
+						class="bi bi-info-circle text-primary"></i>
+						<div>
+							<h4>Dicta reprehenderit</h4>
+							<p>Quae dolorem earum veritatis oditseno</p>
+							<p>4 hrs. ago</p>
+						</div></li>
+
+				</ul> <!-- 알림 드롭다운 끝 --></li>
+			<!-- 알림 구획 끝 -->
+
+			<li class="nav-item dropdown pe-3"><a
+				class="nav-link nav-profile d-flex align-items-center pe-0" href="#"
+				data-bs-toggle="dropdown"> <!--  <img src="/resources/assets/img/profile-img.jpg" alt="Profile" class="rounded-circle"> -->
+					<c:choose>
+						<c:when test='${not empty sessionScope.photo}'>
+							<img src="/upload/${sessionScope.photo}" class="rounded-circle">
+						</c:when>
+						<c:otherwise>
+							<i class="bi bi-person-circle"></i>
+						</c:otherwise>
+					</c:choose> <!--  <span>${sessionScope.photo}</span>--> <span
+					class="d-none d-md-block dropdown-toggle ps-2">${sessionScope.user_name}</span>
+			</a> <!-- 프로필 아이콘 끝 -->
+
+				<ul
+					class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+					<li class="dropdown-header">
+						<!--  <h6>${sessionScope.user_code}</h6>  -->
+						<H6>${sessionScope.user_name}
+							<c:if test="${not empty sessionScope.class_name}">
+								<span>${sessionScope.class_name}</span>
+							</c:if>
+						</H6> <c:if test="${not empty sessionScope.team_name}">
+							<span>${sessionScope.team_name}</span>
+						</c:if> <!--  <span>${sessionScope.classify_name}</span>-->
+
+					</li>
+
+					<li>
+						<hr class="dropdown-divider">
+					</li>
+
+					<li><a class="dropdown-item d-flex align-items-center"
+						href="/mypage.go"> <i class="bi bi-person"></i> <span>마이페이지</span>
+					</a></li>
+					<li>
+						<hr class="dropdown-divider">
+					</li>
+
+					<li><a href="/logout.do"
+						class="dropdown-item d-flex align-items-center"
+						onclick="logoutAccess()"> <i class="bi bi-box-arrow-right"></i>
 							<span>로그아웃</span>
-						</a>
-					</li>
+					</a></li>
 
-				</ul><!-- 프로필 드롭다운 끝 -->
-			</li><!-- 프로필 구획 끝 -->
+				</ul> <!-- 프로필 드롭다운 끝 --></li>
+			<!-- 프로필 구획 끝 -->
 
 		</ul>
-	</nav><!-- 아이콘 구획 끝 -->
+	</nav>
+	<!-- 아이콘 구획 끝 -->
 
-</header><!-- End Header -->
+</header>
+<!-- End Header -->
 
 <script>
 	function logoutAccess() {
@@ -90,6 +165,4 @@
 			return false;
 		}
 	}
-
-
 </script>

@@ -36,14 +36,13 @@ public class LoginService {
 		if (enc_pw != null) {
 			success = encoder.matches(pw, enc_pw);
 			
-			
 		}
 		
 		ModelAndView mav = new ModelAndView();
 		if (success) {
 			//page = "main/superAdminMain";
 			session.setAttribute("user_code", loginInfo.getUser_code());
-			session.setAttribute("name", loginInfo.getName());
+			session.setAttribute("user_name", loginInfo.getName());
 			session.setAttribute("class_name", loginInfo.getClass_name());
 			session.setAttribute("classify_name", loginInfo.getClassify_name());
 			session.setAttribute("classify_code", loginInfo.getClassify_code());
@@ -51,7 +50,7 @@ public class LoginService {
 			session.setAttribute("team_code", loginInfo.getTeam_code());
 			session.setAttribute("photo", loginInfo.getPhoto());
 			logger.info("user_code :{} ", loginInfo.getUser_code());
-			logger.info("name :{} ", loginInfo.getName());
+			logger.info("user_name :{} ", loginInfo.getName());
 			logger.info("class_name :{} ", loginInfo.getClass_name());
 			logger.info("classify_name :{} ", loginInfo.getClassify_name());
 			logger.info("classify_code :{} ", loginInfo.getClassify_code());
@@ -63,15 +62,15 @@ public class LoginService {
 			String team_code = loginInfo.getTeam_code();
 			String classify_code = loginInfo.getClassify_code();
 			
-			if (classify_code.equals("U03")) {
-				  page = "redirect:/main/stuMain.go";
-			}else if (team_code != null) {
-				if (team_code.equals("T01") || team_code.equals("T06")) {
-					   page = "redirect:/main/superAdminMain.go";
-				}else {
-						page = "redirect:/main/adminMain.go";
-				}
-			}
+			 if (team_code != null) {
+	                if (team_code.equals("T001") || team_code.equals("T006")) {
+	                    page = "redirect:/main/superAdminMain.go";
+	                } else {
+	                    page = "redirect:/main/adminMain.go";
+	                }
+	            } else if (classify_code.equals("U03")) {
+	                page = "redirect:/main/stdMain.go";
+	            }
 			
 		}else {
 			mav.addObject("msg", msg);
@@ -81,7 +80,7 @@ public class LoginService {
 		
 		
 		
-	
+		
 
 	}
 
