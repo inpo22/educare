@@ -23,7 +23,8 @@
 	font-size: 150px;
 	color: #012970;
 }
-.changed-profile-img {
+.load-profile-img {
+	width: 120px;
 }
 </style>
 </head>
@@ -49,7 +50,7 @@
 									<i class="bi bi-person-circle"></i>
 								</c:if>
 								<c:if test="${dto.photo ne null}">
-									<img src="/photo/${dto.photo}" alt="Profile" class="rounded-circle">
+									<img src="/photo/${dto.photo}" alt="Profile" class="rounded-circle load-profile-img">
 								</c:if>
 							</span>
 							<br/>
@@ -113,16 +114,16 @@
 
 								<div class="tab-pane fade profile-edit pt-3" id="profile-edit">
 									<!-- Profile Edit Form -->
-									<form action="/mypage/empProfile/edit.do" method="post" id="profile-edit-form">
+									<form action="/mypageEmp/profile/update.do" method="post" id="profile-edit-form" enctype="multipart/form-data">
 										<div class="row mb-3">
 											<label for="profileImage" class="col-md-4 col-lg-3 col-form-label">프로필 사진</label>
 											<div class="col-md-8 col-lg-9">
-												<span class="profile-default-img">
+												<span class="profile-default-img" id="profile-change-img">
 													<c:if test="${dto.photo eq null}">
 														<i class="bi bi-person-bounding-box"></i>
 													</c:if>
 													<c:if test="${dto.photo ne null}">
-														<img src="/photo/${dto.photo}" alt="Profile" class="rounded-circle">
+														<img src="/photo/${dto.photo}" alt="Profile" class="load-profile-img">
 													</c:if>
 												</span>
 												<div class="pt-2">
@@ -145,7 +146,7 @@
 										<div class="row mb-3">
 											<label for="phone" class="col-md-4 col-lg-3 col-form-label">연락처</label>
 											<div class="col-md-8 col-lg-9">
-												<input name="phone" type="text" class="form-control" id="phone" value="${dto.phone}">
+												<input name="phone" type="text" class="form-control" id="phone" oninput="phoneNumber(this)" value="${dto.phone}">
 											</div>
 										</div>
 										<div class="text-center">
@@ -158,7 +159,7 @@
 								<div class="tab-pane fade pt-3" id="profile-change-password">
 									<br/>
 									<!-- Change Password Form -->
-									<form action="/mypage/empPw/edit.do" method="post" id="password-edit-form">
+									<form action="/mypageEmp/pw/update.do" method="post" id="password-edit-form">
 										<div class="row mb-3">
 											<label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">현재 비밀번호</label>
 											<div class="col-md-8 col-lg-9">
@@ -198,14 +199,103 @@
 
 </body>
 <script>
+	$('#profile-update-img-button').click(function(e) {
+		e.preventDefault();
+		
+		$('#profile-update-img').click();
+	});
+	
+	$('#profile-update-img').change(function() {
+		var file = this.files[0];
+		var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/;
+		
+		var content = '';
+		
+		if (!allowedExtensions.exec(file.name)) {
+            alert("이미지 파일 첨부만 가능합니다.");
+            this.value = '';
+            return;
+        }
+		
+		if (file) {
+			var reader = new FileReader();
+			reader.readAsDataURL(file);
+			reader.onload = function (){
+				content += '<img src="' + reader.result + '" class="load-profile-img"/>';
+				// console.log(content);
+				
+				$('#profile-change-img').html(content);
+			};
+		}
+	});
+	
+	$('#profile-remove-img-button').click(function(e) {
+		e.preventDefault();
+		if ('${dto.photo}' != null) {
+			var content = '<img src="/photo/${dto.photo}" alt="Profile" class="load-profile-img">';
+		} else {
+			var content = '<i class="bi bi-person-bounding-box"></i>';
+		}
+		$('#profile-change-img').html(content);
+		$('#profile-update-img').val('')
+	});
 
-$('#profileEdit-submit').click(function() {
-	$('#profile-edit-form').submit();
-});
-
-$('#pwEdit-submit').click(function() {
-	$('#password-edit-form').submit();
-});
-
+	$('#profileEdit-submit').click(function() {
+		var $email = $('#email');
+		var $phone = $('#phone');
+		
+		if($email.val()==''){
+			alert('이메일을 입력해주세요.');
+			$email.focus();
+		}
+		else if($phone.val()==''){
+			alert('핸드폰 번호를 입력해주세요.');
+			$phone.focus();
+		} else {
+			// 이메일 유효성 검사
+			var regEmail = /^([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
+			if (regEmail.test($email.val()) == false) {
+				alert("이메일 형식이 올바르지 않습니다.");
+				$email.focus();
+			} else {
+				$('#profile-edit-form').submit();
+			}
+		}
+	});
+	
+	$('#pwEdit-submit').click(function() {
+		var $newPw = $('#newPassword');
+		var $reNewPw = $('#reNewPassword');
+		
+		// 비밀번호 유효성 검사
+		var regex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[!@#$%^&*()_+={}[\]:;'"<>,./?\\|~-]).{8,16}$/;
+		
+		if(!regex.test($pw.val())){
+			alert("비밀번호는 8-16자리, 숫자, 소문자, 특수문자를 모두 포함해야 합니다.")
+			$newPw.focus();
+		} else if ($pw.val().indexOf(" ") != -1) {
+			alert("비밀번호는 공백을 포함할 수 없습니다.")
+			$newPw.focus();
+		} else if ($newPw.val() != $reNewPw.val()){
+			alert("새 비밀번호와 비밀번호 확인이 일치하지 않습니다.")
+			$reNewPw.focus();
+		} else {
+			var confirm = confirm('입력하신 비밀번호로 변경하시겠습니까?');
+			if (confirm) {
+				$('#password-edit-form').submit();
+			}
+		}
+	});
+	
+	//연락처 입력 시 하이픈 자동생성
+	$(document).on("keyup", "#phone", function() {
+		$(this).val( $(this).val().replace(/[^0-9]/g, "").replace(/(^02|^0505|^1[0-9]{3}|^0[0-9]{2})([0-9]+)?([0-9]{4})$/,"$1-$2-$3").replace("--", "-") ); 
+	});
+	// 하이픈 포함 13자리까지만 입력 가능하도록
+	function phoneNumber(e){
+		if(e.value.length>13){
+		e.value=e.value.slice(0,13);
+		}
+	}
 </script>
 </html>
