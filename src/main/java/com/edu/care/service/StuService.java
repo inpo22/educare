@@ -11,6 +11,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,8 +27,10 @@ public class StuService {
 	Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Autowired StuDAO stuDAO;
+	@Autowired PasswordEncoder encoder;
 	
-	public String file_root = "C:/upload/";
+	@Value("${spring.servlet.multipart.location}")
+	private String root;
 
 	public Map<String, Object> stdList(int currPage, int pagePerCnt, String type, String searchbox, String startDate,
 			String endDate) {
@@ -49,6 +53,12 @@ public class StuService {
 	}
 
 	public int reg(MultipartFile photo, Map<String, String> param) {
+		
+		// 비밀번호 암호화
+        String rawPassword = param.get("pw");
+        String encodedPassword = encoder.encode(rawPassword);
+        param.put("pw", encodedPassword);
+		
 		// 파일 처리 로직
         String newFileName = null;
         
@@ -69,7 +79,7 @@ public class StuService {
             
             try {
                 byte[] bytes = photo.getBytes();
-                Path path = Paths.get(file_root + "/" + newFileName);
+                Path path = Paths.get(root + "/" + newFileName);
                 Files.write(path, bytes);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -133,6 +143,11 @@ public class StuService {
 		List<CourseDTO> mList = stuDAO.courseModalList();
 		result.put("mList", mList);
 		return result;
+	}
+
+	public int courseReg(Map<String, String> param, String user_code) {
+		param.put("user_code", user_code);
+		return stuDAO.courseReg(param);
 	}
 	
 }

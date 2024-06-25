@@ -118,6 +118,7 @@ body {
     resize: none;
     overflow: hidden;
     text-align: center;
+    margin-top: 20px;
 }
 /* 레이블과 텍스트 박스 정렬 */
 
@@ -268,7 +269,7 @@ body {
 					<div class="row justify-content-end">
 					    <div class="col-auto">
 					        <div class="d-flex">
-					            <input id="Psearchbox" type="text" class="form-control" placeholder="강의명을 입력하세요." aria-label="Recipient's course" aria-describedby="button-addon2">
+					            <input id="Asearchbox" type="text" class="form-control" placeholder="강의명을 입력하세요." aria-label="Recipient's course" aria-describedby="button-addon2">
 					            <button id="search_btn" class="btn btn-outline-dark" type="button">검색</button>
 					        </div>
 					    </div>
@@ -362,9 +363,9 @@ body {
 	                    <textarea id="selected-course" readonly></textarea>
 	                </div>
 	                <form action="/std/course_reg.do" method="post">
-	                	<input type="text" id="user_code" name="user_code" value="${stdDto.user_code}"/>
-						<input type="text" id="course_name" name="course_name"/>					
-						<button id="course_reg" class="btn btn-outline-dark" onclick="course-reg()">선택하기</button>
+	                	<input type="hidden" id="user_code" name="user_code" value="${stdDto.user_code}"/>
+						<input type="hidden" id="course_name" name="course_name"/>					
+						<button id="course_reg" class="btn btn-dark">선택하기</button>
 	                </form>
 	                
 				</div>
@@ -376,16 +377,38 @@ body {
 
 </body>
 <script>
-// 수정버튼 클릭
+var msg = '${msg}'; // 쿼터 빠지면 넣은 문구가 변수로 인식됨.
+if(msg != ''){
+	alert(msg);
+}
+
+/* // 수정버튼 클릭
 $('#edit_btn').click(function(){
 	window.location.href = '/std/edit.go';
-});
+}); */
 
 //학생 리스트 이동
 $('#stdList_go').click(function(){
 	window.location.href = '/std/list.go';
 });
 
+
+
+
+
+
+
+//Pagination 전 변수 선언
+var page = 1;
+var totalPage = 0;
+var Psearchbox = '';
+var Csearchbox='';
+var user_code = '${stdDto.user_code}';
+
+listCall(page, Psearchbox, user_code);
+CourseListCall(page, Csearchbox, user_code);
+
+/* !모든 강의선택 모달 스크립트 시작! */
 
 function select(row) {
     // 기존 선택된 행을 초기화
@@ -422,7 +445,14 @@ function resizeTextarea(textarea) {
     textarea.style.height = textarea.scrollHeight + 'px';
 }
 
-
+// 선택하기 버튼
+$('#course_reg').click(function(){
+	course_name = $('#course_name').val();
+	if(course_name == ''){
+		alert("강의를 선택해주세요.");
+		event.preventDefault();
+	}
+});
 
 // 강의 선택 모달 리스트 뿌리기
 function CourseModalList(){
@@ -459,22 +489,6 @@ function drawCourseModal(CourseModalList){
 	$('#course-sel').html(content);
 }
 
-
-
-
-//Pagination 전 변수 선언
-var page = 1;
-var totalPage = 0;
-var Psearchbox = '';
-var Csearchbox='';
-var user_code = '${stdDto.user_code}';
-
-listCall(page, Psearchbox, user_code);
-CourseListCall(page, Csearchbox, user_code);
-
-
-/* !모든 수강이력 스크립트 시작! */
- 
 function openModal() {
     $('#course-modal').css('display', 'block');
     user_code = document.getElementById('user_code').value; // user_code 값 저장
@@ -485,6 +499,12 @@ function CloseModal() {
     $('#course-modal').css('display', 'none');
     
 } 
+
+/* !모든 강의선택 모달 스크립트 끝! */
+
+
+/* !모든 수강이력 스크립트 시작! */
+ 
 
 // 수강이력 리스트 뿌리기 시작 
 function CourseListCall(page, Csearchbox, user_code){
@@ -520,7 +540,13 @@ function drawCourseList(courseList){
 		content += '<td>' + data.name + '</td>';
 		content += '<td>' + data.course_start + '</td>';
 		content += '<td>' + data.course_end + '</td>';
-		content += '<td>' + data.pay_state + '</td>';
+		if(data.pay_state == 0) {
+            content += '<td>결제대기</td>';
+        } else if(data.pay_state == 1) {
+            content += '<td>결제완료</td>';
+        } else if(data.pay_state == 2) {
+            content += '<td>결제취소</td>';
+        }
 		content += '</tr>';
 	}
 	$("#courseList").html(content);

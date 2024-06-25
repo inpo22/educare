@@ -36,4 +36,6 @@ public interface StuDAO {
 
 	List<CourseDTO> courseModalList();
 
+	int courseReg(Map<String, String> param);
+
 }
