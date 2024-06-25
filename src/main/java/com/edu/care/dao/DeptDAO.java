@@ -13,7 +13,7 @@ public interface DeptDAO {
 
 	List<DeptDTO> getDept();
 
-	List<EmpDTO> getUser(Map<String, Object> param);
+	List<EmpDTO> getMember(Map<String, Object> param);
 
 	String getNewTC();
 
