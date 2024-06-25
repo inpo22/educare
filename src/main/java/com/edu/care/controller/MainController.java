@@ -27,9 +27,10 @@ public class MainController {
 		
 		if (session.getAttribute("user_code") == null) {
 			session.setAttribute("user_code", "2024U010001");
-			session.setAttribute("user_name", "관리자");
+			session.setAttribute("user_name", "송승민");
 			session.setAttribute("class_name", "대리");
 			session.setAttribute("team_name", "인사총무팀");
+			session.setAttribute("classify_name", "정규직");
 			session.setAttribute("team_code", "T06");
 			session.setAttribute("classify_code", "U01");
 		}
