@@ -275,7 +275,7 @@
 	// 부서 Tree
 	var data = [{
 		text: '에듀케어',
-		value: 'T00'
+		value: 'T000'
 	}];
 	
 	const tree = new tui.Tree('#dept-tree', {
