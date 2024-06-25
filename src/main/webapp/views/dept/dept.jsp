@@ -415,7 +415,8 @@
 			}
 		});
 	 }
-	function getUser_ajax(code){
+
+ 	function getUser_ajax(code){
 		var result_data;
 		$.ajax({
 			type	: 'get',
@@ -559,11 +560,6 @@
 			addNode(rootId, data);
  			//console.log('====================================================')
 		});
-		var ogTree = $('#deptTree').clone(true);
-		var newTree = $('#changeDept_modal').find('.modal-body');
-		newTree.append(ogTree);
-		//console.log(newTree.html())
-		modal.show()
 
 		selected_nodeId = rootId;
 		selected_tab = 'deptInfo';
