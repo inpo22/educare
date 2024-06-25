@@ -36,34 +36,7 @@ public class LoginController {
 		logger.info("id : {}/ pw : {}", id, pw);
 		return loginService.loginAccess(session, id, pw);
 	}
-	
-	/*
-	 * @PostMapping(value = "/login.do") public String loginAccess(HttpSession
-	 * session, Model model, String id, String pw) { String page = "login/login";
-	 * logger.info("::최초 로그인 실행::"); logger.info("id : {} / pw : {}", id, pw);
-	 * 
-	 * LoginDTO loginInfo = loginService.loginAccess(id, pw); logger.info("login :"
-	 * + loginInfo);
-	 * 
-	 * if (loginInfo != null) { page = "main/main";
-	 * 
-	 * session.setAttribute("user_code", loginInfo.getUser_code());
-	 * session.setAttribute("name", loginInfo.getName());
-	 * session.setAttribute("class_code", loginInfo.getClass_code());
-	 * session.setAttribute("team_code", loginInfo.getTeam_code());
-	 * session.setAttribute("classify_code", loginInfo.getClassify_code());
-	 * session.setAttribute("team_name", loginInfo.getTeam_name()); String Filename
-	 * = loginInfo.getPhoto(); session.setAttribute("photo", Filename);
-	 * 
-	 * //session.setAttribute("photo", loginInfo.getPhoto());
-	 * logger.info("status:{}", loginInfo.getUser_code()); logger.info("status:{}",
-	 * loginInfo.getName()); logger.info("status:{}", loginInfo.getClass_code());
-	 * logger.info("status:{}", loginInfo.getTeam_code()); logger.info("status:{}",
-	 * loginInfo.getClassify_code()); logger.info("status:{}",
-	 * loginInfo.getTeam_name()); logger.info("photo:{}", Filename);
-	 * 
-	 * } else { model.addAttribute("msgdo", "아이디 또는 비밀번호를 확인해주세요"); } return page; }
-	 */
+
 
 	// 로그아웃
 	@GetMapping(value = "/logout.do")
@@ -75,9 +48,11 @@ public class LoginController {
 		session.removeAttribute("team_name");
 		session.removeAttribute("team_code");
 		session.removeAttribute("classify_code");
+		session.removeAttribute("classify_name");
+		session.removeAttribute("photo");
 		model.addAttribute("msg", "로그아웃 되었습니다.");
 		session.invalidate();
-		return "login/login";
+		return "redirect:/login.go";
 	}
 
 	/*
@@ -91,5 +66,7 @@ public class LoginController {
 	 * Cookie[] cookies = request.getCookies(); for (Cookie cookie : cookies) { if
 	 * (cookie.getName().equals("remember")) { username = cookie.getValue(); } }
 	 * request.setAttribute("remember", username); return "login/login";
+	 * 
+	 * }
 	 */
 }
