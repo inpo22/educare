@@ -146,91 +146,95 @@
 
 	<!-- 부서공지 리스트 권한 조회-->
 	<select id="teamBoardList" resultType="String">
-		SELECT team_name FROM department 
-<!-- 		WHERE upper_code IN ('T00','T02','T03')  -->
-	</select>
-
-	<!-- T02에 속한 부서도 권한 추가  -->
-	<select id="isUpperCodeT02" resultType="String">
-		SELECT upper_code FROM department WHERE team_code = #{team_code}
+	    SELECT team_name FROM department WHERE team_code = #{param1}
 	</select>
 
 	<!-- 부서공지 리스트 불러오기 -->
 	<select id="teamList" resultType="board">
-		SELECT  
-			p.post_no
-			, (SELECT u.name FROM user u WHERE u.user_code = p.user_code) AS user_name
-			, (SELECT d.team_name FROM department d WHERE d.team_code = (SELECT u3.team_code FROM user u3 WHERE u3.user_code = p.user_code)) AS team_name 
-			, (SELECT ac.code_name FROM all_code ac WHERE ac.code = (SELECT u2.class_code FROM user u2 WHERE u2.user_code = p.user_code)) AS class_name
-			, p.title
-			, p.bHit
-			, p.reg_date
-			, p.fixed_yn
-		FROM post p 
-		JOIN board b ON p.board_no = b.board_no
-		JOIN user u ON p.user_code = u.user_code
-		JOIN all_code ac2 ON u.team_code = ac2.code
-		WHERE p.is_del = 0 AND b.board_no = 2 AND u.team_code = #{param5}
-		<if test="param4 != ''">
-			AND (
-	        <choose>
-	            <when test="param3 == 'title'">
-	                p.title LIKE CONCAT('%', #{param4}, '%')
-	            </when>
-	            <when test="param3 == 'writer'">
-	                EXISTS (SELECT 1 FROM user u2 WHERE u2.user_code = p.user_code AND u2.name LIKE CONCAT('%', #{param4}, '%'))
-	            </when>
-	            <when test="param3 == 'contents'">
-	                p.contents LIKE CONCAT('%', #{param4}, '%')
-	            </when>
-	        </choose>
-	        )
-    	</if>
-		ORDER BY p.post_no DESC 
-		LIMIT #{param2} OFFSET #{param1}
+    SELECT  
+        p.post_no
+        , u.name AS user_name
+        , d.team_name AS team_name 
+        , (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code) AS class_name
+        , p.title
+        , p.bHit
+        , p.reg_date
+        , p.fixed_yn
+    FROM post p 
+    JOIN board b ON p.board_no = b.board_no
+    JOIN user u ON p.user_code = u.user_code
+    JOIN department d ON u.team_code = d.team_code
+    WHERE p.is_del = 0 AND b.board_no = 2 
+    <if test="param5 != null">
+        AND u.team_code = #{param5}
+    </if>
+    <if test="param4 != null and param4 != ''">
+        AND (
+            <choose>
+                <when test="param3 == 'title'">
+                    p.title LIKE CONCAT('%', #{param4}, '%')
+                </when>
+                <when test="param3 == 'writer'">
+                    EXISTS (SELECT 1 FROM user u2 WHERE u2.user_code = p.user_code AND u2.name LIKE CONCAT('%', #{param4}, '%'))
+                </when>
+                <when test="param3 == 'contents'">
+                    p.contents LIKE CONCAT('%', #{param4}, '%')
+                </when>
+            </choose>
+        )
+    </if>
+	    ORDER BY p.post_no DESC 
+	    LIMIT #{param2} OFFSET #{param1}
 	</select>
 
 	<!-- 부서 페이지카운트 -->
 	<select id="teamListPageCnt" resultType="Integer">
-		SELECT CEIL(COUNT(p.post_no)/#{param1}) 
-		FROM post p 
-		JOIN board b ON p.board_no = b.board_no
-		JOIN user u ON p.user_code = u.user_code
-   		JOIN all_code ac ON u.team_code = ac.code
-		WHERE p.is_del = 0 AND b.board_no = 2 AND u.team_code = #{param4}
-		<if test="param3 != ''">
-       		AND (
-	        <choose>
-	            <when test="param2 == 'title'">
-	                p.title LIKE CONCAT('%', #{param3}, '%')
-	            </when>
-	            <when test="param2 == 'writer'">
-	                EXISTS (SELECT 1 FROM user u WHERE u.user_code = p.user_code AND u.name LIKE CONCAT('%', #{param3}, '%'))
-	            </when>
-	            <when test="param2 == 'contents'">
-	                p.contents LIKE CONCAT('%', #{param3}, '%')
-	            </when>
-	        </choose>
-	        )
-    	</if>
-	</select>
+	SELECT CEIL(COUNT(p.post_no) / #{param1})
+	FROM post p
+	JOIN board b ON p.board_no = b.board_no
+	JOIN user u ON p.user_code = u.user_code
+	JOIN department d ON u.team_code = d.team_code
+	WHERE p.is_del = 0 AND b.board_no = 2
+	<if test="param4 != null">
+		AND u.team_code = #{param4}
+	</if>
+	<if test="param3 != null and param3 != ''">
+		AND (
+		<choose>
+			<when test="param2 == 'title'">
+				p.title LIKE CONCAT('%', #{param3}, '%')
+			</when>
+			<when test="param2 == 'writer'">
+				EXISTS (SELECT 1 FROM user u WHERE u.user_code = p.user_code AND u.name
+				LIKE CONCAT('%', #{param3}, '%'))
+			</when>
+			<when test="param2 == 'contents'">
+				p.contents LIKE CONCAT('%', #{param3}, '%')
+			</when>
+		</choose>
+		)
+	</if>
+</select>
 
 	<!-- 부서페이지 상단고정여부체크 -->
 	<select id="topFixedTeamList" resultType="board">
-		SELECT  
-			p.post_no
-			, (SELECT u.name FROM user u WHERE u.user_code = p.user_code) AS user_name
-			, (SELECT ac.code_name FROM all_code ac WHERE ac.code = (SELECT u2.class_code FROM user u2 WHERE u2.user_code = p.user_code)) AS class_name
-			, (SELECT d.team_name FROM department d WHERE d.team_code = (SELECT u3.team_code FROM user u3 WHERE u3.user_code = p.user_code)) AS team_name
-			, p.title
-			, p.bHit
-			, p.reg_date
-			, p.fixed_yn
-		FROM post p 
-		JOIN board b ON p.board_no = b.board_no
-		JOIN user u ON p.user_code = u.user_code
-    	JOIN department d ON u.team_code = d.team_code
-		WHERE p.is_del = 0 AND b.board_no = 2 AND p.fixed_yn = 1 AND u.team_code = #{param1}
+    SELECT  
+	        p.post_no
+	        ,  u.name AS user_name
+	        , d.team_name AS team_name 
+	        , (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code) AS class_name
+	        , p.title
+	        , p.bHit
+	        , p.reg_date
+	        , p.fixed_yn
+    FROM post p 
+    JOIN board b ON p.board_no = b.board_no
+    JOIN user u ON p.user_code = u.user_code
+    JOIN department d ON u.team_code = d.team_code
+    WHERE p.is_del = 0 AND b.board_no = 2 AND p.fixed_yn = 1 
+    <if test="param1 != null">
+        AND u.team_code = #{param1}
+    </if>
 	</select>
 
 	<!-- 부서 글작성 -->

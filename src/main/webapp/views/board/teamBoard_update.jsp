@@ -129,7 +129,7 @@
 						<td>
 							<ul id="fileList" >
 								 <c:forEach var="file" items="${attachFileList}">
-                                    <li><span >${file.ori_filename}</span>&nbsp;&nbsp;&nbsp;<span onclick="deleteFileList(this, '${file.file_no}')">X</span></li>
+                                    <li><span >${file.ori_filename}</span>&nbsp;&nbsp;&nbsp;<span onclick="deleteFileList(this, '${file.file_no}')" style="cursor: pointer;">X</span></li>
                                 </c:forEach>
 							</ul>
 						</td>

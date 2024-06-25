@@ -78,6 +78,10 @@
 #editor {
 	min-height: 500px;
 }
+
+.remove-x {
+	cursor: pointer;
+}
 </style>
 </head>
 

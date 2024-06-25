@@ -82,6 +82,7 @@
 				<div class="teamSelectContainer" >
 					<c:if test="${isPerm}">
 						<select id="hiddenTeamCategory">
+							<option value="">전체</option>
 							<c:forEach items="${teamList}" var="team">
 								<option value="${team}">${team}</option>
 							</c:forEach>
@@ -142,7 +143,7 @@ var searchCategory = '';
 var searchWord = '';
 var topFixed = false;
 var searchFlag = false;
-listCall(page, searchCategory, searchWord);
+
 
 function formatDate(dateStr) {
 	const options = {year: 'numeric', month: '2-digit', day: '2-digit' };
@@ -150,7 +151,7 @@ function formatDate(dateStr) {
 	return date.toLocaleDateString('kr-KO', options);
 }
 
-function listCall(page, searchCategory, searchWord){
+function listCall(page, searchCategory, searchWord, teamCode){
 	$.ajax({
 		type: 'post',
 		url: '/teamBoard/list.ajax',
@@ -158,6 +159,7 @@ function listCall(page, searchCategory, searchWord){
 			'page': page,
 			'searchCategory':searchCategory,
 			'searchWord':searchWord
+			'selectedTeamCode': teamCode
 		},
 		dataType: 'JSON',
 		success: function(data){
@@ -310,6 +312,7 @@ $('#searchBtn').click(function() {
 	searchFlag = true;
 	searchCategory = $('#searchCategory').val();
 	searchWord = $('#searchWord').val();
+	var teamCode = $('#hiddenTeamCategory').val();
 	if(searchWord == ''){
 		alert("검색어를 입력해주세요.");
 		return;
@@ -336,6 +339,11 @@ $('#searchWord').keypress(function(event) {
 	if (event.which == 13) {
 		$('#searchBtn').click();
 	}
+});
+
+$('#hiddenTeamCategory').change(function() {
+    var teamCode = $(this).val(); 
+    listCall(page, searchCategory, searchWord, teamCode);
 });
 </script>
 </html>

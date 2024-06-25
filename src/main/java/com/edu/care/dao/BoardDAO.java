@@ -42,15 +42,13 @@ public interface BoardDAO {
 
 	void newFileNameUpdate(BoardDTO dto);
 
-	List<String> teamBoardList();
+	List<String> teamBoardList(String teamCode);
 
 	List<BoardDTO> teamList(int start, int pagePerCnt, String searchCategory, String searchWord, String teamCode);
 
 	int teamListPageCnt(int pagePerCnt, String searchCategory, String searchWord, String teamCode);
 
 	List<BoardDTO> topFixedTeamList(String teamCode);
-
-	String isUpperCodeT02(String teamCode);
 
 	void teamBoardWrite(BoardDTO dto);
 
