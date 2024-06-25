@@ -38,10 +38,10 @@ public class MainController {
 		String team_code = (String) session.getAttribute("team_code");
 		String classify_code = (String) session.getAttribute("classify_code");
 		
-		if (team_code.equals("T01") || team_code.equals("T06")) {
+		if (team_code.equals("T001") || team_code.equals("T006")) {
 			page = "redirect:/main/superAdminMain.go";
 		} else if (team_code != null) {
-			if (!team_code.equals("T01") && !team_code.equals("T06")) {
+			if (!team_code.equals("T001") && !team_code.equals("T006")) {
 				page = "redirect:/main/adminMain.go";
 			}
 		}
