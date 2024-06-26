@@ -1,5 +1,7 @@
 package com.edu.care.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
@@ -138,17 +140,35 @@ public class ApprovalController {
 	}
 
 	@GetMapping(value="/approval/approve.do")
-	public String approve(String au_code, String apv_no, HttpSession session) {
-		approvalService.approve(apv_no, au_code);
+	public String approve(String au_code, HttpSession session) {
+		String user_code = (String) session.getAttribute("user_code");
 		
-		return "redirect:/approval/detail.go?au_code=" + au_code;
+		approvalService.approve(user_code, au_code);
+		String enc_au_code = "";
+		
+		try {
+			enc_au_code = URLEncoder.encode(au_code, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		
+		return "redirect:/approval/detail.go?au_code=" + enc_au_code;
 	}
 	
 	@GetMapping(value="/approval/reject.do")
-	public String reject(String au_code, String apv_no) {
-		approvalService.reject(au_code, apv_no);
+	public String reject(String au_code, HttpSession session) {
+		String user_code = (String) session.getAttribute("user_code");
 		
-		return "redirect:/approval/detail.go?au_code=" + au_code;
+		approvalService.reject(au_code, user_code);
+		String enc_au_code = "";
+		
+		try {
+			enc_au_code = URLEncoder.encode(au_code, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		
+		return "redirect:/approval/detail.go?au_code=" + enc_au_code;
 	}
 	
 }

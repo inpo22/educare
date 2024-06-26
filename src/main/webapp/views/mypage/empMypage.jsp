@@ -11,21 +11,14 @@
 <meta content="" name="description">
 <meta content="" name="keywords">
 
-<!-- css -->
 <jsp:include page="/views/common/head.jsp"></jsp:include>
+
+<!-- css -->
+<link href="/resources/mypage/empStyle.css" rel="stylesheet">
+
 <!-- js -->
 
 <style>
-#profile-update-img {
-	display: none;
-}
-.profile-default-img {
-	font-size: 150px;
-	color: #012970;
-}
-.load-profile-img {
-	width: 120px;
-}
 </style>
 </head>
 
@@ -199,6 +192,11 @@
 
 </body>
 <script>
+	var msg = '${msg}';
+	if (msg) {
+		alert(msg);
+	}
+
 	$('#profile-update-img-button').click(function(e) {
 		e.preventDefault();
 		
@@ -212,10 +210,10 @@
 		var content = '';
 		
 		if (!allowedExtensions.exec(file.name)) {
-            alert("이미지 파일 첨부만 가능합니다.");
-            this.value = '';
-            return;
-        }
+			alert("이미지 파일 첨부만 가능합니다.");
+			this.value = '';
+			return;
+		}
 		
 		if (file) {
 			var reader = new FileReader();
@@ -258,7 +256,10 @@
 				alert("이메일 형식이 올바르지 않습니다.");
 				$email.focus();
 			} else {
-				$('#profile-edit-form').submit();
+				var result = confirm('입력하신 정보로 변경하시겠습니까?');
+				if (result) {
+					$('#profile-edit-form').submit();
+				}
 			}
 		}
 	});
@@ -270,18 +271,18 @@
 		// 비밀번호 유효성 검사
 		var regex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[!@#$%^&*()_+={}[\]:;'"<>,./?\\|~-]).{8,16}$/;
 		
-		if(!regex.test($pw.val())){
+		if(!regex.test($newPw.val())){
 			alert("비밀번호는 8-16자리, 숫자, 소문자, 특수문자를 모두 포함해야 합니다.")
 			$newPw.focus();
-		} else if ($pw.val().indexOf(" ") != -1) {
+		} else if ($newPw.val().indexOf(" ") != -1) {
 			alert("비밀번호는 공백을 포함할 수 없습니다.")
 			$newPw.focus();
 		} else if ($newPw.val() != $reNewPw.val()){
 			alert("새 비밀번호와 비밀번호 확인이 일치하지 않습니다.")
 			$reNewPw.focus();
 		} else {
-			var confirm = confirm('입력하신 비밀번호로 변경하시겠습니까?');
-			if (confirm) {
+			var result = confirm('입력하신 비밀번호로 변경하시겠습니까?');
+			if (result) {
 				$('#password-edit-form').submit();
 			}
 		}
