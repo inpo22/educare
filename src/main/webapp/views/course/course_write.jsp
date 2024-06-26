@@ -482,7 +482,27 @@ $('#nextBtn').on("click", function() {
 function reDrawCalendar(){
 	var rePreMonthFirstDay = new Date(preYear, preMonth, 1).getDay();
 	var rePreMonthLastDate =  new Date(preYear, preMonth + 1, 0).getDate();
-	
+	var chkDay = [];
+
+	$('.reservation-item').each(function() {
+		var year = $(this).find('span').html().substring(0,4)*1;
+		var month = $(this).find('span').html().substring(5,7)*1;
+		var day = $(this).find('span').html().substring(8,10)*1;
+		var dupFlag = true;
+
+		for (var i = 0; i < chkDay.length; i++) {
+			if (chkDay[i].year == year && chkDay[i].month == month && chkDay[i].day == day) {
+				dupFlag = false;
+				break;
+			}
+		}
+
+		if (dupFlag) {
+			var obj = {year:year, month:month, day:day};
+			chkDay.push(obj);
+		}
+	});
+
 	$('#year-month').html(preYear + "년 " + (preMonth + 1) + "월");
 	
 	var count = 1;
@@ -496,7 +516,14 @@ function reDrawCalendar(){
             con += '<div class="emptyDay"></div>';
         } else {
         	var checkToday = (preYear === today.getFullYear() && preMonth === today.getMonth() && count === currentDay) ? ' today' : '';
-        	con += '<div class="day' + checkToday + '" id="select-day-' + count + '" data-day="' + count + '">' + count + '</div>';
+			var highLightDay = '';
+			for (var j = 0; j < chkDay.length; j++) {
+				if (preYear === chkDay[j].year && (preMonth+1) === chkDay[j].month && count === chkDay[j].day) {
+					highLightDay = ' highlight';
+					break;
+				}
+			}
+        	con += '<div class="day' + checkToday + highLightDay + '" id="select-day-' + count + '" data-day="' + count + '">' + count + '</div>';
             count++;
         }
     }
