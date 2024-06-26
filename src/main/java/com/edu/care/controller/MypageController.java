@@ -62,10 +62,15 @@ public class MypageController {
 	}
 	
 	@PostMapping(value="/mypageEmp/pw/update.do")
-	public String empPwEdit(@RequestParam Map<String, String> param, HttpSession session) {
+	public String empPwEdit(@RequestParam Map<String, String> param, HttpSession session, RedirectAttributes rAtt) {
 		String user_code = (String) session.getAttribute("user_code");
+		String msg = "현재 비밀번호를 확인해주세요.";
 		
-		mypageService.empPwEdit(param, user_code);
+		boolean result = mypageService.empPwEdit(param, user_code);
+		
+		if (result == false) {
+			rAtt.addFlashAttribute("msg", msg);
+		}
 		
 		return "redirect:/mypageEmp.go";
 	}

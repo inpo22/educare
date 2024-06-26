@@ -37,4 +37,9 @@ public interface MypageDAO {
 
 	int stdattdListPageCnt(int pagePerCnt, String Asearchbox, String user_code);
 
+	String pwCheck(String user_code);
+
+	void pwUpdate(String new_enc_pw, String user_code);
+
+
 }

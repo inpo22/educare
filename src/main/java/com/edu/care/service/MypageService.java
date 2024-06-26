@@ -125,10 +125,21 @@ public class MypageService {
 		}
 	}
 	
-	public void empPwEdit(Map<String, String> param, String user_code) {
+	public boolean empPwEdit(Map<String, String> param, String user_code) {
 		String currentPassword = param.get("currentPassword");
 		String newPassword = param.get("newPassword");
-		String reNewPassword = param.get("reNewPassword");
+		String enc_pw = mypageDAO.pwCheck(user_code);
+		boolean success = false;
+		
+		if (enc_pw != null) {
+			success = encoder.matches(currentPassword, enc_pw);
+		}
+		
+		if (success) {
+			String new_enc_pw = encoder.encode(newPassword);
+			mypageDAO.pwUpdate(new_enc_pw, user_code);
+		}
+		return success;
 	}
 
 
