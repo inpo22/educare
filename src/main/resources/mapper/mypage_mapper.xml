@@ -171,4 +171,12 @@
 		WHERE user_code = #{param1}
 	</update>
 	
+	<select id="pwCheck" resultType="String">
+		SELECT u.pw FROM user u WHERE u.user_code = #{param1}
+	</select>
+	
+	<update id="pwUpdate">
+		UPDATE user SET pw = #{param1} WHERE user_code = #{param2}
+	</update>
+	
 </mapper>
