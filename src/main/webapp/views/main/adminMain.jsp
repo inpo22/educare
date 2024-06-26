@@ -14,8 +14,6 @@
 
 <jsp:include page="/views/common/head.jsp"></jsp:include>
 
-<link href="/resources/main/style.css" rel="stylesheet">
-
 <!-- css -->
 <link href="/resources/main/style.css" rel="stylesheet">
 

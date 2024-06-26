@@ -33,4 +33,8 @@ public interface MypageDAO {
 
 	int cancel(String course_name);
 
+	String pwCheck(String user_code);
+
+	void pwUpdate(String new_enc_pw, String user_code);
+
 }

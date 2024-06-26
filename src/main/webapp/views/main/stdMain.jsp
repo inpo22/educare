@@ -11,8 +11,11 @@
 <meta content="" name="description">
 <meta content="" name="keywords">
 
-<!-- css -->
 <jsp:include page="/views/common/head.jsp"></jsp:include>
+
+<!-- css -->
+<link href="/resources/main/style.css" rel="stylesheet">
+
 <!-- js -->
 
 <style>

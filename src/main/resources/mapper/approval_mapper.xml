@@ -106,7 +106,7 @@
 				END AS is_my_turn
 			FROM approval a JOIN approval_order_rank aor ON a.au_code = aor.au_code JOIN user u ON a.user_code = u.user_code
 			WHERE aor.user_code = #{param3}) AS subquery
-		WHERE is_my_turn = 1
+		WHERE is_my_turn = 1 AND state = 0
 		<if test="param5 != ''">
 			AND
 			<if test="param4 == 'subject'">
@@ -186,7 +186,7 @@
 				WHEN is_rejected != 2 AND order_count > approval_state THEN 0
 			END AS total_order_state
 		FROM approval a JOIN approval_order_check aoc ON a.au_code = aoc.au_code JOIN user u ON a.user_code = u.user_code
-		WHERE aoc.user_code = #{param3} AND aoc.state = 1
+		WHERE aoc.user_code = #{param3} AND aoc.state IN (1, 2)
 		<if test="param5 != ''">
 			AND
 			<if test="param4 == 'subject'">
@@ -214,7 +214,7 @@
 		SELECT
 			CEIL(COUNT(a.au_code)/#{param1})
 		FROM approval a JOIN approval_order_check aoc ON a.au_code = aoc.au_code JOIN user u ON a.user_code = u.user_code
-		WHERE aoc.user_code = #{param3} AND aoc.state = 1
+		WHERE aoc.user_code = #{param3} AND aoc.state IN (1, 2)
 		<if test="param4 != ''">
 			AND
 			<if test="param3 == 'subject'">
@@ -687,11 +687,11 @@
 	</select>
 	
 	<update id="approve">
-		UPDATE approval_order SET state = 1, apv_date = CURRENT_TIMESTAMP() WHERE apv_no = #{param1}
+		UPDATE approval_order SET state = 1, apv_date = CURRENT_TIMESTAMP() WHERE au_code = #{param1} AND user_code = #{param2}
 	</update>
 	
 	<update id="reject">
-		UPDATE approval_order SET state = 2, apv_date = CURRENT_TIMESTAMP() WHERE apv_no = #{param1}
+		UPDATE approval_order SET state = 2, apv_date = CURRENT_TIMESTAMP() WHERE au_code = #{param1} AND user_code = #{param2}
 	</update>
 	
 	<update id="plusRemainVaca">
@@ -714,7 +714,7 @@
 				WHEN aoc.order_count = aoc.approval_state THEN 1
 			END AS is_comp
 		FROM approval_order_check aoc
-		WHERE aoc.apv_no = #{param2}
+		WHERE aoc.user_code = #{param2}
 	</select>
 	
 	<insert id="scheduleWrite" parameterType="approval">
@@ -756,7 +756,9 @@
 	</insert>
 	
 	<select id="notiReceiveUser" resultType="String">
-		SELECT ao.user_code FROM approval_order ao WHERE ao.apv_no = (#{param1} + 1)
+		SELECT ao.user_code FROM approval_order ao 
+			WHERE ao.apv_no = 
+				((SELECT ao.apv_no FROM approval_order ao WHERE ao.au_code = #{param1} AND ao.user_code = #{param2}) + 1)
 	</select>
 	
 </mapper>
