@@ -25,7 +25,7 @@
                             <img src="/photo/${sessionScope.photo}" class="rounded-circle">
                         </c:when>
                         <c:otherwise>
-                            <i class="bi bi-person-circle"></i>
+                            <i class="bi bi-person-circle" style="font-size: 30px;"></i>
                         </c:otherwise>
                     </c:choose>
                     <!-- <span>${sessionScope.photo}</span> -->
@@ -80,14 +80,15 @@
 
 <script>
     function logoutAccess() {
-        var id = "${mem_id}";
-        console.log("mem_id:", id);
-        if (id !== null && id !== "") {
+        var id = "${user_code}";
+        console.log("user_code:", id);
+        if (id != null && id != "") {
+        	alert("로그아웃 되었습니다.")
             window.location.href = "/logout.do";
-            return false;
+            
         } else {
-            alert("로그아웃 되었습니다.");
-            return false;
+            alert("이미 로그아웃 상태입니다.");
+        
         }
     }
 </script>

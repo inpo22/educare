@@ -13,9 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
-
-
-
 import com.edu.care.service.LoginService;
 
 @Controller
@@ -58,9 +55,6 @@ public class LoginController {
 		}
 		
 		 
-		 
-	
-
 	// 로그아웃
 	@GetMapping(value = "/logout.do")
 	public String logoutAccess(HttpSession session, Model model, HttpServletResponse response) {
@@ -73,30 +67,20 @@ public class LoginController {
 		session.removeAttribute("classify_code");
 		session.removeAttribute("classify_name");
 		session.removeAttribute("photo");
-		model.addAttribute("msg", "로그아웃 되었습니다.");
+		//model.addAttribute("msg", "로그아웃 되었습니다.");
 		session.invalidate();
 	
-		 Cookie cookie = new Cookie("savedId", null);
-	        cookie.setMaxAge(0);
-	        response.addCookie(cookie);
 		
-		
-		return "redirect:/login.go";
+		return "login/login";
 	}
 
-	/*
-	 * //아이디 저장하기
-	 * 
-	 * @GetMapping(value = "/login.go") public String loginChekck(HttpServletRequest
-	 * request) {
-	 * 
-	 * String username = "";
-	 * 
-	 * Cookie[] cookies = request.getCookies(); for (Cookie cookie : cookies) { if
-	 * (cookie.getName().equals("remember")) { username = cookie.getValue(); } }
-	 * request.setAttribute("remember", username); return "login/login";
-	 * 
-	 * }
-	 */
+	//ID찾기
+	@GetMapping(value = "/idFind.go")
+	public String idFind() {
+		logger.info("::아이디 찾기 페이지::");
+		return "redirect:/idFind.go";
+	}
+	
+
 	 
 }
