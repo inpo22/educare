@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -77,9 +78,11 @@ public class MypageController {
 	
 	// 학생 마이페이지 이동
 	@GetMapping(value="/mypageStd.go")
-	public String mypageStd(Model model) {
+	public String mypageStd(Model model, HttpSession session) {
 		
-		MypageDTO mypageDto = mypageService.mypageStd();
+		String user_code = (String) session.getAttribute("user_code");
+		
+		MypageDTO mypageDto = mypageService.mypageStd(user_code);
 		model.addAttribute("mypageDto", mypageDto);
 		
 		return "mypage/mypageStd";
@@ -88,7 +91,7 @@ public class MypageController {
 	// 수강이력 뿌리기 (비동기)
 	@ResponseBody
 	@PostMapping(value="/mypage/std_detail_course.ajax")
-	public Map<String, Object> courseListCall(String page, String Csearchbox){
+	public Map<String, Object> courseListCall(@RequestParam("user_code") String user_code, String page, String Csearchbox){
 		logger.info("수강이력 요청 - 학생 마이페이지");
 		logger.info("page : "+page);
 		logger.info("Csearchbox : "+Csearchbox);
@@ -96,7 +99,7 @@ public class MypageController {
 		int currPage = Integer.parseInt(page);
 		int pagePerCnt = 10;
 		
-		Map<String, Object> map = mypageService.StdcourseList(currPage, pagePerCnt,Csearchbox);
+		Map<String, Object> map = mypageService.StdcourseList(currPage, pagePerCnt,Csearchbox, user_code);
 	
 		return map;
 	}
@@ -118,10 +121,27 @@ public class MypageController {
 		return "redirect:/mypageStd.go";
 	}
 	
+	
+	// 출석현황 리스트 뿌리기 (비동기)
+	@ResponseBody
+	@PostMapping(value="/mypage/std_detail_attd.ajax")
+	public Map<String, Object> attdListCall(@RequestParam("user_code") String user_code, String page, String Asearchbox){
+		logger.info("출석현황 요청 - 학생마이페이지");
+		logger.info("page : " + page);
+		logger.info("Asearchbox : " + Asearchbox);
+		
+		int currPage = Integer.parseInt(page);
+		int pagePerCnt = 10;
+		
+		Map<String, Object> map = mypageService.StdattdList(currPage, pagePerCnt,Asearchbox, user_code);
+		
+		return map;
+	}
+	
 	// 결제내역 리스트 뿌리기(비동기)
 	@ResponseBody
 	@PostMapping(value="/mypage/std_detail_pay.ajax")
-	public Map<String, Object> payListCall(String page, String Psearchbox){
+	public Map<String, Object> payListCall(@RequestParam("user_code") String user_code, String page, String Psearchbox){
 		logger.info("결제내역요청-학생마이페이지");
 		logger.info("page : " + page);
 		logger.info("Psearchbox : " + Psearchbox);
@@ -129,7 +149,7 @@ public class MypageController {
 		int currPage = Integer.parseInt(page);
 		int pagePerCnt = 10;
 		
-		Map<String, Object> map = mypageService.StdpayList(currPage, pagePerCnt,Psearchbox);
+		Map<String, Object> map = mypageService.StdpayList(currPage, pagePerCnt,Psearchbox, user_code);
 		
 		return map;
 	}
@@ -139,7 +159,7 @@ public class MypageController {
 	public String stdEditP(@RequestParam("user_code") String user_code, Model model) {
 		logger.info("edit user_code : "+user_code);
 		
-		MypageDTO mypageDto = mypageService.mypageStdU(user_code);
+		MypageDTO mypageDto = mypageService.mypageStd(user_code);
 		model.addAttribute("mypageDto", mypageDto);
 		
 		return "mypage/mypageStd_update";

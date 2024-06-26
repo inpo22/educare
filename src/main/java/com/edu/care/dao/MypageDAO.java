@@ -19,22 +19,27 @@ public interface MypageDAO {
 
 	void empProfileEdit(MypageDTO dto);
 
-	MypageDTO mypageStd();
+	MypageDTO mypageStd(String user_code);
 
 	MypageDTO mypageStdU(String user_code);
 
-	List<PaymentDTO> StdpayList(int start, int pagePerCnt, String Psearchbox);
+	List<PaymentDTO> StdpayList(int start, int pagePerCnt, String Psearchbox, String user_code);
 
-	int StdpatListPageCnt(int pagePerCnt, String Psearchbox);
+	int StdpatListPageCnt(int pagePerCnt, String Psearchbox, String user_code);
 
-	List<PaymentDTO> StdcourseList(int start, int pagePerCnt, String Csearchbox);
+	List<PaymentDTO> StdcourseList(int start, int pagePerCnt, String Csearchbox, String user_code);
 
-	int StdcourseListPageCnt(int pagePerCnt, String Csearchbox);
+	int StdcourseListPageCnt(int pagePerCnt, String Csearchbox, String user_code);
 
 	int cancel(String course_name);
+
+	List<MypageDTO> stdattdList(int start, int pagePerCnt, String Asearchbox, String user_code);
+
+	int stdattdListPageCnt(int pagePerCnt, String Asearchbox, String user_code);
 
 	String pwCheck(String user_code);
 
 	void pwUpdate(String new_enc_pw, String user_code);
+
 
 }

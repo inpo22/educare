@@ -143,8 +143,8 @@ public class MypageService {
 	}
 
 
-	public MypageDTO mypageStd() {
-		return mypageDAO.mypageStd();
+	public MypageDTO mypageStd(String user_code) {
+		return mypageDAO.mypageStd(user_code);
 	}
 
 
@@ -153,39 +153,54 @@ public class MypageService {
 	}
 
 
-	public Map<String, Object> StdpayList(int currPage, int pagePerCnt, String Psearchbox) {
+	public Map<String, Object> StdpayList(int currPage, int pagePerCnt, String Psearchbox, String user_code) {
 		int start = (currPage-1) * pagePerCnt;
 		
 		Map<String, Object> result = new HashMap<String, Object>();
 		
-		List<PaymentDTO> list = mypageDAO.StdpayList(start, pagePerCnt, Psearchbox);
+		List<PaymentDTO> list = mypageDAO.StdpayList(start, pagePerCnt, Psearchbox, user_code);
 		logger.info("list : {}", list);
 		logger.info("list size : " + list.size());
 		
 		result.put("list", list);
-		result.put("totalPage", mypageDAO.StdpatListPageCnt(pagePerCnt, Psearchbox));
+		result.put("totalPage", mypageDAO.StdpatListPageCnt(pagePerCnt, Psearchbox, user_code));
 		
 		return result;
 	}
 
 
-	public Map<String, Object> StdcourseList(int currPage, int pagePerCnt, String Csearchbox) {
+	public Map<String, Object> StdcourseList(int currPage, int pagePerCnt, String Csearchbox, String user_code) {
 		int start = (currPage-1) * pagePerCnt;
 		
 		Map<String, Object> result = new HashMap<String, Object>();
 		
-		List<PaymentDTO> cList = mypageDAO.StdcourseList(start, pagePerCnt, Csearchbox);
+		List<PaymentDTO> cList = mypageDAO.StdcourseList(start, pagePerCnt, Csearchbox, user_code);
 		logger.info("cList : {}", cList);
 		logger.info("cList size : " + cList.size());
 		
 		result.put("cList", cList);
-		result.put("totalPage", mypageDAO.StdcourseListPageCnt(pagePerCnt, Csearchbox));
+		result.put("totalPage", mypageDAO.StdcourseListPageCnt(pagePerCnt, Csearchbox, user_code));
 		return result;
 	}
 
 
 	public int cancel(String course_name) {
 		return mypageDAO.cancel(course_name);
+	}
+
+
+	public Map<String, Object> StdattdList(int currPage, int pagePerCnt, String Asearchbox, String user_code) {
+		int start = (currPage-1) * pagePerCnt;
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		
+		List<MypageDTO> aList = mypageDAO.stdattdList(start, pagePerCnt, Asearchbox, user_code);
+		logger.info("aList : {}", aList);
+		logger.info("aList size : " + aList.size());
+		
+		result.put("aList", aList);
+		result.put("totalPage", mypageDAO.stdattdListPageCnt(pagePerCnt, Asearchbox, user_code));
+		return result;
 	}
 	
 }
