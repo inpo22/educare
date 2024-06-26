@@ -280,15 +280,16 @@ public class ApprovalService {
 		} 
 		return new ResponseEntity<Resource>(resource, header, HttpStatus.OK);
 	}
-
-	public void approve(String apv_no, String au_code) {
-		approvalDAO.approve(apv_no);
+	
+	@Transactional
+	public void approve(String user_code, String au_code) {
+		approvalDAO.approve(au_code, user_code);
 		
-		int is_comp = approvalDAO.orderCompCheck(au_code, apv_no);
+		int is_comp = approvalDAO.orderCompCheck(au_code, user_code);
 		ApprovalDTO dto = approvalDAO.approvalDetail(au_code);
 		
 		if (is_comp == 0) {
-			String to_user_code = approvalDAO.notiReceiveUser(apv_no);
+			String to_user_code = approvalDAO.notiReceiveUser(au_code, user_code);
 			String from_user_code = dto.getUser_code();
 			String noti_content_no = au_code;
 			int noti_type = 0;
@@ -299,17 +300,17 @@ public class ApprovalService {
 		}
 	}
 
-	public void reject(String au_code, String apv_no) {
-		approvalDAO.reject(apv_no);
+	public void reject(String au_code, String user_code) {
+		approvalDAO.reject(au_code, user_code);
 		
 		ApprovalDTO dto = approvalDAO.approvalDetail(au_code);
 		
 		if (dto.getAu_type() == 1) {
 			double va_days = dto.getVa_days();
-			String user_code = dto.getUser_code();
+			String au_user_code = dto.getUser_code();
 			Timestamp reg_date = dto.getReg_date();
 			
-			approvalDAO.plusRemainVaca(va_days, user_code, reg_date);
+			approvalDAO.plusRemainVaca(va_days, au_user_code, reg_date);
 		}
 	}
 }
