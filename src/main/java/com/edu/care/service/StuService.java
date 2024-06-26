@@ -86,10 +86,8 @@ public class StuService {
                 // 파일 저장 실패 시 처리 로직 추가
             }
         }
-        String classify_code = param.get("classify_code");
-        
         // 회원 번호 생성
-        String user_code = stuDAO.createUserCode(classify_code);
+        String user_code = stuDAO.createUserCode(param);
         
         // 파일 이름을 param에 추가
         param.put("photo", newFileName);

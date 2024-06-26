@@ -75,12 +75,12 @@
 </select>
 
 <!-- 학생번호 생성 쿼리문 -->
-<select id="createUserCode" resultType="String">
+<select id="createUserCode" parameterType="map" resultType="String">
 	SELECT
-		CONCAT(SUBSTR(CAST(CURDATE() AS CHAR), 1, 4), 
+		CONCAT(SUBSTR(CAST(#{reg_date} AS CHAR), 1, 4), 
 			'U03', RIGHT(CONCAT("000" , 
-	        (SELECT (COUNT(u.user_code) + 1) FROM user u WHERE YEAR(u.reg_date) = YEAR(CURDATE()) 
-	    	AND u.classify_code='U03')), 4))
+	        (SELECT (COUNT(u.user_code) + 1) FROM user u WHERE YEAR(u.reg_date) = YEAR(#{reg_date}) 
+	    	AND u.user_code LIKE CONCAT('%', 'U03', '%'))), 4))
 </select>
 
 <!-- 학생등록 쿼리문 -->
