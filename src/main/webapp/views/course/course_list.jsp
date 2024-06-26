@@ -59,6 +59,10 @@
     background-color: #000000;
     border-color: #000000;
 }
+
+.w-50 {
+    width: 37% !important;
+}
 </style>
 </head>
 
@@ -79,15 +83,15 @@
 				<!-- End Schedule Button -->
 				<div class="input-group mt-4">
 					<div class="form-check form-switch" id="showYn">
-						<input class="form-check-input" type="checkbox" id="showOnlytPreCourse" checked="">
-						<label class="form-check-label" for="showOnlytPreCourse">현재 진행중인 강의만 보기</label>
+						<input class="form-check-input" type="checkbox" id="showOnlytPreCourse">
+						<label class="form-check-label" for="showOnlytPreCourse" id="preCourse">현재 진행예정인 강의만 보기</label>
 					</div>
 				</div>
 			</div>
 			<!-- End Schedule filter -->
 			<div class="d-grid gap-2 col-10 mt-3 board h-100">
 			<!-- 검색 -->
-				<div class="input-group mb-3 w-25">
+				<div class="input-group mb-3 w-50">
 					<select class="form-select text-secondary" id="searchFilter" aria-label="Default select example">
 						<option value="name">강사명</option>
 						<option value="course_name">강의명</option>
@@ -121,6 +125,7 @@
 				</div>
 			</div>
 		</div>
+		<input type="hidden" name="show_yn" id="checkBox"/>
 	</main>
 	<!-- End #main -->
 
@@ -132,10 +137,20 @@ var page = 1;
 var totalPage = 0;
 var searchFilter = '';
 var searchContent = '';
+var showCourse =  $('#showOnlytPreCourse').is(':checked');
+var checkCourse = $('#checkBox').val(showCourse ? 0 : 1);
+//ture : 0 --> 현재진행중인강의만 false: 1 --> 마감된 강의까지 ALL
+console.log("showCourse"+ showCourse);
+console.log("checkCoursecheckCourse"+ $('#checkBox').val());
 
-read_courseList(page, searchFilter, searchContent);
+read_courseList(page, searchFilter, searchContent, showCourse);	
 
-function read_courseList(page, searchFilter, searchContent){
+$('#showOnlytPreCourse').on('click',function(){
+	showCourse =  $('#showOnlytPreCourse').is(':checked');
+	read_courseList(page, searchFilter, searchContent, showCourse);
+});
+
+function read_courseList(page, searchFilter, searchContent, showCourse){
 	$.ajax({
 		url:'/course/list.ajax',
 		type:'GET',
@@ -143,7 +158,8 @@ function read_courseList(page, searchFilter, searchContent){
 		data:{
 			'page':page,
 			'searchFilter':searchFilter,
-			'searchContent':searchContent
+			'searchContent':searchContent,
+			'showCourse':showCourse
 		},
 		success: function(data){
 			console.log(data);
@@ -239,7 +255,7 @@ $('#pagination').on('click', '.page-link', function(e) {
 		page = parseInt($(this).html());
 	}
 	// console.log(page);
-	read_courseList(page, searchCondition, searchContent);
+	read_courseList(page, searchFilter, searchContent);
 });
 
 function drawList(list){

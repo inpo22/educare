@@ -10,7 +10,7 @@ import com.edu.care.dto.CourseDTO;
 @Mapper
 public interface CourseDAO {
 
-	List<CourseDTO> courseList(int start, int pagePerCnt, String searchFilter, String searchContent);
+	List<CourseDTO> courseList(int start, int pagePerCnt, String searchFilter, String searchContent, String showCourse);
 
 	List<CourseDTO> reservationTime(Date rez_date, String rez_room);
 
@@ -19,5 +19,7 @@ public interface CourseDAO {
 	void reservationCourseWrite(int course_no, String course_space, Date start_time, Date end_time);
 
 	List<CourseDTO> courseDetail(String course_no);
+
+	int courseListPageCnt(int pagePerCnt, String searchFilter, String searchContent, String showCourse);
 
 }

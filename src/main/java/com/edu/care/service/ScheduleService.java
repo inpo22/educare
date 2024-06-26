@@ -40,7 +40,12 @@ public class ScheduleService {
 	}
 
 	public int scheduleDelete(String sked_no) {
-		return scheduleDAO.scheduleDelete(sked_no);
+		int row = scheduleDAO.scheduleDelete(sked_no);
+		if(row > 0 ) {
+			logger.info("delete noti sked_no>>>>>"+sked_no);
+			notiDAO.deleteNoti(sked_no, 3);
+		}
+		return row;
 	}
 
 	public Boolean scheduleUpdate(ScheduleDTO scheduleDTO) {

@@ -195,6 +195,13 @@ small{
     color: white;
     border-radius: 20px;
 }
+
+#viewer {
+	min-height: 400px;
+    border: 1px solid #bababa;
+    border-radius: 8px;
+    padding: 8px 25px;
+}
 </style>
 </head>
 
@@ -205,67 +212,59 @@ small{
 
 	<main id="main" class="main">
 		<div class="pagetitle">
-			<h1>강의 관리 > 강의 등록</h1>
+			<h1>강의 관리 > 강의 상세정보</h1>
 		</div>
 		<!-- End Page Title -->
-
 		<div class="row">
 			<div class="d-grid gap-2 col-12 mt-3 board">
 				<div class="row">
 					<div class="col-md-4">
 						<div class="input-group input-group mb-3">
-							<span class="input-group-text" id="basic-addon1">강의번호</span> 
-							<input type="text" class="form-control" name="course_no" id="course_no" value="${courseDTO[0].course_no}">
+							<span class="input-group-text" id="basic-addon1">강의실</span> 
+							<input type="text" class="form-control" name="course_space" id="course_space" value="${courseDTO[0].course_space}" disabled>
 						</div>
-
 						<div class="input-group input-group mb-3">
+							<span class="input-group-text" id="basic-addon3">강사명</span> 
+							<input type="text" class="form-control" name="name" id="name" value="${courseDTO[0].name}" disabled>
+						</div>
+						<div class="input-group input-group">
 							<span class="input-group-text" id="basic-addon2">강의명</span> 
 							<input type="text" class="form-control" name="course_name" id="course_name" value="${courseDTO[0].course_name}">
-						</div>
-
-						<div class="input-group input-group mb-3">
-							<span class="input-group-text" id="basic-addon3">강의료</span> 
-							<input type="text" class="form-control" name="course_price" id="course_price" value="${courseDTO[0].course_price}">
 						</div>
 					</div>
 
 					<div class="col-md-4">
 						<div class="row">
-							<div class="col-md-12">
-								<div class="input-group input-group mb-3">
-									<button class="btn btn-outline-warning w-100" type="button" data-bs-toggle="modal" data-bs-target="#reservationModal">강의실 확인 및 예약하기</button>
-								</div>
+							<div class="input-group input-group mb-3">
+								<span class="input-group-text" id="basic-addon1">강의시작일</span> 
+								<input type="text" class="form-control" name="course_start" id="course_start" value="${formatStart}" disabled>
+							</div>
+							<div class="input-group input-group">
+								<span class="input-group-text" id="basic-addon1">강의종료일</span> 
+								<input type="text" class="form-control" name="course_end" id="course_end" value="${courseDTO[0].course_end}" disabled>
 							</div>
 						</div>
 					</div>
-						
-						
-						<div class="col-md-4">
-						<div class="row">
-							<div class="col-md-12">
-								<div class="input-group input-group mb-3">
-									<button class="btn btn-outline-warning w-100" type="button" data-bs-toggle="modal" data-bs-target="#reservationModal">강의실 확인 및 예약하기</button>
-								</div>
-							</div>
-						</div>
 
+					<div class="col-md-4">
 						<div class="row">
-							<div class="col-md-12">
+							<div class="input-group input-group mb-3">
+								<span class="input-group-text" id="basic-addon1">강의번호</span> 
+								<input type="text" class="form-control" name="course_no" id="course_no" value="${courseDTO[0].course_no}" disabled>
+							</div>
+							<div class="input-group input-group">
 								<div class="input-group input-group mb-3">
 									<div class="form-control reservTextareaGo" id="reservTextareaGo" aria-label="With textarea"></div>
 								</div>
 							</div>
 						</div>
 					</div>
-					
-					<input type="hidden" name="content" id="content"/>
-					
+					<input type="hidden" name="content" id="content" />
 				</div>
-				<div id="editor"></div>
-					<button type="button" class="btn text-light bg-dark" id="submitButton" onclick="submitCourseWrite()">등록</button>
+				<div id="viewer"></div>
+				<button type="button" class="btn text-light bg-dark mt-3 mb-2" id="submitButton" onclick="submitCourseWrite()">등록</button>
 			</div>
 		</div>
-
 	</main>
 	<!-- End #main -->
 
@@ -273,20 +272,42 @@ small{
 
 </body>
 <script>
+var startCourse = '${courseDTO[0].course_start}';
+var endCourse = '${courseDTO[0].course_end}';
 
-function course_wirte() {
-	location.href = '/course/write.go'
-}
+// 날짜 문자열을 Date 객체로 변환 (주의: 원래 문자열이 올바른 ISO 형식이 아닌 경우)
+var startDate = new Date(startCourse);
+var endDate = new Date(endCourse);
 
-const editor = new toastui.Editor({
-	el : document.querySelector('#editor'),
-	height : '500px',
-	initialEditType : 'wysiwyg',
-	hideModeSwitch : true,
-	initialValue : "** 이곳에 강의에 대한 상세 커리큘럼에 대해서 적어주세요.**"
+// Date 객체에서 필요한 정보 추출
+var startYear = startDate.getFullYear();
+var startMonth = ('0' + (startDate.getMonth() + 1)).slice(-2); // 월은 0부터 시작하므로 +1 필요
+var startDay = ('0' + startDate.getDate()).slice(-2);
+var startHours = ('0' + startDate.getHours()).slice(-2);
+var startMinutes = ('0' + startDate.getMinutes()).slice(-2);
+
+var endYear = endDate.getFullYear();
+var endMonth = ('0' + (endDate.getMonth() + 1)).slice(-2); // 월은 0부터 시작하므로 +1 필요
+var endDay = ('0' + endDate.getDate()).slice(-2);
+var endHours = ('0' + endDate.getHours()).slice(-2);
+var endMinutes = ('0' + endDate.getMinutes()).slice(-2);
+
+// 원하는 포맷으로 날짜와 시간을 조합
+var formattedStartDate = `${startYear}-${startMonth}-${startDay} ${startHours}:${startMinutes}`;
+var formattedEndDate = `${endYear}-${endMonth}-${endDay} ${endHours}:${endMinutes}`;
+
+console.log(startYear); // 시작 날짜 출력 예: 2024-07-17 18:00
+console.log(formattedEndDate); 
+
+
+var content = '${courseDTO[0].course_con}'
+const viewer = toastui.Editor.factory({
+	el: document.querySelector('#viewer'),
+	viewer: true,
+	initialValue: content
 });
-editor.removeToolbarItem('code');
-editor.removeToolbarItem('codeblock');
+
+
 
 </script>
 

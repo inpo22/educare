@@ -49,9 +49,8 @@ color: #707070;
 }
 
 .all {
-	background-color: #ff6666;
+	background-color: #535050;
 	color: white;
-	height: 20px;
 	padding: 0px;
 	font-size: 13px;
 }
@@ -79,7 +78,7 @@ color: #707070;
 
 .all:hover, .common:hover, .dept:hover, .private:hover {
     box-shadow: inset 1px 1px 2px 0px #403e3ed9;
-    color: white;
+    color: black;
 }
 
 textarea {
@@ -242,8 +241,10 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
     	googleCalendarApiKey: 'AIzaSyCJeD_Gho52ovrTpfj8zqwl-m3r41gvpBo',
     	eventSources: 
     		 {  
-    		   googleCalendarId: 'ko.south_korea#holiday@group.v.calendar.google.com',
+    		   	googleCalendarId: 'ko.south_korea#holiday@group.v.calendar.google.com',
     			color:'red',
+    			className : 'gcal-event',
+    			editable: false
     		 },
     	locale: 'ko',
         headerToolbar : {
@@ -255,7 +256,7 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
         nowIndicator: true,
         expandRows: true,
         dayMaxEventRows: true, 
-        timeZone : 'local',
+        timeZone : 'Asia/Seoul',
         initialView : 'dayGridMonth',
         slotLabelFormat: {
             hour: '2-digit',
@@ -304,24 +305,33 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
         				console.log(response);
         				var events = [];
         				response.list.forEach(function(item) {
+        					 	var start = new Date(item.start_date);
+        						var end = new Date(item.end_date); 
+        						end.setDate(end.getDate() + 1);
+        						
         						var tp_color; 
         						var event = {
         							title: item.title,
-        							start: item.start_date.substring(0,10),
-        							end: item.end_date.substring(0,10),
+        							start: start,
+        							end: end, 
         							skedNo: item.sked_no,
         							skedType:item.sked_type,
         							contents:item.contents,
         							name : item.name,
         							user_code : item.user_code,
         							team_name : item.team_name,
+        							allDay: true,
         							backgroundColor: item.sked_type === 'SKED_TP01' ? '#ffd146':
         											 item.sked_type === 'SKED_TP02' ? '#6fb171':
         											 item.sked_type === 'SKED_TP03' ? '#55b4ff':'#ff6666'
+        						
+        						
         						};
-        					
+        						
+        			                
         						events.push(event);
         				});
+        				
         				console.log('Events:', events);
         				successCallback(events);
         				//return events;
@@ -367,17 +377,27 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
    }
    
     calendar.setOption('select', function(selectionInfo) {
-    	var endCal = selectionInfo.end;
-    	var endDate = endCal.toISOString().split('T')[0];
+    	var endDate = new Date(selectionInfo.end);
 
-    	writeModalOpen(selectionInfo.startStr,endDate);
+    	// 종료일에서 하루를 빼기
+    	endDate.setDate(endDate.getDate() - 1);
+
+    	// 원하는 형식으로 포맷팅 (YYYY-MM-DD 형식)
+    	var endDateFormatted = endDate.toISOString().slice(0, 10);
+
+    	console.log(endDateFormatted); // 예: "2024-07-02"
+
+    	writeModalOpen(selectionInfo.startStr,endDateFormatted);
         
         console.log(selectionInfo.startStr);
-        console.log(endDate);
+    	console.log(endDate);
     });
     
     function detailModalOpen(info) {
     	console.log(info.event);
+    	var beforEnd = new Date(info.event.end);
+    	beforEnd.setDate(beforEnd.getDate() - 1);
+    	
     	var skedNo = info.event.extendedProps.skedNo;
     	if(skedNo == null){
     		return;
@@ -385,8 +405,12 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
     	var title = info.event.title;
     	var contents = info.event.extendedProps.contents;
     	var skedType = info.event.extendedProps.skedType;
-    	var start = info.event.start.toISOString().split('T')[0];
-    	var end = info.event.end;
+    	var start = info.event.start.getFullYear() +'-'+ ((info.event.start.getMonth()+1) < 10 ? '0'+ (info.event.start.getMonth()+1) : (info.event.start.getMonth()+1)) +'-'+ (info.event.start.getDate() <10 ? '0'+ info.event.start.getDate() : info.event.start.getDate());
+    	console.log("####start>>"+start);
+    	
+    	
+    	var end = beforEnd;
+    	console.log("####end>>"+end);
     	var name = info.event.extendedProps.name;
     	var team_name = info.event.extendedProps.team_name;
     	var info_user = '<div class="input-group input-group-sm mb-3 name_info"><span class="input-group-text" id="basic-user">작성자</span> <input type="text" class="form-control" id="name"><span class="input-group-text team_name_info" id="basic-addon1">소속부서</span> <input type="text" class="form-control" id="team_name"></div>';	
@@ -395,7 +419,7 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
     	var user_code = info.event.extendedProps.user_code;
     	console.log("user_codeuser_code:: "+user_code);
     	console.log("sessionUserCodesessionUserCode:: "+sessionUserCode);	
-    	console.log(end);
+    	console.log("@@@@"+end);
     	parent.insertAdjacentHTML('afterbegin',info_user);
     	$('#name').val(name);
     	$('#name').attr('disabled',true);
@@ -410,6 +434,7 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
        	$('#selectSchRange').val(skedType);
        	$('#selectSchRange').attr('disabled',true);
        	$('#start_date').val(start);
+       	console.log("start_date>>>"+start);
     	$('#start_date').attr('disabled',true);
        	if(end === null){
        		$('#end_date').val(start);
