@@ -1,5 +1,6 @@
 package com.edu.care.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -65,12 +66,21 @@ public class DeptController {
 		return deptService.updateDept(param);
 	}
 
-	@GetMapping(value = "/dept/user/update.ajax")
+	@PostMapping(value = "/dept/leader/update.ajax")
 	@ResponseBody
-	public Map<String, Object> updateLeader(@RequestParam Map<String, Object> param){
-		logger.info(":: 부서원 수정 ::");
+	public Map<String, Object> changeLeader(@RequestParam Map<String, Object> param){
+		logger.info(":: 부서장 변경 ::");
 		logger.info("param: "+param);
-		return deptService.updateLeader(param);
+		return deptService.changeLeader(param);
+	}
+
+	@PostMapping(value = "/dept/member/update.ajax")
+	@ResponseBody
+	public Map<String, Object> moveMember(@RequestParam Map<String, Object> param){
+		logger.info(":: 부서원 부서 이동 ::");
+		logger.info("param: "+param);
+		return deptService.moveMember(param);
+//		return null;
 	}
 
 }
