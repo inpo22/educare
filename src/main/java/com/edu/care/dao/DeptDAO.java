@@ -25,7 +25,9 @@ public interface DeptDAO {
 
 	int updateUpper(Map<String, Object> param);
 
-	int updateLeader(Map<String, Object> param);
+	int changeLeader(Map<String, Object> param);
+
+	int moveMember(Map<String, Object> param);
 
 
 }
