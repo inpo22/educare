@@ -112,7 +112,6 @@
 
 </body>
 <script>
-var topFixedContext = '';
 var page = 1;
 var totalPage = 0;
 var searchCategory = '';
@@ -140,7 +139,11 @@ function listCall(page, searchCategory, searchWord){
 		success: function(data){
 			console.log(data);
 			var context = '';
+			var topFixedContext = '';
 			totalPage = data.totalPage;
+			if (page == 1) {
+				topFixed = false;
+			}
 			if(topFixed == false){
 				for (item of data.topFixedList){
 					topFixedContext += '<tr class="boardTableTr" onclick="locationMove('+item.post_no+')">'
@@ -154,35 +157,20 @@ function listCall(page, searchCategory, searchWord){
 				}
 				topFixed = true;
 			}
-			if(searchFlag == true){
-				for (item of data.list){
-						context += '<tr class="boardTableTr" onclick="locationMove('+item.post_no+')">'
-						context += '<td scope="col">'+ item.post_no +'</td>'
-						context += '<td scope="col">' + item.title + '</td>'
-						context += '<td scope="col">' + item.user_name + ' ' + item.class_name + '</b></td>'
-						context += '<td scope="col">' + item.team_name + '</td>'
-						context += '<td scope="col">' + formatDate(item.reg_date) + '</td>'
-						context += '<td scope="col">' + item.bHit + '</td>'
-						context += '</tr>';
-				}			
-			}else{
-				for (item of data.list){
-					if(item.fixed_yn == 0){
-						context +=  '<tr class="boardTableTr" onclick="locationMove('+item.post_no+')">'
-						context += '<td scope="col">'+ item.post_no +'</td>'
-						context += '<td scope="col">' + item.title + '</td>'
-						context += '<td scope="col">' + item.user_name + ' ' + item.class_name + '</b></td>'
-						context += '<td scope="col">' + item.team_name + '</td>'
-						context += '<td scope="col">' + formatDate(item.reg_date) + '</td>'
-						context += '<td scope="col">' + item.bHit + '</td>'
-						context += '</tr>';
-					}
-				}			
+			for (var item of data.list) {
+				context += '<tr class="boardTableTr" onclick="locationMove('+item.post_no+')">'
+				context += '<td scope="col">'+ item.post_no +'</td>'
+				context += '<td scope="col">' + item.title + '</td>'
+				context += '<td scope="col">' + item.user_name + ' ' + item.class_name + '</b></td>'
+				context += '<td scope="col">' + item.team_name + '</td>'
+				context += '<td scope="col">' + formatDate(item.reg_date) + '</td>'
+				context += '<td scope="col">' + item.bHit + '</td>'
+				context += '</tr>';
 			}
 			if(page > 1 || searchFlag){
 				$('#list').html(context);
 			}else{
-			$('#list').html(topFixedContext+context);
+				$('#list').html(topFixedContext+context);
 			}
 			setupPagination(page, totalPage);
 		},
@@ -284,13 +272,8 @@ $('#pagination').on('click', '.page-link', function(e) {
 });
 
 $('#searchBtn').click(function() {
-	searchFlag = true;
 	searchCategory = $('#searchCategory').val();
 	searchWord = $('#searchWord').val();
-	if(searchWord == ''){
-		alert("검색어를 입력해주세요.");
-		return;
-	}
 	listCall(page, searchCategory, searchWord);
 });
 

@@ -43,12 +43,9 @@ public class BoardController {
 	// 전사 공지사항 리스트 불러오기
 	@PostMapping(value = "/allBoard/list.ajax")
 	@ResponseBody
-	public Map<String, Object> allList(String page, String searchCategory, String searchWord) {
+	public Map<String, Object> allList(@RequestParam Map<String, String> map) {
 
-		int currPage = Integer.parseInt(page);
-		int pagePerCnt = 10;
-
-		return boardService.allList(currPage, pagePerCnt, searchCategory, searchWord);
+		return boardService.allList(map);
 	}
 
 	// 전사 공지사항 상세페이지 접속
@@ -56,7 +53,7 @@ public class BoardController {
 	public ModelAndView allBoardDetail(String post_no, HttpSession session) {
 		logger.info(post_no);
 		String user_code = (String) session.getAttribute("user_code");
-		return boardService.detail(post_no, user_code);
+		return boardService.allDetail(post_no, user_code);
 	}
 
 	// 전사 공지사항 작성페이지 이동
@@ -77,7 +74,7 @@ public class BoardController {
 		logger.info("attachFile =" + attachFile[0].getContentType());
 		logger.info("attachFile =" + attachFile[0].getOriginalFilename());
 		logger.info("attachFile =" + attachFile[0].getSize());
-
+		
 		dto.setUser_code(user_code);
 		boardService.allBoardWrite(attachFile, dto);
 
@@ -195,7 +192,7 @@ public class BoardController {
 		logger.info("attachFile =" + attachFile[0].getContentType());
 		logger.info("attachFile =" + attachFile[0].getOriginalFilename());
 		logger.info("attachFile =" + attachFile[0].getSize());
-
+		logger.info("hiddenTeamCategory = "+ dto.getHiddenTeamCategory());
 		dto.setUser_code(user_code);
 		boardService.teamBoardWrite(attachFile, dto);
 
@@ -204,8 +201,18 @@ public class BoardController {
 
 	// 부서 글수정 페이지 이동
 	@GetMapping(value = "/teamBoard/update.go")
-	public String teamBoardUpdateGo(String post_no, Model model) {
+	public String teamBoardUpdateGo(String post_no, Model model, HttpSession session) {
 		logger.info("부서 글수정 페이지 접속");
+		String teamCode = (String) session.getAttribute("team_code");
+	    boolean isPerm = false;
+	    
+	    if (teamCode.equals("T001") || teamCode.equals("T006")) {
+	        isPerm = true;
+	    }
+	    
+	    model.addAttribute("isPerm", isPerm);
+	    model.addAttribute("teamList", boardService.teamSelectList());
+		
 		boardService.detail(post_no, model);
 		return "board/teamBoard_update";
 	}
@@ -215,11 +222,14 @@ public class BoardController {
 	public String teamBoardUpdate(@RequestParam("attachFile") MultipartFile[] attachFile,
 			@RequestParam Map<String, String> param, HttpSession session) {
 		String user_code = (String) session.getAttribute("user_code");
+		
 		logger.info("\n param  :{}", param);
 		logger.info("fileNameList=" + param.get("fileNumbers"));
 		logger.info("attachFile =" + attachFile.length);
+		
 		String[] fileNumbers = param.get("fileNumbers").split(",");
 		param.put("user_code", user_code);
+		
 		boardService.fileDelete(fileNumbers, param.get("post_no"));
 		boardService.boardUpdate(attachFile, param);
 		return "redirect:/teamBoard/detail.go?post_no=" + param.get("post_no");

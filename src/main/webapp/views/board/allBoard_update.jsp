@@ -84,6 +84,10 @@
 #editor {
 	min-height: 500px;
 }
+
+.remove-x {
+            cursor: pointer;
+        }
 </style>
 </head>
 
@@ -148,7 +152,8 @@
 
 </body>
 <script>
-console.log();
+const MAX_CONTENT_SIZE = 5 * 1024 * 1024; // 5MB를 바이트로 변환
+
 const editor = new toastui.Editor({
 	   el: document.querySelector('#editor'),
 	   height: '300px',

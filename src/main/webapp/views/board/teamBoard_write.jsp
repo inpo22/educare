@@ -2,262 +2,270 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html>
+
 <head>
-<meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-<title>Dashboard - NiceAdmin Bootstrap Template</title>
-<meta content="" name="description">
-<meta content="" name="keywords">
+    <title>Dashboard - NiceAdmin Bootstrap Template</title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
 
-<jsp:include page="/views/common/head.jsp"></jsp:include>
-<!-- css -->
-<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"/>
-<link rel="stylesheet" href="/resources/board/board.css">
-<!-- js -->
-<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
-<style>
-#fixedYn {
-	float: right;
-	margin-right: 30px;
-	font-weight: bold;
-}
+    <jsp:include page="/views/common/head.jsp"></jsp:include>
+    <!-- css -->
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+    <link rel="stylesheet" href="/resources/board/board.css">
+    <!-- js -->
+    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+    <style>
+        #fixedYn {
+            float: right;
+            margin-right: 30px;
+            font-weight: bold;
+        }
 
-#fixedYn, #flexSwitchCheckChecked, #fixedText:hover{
-	cursor: pointer;
-}
+        #fixedYn,
+        #flexSwitchCheckChecked,
+        #fixedText:hover {
+            cursor: pointer;
+        }
 
-#writeForm {
-	margin-top: 30px;
-	font-size: 15px;
-	font-weight: bold;
-}
+        #writeForm {
+            margin-top: 30px;
+            font-size: 15px;
+            font-weight: bold;
+        }
 
-.writeLabel{
-	margin-left: 20px;
-}
-.buttonCon{
-	display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 20px;
-}
+        .writeLabel {
+            margin-left: 20px;
+        }
 
-#cancleBtn {
-	background-color: gray;
-	border-color: gray;
-}
+        .buttonCon {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
 
-#attachFile {
-		display: none;
-}
-#fileList {
-	border: solid 1px lightgray;
-	border-radius: 5px;
-	min-height: 37px;
-	height: auto;
-}
-#fileList li {
-	list-style-type: none;
-}
+        #cancleBtn {
+            background-color: gray;
+            border-color: gray;
+        }
 
-.writeWrap{
-	display: flex;
-    justify-content: space-between;
-}
-.fileBtnWrap{
-	width: 100%;
-    float: right;
-}
-.first-col {
-	width:15%;
-}
-.second-col {
-	width:84%;
-}
-#editor {
-	min-height: 500px;
-}
+        #attachFile {
+            display: none;
+        }
 
-.remove-x {
-	cursor: pointer;
-}
+        #fileList {
+            border: solid 1px lightgray;
+            border-radius: 5px;
+            min-height: 37px;
+            height: auto;
+        }
 
-.selectBox {
-	display: flex;
-	justify-content: space-between;
-	align-items: center; /* 수직 가운데 정렬 */
-	margin-right: 20px;
-	margin-left: 20px;
-}
-</style>
+        #fileList li {
+            list-style-type: none;
+        }
+
+        .writeWrap {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .fileBtnWrap {
+            width: 100%;
+            float: right;
+        }
+
+        .first-col {
+            width: 15%;
+        }
+
+        .second-col {
+            width: 84%;
+        }
+
+        #editor {
+            min-height: 500px;
+        }
+
+        .remove-x {
+            cursor: pointer;
+        }
+
+        .selectBox {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            /* 수직 가운데 정렬 */
+            margin-right: 20px;
+            margin-left: 20px;
+        }
+    </style>
 </head>
 
 <body>
 
-	<jsp:include page="/views/common/header.jsp"></jsp:include>
+    <jsp:include page="/views/common/header.jsp"></jsp:include>
 
-	<jsp:include page="/views/common/sidebar.jsp"></jsp:include>
+    <jsp:include page="/views/common/sidebar.jsp"></jsp:include>
 
-	<main id="main" class="main">
-		<div id="backBoard">
-			<div class="pagetitle">
-				<h1 id="BoardTitle">부서 공지글 작성</h1>
-			</div>
-			<br/>
-			<div class="selectBox">
-				<div class="teamSelectContainer" >
-					<c:if test="${isPerm}">
-						<select id="hiddenTeamCategory">
-							<c:forEach items="${teamList}" var="team">
-								<option value="${team.team_code}">${team.team_name}</option>
-							</c:forEach>
-						</select>
-					</c:if>
-				</div>
-			</div>
-			<div class="form-check form-switch" id="fixedYn">
-				<input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"/>
-				<label class="form-check-label" for="flexSwitchCheckChecked" id="fixedText">상단 고정 여부</label>
-			</div>
-			<br/>
-			<form action="/teamBoard/write.do" method="post" id="writeForm" enctype="multipart/form-data">
-				<table class="table table-borderless">
-					<tr>
-						<th class="first-col">제목</th>
-						<td class="second-col"><input type="text" id="titleText" name="title" class="form-control"/></td>
-					</tr>
-					<tr>
-						<th>
-							<button type="button" id="fileInputButton" class="btn btn-secondary btn-sm">파일 선택</button>
-							<input type="file" name="attachFile" id="attachFile" multiple="multiple"/>
-						</th>
-						<td><ul id="fileList" ></ul></td>
-					</tr>
-					<tr>
-						<td colspan="2">
-							<div id="editor"></div>
-						</td>
-					</tr>
-				</table>
-				
-				<div class="buttonCon">
-					<input type="button" id="cancleBtn" value="작성취소" class="btn btn-primary" onclick="writeCancle()"/>
-					<input type="button" id="finishBtn" value="작성완료" class="btn btn-primary" onclick="writeSubmit()"/>
-				</div>
-				<input type="hidden" name="contents" id="content"/>
-				<input type="hidden" name="fixed_yn" id="checkBox"/>
-			</form>
-		</div>
-		<!-- End Page Title -->
-	</main>
-	<!-- End #main -->
+    <main id="main" class="main">
+        <div id="backBoard">
+            <div class="pagetitle">
+                <h1 id="BoardTitle">부서 공지글 작성</h1>
+            </div>
+            <br />
+            <form action="/teamBoard/write.do" method="post" id="writeForm" enctype="multipart/form-data">
+                <div class="selectBox">
+                    <div class="teamSelectContainer">
+                        <c:if test="${isPerm}">
+                            <select id="hiddenTeamCategory" name="hiddenTeamCategory">
+                            	<option value="">부서 선택</option>
+                                <c:forEach items="${teamList}" var="team">
+                                    <option value="${team.team_code}">${team.team_name}</option>
+                                </c:forEach>
+                            </select>
+                        </c:if>
+                    </div>
+                </div>
+                <div class="form-check form-switch" id="fixedYn">
+                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" />
+                    <label class="form-check-label" for="flexSwitchCheckChecked" id="fixedText">상단 고정 여부</label>
+                </div>
+                <br />
+                <table class="table table-borderless">
+                    <tr>
+                        <th class="first-col">제목</th>
+                        <td class="second-col"><input type="text" id="titleText" name="title" class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <button type="button" id="fileInputButton" class="btn btn-secondary btn-sm">파일 선택</button>
+                            <input type="file" name="attachFile" id="attachFile" multiple="multiple" />
+                        </th>
+                        <td>
+                            <ul id="fileList"></ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div id="editor"></div>
+                        </td>
+                    </tr>
+                </table>
 
-	<jsp:include page="/views/common/footer.jsp"></jsp:include>
+                <div class="buttonCon">
+                    <input type="button" id="cancleBtn" value="작성취소" class="btn btn-primary" onclick="writeCancle()" />
+                    <input type="button" id="finishBtn" value="작성완료" class="btn btn-primary" onclick="writeSubmit()" />
+                </div>
+                <input type="hidden" name="contents" id="content" />
+                <input type="hidden" name="fixed_yn" id="checkBox" />
+            </form>
+        </div>
+        <!-- End Page Title -->
+    </main>
+    <!-- End #main -->
+
+    <jsp:include page="/views/common/footer.jsp"></jsp:include>
 
 </body>
 <script>
-const MAX_CONTENT_SIZE = 5 * 1024 * 1024; // 5MB를 바이트로 변환
+    const MAX_CONTENT_SIZE = 5 * 1024 * 1024; // 5MB를 바이트로 변환
 
-const editor = new toastui.Editor({
-	   el: document.querySelector('#editor'),
-	   height: '300px',
-	   initialEditType: 'wysiwyg',
-	   hideModeSwitch: true
-	});
-	editor.removeToolbarItem('code');
-	editor.removeToolbarItem('codeblock');
+    const editor = new toastui.Editor({
+        el: document.querySelector('#editor'),
+        height: '300px',
+        initialEditType: 'wysiwyg',
+        hideModeSwitch: true
+    });
+    editor.removeToolbarItem('code');
+    editor.removeToolbarItem('codeblock');
 
-	var fileList = [];
+    var fileList = [];
 
-	$('#fileInputButton').click(function() {
-		$('#attachFile').click();
-	});
+    $('#fileInputButton').click(function() {
+        $('#attachFile').click();
+    });
 
-	$('#attachFile').change(function() {
-		var files = this.files;
-		for (var file of files) {
-			fileList.push(file);
-		}
-		updateFileList();
-		updateAttachFile();
-	});
+    $('#attachFile').change(function() {
+        var files = this.files;
+        for (var file of files) {
+            fileList.push(file);
+        }
+        updateFileList();
+        updateAttachFile();
+    });
 
-	function updateFileList() {
-		$('#fileList').empty();
-		fileList.forEach((file, index) => {
-	        var li = $('<li></li>').text(file.name);
-	        li.append('&nbsp;&nbsp;&nbsp;');
-	        var removeBtn = $('<span></span>')
-	            .html('X')
-	            .addClass('remove-x')
-	            .on('click', function() {
-	            	fileList.splice(index, 1);
-	                updateFileList();
-	                updateAttachFile();
-	            });
-	        li.append(removeBtn);
-	        $('#fileList').append(li);
-	    });
-	}
+    function updateFileList() {
+        $('#fileList').empty();
+        fileList.forEach((file, index) => {
+            var li = $('<li></li>').text(file.name);
+            li.append('&nbsp;&nbsp;&nbsp;');
+            var removeBtn = $('<span></span>')
+                .html('X')
+                .addClass('remove-x')
+                .on('click', function() {
+                    fileList.splice(index, 1);
+                    updateFileList();
+                    updateAttachFile();
+                });
+            li.append(removeBtn);
+            $('#fileList').append(li);
+        });
+    }
 
-	function updateAttachFile() {
-	    var dataTransfer = new DataTransfer();
-	    fileList.forEach(file => {
-	        dataTransfer.items.add(file);
-	    });
-	    $('#attachFile')[0].files = dataTransfer.files;
-	}
+    function updateAttachFile() {
+        var dataTransfer = new DataTransfer();
+        fileList.forEach(file => {
+            dataTransfer.items.add(file);
+        });
+        $('#attachFile')[0].files = dataTransfer.files;
+    }
 
-	// 작성취소
-	function writeCancle(){
-		location.href = '/teamBoard/list.go';
-	}
+    // 작성취소
+    function writeCancle() {
+        location.href = '/teamBoard/list.go';
+    }
 
-	// 작성완료
-	function writeSubmit() {
-    var editContent = editor.getHTML();
-    $('#content').val(editContent);
-    console.log(editor.getMarkdown());
-    
-    var isChecked = $('#flexSwitchCheckChecked').prop('checked');
-    console.log(isChecked);
-    $('#checkBox').val(isChecked ? 1 : 0);
-    
-    var $title = $('#titleText');
-    var $content = $('#content');
-    
-    if ($title.val() === '') {
-        alert('제목을 입력해 주세요.');
-        $title.focus();
-    } else if (editor.getMarkdown() === '') {
-        alert('내용을 입력해 주세요.');
-        editor.focus();
-    } else if (new Blob([editContent]).size > MAX_CONTENT_SIZE) {
-        alert('내용의 용량이 초과되었습니다. 이미지의 크기나 갯수를 줄여 주세요.');
-    } else {
-        var result = confirm('작성 하시겠습니까?');
-        if (result) {
-            alert('작성이 완료되었습니다.');
-            $('form').submit();
+    // 작성완료
+    function writeSubmit() {
+        var editContent = editor.getHTML();
+        $('#content').val(editContent);
+        console.log(editor.getMarkdown());
+
+        var isChecked = $('#flexSwitchCheckChecked').prop('checked');
+        console.log(isChecked);
+        $('#checkBox').val(isChecked ? 1 : 0);
+
+        var $title = $('#titleText');
+        var $content = $('#content');
+		var isPerm = '${isPerm}';
+		console.log(isPerm);
+		if(isPerm == 'true'){
+	        	if($('#hiddenTeamCategory').val() == ''){
+	        		
+	        		alert('부서를 선택해 주세요.');
+	        		return;
+	        	}
+	        	console.log('권한체크 들어옴');
+	        }
+        if ($title.val() === '') {
+            alert('제목을 입력해 주세요.');
+            $title.focus();
+        } else if (editor.getMarkdown() === '') {
+            alert('내용을 입력해 주세요.');
+            editor.focus();
+        } else if (new Blob([editContent]).size > MAX_CONTENT_SIZE) {
+            alert('내용의 용량이 초과되었습니다. 이미지의 크기나 갯수를 줄여 주세요.');
+        } else {
+            var result = confirm('작성 하시겠습니까?');
+            if (result) {
+                alert('작성이 완료되었습니다.');
+                $('form').submit();
+            }
         }
     }
-}
-
 </script>
+
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

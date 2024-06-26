@@ -43,6 +43,9 @@ td {
 	border-color: gray;
 }
 
+#viewer{
+	min-height: 400px;
+}
 </style>
 </head>
 
@@ -64,6 +67,10 @@ td {
 					<col width="50%" />
 				</colgroup>
 				<tr>
+					<th class="th" scope="col">게시판 부서</th>
+					<td scope="col">${dto.post_team_name}</td>
+				</tr>
+				<tr>
 					<th class="th" scope="col">제목</th>
 					<td scope="col">${dto.title}</td>
 				</tr>
@@ -79,10 +86,12 @@ td {
 					<th class="th" scope="col">작성날짜</th>
 					<td scope="col" id="reg_date">${dto.reg_date}</td>
 				</tr>
-				<tr>
-					<th class="th" scope="col">수정날짜</th>
-					<td scope="col" id="edit_date">${dto.edit_date}</td>
-				</tr>
+				<c:if test="${not empty dto.edit_date}">
+				    <tr>
+				        <th class="th" scope="col">수정날짜</th>
+				        <td scope="col" id="edit_date">${dto.edit_date}</td>
+				    </tr>
+				</c:if>
 				<tr>
 					<th class="th" scope="col">조회수</th>
 					<td scope="col">${dto.bHit}</td>
@@ -122,17 +131,6 @@ td {
 <script>
 var content = '${dto.contents}';
 
-document.addEventListener('DOMContentLoaded', function() {
-    // 여기에 dto.edit_date 값이 설정됨
-    var editDate = "${dto.edit_date}"; // 이 부분은 서버에서 dto.edit_date 값을 넣어주는 방식에 따라 달라질 수 있음
-
-    // editDate가 null 또는 빈 문자열인 경우 빈 값으로 설정
-    var displayValue = editDate ? editDate : '';
-
-    // HTML 요소에 값 설정
-    document.getElementById('edit_date').textContent = displayValue;
-});
-
 const viewer = toastui.Editor.factory({
 	el: document.querySelector('#viewer'),
 	viewer: true,
@@ -140,20 +138,31 @@ const viewer = toastui.Editor.factory({
 });
 
 function formatDate(dateStr) {
-	const options = {year: 'numeric', month: '2-digit', day: '2-digit' };
-	const date = new Date(dateStr);
-	return date.toLocaleDateString('kr-KO', options);
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('ko-KR', options); // "ko-KR"로 수정
 }
 
-// 시간안보이게
+// 등록일 포맷팅
 const regDateElement = document.getElementById('reg_date');
-const regDateText = regDateElement.innerText;
+if (regDateElement) { // 요소가 존재하는지 확인
+    const regDateText = regDateElement.innerText;
+    const formattedDate = formatDate(regDateText);
+    regDateElement.innerText = formattedDate;
+} else {
+    console.log('regDateElement not found');
+}
+
+// 수정일 포맷팅
 const editDateElement = document.getElementById('edit_date');
-const editDateText = editDateElement.innerText;
-const formattedDate = formatDate(regDateText);
-const formattedDate2 = formatDate(editDateText);
-regDateElement.innerText = formattedDate;
-editDateElement.innerText = formattedDate2;
+if (editDateElement) { // 요소가 존재하는지 확인
+    const editDateText = editDateElement.innerText;
+    const formattedDate2 = formatDate(editDateText);
+	editDateElement.innerText = formattedDate2;
+} else {
+    console.log('editDateElement not found');
+}
+
 
 // 뒤로가기
 function BoardList(){

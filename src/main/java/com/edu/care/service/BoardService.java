@@ -40,19 +40,40 @@ public class BoardService {
 	@Value("${spring.servlet.multipart.location}")
 	private String root;
 
-	public Map<String, Object> allList(int currPage, int pagePerCnt, String searchCategory, String searchWord) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		int start = (currPage - 1) * pagePerCnt;
-
+	public Map<String, Object> allList(Map<String, String> map) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		int pagePerCnt = 10;
+		int start = (Integer.parseInt(map.get("page")) - 1) * pagePerCnt;
+		String searchCategory = map.get("searchCategory");
+		String searchWord = map.get("searchWord");
+		
+		List<BoardDTO> topFixedList = new ArrayList<BoardDTO>();
+		int fixCnt = 0;
+		
+		if (searchWord == "") {
+			topFixedList = boardDAO.topFixedList();
+			if(topFixedList != null) {
+				fixCnt = topFixedList.size();
+			}	
+		}
+		int totalPage = boardDAO.allListPageCnt(pagePerCnt, searchCategory, searchWord);
+		
+		if (start == 0) {
+			pagePerCnt -= fixCnt;
+		} else {
+			start -= fixCnt;
+		}
+		
 		List<BoardDTO> list = boardDAO.allList(start, pagePerCnt, searchCategory, searchWord);
-		map.put("list", list);
-		map.put("totalPage", boardDAO.allListPageCnt(pagePerCnt, searchCategory, searchWord));
-		map.put("topFixedList", boardDAO.topFixedList());
-		return map;
+		
+		result.put("list", list);
+		result.put("totalPage", totalPage);
+		result.put("topFixedList", topFixedList);
+		return result;
 	}
 
 	@Transactional
-	public ModelAndView detail(String post_no, String user_code) {
+	public ModelAndView allDetail(String post_no, String user_code) {
 		ModelAndView mav = new ModelAndView("board/allBoard_detail");
 		BoardDTO dto = boardDAO.detail(post_no);
 		boardDAO.upHit(post_no);
@@ -129,9 +150,11 @@ public class BoardService {
 	public void boardUpdate(MultipartFile[] attachFile, Map<String, String> param) {
 		logger.info("param : {} ", param);
 		boardDAO.boardUpdate(param);
+		
 		BoardDTO dto = new BoardDTO();
 		dto.setUser_code(param.get("user_code"));
 		dto.setPost_no(Integer.parseInt(param.get("post_no")));
+		
 		if (attachFile[0].getSize() != 0) {
 			fileSave(attachFile, dto);
 		}
@@ -225,7 +248,9 @@ public class BoardService {
 		
 		if (searchWord == "") {
 			topFixedTeamList = boardDAO.topFixedTeamList(teamCode);
-			fixCnt = topFixedTeamList.size();
+			if(topFixedTeamList != null) {
+				fixCnt = topFixedTeamList.size();
+			}	
 		}
 		int totalPage = boardDAO.teamListPageCnt(pagePerCnt, searchCategory, searchWord, teamCode);
 		

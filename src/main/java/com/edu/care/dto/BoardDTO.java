@@ -28,6 +28,34 @@ public class BoardDTO {
 	private String board_type;
 	private String fileName;
 	
+	private String hiddenTeamCategory;
+	private String post_team_code;
+	private String post_team_name;
+	
+	public String getPost_team_name() {
+		return post_team_name;
+	}
+
+	public void setPost_team_name(String post_team_name) {
+		this.post_team_name = post_team_name;
+	}
+
+	public String getPost_team_code() {
+		return post_team_code;
+	}
+
+	public void setPost_team_code(String post_team_code) {
+		this.post_team_code = post_team_code;
+	}
+
+	public String getHiddenTeamCategory() {
+		return hiddenTeamCategory;
+	}
+
+	public void setHiddenTeamCategory(String hiddenTeamCategory) {
+		this.hiddenTeamCategory = hiddenTeamCategory;
+	}
+
 	public String getFileName() {
 		return fileName;
 	}
