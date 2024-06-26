@@ -18,7 +18,7 @@ public interface StuDAO {
 
 	int overlay(String id);
 
-	String createUserCode(String classify_code);
+	String createUserCode(Map<String, String> param);
 
 	int reg(Map<String, String> param);
 

@@ -21,6 +21,10 @@ public class MypageDTO {
 	private Date birth;
 	private String gender;
 	private String name;
+	private Date att_date;
+	private String att_state;
+	private String course_name;
+	private int course_no;
 	
 	public String getUser_code() {
 		return user_code;
@@ -99,5 +103,29 @@ public class MypageDTO {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public Date getAtt_date() {
+		return att_date;
+	}
+	public void setAtt_date(Date att_date) {
+		this.att_date = att_date;
+	}
+	public String getAtt_state() {
+		return att_state;
+	}
+	public void setAtt_state(String att_state) {
+		this.att_state = att_state;
+	}
+	public String getCourse_name() {
+		return course_name;
+	}
+	public void setCourse_name(String course_name) {
+		this.course_name = course_name;
+	}
+	public int getCourse_no() {
+		return course_no;
+	}
+	public void setCourse_no(int course_no) {
+		this.course_no = course_no;
 	}
 }

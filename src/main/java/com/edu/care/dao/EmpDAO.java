@@ -26,7 +26,7 @@ public interface EmpDAO {
 
 	int edit(Map<String, String> param);
 
-	String createUserCode(String classify_code);
+	String createUserCode(Map<String, String> param);
 
 	void regVaca(String user_code);
 
