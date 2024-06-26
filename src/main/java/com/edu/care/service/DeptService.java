@@ -99,16 +99,30 @@ public class DeptService {
 		return result;
 	}
 	
-	// 부서장 수정
-	public Map<String, Object> updateLeader(Map<String, Object> param) {
+	// 부서장 변경
+	public Map<String, Object> changeLeader(Map<String, Object> param) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		String msg = "fail";
-		int row = deptDAO.updateLeader(param);
+		int row = deptDAO.changeLeader(param);
 		
 		if(row > 0) {
 			msg = "success";
 		}
 		logger.info("부서장 수정 결과: "+msg);
+		result.put("msg", msg);
+		return result;
+	}
+
+	// 부서원 부서 이동
+	public Map<String, Object> moveMember(Map<String, Object> param) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		String msg = "fail";
+		int row = deptDAO.moveMember(param);
+		
+		if(row > 0) {
+			msg = "success";
+		}
+		logger.info("부서원 이동 결과: "+msg);
 		result.put("msg", msg);
 		return result;
 	}
