@@ -70,16 +70,16 @@ public interface ApprovalDAO {
 
 	String getOriFileName(String file_no, String new_filename);
 
-	void approve(String au_code);
+	void approve(String au_code, String user_code);
 
-	void reject(String apv_no);
+	void reject(String au_code, String user_code);
 
-	void plusRemainVaca(double va_days, String user_code, Timestamp reg_date);
+	void plusRemainVaca(double va_days, String au_user_code, Timestamp reg_date);
 
-	int orderCompCheck(String au_code, String apv_no);
+	int orderCompCheck(String au_code, String user_code);
 
 	void scheduleWrite(ApprovalDTO dto);
 
-	String notiReceiveUser(String apv_no);
+	String notiReceiveUser(String au_code, String user_code);
 
 }

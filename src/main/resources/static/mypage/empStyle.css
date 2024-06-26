@@ -1,0 +1,11 @@
+@charset "UTF-8";
+#profile-update-img {
+	display: none;
+}
+.profile-default-img {
+	font-size: 150px;
+	color: #012970;
+}
+.load-profile-img {
+	width: 120px;
+}

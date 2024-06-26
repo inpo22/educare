@@ -69,13 +69,14 @@
 				, (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code) AS class_name
 				, a.title
 				, a.reg_date
+				, aor.state
 				, CASE 
 					WHEN aor.row_num != 1 THEN (SELECT ao.state FROM approval_order ao WHERE ao.apv_no = (aor.apv_no - 1))
 					WHEN aor.row_num = 1 THEN 1
 				END AS is_my_turn
 			FROM approval a JOIN approval_order_rank aor ON a.au_code = aor.au_code JOIN user u ON a.user_code = u.user_code
 			WHERE aor.user_code = #{param1}) AS subquery
-		WHERE is_my_turn = 1
+		WHERE is_my_turn = 1 AND state = 0
 		ORDER BY reg_date DESC LIMIT 5
 	</select>
 	
