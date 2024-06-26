@@ -27,6 +27,7 @@
 			, #{sked_type}
 		)	
 	</insert>
+	
 	<select id="scheduleList" parameterType="schedule" resultType="schedule">
 		SELECT 
 			sch.sked_no

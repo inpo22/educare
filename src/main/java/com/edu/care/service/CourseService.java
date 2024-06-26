@@ -21,13 +21,15 @@ public class CourseService {
 	
 	@Autowired CourseDAO courseDAO;
 
-	public Map<String, Object> courseList(int currPage, int pagePerCnt, String searchFilter, String searchContent) {
+	public Map<String, Object> courseList(int currPage, int pagePerCnt, String searchFilter, String searchContent, String showCourse) {
 		int start = (currPage-1) * pagePerCnt;
 		
 		Map<String, Object> map = new HashMap<String, Object>();
-		List<CourseDTO> list = courseDAO.courseList(start, pagePerCnt, searchFilter, searchContent);
+		List<CourseDTO> list = courseDAO.courseList(start, pagePerCnt, searchFilter, searchContent, showCourse);
 		logger.info("list : {}", list);
+		logger.info("list.size : "+list.size());
 		map.put("list",list);
+		map.put("totalPage",courseDAO.courseListPageCnt(pagePerCnt, searchFilter, searchContent, showCourse));
 		return map;
 	}
 
@@ -74,5 +76,5 @@ public class CourseService {
 		logger.info("##### course courseDetail service IN #####");
 		return courseDAO.courseDetail(course_no);
 	}
-	
+
 }

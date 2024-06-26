@@ -1,6 +1,7 @@
 package com.edu.care.controller;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +45,7 @@ public class CourseController {
 	
 	@GetMapping(value="/course/list.ajax")
 	@ResponseBody
-	public Map<String, Object> courseList(String page, String searchFilter, String searchContent, HttpSession session) {
+	public Map<String, Object> courseList(String page, String searchFilter, String searchContent, String showCourse, HttpSession session) {
 		logger.info("##### course list ajax controller IN #####");
 		logger.info("searchFilter : " + searchFilter);
 		logger.info("searchContent : "+ searchContent);
@@ -52,7 +53,7 @@ public class CourseController {
 		int currPage = Integer.parseInt(page);
 		int pagePerCnt = 10;
 		
-		Map<String, Object> map =  courseService.courseList(currPage,pagePerCnt,searchFilter,searchContent);
+		Map<String, Object> map =  courseService.courseList(currPage,pagePerCnt,searchFilter,searchContent, showCourse);
 		
 		return map;
 	}
@@ -72,18 +73,20 @@ public class CourseController {
 	
 	@PostMapping(value="/course/reservationWrite.ajax")
 	@ResponseBody
-	public String reservationWrite(@RequestBody CourseDTO courseDTO, HttpSession session) {
+	public Map<String, String> reservationWrite(@RequestBody CourseDTO courseDTO, HttpSession session) {
 		logger.info("##### course reservationWrite ajax controller IN #####");
 		
 		Boolean result = courseService.reservationWrite(courseDTO);
 		logger.info("##### result=> ",result);
 		
-		if(result) {
-			return "success";
-		}else {
-			return "fail";
-		}
+		Map<String, String> map = new HashMap<String, String>();
 		
+		if(result) {
+			 map.put("result", "success");
+		}else {
+			 map.put("result", "fail");
+		}
+		return map;
 	}
 	
 	@GetMapping(value="/course/detail.go")

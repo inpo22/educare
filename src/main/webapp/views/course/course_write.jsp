@@ -251,7 +251,7 @@ small{
 					
 				</div>
 				<div id="editor"></div>
-					<button type="button" class="btn text-light bg-dark" id="submitButton" onclick="submitCourseWrite()">등록</button>
+					<button type="button" class="btn text-light bg-dark mt-2" id="submitButton" onclick="submitCourseWrite()">등록</button>
 			</div>
 		</div>
 
@@ -782,8 +782,10 @@ function submitCourseWrite(){
 		data: JSON.stringify(paramData),
 		contentType: 'application/json',
 		success:function(data) {
-			if(data === "success" ){
+			console.log(data.result);
+			if(data.result === "success" ){
 				alert('등록이 완료되었습니다.');
+				location.href='/course/list.go';
 			}else{
 				alert('등록에 실패하였습니다.');
 			}
