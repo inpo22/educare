@@ -242,11 +242,10 @@
 		var $email = $('#email');
 		var $phone = $('#phone');
 		
-		if($email.val()==''){
+		if($email.val() == ''){
 			alert('이메일을 입력해주세요.');
 			$email.focus();
-		}
-		else if($phone.val()==''){
+		} else if($phone.val() == ''){
 			alert('핸드폰 번호를 입력해주세요.');
 			$phone.focus();
 		} else {

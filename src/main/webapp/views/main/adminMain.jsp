@@ -127,7 +127,8 @@
 			<div id="right-section">
 				<div class="section-title">날씨</div>
 				<div>
-					<div class="white-section weather-div">
+					<div class="white-section weather-div text-align-center">
+						<div class="spinner-border" role="status"></div>
 					</div>
 				</div>
 				<br/><br/>
@@ -141,7 +142,7 @@
 							<c:forEach items="${scheduleList}" var="schedule">
 								<li>
 									<c:if test="${schedule.sked_type.equals('SKED_TP01')}">
-										<span class="purple-color font-weight">&bull;</span>
+										<span class="yellow-color font-weight">&bull;</span>
 									</c:if>
 									<c:if test="${schedule.sked_type.equals('SKED_TP02')}">
 										<span class="green-color font-weight">&bull;</span>
@@ -168,6 +169,12 @@
 								</li>
 							</c:forEach>
 						</ul>
+						<br/>
+						<div class="text-align-center small-font">
+							<span class="yellow-color font-weight">&bull;</span>&nbsp;전사&nbsp;&nbsp;
+							<span class="green-color font-weight">&bull;</span>&nbsp;부서&nbsp;&nbsp;
+							<span class="blue-color font-weight">&bull;</span>&nbsp;개인
+						</div>
 						<c:if test="${scheduleList.size() > 0}">
 							<div class="more-div">
 								<a class="blue-color" href="/schedule.go">더보기</a>
