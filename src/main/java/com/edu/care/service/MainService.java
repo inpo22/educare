@@ -103,10 +103,11 @@ public class MainService {
 		
 		List<MainDTO> notiBoardList = mainDAO.stdNotiBoardList();
 		List<MainDTO> refBoardList = mainDAO.stdRefBoardList();
-		
+		List<MainDTO> scheduleList = mainDAO.stdScheduleList(user_code);
 		
 		mav.addObject("notiBoardList", notiBoardList);
 		mav.addObject("refBoardList", refBoardList);
+		mav.addObject("scheduleList", scheduleList);
 		
 		return mav;
 	}

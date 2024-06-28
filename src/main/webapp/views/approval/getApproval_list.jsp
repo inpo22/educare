@@ -39,9 +39,6 @@
 	.sixth-col {
 		width: 10%;
 	}
-	.badge {
-		width: 70px;
-	}
 </style>
 </head>
 
@@ -265,7 +262,7 @@
 			    
 				content += '<td>' + row.user_name + ' ' + row.class_name + '</td>';
 				content += '<td>' + row.team_name + '</td>';
-				content += '<td><span class="badge bg-warning">결재 대기</span></td>';
+				content += '<td><span class="badge bg-warning bg-result">결재 대기</span></td>';
 				content += '</tr>';
 			}
 		}
