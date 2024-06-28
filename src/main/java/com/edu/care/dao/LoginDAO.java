@@ -10,6 +10,8 @@ public interface LoginDAO {
 
 	LoginDTO loginAccess(String id);
 
+	int pwFindCheck(String id, String email);
+
 	
 
 	
