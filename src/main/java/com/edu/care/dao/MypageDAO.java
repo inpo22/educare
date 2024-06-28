@@ -31,7 +31,7 @@ public interface MypageDAO {
 
 	int StdcourseListPageCnt(int pagePerCnt, String Csearchbox, String user_code);
 
-	int cancel(String course_name);
+	int cancel(String course_name, String user_code);
 
 	List<MypageDTO> stdattdList(int start, int pagePerCnt, String Asearchbox, String user_code);
 

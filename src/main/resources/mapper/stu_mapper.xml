@@ -189,8 +189,8 @@
 	SELECT 
 		c.course_name ,
 		u.name,
-		c.course_start ,
-		c.course_end,
+		DATE_FORMAT(c.course_start, '%Y-%m-%d') AS course_start,
+        DATE_FORMAT(c.course_end, '%Y-%m-%d') AS course_end,
 		p.pay_state
 	FROM 
 		course c 
@@ -223,8 +223,6 @@
 	<if test="param2 != null and param2 != ''">
     	AND c.course_name LIKE CONCAT('%', #{param2}, '%')
 	</if>
-	ORDER BY 
-		p.pay_code DESC
 </select>
 
 <!-- 강의선택 모달 리스트 -->
@@ -239,6 +237,8 @@
 		`user` u ON c.user_code = u.user_code 
 	LEFT JOIN 
 		course_rez cr ON c.course_no = cr.course_no
+	GROUP BY 
+    	c.course_name, u.name, cr.course_space
 </select>
 
 <!-- 선택한 강의 등록 쿼리문 -->
@@ -255,12 +255,67 @@
 			c.course_name = #{course_name}
 </insert>
 
+<!-- 출석현황 리스트 쿼리문 -->
+<select id="attdList" parameterType="String" resultType="mypage">
+	SELECT 
+		c.course_name,
+		a. att_date,
+		a.att_state
+	FROM 
+		attendance a
+	LEFT JOIN
+		course c ON a.course_no = c.course_no
+	WHERE 	
+		a.user_code = #{param4}
+	AND 
+		DATE(a.att_date) <![CDATA[<=]]> CURDATE()
+	<if test="param3 != null and param3 != ''">
+    	AND c.course_name LIKE CONCAT('%', #{param3}, '%')
+	</if>
+	ORDER BY 	
+		a.att_date DESC
+	LIMIT #{param1}, #{param2}
+</select>
 
+<!-- 출석현황 리스트 페이징 쿼리문 -->
+<select id="attdListPageCnt" parameterType="String" resultType="Integer">
+	SELECT 
+		CEIL(COUNT(a.att_state)/#{param1})
+	FROM 
+		attendance a
+	LEFT JOIN
+		course c ON a.course_no = c.course_no
+	WHERE 	
+		a.user_code = #{param3}
+	AND 
+		DATE(a.att_date) <![CDATA[<=]]> CURDATE()
+	<if test="param2 != null and param2 != ''">
+    	AND c.course_name LIKE CONCAT('%', #{param2}, '%')
+	</if>
+</select>
 
+<!-- 출석처리 쿼리문 -->
+<update id="attd" parameterType="String">
+	UPDATE attendance SET
+		att_state= 1
+	WHERE
+		course_no IN (SELECT course_no FROM course WHERE course_name = #{course_name})
+	AND
+		user_code=#{user_code}
+	AND
+		att_date=CONCAT(#{att_date}, ' 12:00:00')
+</update>
 
-
-
-
-
+<!-- 결석처리 쿼리문 -->
+<update id="absent" parameterType="String">
+	UPDATE attendance SET
+		att_state=2
+	WHERE
+		course_no IN (SELECT course_no FROM course WHERE course_name = #{course_name})
+	AND
+		user_code=#{user_code}
+	AND
+		att_date=CONCAT(#{att_date}, ' 12:00:00')
+</update>
 	
 </mapper>

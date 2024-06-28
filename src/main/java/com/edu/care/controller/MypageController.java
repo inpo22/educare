@@ -105,12 +105,12 @@ public class MypageController {
 	}
 	
 	// 취소버튼 클릭 시 결제상태 업데이트
-	@GetMapping(value="/mypag/pay-cancel.do")
-	public String cancel(RedirectAttributes rAttr, @RequestParam("course_name") String course_name) {
+	@GetMapping(value="/mypage/pay-cancel.do")
+	public String cancel(RedirectAttributes rAttr, @RequestParam("course_name") String course_name, @RequestParam("user_code") String user_code) {
 		logger.info("결제취소");
 		String msg = "다시 확인해주세요.";
 		
-		int row = mypageService.cancel(course_name);
+		int row = mypageService.cancel(course_name, user_code);
 		logger.info("insert count :"+row);
 		
 		if(row == 1) {

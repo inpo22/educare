@@ -140,6 +140,23 @@ public class StuController {
 		return map;
 	}
 	
+	// 출석현황 리스트(비동기)
+	@ResponseBody
+	@PostMapping(value="/std/detail/attd.ajax")
+	public Map<String, Object> attdListCall(@RequestParam("user_code") String user_code, String page, String Asearchbox){
+		logger.info("출석현황 요청");
+		logger.info("page : " + page);
+		logger.info("Asearchbox : " + Asearchbox);
+		logger.info("user_code : " + user_code);
+		
+		int currPage = Integer.parseInt(page);
+		int pagePerCnt = 10;
+		
+		Map<String, Object> map = stuService.attdList(currPage, pagePerCnt,Asearchbox,user_code);
+		
+		return map;
+	}
+	
 	// 결제내역 리스트(비동기)
 	@ResponseBody
 	@PostMapping(value="/std/detail_pay.ajax")
@@ -185,6 +202,48 @@ public class StuController {
 		}
 		model.addAttribute("msg", msg);
 		return page;
+	}
+	
+	// 출석 처리
+	@GetMapping(value="/std/attd.do")
+	public String attd(RedirectAttributes rAttr ,@RequestParam("course_name") String course_name, @RequestParam("user_code") String user_code, @RequestParam("att_date") String att_date) {
+		logger.info("출석");
+		logger.info("course_name: " + course_name);
+	    logger.info("user_code: " + user_code);
+	    logger.info("att_date: " + att_date);
+	    
+		String msg = "다시 시도해주세요.";
+		
+		int row = stuService.attd(course_name, user_code,att_date);
+		logger.info("insert count:"+row);
+		
+		if(row == 1) {
+			msg = "출석완료";
+		}
+		rAttr.addFlashAttribute("msg", msg);
+		
+		return "redirect:/std/detail.go?user_code="+user_code;
+	}
+	
+	// 결석 처리
+	@GetMapping(value="/std/absent.do")
+	public String absent(RedirectAttributes rAttr ,@RequestParam("course_name") String course_name, @RequestParam("user_code") String user_code, @RequestParam("att_date") String att_date) {
+		logger.info("결석");
+		logger.info("course_name: " + course_name);
+	    logger.info("user_code: " + user_code);
+	    logger.info("att_date: " + att_date);
+	    
+		String msg = "다시 시도해주세요.";
+		
+		int row = stuService.absent(course_name, user_code, att_date);
+		logger.info("insert count:"+row);
+		
+		if(row == 1) {
+			msg = "결석처리 완료";
+		}
+		rAttr.addFlashAttribute("msg", msg);
+		
+		return "redirect:/std/detail.go?user_code="+user_code;
 	}
 	
 	
