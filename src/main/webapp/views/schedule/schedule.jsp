@@ -685,7 +685,9 @@ function filterEvent(filter_skedType) {
     var evt = calendar.getEvents();
     evt.forEach(function(event) {
         var skedTypeResult = event.extendedProps.skedType;
-        if (!filter_skedType.includes(skedTypeResult)) {
+    	if(skedTypeResult == undefined){
+    		event.setProp('display', ''); 
+    	}else if (!filter_skedType.includes(skedTypeResult)) {
             event.setProp('display', 'none'); 
         } else {
             event.setProp('display', ''); 
