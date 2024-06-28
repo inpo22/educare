@@ -56,8 +56,15 @@ public class LoginService {
 		String page = "login/login";
 		String msg = "아이디 또는 비밀번호를 확인하세요";
 		
-		String enc_pw = (loginInfo != null) ? loginInfo.getPw() : null;
+		//String enc_pw = (loginInfo != null) ? loginInfo.getPw() : null
+		String enc_pw;
+		if (loginInfo != null) {
+			 enc_pw = loginInfo.getPw();
+		}else {
+			 enc_pw = null;
+		}
 		logger.info("enc_pw = {}", enc_pw);
+		
 		
 		if (enc_pw != null) {
 			success = encoder.matches(pw, enc_pw);
@@ -84,6 +91,7 @@ public class LoginService {
 			logger.info("team_code:{}", loginInfo.getTeam_code());
 			logger.info("photo :{} ", loginInfo.getPhoto());
 			
+			page = "redirect:/"; //MainController "/"경로로 이동시킴
 			
 			String team_code = loginInfo.getTeam_code();
 			String classify_code = loginInfo.getClassify_code();
@@ -98,16 +106,15 @@ public class LoginService {
 	                page = "redirect:/main/stdMain.go";
 	            }
 			
-		}else {
-			mav.addObject("msg", msg);
-		}
-		mav.setViewName(page);
-		return mav;
-		
-		
-		
-		
+				}else {
+					mav.addObject("msg", msg);
+				}
+					mav.setViewName(page);
+					return mav;	
 
+				}
+	public Object idFindAccess(String name, String email) {
+		return loginDAO.idFindAccess(name,email);
 	}
 
 	public Map<String, Object> sendVerifyMail(String id, String email) {
