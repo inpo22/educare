@@ -34,32 +34,18 @@
 		user_code=#{user_code}
 </select>
 
-<!-- 나중에 생략 가능 정보 수정에서 정보 가져오는 쿼리문 -->
-<select id="mypageStdU" resultType="mypage">
-	SELECT
-		user_code,
-		name, 
-		id,
-		email,
-		phone,
-		birth,
-		gender,
-		pw,
-		photo
-	FROM 
-		user
-	WHERE
-		user_code=#{param}
-</select>
 
 <!-- 학생마이페이지 - 수강이력 리스트 쿼리문 -->
 <select id="StdcourseList" parameterType="String" resultType="course">
 	SELECT 
 		c.course_name ,
 		u.name,
-		c.course_start ,
-		c.course_end,
-		p.pay_state
+		DATE_FORMAT(c.course_start, '%Y-%m-%d') AS course_start,
+        DATE_FORMAT(c.course_end, '%Y-%m-%d') AS course_end,
+		p.pay_state,
+		c.course_no, 
+		c.course_price,
+		p.user_code
 	FROM 
 		course c 
 	LEFT JOIN
@@ -91,8 +77,7 @@
 	<if test="param2 != null and param2 != ''">
     	AND c.course_name LIKE CONCAT('%', #{param2}, '%')
 	</if>
-	ORDER BY 
-		p.pay_code DESC
+
 </select>
 
 <!-- 학생마이페이지 - 결제내역 리스트 쿼리문 -->
@@ -116,6 +101,8 @@
 	<if test="param3 != null and param3 != ''">
     	AND c.course_name LIKE CONCAT('%', #{param3}, '%')
 	</if>
+	ORDER BY
+		p.pay_date DESC
 	LIMIT #{param1}, #{param2}
 </select>
 
@@ -136,14 +123,18 @@
 	<if test="param2 != null and param2 != ''">
     	AND c.course_name LIKE CONCAT('%', #{param2}, '%')
 	</if>
+	ORDER BY
+		p.pay_date DESC
 </select>
 
 <!-- 결제취소 쿼리문 -->
 <update id="cancel" parameterType="String">
-	UPDATE payment SET
-		pay_state=2
-	WHERE course_no = (SELECT course_no FROM course WHERE course_name = #{course_name})
+    UPDATE payment SET
+        pay_state = 2
+    WHERE course_no IN (SELECT course_no FROM course WHERE course_name = #{course_name})
+    AND user_code = #{user_code}
 </update>
+
 
 <!-- 학생 마이페이지 - 출석현황 리스트 쿼리문 -->
 <select id="stdattdList" parameterType="String" resultType="mypage">
@@ -157,10 +148,14 @@
 		course c ON a.course_no = c.course_no
 	WHERE a.user_code = #{param4}
 	AND
-		a.att_state IN(0,1)
+		a.att_state IN(1,2)
+	AND 
+		DATE(a.att_date) <![CDATA[<=]]> CURDATE()
 	<if test="param3 != null and param3 != ''">
     	AND c.course_name LIKE CONCAT('%', #{param3}, '%')
 	</if>
+	ORDER BY 	
+		a.att_date DESC
 	LIMIT #{param1}, #{param2}
 </select>	
 
@@ -174,10 +169,13 @@
 		course c ON a.course_no = c.course_no
 	WHERE a.user_code = #{param3}
 	AND
-		a.att_state IN(0,1)
+		a.att_state IN(1,2)
+	AND 
+		DATE(a.att_date) <![CDATA[<=]]> CURDATE()
 	<if test="param2 != null and param2 != ''">
     	AND c.course_name LIKE CONCAT('%', #{param2}, '%')
 	</if>
+	
 </select>	
 	
 <select id="empMypage" resultType="mypage">
