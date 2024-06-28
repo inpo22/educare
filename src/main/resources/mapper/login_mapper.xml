@@ -26,7 +26,11 @@
 		WHERE
 		  u.id = #{param1}
 	</select>
-
-
+		 
+		 <select id="idFindAccess" resultType="String">
+		 SELECT id
+    	 FROM user u
+    	 WHERE name= #{param1} AND email= #{param2}
+		</select>
 
 </mapper>
