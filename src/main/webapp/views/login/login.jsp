@@ -106,7 +106,7 @@
                 <a href="" id="findIdLink">아이디찾기</a>
             </div>
             <div>
-                <a href="" id="findPwLink">패스워드찾기</a>
+                <a href="/login/pwFind.go" id="findPwLink">패스워드찾기</a>
             </div>
             <button type="submit" class="btn-primary" id="LoginButton">LOGIN</button>
             <div class="alert alert-danger mt-3" role="alert" id="errorMsg">아이디 또는 비밀번호를 확인해 주세요.</div>

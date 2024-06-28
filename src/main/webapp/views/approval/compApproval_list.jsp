@@ -39,9 +39,6 @@
 	.sixth-col {
 		width: 10%;
 	}
-	.badge {
-		width: 70px;
-	}
 </style>
 </head>
 
@@ -267,11 +264,11 @@
 				content += '<td>' + row.team_name + '</td>';
 				
 				if (row.total_order_state == 0) {
-					content += '<td><span class="badge bg-success">진행중</span></td>';
+					content += '<td><span class="badge bg-success bg-result">진행중</span></td>';
 				} else if (row.total_order_state == 1) {
-					content += '<td><span class="badge bg-primary">완료</span></td>';
+					content += '<td><span class="badge bg-primary bg-result">완료</span></td>';
 				} else if (row.total_order_state == 2) {
-					content += '<td><span class="badge bg-danger">반려</span></td>';
+					content += '<td><span class="badge bg-danger bg-result">반려</span></td>';
 				}
 				content += '</tr>';
 			}

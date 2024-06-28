@@ -1,12 +1,28 @@
 package com.edu.care.service;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.edu.care.dao.LoginDAO;
@@ -19,6 +35,16 @@ public class LoginService {
 	LoginDAO loginDAO;
 	@Autowired
 	PasswordEncoder encoder;
+	
+	@Value("${spring.mail.username}")
+	private String mailId;
+	@Value("${spring.mail.password}")
+	private String password;
+	@Value("${spring.mail.host}")
+	private String host;
+	@Value("${spring.mail.port}")
+	private String port;
+	
 	Logger logger = LoggerFactory.getLogger(getClass());
 
 	public ModelAndView loginAccess(HttpSession session, String id, String pw) {
@@ -82,6 +108,76 @@ public class LoginService {
 		
 		
 
+	}
+
+	public Map<String, Object> sendVerifyMail(String id, String email) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		
+		int cnt = loginDAO.pwFindCheck(id, email);
+		
+		if (cnt == 1) {
+			result.put("result", cnt);
+			
+			String subject = "EDUcare 비밀번호 변경 이메일 인증";
+			String content = "";
+			
+			StringBuilder builder = new StringBuilder();
+			builder.append("<h1>EDUcare 이메일 인증 코드</h1>");
+			builder.append("<p></p>");
+			builder.append("<p>인증코드는 아래와 같습니다.</p>");
+			builder.append("<div style=\"display: table-cell; text-align: center; vertical-align: middle; width: 300px; height: 100px; "
+					+ "background-color: lightgray; font-weight: bold;\">");
+			builder.append("인증코드");
+			builder.append("</div>");
+			
+			content = builder.toString();
+			
+			// 메일 서버 정보 입력
+			Properties props = new Properties();
+			props.put("mail.smtp.host", host);
+			props.put("mail.smtp.port", port);
+			props.put("mail.smtp.auth", "true");
+			props.put("mail.smtp.starttls.enable", "true");
+			props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+			props.put("mail.debug", "true");
+			
+			Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
+				protected PasswordAuthentication getPasswordAuthentication() {
+					return new PasswordAuthentication(mailId, password);
+				}
+			});
+			
+			try {
+				MimeMessage message = new MimeMessage(session);
+				message.setFrom(new InternetAddress(mailId));
+				message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
+				
+				message.setSubject(subject);
+				
+				// 메일 본문 설정
+				MimeBodyPart textPart = new MimeBodyPart();
+				textPart.setText(content);
+				
+				// 멀티파트 설정
+				MimeMultipart multipart = new MimeMultipart();
+				multipart.addBodyPart(textPart);
+				
+				message.setContent(multipart);
+				
+				Transport.send(message);
+				logger.info("메일 전송 완료");
+				
+			} catch (AddressException e) {
+				e.printStackTrace();
+			} catch (MessagingException e) {
+				e.printStackTrace();
+			}
+			
+		} else {
+			result.put("result", 0);
+		}
+		
+		return result;
 	}
 
 }
