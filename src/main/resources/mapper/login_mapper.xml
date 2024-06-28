@@ -26,6 +26,12 @@
 		WHERE
 		  u.id = #{param1}
 	</select>
+		 
+	<select id="idFindAccess" resultType="String">
+		 SELECT id
+    	 FROM user u
+    	 WHERE name= #{param1} AND email= #{param2}
+	</select>
 
 	<select id="pwFindCheck" resultType="Integer">
 		SELECT COUNT(u.user_code) FROM user u WHERE u.id = #{param1} AND u.email = #{param2}
