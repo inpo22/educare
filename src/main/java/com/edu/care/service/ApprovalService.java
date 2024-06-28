@@ -37,6 +37,7 @@ public class ApprovalService {
 	
 	@Autowired ApprovalDAO approvalDAO;
 	@Autowired NotiDAO notiDAO;
+	@Autowired MailService mailService;
 	
 	@Value("${spring.servlet.multipart.location}")
 	private String root;
@@ -295,8 +296,16 @@ public class ApprovalService {
 			int noti_type = 0;
 			
 			notiDAO.sendNoti(to_user_code, from_user_code, noti_content_no, noti_type);
-		} else if (is_comp == 1 && dto.getAu_type() == 1) {
-			approvalDAO.scheduleWrite(dto);
+		} else if (is_comp == 1) {
+			String receive_user_code = dto.getUser_code();
+			String code_name = dto.getTitle();
+			int type = 1;
+			
+			mailService.autoMailSend(receive_user_code, code_name, type);
+			
+			if (dto.getAu_type() == 1) {
+				approvalDAO.scheduleWrite(dto);
+			}
 		}
 	}
 
@@ -304,6 +313,12 @@ public class ApprovalService {
 		approvalDAO.reject(au_code, user_code);
 		
 		ApprovalDTO dto = approvalDAO.approvalDetail(au_code);
+		
+		String receive_user_code = dto.getUser_code();
+		String code_name = dto.getTitle();
+		int type = 2;
+		
+		mailService.autoMailSend(receive_user_code, code_name, type);
 		
 		if (dto.getAu_type() == 1) {
 			double va_days = dto.getVa_days();

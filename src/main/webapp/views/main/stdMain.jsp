@@ -101,11 +101,11 @@
 			<div id="right-section">
 				<div class="section-title">날씨</div>
 				<div>
-					<div class="white-section weather-div">
+					<div class="white-section weather-div text-align-center">
+						<div class="spinner-border" role="status"></div>
 					</div>
 				</div>
 				<br/><br/>
-				<!-- 강의실 예약이 완료되고 난 후 작업 -->
 				<div class="section-title">다가오는 일정</div>
 				<div>
 					<div class="white-section">
@@ -115,31 +115,14 @@
 							</c:if>
 							<c:forEach items="${scheduleList}" var="schedule">
 								<li>
-									<c:if test="${schedule.sked_type.equals('SKED_TP01')}">
-										<span class="purple-color font-weight">&bull;</span>
-									</c:if>
-									<c:if test="${schedule.sked_type.equals('SKED_TP02')}">
-										<span class="green-color font-weight">&bull;</span>
-									</c:if>
-									<c:if test="${schedule.sked_type.equals('SKED_TP03')}">
-										<span class="blue-color font-weight">&bull;</span>
-									</c:if>
-									<c:if test="${schedule.check_period eq 0}">
-										<span>
-											<fmt:formatDate value="${schedule.start_date}" pattern="MM.dd"/>
-											&nbsp;
-											${schedule.title}
-										</span>
-									</c:if>
-									<c:if test="${schedule.check_period eq 1}">
-										<span>
-											<fmt:formatDate value="${schedule.start_date}" pattern="MM.dd"/>
-											-
-											<fmt:formatDate value="${schedule.end_date}" pattern="MM.dd"/>
-											&nbsp;
-											${schedule.title}
-										</span>
-									</c:if>
+									<span class="green-color font-weight">&bull;</span>
+									<span>
+										<fmt:formatDate value="${schedule.start_time}" pattern="MM.dd"/>
+										&nbsp;
+										${schedule.course_name}
+										&nbsp;
+										${schedule.course_space}
+									</span>
 								</li>
 							</c:forEach>
 						</ul>

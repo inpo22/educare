@@ -40,6 +40,9 @@ public class MainDTO {
 	private Timestamp start_time;
 	private Timestamp end_time;
 	
+	private String course_name;
+	private String course_space;
+	
 	public double getFirst() {
 		return first;
 	}
@@ -195,6 +198,18 @@ public class MainDTO {
 	}
 	public void setEnd_time(Timestamp end_time) {
 		this.end_time = end_time;
+	}
+	public String getCourse_name() {
+		return course_name;
+	}
+	public void setCourse_name(String course_name) {
+		this.course_name = course_name;
+	}
+	public String getCourse_space() {
+		return course_space;
+	}
+	public void setCourse_space(String course_space) {
+		this.course_space = course_space;
 	}
 	
 }

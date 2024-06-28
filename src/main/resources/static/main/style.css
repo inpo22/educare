@@ -93,8 +93,8 @@ a {
 .red-color {
 	color: red;
 }
-.purple-color {
-	color: #e06efc
+.yellow-color {
+	color: #ccde00;
 }
 .green-color {
 	color: #6efcb3
@@ -141,4 +141,10 @@ a {
 }
 .bottom-temp {
 	font-size: 25px;
+}
+.text-align-center {
+	text-align: center;
+}
+.small-font {
+	font-size: 13px;
 }

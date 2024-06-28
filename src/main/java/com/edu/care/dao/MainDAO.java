@@ -35,4 +35,6 @@ public interface MainDAO {
 
 	List<MainDTO> stdRefBoardList();
 
+	List<MainDTO> stdScheduleList(String user_code);
+
 }
