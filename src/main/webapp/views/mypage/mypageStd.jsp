@@ -13,6 +13,9 @@
 <!-- css -->
 <jsp:include page="/views/common/head.jsp"></jsp:include>
 <!-- js -->
+<!-- 포트원 결제 -->
+<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
 
 <style>
 #backBoard {
@@ -97,24 +100,9 @@ body {
 	margin : 7px 5px;
 }
 #pay_btn{
-	margin-right: 5px;
-	height:30px;
-	font-size: 15px;
-	text-align: center;
-	align-items: center;
-	justify-content: center;
-	display: inline-flex;
-	font-weight: bold;
+	margin-right: 7px;
 }
-#cancel_btn{
-	height:30px; 
-	font-size: 15px;
-	text-align: center;
-	align-items: center;
-	justify-content: center;
-	display: inline-flex;
-	font-weight: bold;
-}
+
 </style>
 </head>
 
@@ -197,6 +185,7 @@ body {
 			    		<button id="edit_btn" class="btn btn-dark" type="submit">수정</button>
 			    	</form>			    
 				</div>
+				
 			</div>
 			
 			<br><br>
@@ -334,6 +323,7 @@ if(msg != ''){
 }
 
 //Pagination 전 변수 선언
+var type = -1;
 var page = 1;
 var totalPage = 0;
 var Psearchbox = '';
@@ -341,9 +331,7 @@ var Csearchbox='';
 var Asearchbox='';
 var user_code = '${mypageDto.user_code}';
 
-listCall(page, Psearchbox, user_code);
 CourseListCall(page, Csearchbox, user_code);
-attdListCall(page, Asearchbox, user_code);
 
 
 /* !모든 수강이력 스크립트 시작! */
@@ -362,8 +350,10 @@ function CourseListCall(page, Csearchbox, user_code){
 		success:function(data){
 			console.log(data);
 			
+			type = 0;
+			
 			totalPage = data.totalPage;
-			SetupPagination(page, totalPage);
+			setupPagination(page, totalPage,type);
 			drawCourseList(data.cList);
 		},
 		error:function(error){
@@ -384,8 +374,8 @@ function drawCourseList(courseList){
 		content += '<td>' + data.course_end + '</td>';
 		if(data.pay_state == 0) {
 			content += '<td>';
-            content += '<button id="pay_btn" class="btn btn-info">결제</button>';
-            content += '<button id="cancel_btn" class="btn btn-info" onclick="cancel(\'' + data.course_name + '\')">취소</button>';
+            content += '<button id="pay_btn" class="btn btn-info btn-sm" onclick="pay(\'' + data.course_no + '\', \'' + data.course_name + '\', \'' + data.course_price + '\')")>결제</button>';
+            content += '<button id="cancel_btn" class="btn btn-info btn-sm" onclick="cancel(\'' + data.course_name + '\')">취소</button>';
             content += '</td>';
         } else if(data.pay_state == 1) {
             content += '<td>결제완료</td>';
@@ -397,95 +387,66 @@ function drawCourseList(courseList){
 	$("#courseList").html(content);
 }
 
+// 결제하기버튼
+function pay(course_no, course_name, course_price){
+	var name = '${mypageDto.name}';
+	var user_code = '${mypageDto.user_code}';
+	
+	payment(course_no,course_name,course_price,name,user_code);
+}
+
+// 결제 함수
+function payment(course_no,course_name,course_price,name,user_code){
+	var IMP = window.IMP; // 생략가능
+    IMP.init('imp22121407'); // <-- 본인 가맹점 식별코드 삽입
+    
+    IMP.request_pay({
+        pg: "kakaopay",
+        pay_method: "card",
+        merchant_uid: 'merchant_' + new Date().getTime(),
+        name: course_name,
+        course_no: course_no,
+        amount: course_price,
+        buyer_name: name
+    }, function (rsp) {
+        console.log(rsp);
+
+        if (rsp.success) {
+            var msg = '결제가 완료되었습니다.';
+            msg += '결제금액:' + course_price;
+            $.ajax({
+                type: 'POST',
+                url: '/pay/payment.ajax',
+                data: {
+                    'course_no': course_no,
+                    'amount': course_price,
+                    'name': rsp.name,
+                    'user_code': user_code,
+                    'merchant_uid': rsp.merchant_uid
+                },
+                success: function (data) {
+                    alert(data.msg);
+                    location.href="/mypageStd.go?user_code="+user_code;
+                },
+                error: function (error) {
+                    alert('결제 정보를 저장하는 중 오류가 발생했습니다.');
+                }
+            });
+        } else {
+            var msg = "결제에 실패했습니다. 에러 내용: " + rsp.error_msg;
+            alert(msg);
+        }
+    });
+}
+
+
 // 결제취소버튼
-function cancel(course_name){
-	location.href = '/mypag/pay-cancel.do?course_name=' + course_name;
+function cancel(course_name) {
+	var user_code = '${mypageDto.user_code}';
+    location.href = '/mypage/pay-cancel.do?course_name=' + course_name + '&user_code=' + user_code;
+    CourseListCall(page, Csearchbox, user_code);
 }
 
-//수강이력 페이징 처리
-
-//totalPage 활용하여 Pagination 버튼 설정
-function SetupPagination(page, totalPage) {
-	var pagination = $('#pagination_course');
-	var count = 0;
-	
-	pagination.empty();
-	
-	var content = '<li class="page-item">';
-	content += '<a class="page-link" href="#">&laquo;</a>';
-	content += '</li>';
-	content += '<li class="page-item">';
-	content += '<a class="page-link" href="#">&lsaquo;</a>';
-	content += '</li>';
-	
-	if (page < 3) {
-		for (var i = 1; i <= totalPage; i++) {
-			content += '<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>';
-			count++;
-			if (count == 5) {
-				break;
-			}
-		}
-	}else if (page >= 3 && page < (totalPage - 2)) {
-		for (var i = page - 2; i <= totalPage; i++) {
-			content += '<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>';
-			count++;
-			if (count == 5) {
-				break;
-			}
-		}
-	}else if (page >= 3 && page >= (totalPage - 2)) {
-		for (var i = totalPage - 4; i <= totalPage; i++) {
-			if (i == 0) {
-				continue;
-			}
-			content += '<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>';
-			count++;
-			if (count == 5) {
-				break;
-			}
-		}
-	}
-	
-	content += '<li class="page-item">';
-	content += '<a class="page-link" href="#">&rsaquo;</a>';
-	content += '</li>';
-	
-	content += '<li class="page-item">';
-	content += '<a class="page-link" href="#">&raquo;</a>';
-	content += '</li>';
-	
-	pagination.html(content);
-	pagination.find('.page-item').removeClass('active');
-	
-	$('.page-link').each(function() {
-		if ($(this).html() == page) {
-			$(this).parent().addClass('active');
-		}
-	});
-	
-}
-
-//설정된 버튼에 이벤트 적용
-$('#pagination_course').on('click', '.page-link', function(e) {
- e.preventDefault();
- if ($(this).html() == '«') {
-     page = 1;
- } else if ($(this).html() == '‹') {
-     if (page > 1) {
-         page--;
-     }
- } else if ($(this).html() == '›') {
-     if (page < totalPage) {
-         page++;
-     }
- } else if ($(this).html() == '»') {
-     page = totalPage;
- } else {
-     page = parseInt($(this).html());
- }
- CourseListCall(page, Csearchbox, user_code);
-});
 
 
 //필터링 검색 버튼 함수
@@ -525,8 +486,10 @@ function attdListCall(page, Asearchbox, user_code){
 		success:function(data){
 			console.log(data);
 			
+			type = 1;
+			
 			totalPage = data.totalPage;
-			setupPagination(page, totalPage);			
+			setupPagination(page, totalPage,type);			
 			drawAttdList(data.aList);
 		},
 		error:function(error){
@@ -544,99 +507,16 @@ function drawAttdList(attdList){
 		content += '<tr>';
 		content += '<td>' + data.course_name + '</td>';
 		content += '<td>' + data.att_date + '</td>';
-		if(data.att_state == 0){
-			content += '<td>결석</td>';
-		}else if(data.att_state == 1){
+		if(data.att_state == 1){
 			content += '<td>출석</td>';
+		}else if(data.att_state == 2){
+			content += '<td>결석</td>';
 		}
 		content += '</tr>';
 	}
 	$('#attdList').html(content);
 }
 
-// 페이징 처리 시작
-//totalPage 활용하여 Pagination 버튼 설정
-function setupPagination(page, totalPage) {
-	var pagination = $('#pagination_attd');
-	var count = 0;
-	
-	pagination.empty();
-	
-	var content = '<li class="page-item">';
-	content += '<a class="page-link" href="#">&laquo;</a>';
-	content += '</li>';
-	content += '<li class="page-item">';
-	content += '<a class="page-link" href="#">&lsaquo;</a>';
-	content += '</li>';
-	
-	if (page < 3) {
-		for (var i = 1; i <= totalPage; i++) {
-			content += '<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>';
-			count++;
-			if (count == 5) {
-				break;
-			}
-		}
-	}else if (page >= 3 && page < (totalPage - 2)) {
-		for (var i = page - 2; i <= totalPage; i++) {
-			content += '<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>';
-			count++;
-			if (count == 5) {
-				break;
-			}
-		}
-	}else if (page >= 3 && page >= (totalPage - 2)) {
-		for (var i = totalPage - 4; i <= totalPage; i++) {
-			if (i == 0) {
-				continue;
-			}
-			content += '<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>';
-			count++;
-			if (count == 5) {
-				break;
-			}
-		}
-	}
-	
-	content += '<li class="page-item">';
-	content += '<a class="page-link" href="#">&rsaquo;</a>';
-	content += '</li>';
-	
-	content += '<li class="page-item">';
-	content += '<a class="page-link" href="#">&raquo;</a>';
-	content += '</li>';
-	
-	pagination.html(content);
-	pagination.find('.page-item').removeClass('active');
-	
-	$('.page-link').each(function() {
-		if ($(this).html() == page) {
-			$(this).parent().addClass('active');
-		}
-	});
-	
-}
-
-//설정된 버튼에 이벤트 적용
-$('#pagination_attd').on('click', '.page-link', function(e) {
-    e.preventDefault();
-    if ($(this).html() == '«') {
-        page = 1;
-    } else if ($(this).html() == '‹') {
-        if (page > 1) {
-            page--;
-        }
-    } else if ($(this).html() == '›') {
-        if (page < totalPage) {
-            page++;
-        }
-    } else if ($(this).html() == '»') {
-        page = totalPage;
-    } else {
-        page = parseInt($(this).html());
-    }
-    attdListCall(page, Asearchbox, user_code);
-});
 
 //필터링 검색 버튼 함수
 $('#Asearch_btn').click(function(){
@@ -676,8 +556,10 @@ function listCall(page, Psearchbox, user_code){
 		success:function(data){
 			console.log(data);
 			
+			type=2;
+			
 			totalPage = data.totalPage;
-			setupPagination(page, totalPage);			
+			setupPagination(page, totalPage,type);			
 			drawPayList(data.list);
 		},
 		error:function(error){
@@ -705,10 +587,42 @@ function drawPayList(payList){
 }
 /* 결제내역 리스트 그리기 끝 */
 
+
+//필터링 검색 버튼 함수
+$('#Psearch_btn').click(function(){
+	Psearchbox = $('#Psearchbox').val();
+	if(Psearchbox == ''){
+		alert("검색어를 입력해주세요.");
+		return;
+	}
+	listCall(page, Psearchbox, user_code);
+});
+
+// 리셋버튼 함수
+$('#reset_btn').click(function(){
+	$('#Psearchbox').val('');	
+	Psearchbox = '';
+	listCall(page, Psearchbox, user_code);
+});
+/* 모든 결제내역 스크립트 끝 */
+
+
+/* -------------------------------------------------------------------------------------- */
+
+/* 페이징처리 스크립트 시작 */
+
 //totalPage 활용하여 Pagination 버튼 설정
-function setupPagination(page, totalPage) {
-	var pagination = $('#pagination_pay');
+function setupPagination(page, totalPage,type) {
 	var count = 0;
+	var pagination;
+	
+	if(type == 0){
+		pagination = $('#pagination_course');
+	}else if(type == 1){
+		pagination = $('#pagination_attd');
+	}else if(type == 2){
+		pagination = $('#pagination_pay');
+	}
 	
 	pagination.empty();
 	
@@ -737,7 +651,7 @@ function setupPagination(page, totalPage) {
 		}
 	}else if (page >= 3 && page >= (totalPage - 2)) {
 		for (var i = totalPage - 4; i <= totalPage; i++) {
-			if (i == 0) {
+			if (i < 1) {
 				continue;
 			}
 			content += '<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>';
@@ -767,44 +681,50 @@ function setupPagination(page, totalPage) {
 	
 }
 
-//설정된 버튼에 이벤트 적용
-$('#pagination_pay').on('click', '.page-link', function(e) {
+//페이징 버튼 클릭 이벤트 설정
+$('.pagination').on('click', '.page-link', function(e) {
     e.preventDefault();
-    if ($(this).html() == '«') {
+    var clickedPage = $(this).html();
+    if (clickedPage == '«') {
         page = 1;
-    } else if ($(this).html() == '‹') {
+    } else if (clickedPage == '‹') {
         if (page > 1) {
             page--;
         }
-    } else if ($(this).html() == '›') {
+    } else if (clickedPage == '›') {
         if (page < totalPage) {
             page++;
         }
-    } else if ($(this).html() == '»') {
+    } else if (clickedPage == '»') {
         page = totalPage;
     } else {
-        page = parseInt($(this).html());
+        page = parseInt(clickedPage);
     }
-    listCall(page, Psearchbox, user_code);
+    if (type == 0) {
+        CourseListCall(page, Csearchbox, user_code);
+    } else if (type == 1) {
+        attdListCall(page, Asearchbox, user_code);
+    } else if (type == 2) {
+        listCall(page, Psearchbox, user_code);
+    }
 });
 
-//필터링 검색 버튼 함수
-$('#Psearch_btn').click(function(){
-	Psearchbox = $('#Psearchbox').val();
-	if(Psearchbox == ''){
-		alert("검색어를 입력해주세요.");
-		return;
+$('.nav-link').click(function() {
+	var html = $(this).html();
+	page = 1;
+	if (html == '수강이력') {
+		CourseListCall(page, Csearchbox, user_code);
+	} else if (html == '출석현황') {
+		attdListCall(page, Asearchbox, user_code);
+	} else if (html == '결제내역') {
+		listCall(page, Psearchbox, user_code);
 	}
-	listCall(page, Psearchbox, user_code);
-});
+ });
 
-// 리셋버튼 함수
-$('#reset_btn').click(function(){
-	$('#Psearchbox').val('');	
-	Psearchbox = '';
-	listCall(page, Psearchbox, user_code);
-});
-/* 모든 결제내역 스크립트 끝 */
+/* 페이징처리 스크립트 끝 */
 
+
+ 
+ 
 </script>
 </html>

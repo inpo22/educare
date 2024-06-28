@@ -25,6 +25,7 @@ public class MypageDTO {
 	private String att_state;
 	private String course_name;
 	private int course_no;
+	private int course_price;
 	
 	public String getUser_code() {
 		return user_code;
@@ -127,5 +128,11 @@ public class MypageDTO {
 	}
 	public void setCourse_no(int course_no) {
 		this.course_no = course_no;
+	}
+	public int getCourse_price() {
+		return course_price;
+	}
+	public void setCourse_price(int course_price) {
+		this.course_price = course_price;
 	}
 }

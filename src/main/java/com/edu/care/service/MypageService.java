@@ -184,8 +184,8 @@ public class MypageService {
 	}
 
 
-	public int cancel(String course_name) {
-		return mypageDAO.cancel(course_name);
+	public int cancel(String course_name, String user_code) {
+		return mypageDAO.cancel(course_name, user_code);
 	}
 
 

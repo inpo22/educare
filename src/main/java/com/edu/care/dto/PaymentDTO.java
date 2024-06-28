@@ -8,11 +8,11 @@ import org.apache.ibatis.type.Alias;
 public class PaymentDTO {
 	
 	private String user_code;
-	private int course_no;
+	private String course_no;
 	private String course_name;
 	private String name;
 	private Date pay_date;
-	private int course_price;
+	private String course_price;
 	
 	public String getUser_code() {
 		return user_code;
@@ -20,10 +20,11 @@ public class PaymentDTO {
 	public void setUser_code(String user_code) {
 		this.user_code = user_code;
 	}
-	public int getCourse_no() {
+	
+	public String getCourse_no() {
 		return course_no;
 	}
-	public void setCourse_no(int course_no) {
+	public void setCourse_no(String course_no) {
 		this.course_no = course_no;
 	}
 	public String getCourse_name() {
@@ -44,11 +45,12 @@ public class PaymentDTO {
 	public void setPay_date(Date pay_date) {
 		this.pay_date = pay_date;
 	}
-	public int getCourse_price() {
+	public String getCourse_price() {
 		return course_price;
 	}
-	public void setCourse_price(int course_price) {
+	public void setCourse_price(String course_price) {
 		this.course_price = course_price;
 	}
+	
 
 }

@@ -87,11 +87,11 @@ body {
 }
 
 
-#searchbox,#Psearchbox,#Csearchbox{
+#Asearchbox,#Psearchbox,#Csearchbox{
 	width: 250px;
 	margin : 7px 0;
 }
-#search_btn,#Psearch_btn,#reset_btn,#Csearch_btn,#Creset_btn
+#Asearch_btn,#Psearch_btn,#reset_btn,#Csearch_btn,#Creset_btn,#Areset_btn
 {
 	margin : 7px 5px;
 }
@@ -130,7 +130,12 @@ body {
 .modal-footer button {
     margin-left: auto;
 }
-
+.selected td{
+	background-color: #87CEFA;
+}
+#attd_btn{
+	margin-right: 7px;
+}
 </style>
 </head>
 
@@ -270,7 +275,8 @@ body {
 					    <div class="col-auto">
 					        <div class="d-flex">
 					            <input id="Asearchbox" type="text" class="form-control" placeholder="강의명을 입력하세요." aria-label="Recipient's course" aria-describedby="button-addon2">
-					            <button id="search_btn" class="btn btn-outline-dark" type="button">검색</button>
+					            <button id="Asearch_btn" class="btn btn-outline-dark" type="button">검색</button>
+					            <button id="Areset_btn" class="btn btn-outline-dark" type="button"><i class="bi bi-arrow-clockwise"></i></button>					        
 					        </div>
 					    </div>
 					</div>
@@ -291,9 +297,9 @@ body {
 					
 					<br/>
 			
-					<!-- 페이징 시작 
-					<ul class="pagination d-flex justify-content-center" id="pagination"></ul>
-					페이징 끝 -->
+					<!-- 페이징 시작 -->
+					<ul class="pagination d-flex justify-content-center" id="pagination_attd"></ul>
+					<!-- 페이징 끝 -->
 			
                 </div>
                 <div class="tab-pane fade" id="pay" role="tabpanel" aria-labelledby="pay-tab">
@@ -399,13 +405,14 @@ $('#stdList_go').click(function(){
 
 
 //Pagination 전 변수 선언
+var type=-1;
 var page = 1;
 var totalPage = 0;
 var Psearchbox = '';
 var Csearchbox='';
+var Asearchbox='';
 var user_code = '${stdDto.user_code}';
 
-listCall(page, Psearchbox, user_code);
 CourseListCall(page, Csearchbox, user_code);
 
 /* !모든 강의선택 모달 스크립트 시작! */
@@ -520,8 +527,10 @@ function CourseListCall(page, Csearchbox, user_code){
 		success:function(data){
 			console.log(data);
 			
+			type=0;
+			
 			totalPage = data.totalPage;
-			SetupPagination(page, totalPage);
+			setupPagination(page, totalPage,type);
 			drawCourseList(data.cList);
 		},
 		error:function(error){
@@ -552,91 +561,6 @@ function drawCourseList(courseList){
 	$("#courseList").html(content);
 }
 
-// 수강이력 페이징 처리
-
-//totalPage 활용하여 Pagination 버튼 설정
-function SetupPagination(page, totalPage) {
-	var pagination = $('#pagination_course');
-	var count = 0;
-	
-	pagination.empty();
-	
-	var content = '<li class="page-item">';
-	content += '<a class="page-link" href="#">&laquo;</a>';
-	content += '</li>';
-	content += '<li class="page-item">';
-	content += '<a class="page-link" href="#">&lsaquo;</a>';
-	content += '</li>';
-	
-	if (page < 3) {
-		for (var i = 1; i <= totalPage; i++) {
-			content += '<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>';
-			count++;
-			if (count == 5) {
-				break;
-			}
-		}
-	}else if (page >= 3 && page < (totalPage - 2)) {
-		for (var i = page - 2; i <= totalPage; i++) {
-			content += '<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>';
-			count++;
-			if (count == 5) {
-				break;
-			}
-		}
-	}else if (page >= 3 && page >= (totalPage - 2)) {
-		for (var i = totalPage - 4; i <= totalPage; i++) {
-			if (i == 0) {
-				continue;
-			}
-			content += '<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>';
-			count++;
-			if (count == 5) {
-				break;
-			}
-		}
-	}
-	
-	content += '<li class="page-item">';
-	content += '<a class="page-link" href="#">&rsaquo;</a>';
-	content += '</li>';
-	
-	content += '<li class="page-item">';
-	content += '<a class="page-link" href="#">&raquo;</a>';
-	content += '</li>';
-	
-	pagination.html(content);
-	pagination.find('.page-item').removeClass('active');
-	
-	$('.page-link').each(function() {
-		if ($(this).html() == page) {
-			$(this).parent().addClass('active');
-		}
-	});
-	
-}
-
-//설정된 버튼에 이벤트 적용
-$('#pagination_course').on('click', '.page-link', function(e) {
-    e.preventDefault();
-    if ($(this).html() == '«') {
-        page = 1;
-    } else if ($(this).html() == '‹') {
-        if (page > 1) {
-            page--;
-        }
-    } else if ($(this).html() == '›') {
-        if (page < totalPage) {
-            page++;
-        }
-    } else if ($(this).html() == '»') {
-        page = totalPage;
-    } else {
-        page = parseInt($(this).html());
-    }
-    CourseListCall(page, Csearchbox, user_code);
-});
-
 
 //필터링 검색 버튼 함수
 $('#Csearch_btn').click(function(){
@@ -657,6 +581,92 @@ $('#Creset_btn').click(function(){
 
 /* !모든 수강이력 스크립트 끝! */
 
+/* -------------------------------------------------------------------------------------- */
+
+/* ! 출석현황 스크립트 시작 ! */
+
+// 출석현황 리스트 뿌리기 시작
+function attdListCall(page, Asearchbox, user_code){
+	$.ajax({
+		type:'post',
+		url:'/std/detail/attd.ajax',
+		data:{
+			'page':page,
+			'Asearchbox':Asearchbox,
+			'user_code':user_code
+		},
+		success:function(data){
+			console.log(data);
+		
+			type=1;
+			
+			totalPage = data.totalPage;
+			setupPagination(page, totalPage,type);
+			drawAttdList(data.aList);
+		},
+		error:function(error){
+			console.log(error);
+		}
+	});
+}
+
+// 출석현황 리스트 그리기 시작
+function drawAttdList(attdList){
+	var content = '';
+	console.log(attdList);
+	
+	for(data of attdList){
+		content += '<tr>';
+		content += '<td>' + data.course_name + '</td>';
+		content += '<td>' + data.att_date + '</td>';
+		if(data.att_state == 0){
+			content += '<td>';
+			content += '<button id="attd_btn" class="btn btn-danger btn-sm" onclick="attd(\'' + data.course_name + '\', \'' + data.att_date + '\')">출석</button>';
+			content += '<button id="absent_btn" class="btn btn-primary btn-sm" onclick="absent(\'' + data.course_name + '\', \'' + data.att_date + '\')">결석</button>';
+			content += '</td>';
+		}else if(data.att_state == 1){
+			content += '<td>출석</td>';
+		}else if(data.att_state == 2){
+			content += '<td>결석</td>';
+		}
+		content += '</tr>';
+	}
+	$('#attdList').html(content);
+}
+
+// 출석 버튼 함수
+function attd(course_name,att_date){
+	var user_code = '${stdDto.user_code}';
+	location.href = '/std/attd.do?course_name='+course_name+'&user_code='+user_code+'&att_date='+att_date;
+}
+
+// 결석 버튼 함수
+function absent(course_name,att_date){
+	var user_code = '${stdDto.user_code}';
+	location.href = '/std/absent.do?course_name='+course_name+'&user_code='+user_code+'&att_date='+att_date;
+}
+
+//필터링 검색 버튼 함수
+$('#Asearch_btn').click(function(){
+	Asearchbox = $('#Asearchbox').val();
+	if(Asearchbox == ''){
+		alert("검색어를 입력해주세요.");
+		return;
+	}
+	attdListCall(page, Asearchbox, user_code);
+});
+
+//리셋버튼 함수
+$('#Areset_btn').click(function(){
+	$('#Asearchbox').val('');	
+	Asearchbox = '';
+	attdListCall(page, Asearchbox, user_code);
+});
+
+/* ! 출석현황 스크립트 끝 ! */
+
+/* -------------------------------------------------------------------------------------- */
+
 
 /* !모든 결제내역 스크립트 시작! */
 
@@ -674,8 +684,10 @@ function listCall(page, Psearchbox, user_code){
 		success:function(data){
 			console.log(data);
 			
+			type=2;
+			
 			totalPage = data.totalPage;
-			setupPagination(page, totalPage);
+			setupPagination(page, totalPage, type);
 			
 			drawPayList(data.list);
 		},
@@ -704,10 +716,41 @@ function drawPayList(payList){
 }
 /* 결제내역 리스트 그리기 끝 */
 
+
+//필터링 검색 버튼 함수
+$('#Psearch_btn').click(function(){
+	Psearchbox = $('#Psearchbox').val();
+	if(Psearchbox == ''){
+		alert("검색어를 입력해주세요.");
+		return;
+	}
+	listCall(page, Psearchbox, user_code);
+});
+
+// 리셋버튼 함수
+$('#reset_btn').click(function(){
+	$('#Psearchbox').val('');	
+	Psearchbox = '';
+	listCall(page, Psearchbox, user_code);
+});
+/* 모든 결제내역 스크립트 끝 */
+
+/* -------------------------------------------------------------------------------------- */
+
+/* 페이징처리 스크립트 시작 */
+
 //totalPage 활용하여 Pagination 버튼 설정
-function setupPagination(page, totalPage) {
-	var pagination = $('#pagination_pay');
+function setupPagination(page, totalPage,type) {
 	var count = 0;
+	var pagination;
+	
+	if(type == 0){
+		pagination = $('#pagination_course');
+	}else if(type == 1){
+		pagination = $('#pagination_attd');
+	}else if(type == 2){
+		pagination = $('#pagination_pay');
+	}
 	
 	pagination.empty();
 	
@@ -736,7 +779,7 @@ function setupPagination(page, totalPage) {
 		}
 	}else if (page >= 3 && page >= (totalPage - 2)) {
 		for (var i = totalPage - 4; i <= totalPage; i++) {
-			if (i == 0) {
+			if (i < 1) {
 				continue;
 			}
 			content += '<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>';
@@ -766,43 +809,49 @@ function setupPagination(page, totalPage) {
 	
 }
 
-//설정된 버튼에 이벤트 적용
-$('#pagination_pay').on('click', '.page-link', function(e) {
+//페이징 버튼 클릭 이벤트 설정
+$('.pagination').on('click', '.page-link', function(e) {
     e.preventDefault();
-    if ($(this).html() == '«') {
+    var clickedPage = $(this).html();
+    if (clickedPage == '«') {
         page = 1;
-    } else if ($(this).html() == '‹') {
+    } else if (clickedPage == '‹') {
         if (page > 1) {
             page--;
         }
-    } else if ($(this).html() == '›') {
+    } else if (clickedPage == '›') {
         if (page < totalPage) {
             page++;
         }
-    } else if ($(this).html() == '»') {
+    } else if (clickedPage == '»') {
         page = totalPage;
     } else {
-        page = parseInt($(this).html());
+        page = parseInt(clickedPage);
     }
-    listCall(page, Psearchbox, user_code);
+    if (type == 0) {
+        CourseListCall(page, Csearchbox, user_code);
+    } else if (type == 1) {
+        attdListCall(page, Asearchbox, user_code);
+    } else if (type == 2) {
+        listCall(page, Psearchbox, user_code);
+    }
 });
 
-//필터링 검색 버튼 함수
-$('#Psearch_btn').click(function(){
-	Psearchbox = $('#Psearchbox').val();
-	if(Psearchbox == ''){
-		alert("검색어를 입력해주세요.");
-		return;
+$('.nav-link').click(function() {
+	var html = $(this).html();
+	page = 1;
+	if (html == '수강이력') {
+		CourseListCall(page, Csearchbox, user_code);
+	} else if (html == '출석현황') {
+		attdListCall(page, Asearchbox, user_code);
+	} else if (html == '결제내역') {
+		listCall(page, Psearchbox, user_code);
 	}
-	listCall(page, Psearchbox, user_code);
-});
+ });
 
-// 리셋버튼 함수
-$('#reset_btn').click(function(){
-	$('#Psearchbox').val('');	
-	Psearchbox = '';
-	listCall(page, Psearchbox, user_code);
-});
-/* 모든 결제내역 스크립트 끝 */
+/* 페이징처리 스크립트 끝 */
+
+
+ 
 </script>
 </html>

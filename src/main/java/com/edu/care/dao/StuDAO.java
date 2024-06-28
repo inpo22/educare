@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.edu.care.dto.CourseDTO;
+import com.edu.care.dto.MypageDTO;
 import com.edu.care.dto.PaymentDTO;
 import com.edu.care.dto.StuDTO;
 
@@ -37,5 +38,13 @@ public interface StuDAO {
 	List<CourseDTO> courseModalList();
 
 	int courseReg(Map<String, String> param);
+
+	List<MypageDTO> attdList(int start, int pagePerCnt, String Asearchbox, String user_code);
+
+	int attdListPageCnt(int pagePerCnt, String Asearchbox, String user_code);
+
+	int attd(String course_name, String user_code, String att_date);
+
+	int absent(String course_name, String user_code, String att_date);
 
 }

@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.edu.care.dao.StuDAO;
 import com.edu.care.dto.CourseDTO;
+import com.edu.care.dto.MypageDTO;
 import com.edu.care.dto.PaymentDTO;
 import com.edu.care.dto.StuDTO;
 
@@ -98,6 +99,11 @@ public class StuService {
 	}
 
 	public int edit(Map<String, String> param, String user_code) {
+		// 비밀번호 암호화
+        String rawPassword = param.get("pw");
+        String encodedPassword = encoder.encode(rawPassword);
+        param.put("pw", encodedPassword);
+		
 		param.put("user_code", user_code);
 		return stuDAO.edit(param);
 	}
@@ -146,6 +152,28 @@ public class StuService {
 	public int courseReg(Map<String, String> param, String user_code) {
 		param.put("user_code", user_code);
 		return stuDAO.courseReg(param);
+	}
+
+	public Map<String, Object> attdList(int currPage, int pagePerCnt, String Asearchbox, String user_code) {
+		int start = (currPage-1) * pagePerCnt;
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		
+		List<MypageDTO> aList = stuDAO.attdList(start, pagePerCnt, Asearchbox,user_code);
+		logger.info("aList : {}", aList);
+		logger.info("aList size : " + aList.size());
+		
+		result.put("aList", aList);
+		result.put("totalPage", stuDAO.attdListPageCnt(pagePerCnt, Asearchbox,user_code));
+		return result;
+	}
+
+	public int attd(String course_name, String user_code, String att_date) {
+		return stuDAO.attd(course_name, user_code,att_date);
+	}
+
+	public int absent(String course_name, String user_code, String att_date) {
+		return stuDAO.absent(course_name, user_code, att_date);
 	}
 	
 }
