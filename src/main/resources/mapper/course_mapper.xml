@@ -4,7 +4,10 @@
 
 <mapper namespace="com.edu.care.dao.CourseDAO">
 	<select id="courseList" resultType="course">
-		SELECT c.*
+		SELECT  c.course_name
+				, c.course_start
+				, c.course_end
+				, c.course_no
 				, u.name 
 				, cr.course_space
 		FROM course c
@@ -40,7 +43,6 @@
 		SELECT 
 				CEIL(COUNT(c.course_no)/#{param1}) 
 		FROM course c
-		JOIN course_rez cr on cr.course_no  = c.course_no
 		JOIN user u on u.user_code  = c.user_code
 		WHERE 1=1
 			AND c.is_del = 0
@@ -107,7 +109,7 @@
 			, #{end_time} )
 	</insert>
 	
-	<select id="courseDetail" resultType="course">
+	<select id="courseDetail"  resultType="course">
 		SELECT u.name
 			, c.course_no
 			, c.course_name
@@ -117,10 +119,34 @@
 			, c.course_price
 			, cr.course_space
 			, cr.start_time
-			, cr.end_time as end_time_array
 		FROM course c
 		JOIN user u ON c.user_code = u.user_code 
 		JOIN course_rez cr ON c.course_no = cr.course_no 
 		WHERE c.course_no = #{param1}
+	</select>
+	
+	<delete id="courseReservationDelete">
+		DELETE 
+		FROM course_rez 
+		WHERE course_no = #{param1}
+	</delete>
+	
+	<update id="courseHide">
+		UPDATE 
+			course 
+		SET is_del=1 
+		WHERE course_no = #{param1}
+	</update>
+	
+	<select id="courseCheck" resultType="course">
+		SELECT c.course_name
+			, u.name
+			, cr.start_time
+			, cr.end_time
+			, cr.course_space
+			, cr.course_no
+		FROM course_rez cr
+		JOIN course c on cr.course_no  = c.course_no
+		JOIN user u on c.user_code = u.user_code
 	</select>
 </mapper>

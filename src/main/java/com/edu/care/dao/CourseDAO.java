@@ -18,8 +18,14 @@ public interface CourseDAO {
 
 	void reservationCourseWrite(int course_no, String course_space, Date start_time, Date end_time);
 
-	List<CourseDTO> courseDetail(String course_no);
+	List<CourseDTO>courseDetail(int course_no);
 
 	int courseListPageCnt(int pagePerCnt, String searchFilter, String searchContent, String showCourse);
+
+	int courseReservationDelete(int course_no);
+
+	void courseHide(int course_no);
+
+	List<CourseDTO> courseCheck();
 
 }

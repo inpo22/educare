@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.edu.care.dto.CourseDTO;
+import com.edu.care.dto.ScheduleDTO;
 import com.edu.care.service.CourseService;
 
 @Controller
@@ -88,19 +89,43 @@ public class CourseController {
 		}
 		return map;
 	}
-	
+
 	@GetMapping(value="/course/detail.go")
-	public ModelAndView courseDetail(@RequestParam("course_no") String course_no, ModelAndView mv) {
+	public ModelAndView courseDetail(@RequestParam("course_no") int course_no) {
 		logger.info("##### course courseDetail controller IN #####");
 		logger.info("##### course_no >>> "+course_no);
-		
+		ModelAndView mv = new ModelAndView();
 		//int course_no_int = Integer.parseInt(String.valueOf(course_no));
-		List<CourseDTO> courseDTO = courseService.courseDetail(course_no);
-		logger.info("##### courseDTO:{}",courseDTO);
+		List<CourseDTO> courseList = courseService.courseDetail(course_no);
+		  
 		
-		mv.addObject("courseDTO",courseDTO);
-		mv.setViewName("course/course_detail");
+		mv.addObject("courseDTO",courseList);
+        mv.setViewName("course/course_detail");
+		
 		return mv;
+	}
+	
+	@GetMapping(value="/course/delete.go")
+	public ModelAndView courseDelete(@RequestParam("course_no") int course_no) {
+		logger.info("##### course courseDelete controller IN #####");
+		logger.info("##### course_no >>> "+course_no);
+		ModelAndView mv = new ModelAndView();
+		//int course_no_int = Integer.parseInt(String.valueOf(course_no));
+		courseService.courseDelete(course_no);
+		
+		mv.setViewName("course/course_list");
+		
+		return mv;
+	}
+	
+	@PostMapping(value="/course/check.ajax")
+	@ResponseBody
+	public Map<String, Object> courseCheck(@RequestParam(value="course_space", required=false) String course_space, HttpSession session) {
+		logger.info("##### schedule list ajax controller IN #####");
+		logger.info("##### sked_type : ", course_space);
+		
+		Map<String, Object> map = courseService.courseCheck();
+		return map;
 	}
 	
 }

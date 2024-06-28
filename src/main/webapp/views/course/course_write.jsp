@@ -143,6 +143,12 @@ textarea {
     width: 70px;
 }
 
+.user-code-btn{
+	background-color: #f8f9fa;
+    border: 1px solid #dfe1e5;
+    width: 110px !important;
+}
+
 .reservation-item {
     display: inline-block;
     margin-right: 5px;
@@ -216,6 +222,7 @@ small{
 						<div class="input-group input-group mb-3">
 							<span class="input-group-text" id="basic-addon1">사원번호</span> 
 							<input type="text" class="form-control" name="user_code" id="user_code" placeholder="강사의 사원번호를 입력해주세요.">
+							<button class="btn btn-outline-secondary user-code-btn" type="button" onclick="checkUserCode()">사원여부확인</button>
 						</div>
 
 						<div class="input-group input-group mb-3">
@@ -723,6 +730,7 @@ function reservCalendarDate(date) {
             $(this).addClass('highlight'); 
         }
     });
+	
 }
 
 function removeReservCalendarDate(date) {
@@ -746,6 +754,28 @@ function submitButton(){
 	$('#reservationModal').modal('hide');
 }
 
+function checkUserCode(){
+	$.ajax({
+		url: '/course/reservationWrite.ajax',
+		type: 'POST',
+		dataType:'JSON',
+		data: JSON.stringify(paramData),
+		contentType: 'application/json',
+		success:function(data) {
+			console.log(data.result);
+			if(data.result === "success" ){
+				alert('등록이 완료되었습니다.');
+				location.href='/course/list.go';
+			}else{
+				alert('등록에 실패하였습니다.');
+			}
+		},
+		error:function(request, status, error){
+			console.log(error);
+		}
+		
+	}); 
+}
 
 function submitCourseWrite(){
 	var userCode = $('#user_code').val();

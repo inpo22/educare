@@ -72,9 +72,47 @@ public class CourseService {
 		
 	}
 
-	public List<CourseDTO> courseDetail(String course_no) {
+//	public Map<String, Object> courseDetail(String course_no) {
+//		logger.info("##### course courseDetail service IN #####");
+//		Map<String, Object> map = new HashMap<String, Object>();
+//		List<CourseDTO> dto = courseDAO.courseDetail(course_no);
+//		List<Date> start = ((CourseDTO) dto).getStart_time_array();
+//		
+//		for (Date stratDate : start) {
+//			logger.info("stratDate"+stratDate);
+//		}
+//		
+//		map.put("listlist", dto);
+//		logger.info("dto:{}",dto);
+//		return map;
+//	}
+	
+	
+	public List<CourseDTO> courseDetail(int course_no) {
 		logger.info("##### course courseDetail service IN #####");
-		return courseDAO.courseDetail(course_no);
+		
+		List<CourseDTO> courseList = courseDAO.courseDetail(course_no);
+		
+		return courseList;
 	}
+
+	public int courseDelete(int course_no) {
+		int row = courseDAO.courseReservationDelete(course_no);
+		logger.info("courseDelete >> " + row);
+		if( row > 0) {
+			courseDAO.courseHide(course_no);
+			logger.info("courseHide >> " + course_no);
+		}
+		return row;
+	}
+
+	public Map<String, Object> courseCheck() {
+		Map<String, Object> result = new HashMap<String, Object>();
+		List<CourseDTO> list = courseDAO.courseCheck();
+		
+		result.put("list", list);
+		return result;
+	}
+
 
 }
