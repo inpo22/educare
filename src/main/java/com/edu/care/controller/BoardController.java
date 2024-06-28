@@ -192,7 +192,7 @@ public class BoardController {
 		logger.info("attachFile =" + attachFile[0].getContentType());
 		logger.info("attachFile =" + attachFile[0].getOriginalFilename());
 		logger.info("attachFile =" + attachFile[0].getSize());
-		logger.info("hiddenTeamCategory = "+ dto.getHiddenTeamCategory());
+		logger.info("teamCode = "+ dto.getTeamCode());
 		dto.setUser_code(user_code);
 		boardService.teamBoardWrite(attachFile, dto);
 
@@ -238,20 +238,26 @@ public class BoardController {
 //////////////////////////////////////////////////////// 학생 //////////////////////////////////////////////////////////////////////////
 	// 학생 공지사항 리스트 페이지 이동
 	@GetMapping(value = "/stdBoard/list.go")
-	public String stuBoardList() {
+	public String stuBoardList(Model model, HttpSession session) {
 		logger.info("학생공지사항 리스트 페이지 이동");
+		String classifyCode = (String) session.getAttribute("classify_code");
+		boolean isPerm = true;
+		
+		// 학생일경우 권한없음
+		if(classifyCode.equals("U03")) {
+			isPerm = false;
+		}
+				
+		model.addAttribute("isPerm", isPerm);
 		return "board/stdBoard_list";
 	}
 
 	// 학생 공지사항 리스트 불러오기
 	@PostMapping(value = "/stdBoard/list.ajax")
 	@ResponseBody
-	public Map<String, Object> stdList(String page, String searchCategory, String searchWord) {
+	public Map<String, Object> stdList(@RequestParam Map<String, String> map) {
 
-		int currPage = Integer.parseInt(page);
-		int pagePerCnt = 10;
-
-		return boardService.stdList(currPage, pagePerCnt, searchCategory, searchWord);
+		return boardService.stdList(map);
 	}
 
 	// 학생 공지사항 상세페이지 접속
@@ -313,8 +319,109 @@ public class BoardController {
 //////////////////////////////////////////////////////// 자료실 //////////////////////////////////////////////////////////////////////////
 	// 자료실 리스트 페이지 이동
 	@GetMapping(value = "/dataBoard/list.go")
-	public String dataBoardList() {
+	public String dataBoardList(Model model, HttpSession session) {
+		logger.info("자료실 리스트페이지 이동");
+		String classifyCode = (String) session.getAttribute("classify_code");
+		boolean isPerm = true;
+		
+		// 학생일경우 권한없음
+		if(classifyCode.equals("U03")) {
+			isPerm = false;
+		}
+				
+		model.addAttribute("isPerm", isPerm);
 		return "board/dataBoard_list";
 	}
 
+	// 자료실 공지사항 리스트 불러오기
+	@PostMapping(value = "/dataBoard/list.ajax")
+	@ResponseBody
+	public Map<String, Object> dataList(@RequestParam Map<String, String> map) {
+
+		return boardService.dataList(map);
+	}
+	
+	// 자료실 글 상세보기
+	@GetMapping(value = "/dataBoard/detail.go")
+	public ModelAndView dataBoardDetail(String post_no, HttpSession session) {
+		logger.info(post_no);
+		String user_code = (String) session.getAttribute("user_code");
+		return boardService.dataDetail(post_no, user_code);
+	}
+	
+	// 자료실 글작성페이지 이동
+	@GetMapping(value = "/dataBoard/write.go")
+	public String dataBoardWriteGo() {
+		logger.info("자료실 글작성 페이지 접속");
+		return "board/dataBoard_write";
+	}
+	
+	// 자료글 작성
+	@PostMapping(value = "/dataBoard/write.do")
+	public String dataBoardWrite(@RequestParam("attachFile") MultipartFile[] attachFile, BoardDTO dto,
+			HttpSession session) {
+		String user_code = (String) session.getAttribute("user_code");
+		logger.info("\n DTO Title :{}", dto.getTitle());
+		logger.info("\n DTO contents :{}", dto.getContents());
+		logger.info("\n DTO fixed_yn :{}", dto.getFixed_yn());
+		logger.info("attachFile =" + attachFile[0].getContentType());
+		logger.info("attachFile =" + attachFile[0].getOriginalFilename());
+		logger.info("attachFile =" + attachFile[0].getSize());
+
+		dto.setUser_code(user_code);
+		boardService.dataBoardWrite(attachFile, dto);
+
+		return "redirect:/dataBoard/detail.go?post_no=" + dto.getPost_no();
+	}
+	
+	// 자료글 수정페이지 이동
+	@GetMapping(value = "/dataBoard/update.go")
+	public String dataBoardUpdateGo(String post_no, Model model) {
+		logger.info("자료 글수정 페이지 접속");
+		boardService.detail(post_no, model);
+		return "board/dataBoard_update";
+	}
+	
+	// 자료글 수정
+	@PostMapping(value = "/dataBoard/update.do")
+	public String dataBoardUpdate(@RequestParam("attachFile") MultipartFile[] attachFile,
+			@RequestParam Map<String, String> param, HttpSession session) {
+		String user_code = (String) session.getAttribute("user_code");
+		logger.info("\n param  :{}", param);
+		logger.info("fileNameList=" + param.get("fileNumbers"));
+		logger.info("attachFile =" + attachFile.length);
+		String[] fileNumbers = param.get("fileNumbers").split(",");
+		param.put("user_code", user_code);
+		boardService.fileDelete(fileNumbers, param.get("post_no"));
+		boardService.boardUpdate(attachFile, param);
+		return "redirect:/dataBoard/detail.go?post_no=" + param.get("post_no");
+	}
+	
+	// 강의선택 모달 
+	@ResponseBody
+	@PostMapping(value="/board/course_modal.ajax")
+	public Map<String, Object> CourseSelectModal(){
+		logger.info("강의선택 모달창 띄우기");
+		Map<String, Object> map = boardService.courseSelectModal();
+		return map;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
+

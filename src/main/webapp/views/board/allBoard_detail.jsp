@@ -167,7 +167,7 @@ function BoardList(){
 
 // 수정
 function BoardUpdate(){
-	location.href = '/allBoard/update.go?post_no='+${dto.post_no};
+	location.href = '/allBoard/update.go?post_no=' + '${dto.post_no}';
 }
 // 삭제
 function boardDel(){

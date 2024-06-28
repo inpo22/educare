@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.edu.care.dao.BoardDAO;
+import com.edu.care.dao.NotiDAO;
 import com.edu.care.dto.BoardDTO;
 
 @Service
@@ -36,7 +37,8 @@ public class BoardService {
 
 	@Autowired
 	BoardDAO boardDAO;
-
+	@Autowired NotiDAO notiDAO;
+	
 	@Value("${spring.servlet.multipart.location}")
 	private String root;
 
@@ -103,18 +105,38 @@ public class BoardService {
 	}
 
 	public int del(String post_no) {
-		return boardDAO.del(post_no);
+		int row = boardDAO.del(post_no);
+		if(row > 0) {
+			logger.info("delete noti post_no = "+post_no);
+			notiDAO.deleteNoti(post_no, 1);
+		}
+		
+		return row;
 	}
 
 	@Transactional
-	public void allBoardWrite(MultipartFile[] attachFile, BoardDTO dto) {
-		boardDAO.allBoardWrite(dto);
+	public int allBoardWrite(MultipartFile[] attachFile, BoardDTO dto) {
+		int row = boardDAO.allBoardWrite(dto);
+		if(row > 0) {
+			String userCode = dto.getUser_code();
+			String postNo = ""+dto.getPost_no();
+			
+			List<String> allUserCodes = boardDAO.getAllUserCodes(); 
+			for (String toUserCode : allUserCodes) {
+				notiDAO.sendNoti(toUserCode, userCode, postNo, 1);				
+			}
+		}
+		
 		if (attachFile[0].getSize() != 0) {
 			fileSave(attachFile, dto);
 		}
+		
 		logger.info("데이터 추가 후 현재 글번호 = " + dto.getPost_no());
+		return row;
 	}
 
+	
+	
 	public void detail(String post_no, Model model) {
 		BoardDTO dto = boardDAO.detail(post_no);
 		List<BoardDTO> attachFileList = boardDAO.attachFileList(post_no);
@@ -186,47 +208,6 @@ public class BoardService {
 		List<String> list = boardDAO.teamBoardList(teamCode);
 		return list;
 	}
-	/*
-	public Map<String, Object> teamList(int currPage, int pagePerCnt, String searchCategory, String searchWord,
-			String teamCode) {
-		Map<String, Object> map = new HashMap<>();
-		int start = (currPage - 1) * pagePerCnt;
-		logger.info("\n::::::::::::::::::::::::::::::::::::::::::::::::currPag="+ currPage
-				+"\n::::::::::::::::::::::::::::::::::::::::::::::::pagePerCnt="+ pagePerCnt
-				+"\n::::::::::::::::::::::::::::::::::::::::::::::::searchCategory="+ searchCategory
-				+"\n::::::::::::::::::::::::::::::::::::::::::::::::searchWord="+ searchWord
-				+"\n::::::::::::::::::::::::::::::::::::::::::::::::teamCode="+ teamCode
-				);
-		
-		List<BoardDTO> list;
-		int totalPage;
-		List<BoardDTO> topFixedTeamList;
-		
-		list = boardDAO.teamList(start, pagePerCnt, searchCategory, searchWord, teamCode);
-		totalPage = boardDAO.teamListPageCnt(pagePerCnt, searchCategory, searchWord, teamCode);
-		topFixedTeamList = boardDAO.topFixedTeamList(teamCode);
-		
-		
-		if (teamCode != null && (teamCode.equals("T001") || teamCode.equals("T006"))) {
-			// 권한 있는 부서의 경우 모든 게시글 조회
-			list = boardDAO.teamList(start, pagePerCnt, searchCategory, searchWord, null);
-			totalPage = boardDAO.teamListPageCnt(pagePerCnt, searchCategory, searchWord, null);
-			topFixedTeamList = boardDAO.topFixedTeamList(null);
-		} else {
-			// 권한 없는 부서의 경우 해당 부서의 게시글만 조회
-			list = boardDAO.teamList(start, pagePerCnt, searchCategory, searchWord, teamCode);
-			totalPage = boardDAO.teamListPageCnt(pagePerCnt, searchCategory, searchWord, teamCode);
-			topFixedTeamList = boardDAO.topFixedTeamList(teamCode);
-			logger.info(teamCode);
-		}
-		 
-		map.put("list", list);
-		map.put("totalPage", totalPage);
-		map.put("topFixedTeamList", topFixedTeamList);
-
-		return map;
-	}
-	*/
 	
 	public Map<String, Object> teamList(Map<String, String> map, String my_team_code) {
 		Map<String, Object> result = new HashMap<String, Object>();
@@ -269,15 +250,10 @@ public class BoardService {
 		return result;
 	}
 
-//		public List<BoardDTO> getNoticesByTeamCode(String teamCode) {
-//
-//			return boardDAO.getNoticesByTeamCode(teamCode);
-//		}
-
 	@Transactional
 	public ModelAndView teamDetail(String post_no, String user_code) {
 		ModelAndView mav = new ModelAndView("board/teamBoard_detail");
-		BoardDTO dto = boardDAO.detail(post_no);
+		BoardDTO dto = boardDAO.teamDetail(post_no);
 		boardDAO.upHit(post_no);
 		List<BoardDTO> attachFileList = boardDAO.attachFileList(post_no);
 		dto.setPost_no(Integer.parseInt(post_no));
@@ -289,23 +265,56 @@ public class BoardService {
 	}
 
 	@Transactional
-	public void teamBoardWrite(MultipartFile[] attachFile, BoardDTO dto) {
-		boardDAO.teamBoardWrite(dto);
+	public int teamBoardWrite(MultipartFile[] attachFile, BoardDTO dto) {
+		int row = boardDAO.teamBoardWrite(dto);
+		
+		if(row > 0) {
+			List<String> teamUserList = boardDAO.teamUserList(dto.getTeamCode());
+			
+			for (String toTeamUser : teamUserList) {
+				notiDAO.sendNoti(toTeamUser, dto.getUser_code(),  ""+dto.getPost_no(), 4);
+			}
+		}
+		
 		if (attachFile[0].getSize() != 0) {
 			fileSave(attachFile, dto);
 		}
 		logger.info("데이터 추가 후 현재 글번호 = " + dto.getPost_no());
+		
+		return row;
 	}
+	
+	public Map<String, Object> stdList(Map<String, String> map) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		int pagePerCnt = 10;
+		int start = (Integer.parseInt(map.get("page")) - 1) * pagePerCnt;
+		String searchCategory = map.get("searchCategory");
+		String searchWord = map.get("searchWord");
+		logger.info(searchWord);
+		logger.info(searchWord.isBlank()+"");
+		List<BoardDTO> topFixedList = new ArrayList<BoardDTO>();
+		int fixCnt = 0;
 
-	public Map<String, Object> stdList(int currPage, int pagePerCnt, String searchCategory, String searchWord) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		int start = (currPage - 1) * pagePerCnt;
+		if (searchWord == "") {
+			topFixedList = boardDAO.topFixedStdList();
+			if (topFixedList != null) {
+				fixCnt = topFixedList.size();
+			}
+		}
+		int totalPage = boardDAO.stdListPageCnt(pagePerCnt, searchCategory, searchWord);
+
+		if (start == 0) {
+			pagePerCnt -= fixCnt;
+		} else {
+			start -= fixCnt;
+		}
 
 		List<BoardDTO> list = boardDAO.stdList(start, pagePerCnt, searchCategory, searchWord);
-		map.put("list", list);
-		map.put("totalPage", boardDAO.stdListPageCnt(pagePerCnt, searchCategory, searchWord));
-		map.put("topFixedList", boardDAO.topFixedStdList());
-		return map;
+
+		result.put("list", list);
+		result.put("totalPage", totalPage);
+		result.put("topFixedList", topFixedList);
+		return result;
 	}
 
 	public ModelAndView stdDetail(String post_no, String user_code) {
@@ -321,18 +330,96 @@ public class BoardService {
 	}
 
 	@Transactional
-	public void stdBoardWrite(MultipartFile[] attachFile, BoardDTO dto) {
-		boardDAO.stdBoardWrite(dto);
+	public int stdBoardWrite(MultipartFile[] attachFile, BoardDTO dto) {
+		int row = boardDAO.stdBoardWrite(dto);
+		if(row > 0) {
+			String userCode = dto.getUser_code();
+			String postNo = ""+dto.getPost_no();
+			notiDAO.sendNoti(userCode, userCode, postNo, 1);
+		}
+		
 		if (attachFile[0].getSize() != 0) {
 			fileSave(attachFile, dto);
 		}
 		logger.info("데이터 추가 후 현재 글번호 = " + dto.getPost_no());
+		return row;
 	}
 
 	public List<BoardDTO> teamSelectList() {
 
 		return boardDAO.teamSelectList();
 	}
+
+	public Map<String, Object> dataList(Map<String, String> map) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		int pagePerCnt = 10;
+		int start = (Integer.parseInt(map.get("page")) - 1) * pagePerCnt;
+		String searchCategory = map.get("searchCategory");
+		String searchWord = map.get("searchWord");
+
+		List<BoardDTO> topFixedList = new ArrayList<BoardDTO>();
+		int fixCnt = 0;
+
+		if (searchWord == "") {
+			topFixedList = boardDAO.topFixedDataList();
+			if (topFixedList != null) {
+				fixCnt = topFixedList.size();
+			}
+		}
+		int totalPage = boardDAO.dataListPageCnt(pagePerCnt, searchCategory, searchWord);
+
+		if (start == 0) {
+			pagePerCnt -= fixCnt;
+		} else {
+			start -= fixCnt;
+		}
+
+		List<BoardDTO> list = boardDAO.dataList(start, pagePerCnt, searchCategory, searchWord);
+
+		result.put("list", list);
+		result.put("totalPage", totalPage);
+		result.put("topFixedList", topFixedList);
+		return result;
+	}
+
+	public ModelAndView dataDetail(String post_no, String user_code) {
+		ModelAndView mav = new ModelAndView("board/stdBoard_detail");
+		BoardDTO dto = boardDAO.dataDetail(post_no);
+		boardDAO.upHit(post_no);
+		List<BoardDTO> attachFileList = boardDAO.attachFileList(post_no);
+		dto.setPost_no(Integer.parseInt(post_no));
+		mav.addObject("dto", dto);
+		mav.addObject("attachFileList", attachFileList);
+		mav.addObject("isPerm", boardDAO.isPerm(user_code, post_no));
+		
+		
+		return mav;
+	}
+	
+	@Transactional
+	public int dataBoardWrite(MultipartFile[] attachFile, BoardDTO dto) {
+		int row = boardDAO.dataBoardWrite(dto);
+		if(row > 0) {
+			String userCode = dto.getUser_code();
+			String postNo = ""+dto.getPost_no();
+			notiDAO.sendNoti(userCode, userCode, postNo, 1);
+		}
+		
+		if (attachFile[0].getSize() != 0) {
+			fileSave(attachFile, dto);
+		}
+		logger.info("데이터 추가 후 현재 글번호 = " + dto.getPost_no());
+		return row;
+	}
+
+	public Map<String, Object> courseSelectModal() {
+		Map<String, Object> result = new HashMap<String, Object>();
+		List<BoardDTO> courseList = boardDAO.courseSelectModal();
+		result.put("courseList", courseList);
+		return result;
+	}
+
+
 
 
 

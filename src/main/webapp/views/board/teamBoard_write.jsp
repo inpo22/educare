@@ -120,7 +120,7 @@
                 <div class="selectBox">
                     <div class="teamSelectContainer">
                         <c:if test="${isPerm}">
-                            <select id="hiddenTeamCategory" name="hiddenTeamCategory">
+                            <select id="teamCode" name="teamCode">
                             	<option value="">부서 선택</option>
                                 <c:forEach items="${teamList}" var="team">
                                     <option value="${team.team_code}">${team.team_name}</option>
@@ -243,7 +243,7 @@
 		var isPerm = '${isPerm}';
 		console.log(isPerm);
 		if(isPerm == 'true'){
-	        	if($('#hiddenTeamCategory').val() == ''){
+	        	if($('#teamCode').val() == ''){
 	        		
 	        		alert('부서를 선택해 주세요.');
 	        		return;

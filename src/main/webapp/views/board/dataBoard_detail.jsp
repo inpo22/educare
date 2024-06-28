@@ -55,7 +55,7 @@ td {
 		<div id="backBoard">
 			<br/>	
 			<div class="pagetitle">
-				<h1 id="BoardTitle">학생 공지사항</h1>
+				<h1 id="BoardTitle">학생 자료실</h1>
 			</div>
 			<br/>
 			<table class="table">
@@ -70,6 +70,10 @@ td {
 				<tr>
 					<th class="th" scope="col">작성자</th>
 					<td scope="col">${dto.user_name}</td>
+				</tr>
+				<tr>
+					<th class="th" scope="col">강의명</th>
+					<td scope="col">${dto.course_name}</td>
 				</tr>
 				<tr>
 					<th class="th" scope="col">작성날짜</th>
@@ -154,12 +158,12 @@ if (editDateElement) { // 요소가 존재하는지 확인
 
 // 뒤로가기
 function BoardList(){
-	location.href = '/stdBoard/list.go';
+	location.href = '/dataBoard/list.go';
 }
 
 // 수정
 function BoardUpdate(){
-	location.href = '/stdBoard/update.go?post_no='+${dto.post_no};
+	location.href = '/dataBoard/update.go?post_no='+${dto.post_no};
 }
 // 삭제
 function boardDel(){
@@ -175,7 +179,7 @@ function boardDel(){
 				console.log(data);
 				if(data.row > 0){
 					alert("삭제 되었습니다.");
-					location.href = '/stdBoard/list.go';
+					location.href = '/dataBoard/list.go';
 				}
 			},error:function(error){
 				console.log(error);	
@@ -186,7 +190,7 @@ function boardDel(){
 
 // 타이틀 클릭시 리스트페이지로
 $('#BoardTitle').click(function(){
-	location.href='/stdBoard/list.go';
+	location.href='/dataBoard/list.go';
 });
 
 </script>

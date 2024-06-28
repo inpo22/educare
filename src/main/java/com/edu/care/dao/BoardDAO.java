@@ -28,7 +28,7 @@ public interface BoardDAO {
 
 	boolean isPerm(String user_code, String post_no);
 
-	void allBoardWrite(BoardDTO dto);
+	int allBoardWrite(BoardDTO dto);
 
 	void fileSave(BoardDTO dto);
 
@@ -50,7 +50,7 @@ public interface BoardDAO {
 
 	List<BoardDTO> topFixedTeamList(String teamCode);
 
-	void teamBoardWrite(BoardDTO dto);
+	int teamBoardWrite(BoardDTO dto);
 
 	List<BoardDTO> stdList(int start, int pagePerCnt, String searchCategory, String searchWord);
 
@@ -58,9 +58,29 @@ public interface BoardDAO {
 
 	List<BoardDTO> topFixedStdList();
 
-	void stdBoardWrite(BoardDTO dto);
+	int stdBoardWrite(BoardDTO dto);
 
 	List<BoardDTO> teamSelectList();
+
+	BoardDTO teamDetail(String post_no);
+
+	List<BoardDTO> topFixedDataList();
+
+	int dataListPageCnt(int pagePerCnt, String searchCategory, String searchWord);
+
+	List<BoardDTO> dataList(int start, int pagePerCnt, String searchCategory, String searchWord);
+
+	int dataBoardWrite(BoardDTO dto);
+
+	BoardDTO dataDetail(String post_no);
+
+	List<BoardDTO> courseSelectModal();
+
+	List<String> getAllUserCodes();
+
+	List<String> teamUserList(String team_code);
+
+
 
 
 

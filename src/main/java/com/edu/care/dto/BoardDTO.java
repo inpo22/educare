@@ -19,6 +19,7 @@ public class BoardDTO {
 	private String team_code;
 	private String date;
 	
+	
 	private String class_name;
 	private String team_name;
 	
@@ -28,10 +29,68 @@ public class BoardDTO {
 	private String board_type;
 	private String fileName;
 	
-	private String hiddenTeamCategory;
+
+	private String teamCode;
 	private String post_team_code;
 	private String post_team_name;
 	
+	private int course_no;
+	private String course_name;
+	private String course_space;
+	
+	private String class_code;
+	private String position_code;
+	private String classify_code;
+	
+	
+	public String getClass_code() {
+		return class_code;
+	}
+
+	public void setClass_code(String class_code) {
+		this.class_code = class_code;
+	}
+
+	public String getPosition_code() {
+		return position_code;
+	}
+
+	public void setPosition_code(String position_code) {
+		this.position_code = position_code;
+	}
+
+	public String getClassify_code() {
+		return classify_code;
+	}
+
+	public void setClassify_code(String classify_code) {
+		this.classify_code = classify_code;
+	}
+
+	public int getCourse_no() {
+		return course_no;
+	}
+
+	public void setCourse_no(int course_no) {
+		this.course_no = course_no;
+	}
+
+	public String getCourse_name() {
+		return course_name;
+	}
+
+	public void setCourse_name(String course_name) {
+		this.course_name = course_name;
+	}
+
+	public String getCourse_space() {
+		return course_space;
+	}
+
+	public void setCourse_space(String course_space) {
+		this.course_space = course_space;
+	}
+
 	public String getPost_team_name() {
 		return post_team_name;
 	}
@@ -46,14 +105,6 @@ public class BoardDTO {
 
 	public void setPost_team_code(String post_team_code) {
 		this.post_team_code = post_team_code;
-	}
-
-	public String getHiddenTeamCategory() {
-		return hiddenTeamCategory;
-	}
-
-	public void setHiddenTeamCategory(String hiddenTeamCategory) {
-		this.hiddenTeamCategory = hiddenTeamCategory;
 	}
 
 	public String getFileName() {
@@ -222,6 +273,14 @@ public class BoardDTO {
 
 	public void setTeam_name(String team_name) {
 		this.team_name = team_name;
+	}
+
+	public String getTeamCode() {
+		return teamCode;
+	}
+
+	public void setTeamCode(String teamCode) {
+		this.teamCode = teamCode;
 	}
 
 }
