@@ -233,29 +233,31 @@ public class MailService {
 			List<MailDTO> receiverList = mailDAO.mailReceiverDetail(mail_no);
 			List<MailDTO> ccList = mailDAO.mailCcDetail(mail_no);
 			
+			StringBuilder builder = new StringBuilder();
 			String original_message = "";
-			original_message += "<p></p><p></p><p></p>";
-			original_message += "<p>-------- Original Message --------</p>";
-			original_message += "<p><b>From: </b>" + dto.getSend_user_name() + "</p>";
-			original_message += "<p><b>To: </b>";
+			builder.append("<p></p><p></p><p></p>");
+			builder.append("<p>-------- Original Message --------</p>");
+			builder.append("<p><b>From: </b>" + dto.getSend_user_name() + "</p>");
+			builder.append("<p><b>To: </b>");
 			for (int i = 0; i < receiverList.size(); i++) {
-				original_message += receiverList.get(i).getReceiver_name() + " " + receiverList.get(i).getClass_name();
+				builder.append(receiverList.get(i).getReceiver_name() + " " + receiverList.get(i).getClass_name());
 				if (i != (receiverList.size() - 1)) {
-					original_message += ", ";
+					builder.append(", ");
 				}
 			}
-			original_message += "</p>";
-			original_message += "<p><b>cc: </b>";
+			builder.append("</p>");
+			builder.append("<p><b>cc: </b>");
 			for (int i = 0; i < ccList.size(); i++) {
-				original_message += ccList.get(i).getCc_name() + " " + ccList.get(i).getClass_name();
+				builder.append(ccList.get(i).getCc_name() + " " + ccList.get(i).getClass_name());
 				if (i != (ccList.size() - 1)) {
-					original_message += ", ";
+					builder.append(", ");
 				}
 			}
-			original_message += "</p>";
-			original_message += "<p><b>Send: </b>" + dto.getSend_date() + "</p>";
-			original_message += "<p><b>Subject: </b>" + dto.getSubject() + "</p>";
-			original_message += dto.getContent();
+			builder.append("</p>");
+			builder.append("<p><b>Send: </b>" + dto.getSend_date() + "</p>");
+			builder.append("<p><b>Subject: </b>" + dto.getSubject() + "</p>");
+			builder.append(dto.getContent());
+			original_message = builder.toString();
 			
 			if (writeType.equals("1")) {
 				mav.addObject("receiverList", receiverList);
@@ -270,6 +272,77 @@ public class MailService {
 		}
 		
 		return mav;
+	}
+	
+	@Transactional
+	public void autoMailSend(String receive_user_code, String code_name, int type) {
+		// type == 0 > 부서이동
+		// type == 1 > 전자결재 완료
+		// type == 2 > 전자결재 반려
+		
+		MailDTO dto = new MailDTO();
+		String send_user_code = "system";
+		StringBuilder builder = new StringBuilder();
+		builder.append("<p><img src=\"/resources/img/EDUcare_logo.png\"></p>");
+		builder.append("<p></p>");
+		
+		String content = "";
+		String subject = "";
+		int mail_no = -1;
+		
+		if (type == 0) {
+			subject = "[에듀케어] 부서 이동 안내";
+			builder.append("<p>귀하의 부서가 " + code_name + "으로 이동되었음을 알려드립니다.</p>");
+			builder.append("<p></p>");
+			builder.append("<p>이상입니다. 감사합니다.</p>");
+			
+			content = builder.toString();
+			
+			dto.setUser_code(send_user_code);
+			dto.setSubject(subject);
+			dto.setContent(content);
+			
+			mailDAO.mailWrite(dto);
+			
+			mail_no = dto.getMail_no();
+			
+			mailDAO.mailReceiverWrite(mail_no, receive_user_code);
+		} else if (type == 1) {
+			subject = "[에듀케어] 결재 완료 : " + code_name;
+			builder.append("<p>귀하께서 상신하신 " + code_name + " 문서가 결재 완료되었음을 알려드립니다.</p>");
+			builder.append("<p></p>");
+			builder.append("<p>이상입니다. 감사합니다.</p>");
+			
+			content = builder.toString();
+			
+			dto.setUser_code(send_user_code);
+			dto.setSubject(subject);
+			dto.setContent(content);
+			
+			mailDAO.mailWrite(dto);
+			
+			mail_no = dto.getMail_no();
+			
+			mailDAO.mailReceiverWrite(mail_no, receive_user_code);
+		} else if (type == 2) {
+			subject = "[에듀케어] 결재 반려 : " + code_name;
+			builder.append("<p>귀하께서 상신하신 " + code_name + " 문서가 반려되었음을 알려드립니다.</p>");
+			builder.append("<p></p>");
+			builder.append("<p>이상입니다. 감사합니다.</p>");
+			
+			content = builder.toString();
+			
+			dto.setUser_code(send_user_code);
+			dto.setSubject(subject);
+			dto.setContent(content);
+			
+			mailDAO.mailWrite(dto);
+			
+			mail_no = dto.getMail_no();
+			
+			mailDAO.mailReceiverWrite(mail_no, receive_user_code);
+		}
+		
 	}
 
 }

@@ -504,7 +504,7 @@
 			}
 		} else if ($('.dept-modal-title').html() == '수신부서 추가') {
 			for (var receiveText of textList) {
-				content += '<h5><span class="badge bg-primary">' + receiveText + '</span></h5>&nbsp;&nbsp;';
+				content += '<h5><span class="badge bg-primary bg-result">' + receiveText + '</span></h5>&nbsp;&nbsp;';
 			}
 			
 			$('.receive-list-div').html(content);

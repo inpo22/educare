@@ -39,9 +39,6 @@
 	.sixth-col {
 		width: 10%;
 	}
-	.badge {
-		width: 70px;
-	}
 </style>
 </head>
 
@@ -265,7 +262,7 @@
 			    
 				content += '<td>' + row.approvers_name + '</td>';
 				content += '<td>' + row.approvers_team + '</td>';
-				content += '<td><span class="badge bg-success">진행중</span></td>';
+				content += '<td><span class="badge bg-success bg-result">진행중</span></td>';
 				content += '</tr>';
 			}
 		}

@@ -191,3 +191,6 @@ a {
 h5 {
 	display: inline-block;
 }
+.bg-result {
+	width: 70px;
+}
