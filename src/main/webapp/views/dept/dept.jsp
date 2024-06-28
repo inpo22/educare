@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html>
 <head>
@@ -555,6 +554,7 @@
 			success	: function(result){
 				console.log('updateDept_ajax:',result.msg);
 				if(result.msg == 'success'){
+					//getDept();
 					if(result.type == 'code'){
 					 	tree.on('move', function(e){
 							tree.setNodeData(e.nodeId, {upper_code: param.team_code});	// update node data
@@ -567,8 +567,7 @@
 						selected_id = param.nodeId;
 						console.log('updated node data: ', tree.getNodeData(param.nodeId));
 					}
-					getDept();
-					
+					getDept_ajax();
 				}else{
 					alert('해당 부서 수정을 실패했습니다.');
 				}
@@ -816,19 +815,23 @@
 
 		if(result){
 			for(let user_code of checked){
-				var data = modalTree.getNodeData(selected_modalId);
+				var oldData = tree.getNodeData(selected_id);
+				var newData = modalTree.getNodeData(selected_modalId);
+
 				var update_param = {
-						'team_code'	: data.team_code,
+						'team_code'	: newData.team_code,
 						'user_code'	: user_code
 				}
+				console.log('<<부서 이동 시 메일로 전송>>');
+				console.log('부서 이동한 사용자:',user_code);
+				console.log('이동 경로:',oldData.team_name,'->',newData.team_name);
+				console.log('===============================');
 				moveMember_ajax(update_param);
 				runCnt--;
-				console.log('before:',runCnt)
 			}
 		} else{
 			clearChecked();
 		}
-		console.log('after:',runCnt)		
 		if(runCnt == 0){
 			//modal.hide();
 			alert('해당 부서원(들)을 부서 이동했습니다.')
