@@ -10,14 +10,15 @@
         href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         rel="stylesheet">
     <style>
-        body {
+    /*body를 쓴 이유: 페이지 전체에 중간 정렬을 하고, 배경색 지정을 위해사용 */
+		body {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             background-color: #f5f5f5;
         }
-
+      
         .login-container {
             width: 400px;
             padding: 20px;
@@ -87,6 +88,7 @@
 
 </head>
 <body>
+
     <div class="login-container">
         <img src="/resources/img/EDUcare_logo.png" alt="EduCare Logo" class="img-fluid">
         <form action="/login.do" method="post">
@@ -103,47 +105,49 @@
                 <label class="form-check-label" for="rememberMe">아이디저장</label>
             </div>
             <div class="forgot-links">
-                <a href="" id="findIdLink">아이디찾기</a>
+                <a href="login/idFind.go" id="findIdLink">아이디찾기</a>
             </div>
             <div>
                 <a href="/login/pwFind.go" id="findPwLink">패스워드찾기</a>
             </div>
             <button type="submit" class="btn-primary" id="LoginButton">LOGIN</button>
-            <div class="alert alert-danger mt-3" role="alert" id="errorMsg">아이디 또는 비밀번호를 확인해 주세요.</div>
+            <div class="alert alert-danger mt-3" role="alert" id="errorMsg"></div>
         </form>
     </div>
-
+</body>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function() {
-    var rememberMe = $("#rememberMe");
-    var idField = $("#name");
+    var $rememberMe = $("#rememberMe");
+    var $idField = $("#name");
 
     // 페이지 로드 할때 쿠키에서 아이디를 읽어와 입력 필드에 채움
     var savedId = getCookie('saveId');
-    console.log("쿠키에서 읽어온 saveId:", savedId);
+    //console.log("쿠키에서 읽어온 saveId:", savedId);
     if (savedId) {
-        idField.val(savedId);
-        rememberMe.prop('checked', true);
-        console.log("쿠키 값이 입력 필드에 설정되었습니다.");
+        $idField.val(savedId);
+        $rememberMe.prop('checked', true);
+       // console.log("쿠키 값이 입력 필드에 설정되었습니다.");
     } else {
-        console.log("쿠키 값이 존재하지 않습니다.");
+        //console.log("쿠키 값이 존재하지 않습니다.");
     }
+    
 
     // 로그인 폼 제출 시 쿠키 설정/삭제
     $('form').on('submit', function() {
-        if (rememberMe.is(':checked')) {
-            setCookie('saveId', idField.val(), 7); // 쿠키 유효기간 7일
-            console.log("쿠키가 설정되었습니다.");
+        if ($rememberMe.is(':checked')) {
+            setCookie('saveId', $idField.val(), 7); // 쿠키 유효기간 7일
+            //console.log("쿠키가 설정되었습니다.");
         } else {
             setCookie('saveId', '', -1); // 쿠키 삭제
-            console.log("쿠키가 삭제되었습니다.");
+           //console.log("쿠키가 삭제되었습니다.");
         }
     });
 });
 
-// 쿠키 설정 함수
+
+//쿠키 설정 함수
 function setCookie(name, value, days) {
     var expires = '';
     if (days) {
@@ -154,7 +158,8 @@ function setCookie(name, value, days) {
     document.cookie = name + '=' + (value || '') + expires + '; path=/';
 }
 
-// 쿠키 읽기 함수
+
+//쿠키 읽기 함수
 function getCookie(name) {
     var nameEQ = name + '=';
     var ca = document.cookie.split(';');
@@ -171,5 +176,4 @@ function getCookie(name) {
             alert(msg);
         }
     </script>
-</body>
 </html>

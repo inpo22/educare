@@ -10,12 +10,11 @@ public interface LoginDAO {
 
 	LoginDTO loginAccess(String id);
 
+	Object idFindAccess(String name, String email);
+
 	int pwFindCheck(String id, String email);
 
-	
 
 	
-	
 
-	
 }

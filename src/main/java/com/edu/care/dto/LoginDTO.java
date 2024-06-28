@@ -17,6 +17,8 @@ public class LoginDTO {
 	private String photo;
 	private String id;
 	private String pw;
+	private String email;
+	
 	
 	
 	public String getClass_name() {
@@ -78,6 +80,12 @@ public class LoginDTO {
 	}
 	public void setPw(String pw) {
 		this.pw = pw;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	
