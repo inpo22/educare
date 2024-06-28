@@ -73,7 +73,6 @@ public class DeptService {
 		result.put("msg", msg);
 		return result;
 	}
-
 	// 부서 수정
 	public Map<String, Object> updateDept(Map<String, Object> param) {
 		Map<String, Object> result = new HashMap<String, Object>();
