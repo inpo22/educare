@@ -183,4 +183,14 @@ public class MypageController {
 		
 		return page;
 	}
+	
+	// 출석률
+		@ResponseBody
+		@GetMapping(value="/mypage/attRate.ajax")
+		public String attdRate(@RequestParam("user_code") String user_code) {
+			logger.info("user_code:"+user_code);
+			
+			String attdRate = mypageService.attRate(user_code);
+			return attdRate;
+		}
 }

@@ -175,5 +175,9 @@ public class StuService {
 	public int absent(String course_name, String user_code, String att_date) {
 		return stuDAO.absent(course_name, user_code, att_date);
 	}
+
+	public String attRate(String user_code) {
+		return stuDAO.attRate(user_code);
+	}
 	
 }
