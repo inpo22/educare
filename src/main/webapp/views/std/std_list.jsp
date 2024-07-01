@@ -12,28 +12,10 @@
 
 <!-- css -->
 <jsp:include page="/views/common/head.jsp"></jsp:include>
+<link href="/resources/std/std.css" rel="stylesheet">
 <!-- js -->
 
 <style>
-#backBoard {
-    background-color: white;
-    width: 100%;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
-}
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-}
-h1{
-	margin-top: 10px;
-}
-.bi.bi-arrow-clockwise{
-	font-size: 24px;
-}
 @media (min-width: 768px) {
 	#searchbox {
 		width: 250px;
@@ -48,10 +30,6 @@ h1{
 		width: auto;
 	}
 }
-
-
-
-
 #search_btn{
 	margin-right: 15px;
 }
@@ -111,7 +89,7 @@ h1{
 	      	<!-- Start table -->
 			<table class="table">
 			  <thead>
-			    <tr>
+			    <tr class="table-active">
 			      <th scope="col">학생번호</th>
 			      <th scope="col">이름</th>
 			      <th scope="col">연락처</th>
@@ -302,7 +280,13 @@ $('#search_btn').click(function(){
 
 //리셋버튼 함수
 $('#reset_btn').click(function(){
-	window.location.href = '/std/list.go';
+	$('#searchbox').val('');
+	$('#startDate').val('');
+	$('#endDate').val('');
+	searchbox='';
+	startDate='';
+	endDate='';
+	listCall(page, type, searchbox, startDate, endDate);
 });
 
 // 학생등록 페이지 이동

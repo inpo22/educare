@@ -251,7 +251,15 @@ input[readonly] {
 <script>
 // 사원 리스트 이동
 $('#empList_go').click(function(){
-	window.location.href = '/emp/list.go';
+	var quit_date = "${empDto.quit_date}"; //퇴사일 가져옴
+	
+	// 퇴사자일 경우 퇴사자 목록으로
+	if(quit_date !== null && quit_date != ''){
+		window.location.href = '/emp/quitList.go';
+	}else{
+		window.location.href = '/emp/list.go';
+	}
+	
 });
 
 // 수정 페이지 이동
@@ -262,7 +270,7 @@ $('#edit_go').click(function(){
 // 퇴사자일 경우 수정 버튼 비활성화
 document.addEventListener('DOMContentLoaded',function(){
 	var quit_date = "${empDto.quit_date}"; //퇴사일 가져옴
-	var edit_btn = document.getElementById('edit_go'); 
+	var edit_btn = document.getElementById('edit_go');
 	
 	// quit_date가 null이 아닌 경우 버튼을 비활성화합니다.
     if (quit_date !== null && quit_date !== '') {

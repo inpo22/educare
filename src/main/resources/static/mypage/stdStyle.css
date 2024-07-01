@@ -1,0 +1,48 @@
+@charset "UTF-8";
+
+#backBoard {
+    background-color: white;
+    width: 100%;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+#detailBoard {
+    background-color: #E2E2E2;
+    width: 100%;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+h1{
+	margin-top: 10px;
+}
+#photo-preview{
+	display: none;
+	width : 250px;
+	height:250px;
+	margin:0 0 0 200px;
+}
+.bi.bi-person-fill {
+    font-size: 150px;
+    height: auto; 
+    margin-left: 30px;
+}
+.payment-completed, .attd_success {
+    color: #008DD8 !important;
+    font-weight: bold;
+}
+.payment-cancelled, .attd_fail {
+    color: red !important;
+    font-weight: bold;
+}
+.no-course, .no-attd, .no-payment{
+	text-align: center;
+}

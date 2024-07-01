@@ -13,7 +13,7 @@
 			gender=#{gender},
 			pw = CASE WHEN #{pw} IS NULL THEN pw ELSE #{pw} END,
 			photo = CASE WHEN #{photo} IS NULL THEN photo ELSE #{photo} END
-		WHERE user_code='2024U030001'		
+		WHERE user_code=#{user_code}		
 	</update>
 	
 	<!-- 학생 마이페이지 정보 불러오기 쿼리문 -->
@@ -27,7 +27,8 @@
 			birth,
 			gender,
 			pw,
-			photo
+			photo,
+			reg_date
 		FROM 
 			user
 		WHERE

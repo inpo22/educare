@@ -124,8 +124,11 @@ public class EmpService {
 	public int edit(MultipartFile photo, Map<String, String> param, String user_code) {
 		// 비밀번호 암호화
         String rawPassword = param.get("pw");
-        String encodedPassword = encoder.encode(rawPassword);
-        param.put("pw", encodedPassword);
+        
+        if("00000000".equals(rawPassword)) {
+        	String encodedPassword = encoder.encode(rawPassword);
+            param.put("pw", encodedPassword);
+        }
 		
 		// 파일 처리 로직
         String newFileName = null;
