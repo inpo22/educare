@@ -67,6 +67,19 @@ h1{
 .bi.bi-arrow-clockwise{
 	font-size: 24px;
 }
+.payment-pending {
+    color: green !important; 
+    font-weight: bold;
+}
+.payment-completed, .attd_success {
+    color: #008DD8 !important;
+    font-weight: bold;
+}
+.payment-cancelled, .attd_fail {
+    color: red !important;
+    font-weight: bold;
+}
+
 
 
 

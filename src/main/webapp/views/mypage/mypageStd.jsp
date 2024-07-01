@@ -378,9 +378,9 @@ function drawCourseList(courseList){
             content += '<button id="cancel_btn" class="btn btn-info btn-sm" onclick="cancel(\'' + data.course_name + '\')">취소</button>';
             content += '</td>';
         } else if(data.pay_state == 1) {
-            content += '<td>결제완료</td>';
+        	content += '<td class="payment-completed">결제완료</td>';
         } else if(data.pay_state == 2) {
-            content += '<td>결제취소</td>';
+        	content += '<td class="payment-cancelled">결제취소</td>';
         }
 		content += '</tr>';
 	}
@@ -508,9 +508,9 @@ function drawAttdList(attdList){
 		content += '<td>' + data.course_name + '</td>';
 		content += '<td>' + data.att_date + '</td>';
 		if(data.att_state == 1){
-			content += '<td>출석</td>';
+			content += '<td class = "attd_success">출석</td>';
 		}else if(data.att_state == 2){
-			content += '<td>결석</td>';
+			content += '<td class="attd_fail">결석</td>';
 		}
 		content += '</tr>';
 	}

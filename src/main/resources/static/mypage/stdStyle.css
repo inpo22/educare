@@ -35,3 +35,11 @@ h1{
     height: auto; 
     margin-left: 30px;
 }
+.payment-completed, .attd_success {
+    color: #008DD8 !important;
+    font-weight: bold;
+}
+.payment-cancelled, .attd_fail {
+    color: red !important;
+    font-weight: bold;
+}

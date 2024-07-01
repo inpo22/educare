@@ -522,11 +522,11 @@ function drawCourseList(courseList){
 		content += '<td>' + data.course_start + '</td>';
 		content += '<td>' + data.course_end + '</td>';
 		if(data.pay_state == 0) {
-            content += '<td>결제대기</td>';
+			content += '<td class="payment-pending">결제대기</td>';
         } else if(data.pay_state == 1) {
-            content += '<td>결제완료</td>';
+        	content += '<td class="payment-completed">결제완료</td>';
         } else if(data.pay_state == 2) {
-            content += '<td>결제취소</td>';
+        	content += '<td class="payment-cancelled">결제취소</td>';
         }
 		content += '</tr>';
 	}
@@ -597,9 +597,9 @@ function drawAttdList(attdList){
 			content += '<button id="absent_btn" class="btn btn-primary btn-sm" onclick="absent(\'' + data.course_name + '\', \'' + data.att_date + '\')">결석</button>';
 			content += '</td>';
 		}else if(data.att_state == 1){
-			content += '<td>출석</td>';
+			content += '<td class = "attd_success">출석</td>';
 		}else if(data.att_state == 2){
-			content += '<td>결석</td>';
+			content += '<td class="attd_fail">결석</td>';
 		}
 		content += '</tr>';
 	}
