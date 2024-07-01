@@ -198,16 +198,10 @@ small{
     border-radius: 20px;
 }
 
-#viewer {
-	min-height: 500px;
-    border: 1px solid #dfe1e5;
-    border-radius: 8px;
-    padding: 8px 25px;
-    background-color: #eaecef;
-}
 
 #deleteBtn{
 	margin-right: 10px;
+}
 }
 </style>
 </head>
@@ -268,21 +262,21 @@ small{
 			<div class="col-md-12">
 				<div class="input-group input-group mb-3">
 					<span class="input-group-text">강의명</span>
-                	<input type="text" class="form-control" name="course_name" id="course_name" value="${courseDTO[0].course_name}" disabled>
+                	<input type="text" class="form-control" name="course_name" id="course_name" value="${courseDTO[0].course_name}">
 				</div>
 			</div>
 		</div>
 		<input type="hidden" name="content" id="content" />
 		 	<div class="row">
     			<div class="col-md-12">
-        			<div id="viewer"></div>
+        			<div id="editor"></div>
    		 		</div>
 		 	</div>
 
     		<div class="row">
         		<div class="col-md-12 d-flex justify-content-end">
-           			<button type="button" class="btn btn-dark mt-3 mb-1" id="deleteBtn" onclick="deleteCourseGo()">삭제하기</button>
-       			 	<button type="button" class="btn btn-dark mt-3 mb-1" id="updateBtn" onclick="updateCourseGo()">수정하기</button>
+           			<button type="button" class="btn btn-dark mt-3 mb-1" id="deleteBtn" onclick="cancelCourseUpdate()">취소하기</button>
+       			 	<button type="button" class="btn btn-dark mt-3 mb-1" id="updateBtn" onclick="updateCourseSubmit()">수정완료</button>
        			</div>
     		</div>
 	</div>
@@ -301,28 +295,17 @@ if (msg !== '') {
 
 var content = '${courseDTO[0].course_con}'
 
-const viewer = toastui.Editor.factory({
-	el: document.querySelector('#viewer'),
-	viewer: true,
+const editor = toastui.Editor.factory({
+	el: document.querySelector('#editor'),
+	initialEditType : 'wysiwyg',
+	height : '500px',
+	hideModeSwitch : true,
 	initialValue: content
 });
 
-function deleteCourseGo(){
+function cancelCourseUpdate(){
 	var course_no = '${courseDTO[0].course_no}';
-	console.log(course_no);
-	if(confirm('정말삭제하시겠습니까?')){
-		location.href="/course/delete.go?course_no=" + course_no;
-		alert('삭제되었습니다.');
-	}else{
-		return;
-	}
-	
-}
- 
-function updateCourseGo(){
-	var course_no = '${courseDTO[0].course_no}'; 
-	location.href="/course/update.go?course_no="+course_no;
-	
+	location.href="/course/detail.go?course_no=" + course_no;
 }
 
 </script>

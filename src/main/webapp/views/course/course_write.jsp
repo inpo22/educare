@@ -433,6 +433,20 @@ function drawCalendar() {
     	
         var selectDay = $(this).data('day');
         var calMonth = preMonth+1;
+        var calYear = preYear;
+        
+        //오늘날짜 구하기 
+        var tdate = new Date(); 
+        var tyear = tdate.getFullYear(); 
+        var tmonth = new String(tdate.getMonth()+1); 
+        var tday = new String(tdate.getDate()); 
+        
+        //클릭한 날의 날짜 : 현재날짜와 비교하기용으로 만듬
+        var clickDayDate = calYear + "" +calMonth + "" +selectDay;
+        console.log("clickDayDate>>>"+clickDayDate);
+		
+        var todayForSelectDay = tyear + tmonth +  tday;
+        console.log("todayForSelectDay>>>"+todayForSelectDay);
 
         if(calMonth.toString().length < 2){
         	calMonth = '0' + calMonth;
@@ -441,6 +455,13 @@ function drawCalendar() {
         if(selectDay.toString().length < 2){
         	selectDay = '0' + selectDay;
         	console.log(selectDay);
+        }
+        
+        // (미완료)20240701 : 현재날짜보다 이전 날 안보이게하기...근데 아직 못한고.................... =_=
+        // 일단 없어지게해둠.. 나중에 아예 모달 들어올때부터 안보이게할거
+        if(clickDayDate < todayForSelectDay){
+        	$(this).css("visibility","hidden");
+        	return false;
         }
         
         var formatDay = preYear +'-' + calMonth +'-'+selectDay; 
@@ -891,6 +912,7 @@ function submitCourseWrite(){
 	}); 
 	
 }
+
 </script>
 
 </html>
