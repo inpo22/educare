@@ -88,7 +88,7 @@ public class MypageService {
 	}
 
 	@Transactional
-	public void empProfileEdit(MultipartFile photo, Map<String, String> param, String user_code) {
+	public void empProfileEdit(MultipartFile photo, MultipartFile sign_photo, Map<String, String> param, String user_code) {
 		MypageDTO dto = new MypageDTO();
 		
 		dto.setUser_code(user_code);
@@ -97,11 +97,14 @@ public class MypageService {
 		
 		mypageDAO.empProfileEdit(dto);
 		
-		fileSave(photo, user_code);
+		int type = 0;
+		fileSave(photo, user_code, type);
 		
+		type = 1;
+		fileSave(sign_photo, user_code, type);
 	}
 	
-	private void fileSave(MultipartFile photo, String user_code) {
+	private void fileSave(MultipartFile photo, String user_code, int type) {
 		String ori_filename = photo.getOriginalFilename();
 		
 		if (!ori_filename.equals("")) {
@@ -115,13 +118,15 @@ public class MypageService {
 				Path path = Paths.get(root + new_filename);
 				Files.write(path, bytes);
 				
-				mypageDAO.profileImgSave(user_code, new_filename);
+				mypageDAO.profileImgSave(user_code, new_filename, type);
 				
 				Thread.sleep(1);
 				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		} else {
+			mypageDAO.profileImgSave(user_code, null, type);
 		}
 	}
 	

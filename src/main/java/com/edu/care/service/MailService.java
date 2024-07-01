@@ -86,6 +86,8 @@ public class MailService {
 		
 		for (String mail_no : delList) {
 			cnt += mailDAO.writtenMailListDel(mail_no);
+			int type = 2;
+			notiDAO.deleteNoti(mail_no, type);
 		}
 		return cnt;
 	}
@@ -279,12 +281,13 @@ public class MailService {
 		// type == 0 > 부서이동
 		// type == 1 > 전자결재 완료
 		// type == 2 > 전자결재 반려
+		// type == 3 > 부서장 변경 (변경된 부서장에게만 메일 전송)
 		
 		MailDTO dto = new MailDTO();
 		String send_user_code = "system";
 		String code_name = "";
 		StringBuilder builder = new StringBuilder();
-		builder.append("<p><img src=\"/resources/img/EDUcare_logo.png\"></p>");
+		builder.append("<p><img style=\"width: 200px; height: auto;\" src=\"/resources/img/EDUcare_logo.png\"></p>");
 		builder.append("<p></p>");
 		
 		String content = "";
@@ -314,7 +317,7 @@ public class MailService {
 			subject = "[에듀케어] 결재 완료 : " + code_name;
 			builder.append("<p>귀하께서 상신하신 " + code_name + " 문서가 결재 완료되었음을 알려드립니다.</p>");
 			builder.append("<p></p>");
-			builder.append("<p><button class=\"btn btn-primary\" onclick=\"location.href='/approval/detail.go?au_code=" + code + "'\">바로가기</button></p>");
+			builder.append("<p><button class=\"btn btn-primary\" onclick=\"location.href=\'/approval/detail.go?au_code=" + code + "\'\">바로가기</button></p>");
 			builder.append("<p></p>");
 			builder.append("<p>이상입니다. 감사합니다.</p>");
 			
@@ -349,7 +352,32 @@ public class MailService {
 			mail_no = dto.getMail_no();
 			
 			mailDAO.mailReceiverWrite(mail_no, receive_user_code);
+		} else if (type == 3) {
+			code_name = mailDAO.findDeptName(code);
+			subject = "[에듀케어] 부서 이동 안내";
+			builder.append("<p>귀하의 직책이 " + code_name + "의 팀장이 되었음을 알려드립니다.</p>");
+			builder.append("<p></p>");
+			builder.append("<p>이상입니다. 감사합니다.</p>");
+			
+			content = builder.toString();
+			
+			dto.setUser_code(send_user_code);
+			dto.setSubject(subject);
+			dto.setContent(content);
+			
+			mailDAO.mailWrite(dto);
+			
+			mail_no = dto.getMail_no();
+			
+			mailDAO.mailReceiverWrite(mail_no, receive_user_code);
 		}
+		
+		String to_user_code = receive_user_code;
+		String from_user_code = "system";
+		String noti_content_no = "" + dto.getMail_no();
+		int noti_type = 2;
+		
+		notiDAO.sendNoti(to_user_code, from_user_code, noti_content_no, noti_type);
 		
 	}
 

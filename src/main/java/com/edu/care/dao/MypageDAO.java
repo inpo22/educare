@@ -15,7 +15,7 @@ public interface MypageDAO {
 
 	MypageDTO empMypage(String user_code);
 
-	void profileImgSave(String user_code, String new_filename);
+	void profileImgSave(String user_code, String new_filename, int type);
 
 	void empProfileEdit(MypageDTO dto);
 

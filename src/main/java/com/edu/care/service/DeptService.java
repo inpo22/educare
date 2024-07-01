@@ -107,6 +107,13 @@ public class DeptService {
 		
 		if(row > 0) {
 			msg = "success";
+			
+			// 부서 이동 시 메일 전송
+			String receive_user_code = (String) param.get("user_code");
+			String code = (String) param.get("team_code");
+			int type = 3;
+			
+			mailService.autoMailSend(receive_user_code, code, type);
 		}
 		logger.info("부서장 수정 결과: "+msg);
 		result.put("msg", msg);
