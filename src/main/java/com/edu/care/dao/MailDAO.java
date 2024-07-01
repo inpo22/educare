@@ -47,4 +47,8 @@ public interface MailDAO {
 
 	void mailLoadFileWrite(String user_code, int mail_no, String file_no, int i);
 
+	String findDeptName(String code);
+
+	String findApprovalName(String code);
+
 }
