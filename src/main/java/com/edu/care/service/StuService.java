@@ -101,9 +101,12 @@ public class StuService {
 	public int edit(Map<String, String> param, String user_code) {
 		// 비밀번호 암호화
         String rawPassword = param.get("pw");
-        String encodedPassword = encoder.encode(rawPassword);
-        param.put("pw", encodedPassword);
-		
+        
+        if("00000000".equals(rawPassword)) {
+        	String encodedPassword = encoder.encode(rawPassword);
+            param.put("pw", encodedPassword);
+        }
+        		
 		param.put("user_code", user_code);
 		return stuDAO.edit(param);
 	}

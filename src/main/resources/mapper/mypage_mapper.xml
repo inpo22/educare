@@ -27,7 +27,8 @@
 			birth,
 			gender,
 			pw,
-			photo
+			photo,
+			reg_date
 		FROM 
 			user
 		WHERE

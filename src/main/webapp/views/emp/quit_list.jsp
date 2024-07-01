@@ -311,7 +311,14 @@ $('#search_btn').click(function(){
 
 // 리셋버튼 함수
 $('#reset_btn').click(function(){
-	window.location.href = '/emp/quitList.go';
+	$('#searchbox').val('');
+	$('#startDate').val('');
+	$('#endDate').val('');
+	searchbox='';
+	startDate='';
+	endDate='';
+	listCall(page, dateType, type, searchbox, startDate, endDate);
 });
+
 </script>
 </html>

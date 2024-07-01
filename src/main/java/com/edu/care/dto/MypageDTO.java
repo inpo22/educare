@@ -12,7 +12,7 @@ public class MypageDTO {
 	private String user_name;
 	private String phone;
 	private String email;
-	private Timestamp reg_date;
+	private Date reg_date;
 	private String photo;
 	private String class_name;
 	private String team_name;
@@ -51,10 +51,11 @@ public class MypageDTO {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public Timestamp getReg_date() {
+	
+	public Date getReg_date() {
 		return reg_date;
 	}
-	public void setReg_date(Timestamp reg_date) {
+	public void setReg_date(Date reg_date) {
 		this.reg_date = reg_date;
 	}
 	public String getPhoto() {
