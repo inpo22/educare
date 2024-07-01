@@ -379,7 +379,7 @@
 			
 			$('.selected-value').removeClass('selected-value');
 			
-			if (tree.getChildIds(e.nodeId) == '') {
+			if (tree.getChildIds(e.nodeId) == '' && tree.getNodeData(e.nodeId).value != '${sessionScope.user_code}') {
 				selectedNodeText = tree.getNodeData(e.nodeId).text;
 				selectedNodeValue = tree.getNodeData(e.nodeId).value;
 				$('.list-add-button').removeClass('disabled-button');
