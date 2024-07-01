@@ -258,7 +258,7 @@ small{
 					
 				</div>
 				<div id="editor"></div>
-					<button type="button" class="btn text-light bg-dark mt-2" id="submitButton" onclick="submitCourseWrite()">등록</button>
+					<button type="button" class="btn text-light bg-dark mt-2" id="submitButton">등록</button>
 			</div>
 		</div>
 
@@ -755,19 +755,20 @@ function submitButton(){
 }
 
 function checkUserCode(){
+	var userCode = $('#user_code').val();
+	console.log('userCode.>>>>'+userCode);
 	$.ajax({
-		url: '/course/reservationWrite.ajax',
+		url: '/course/checkUserCode.ajax',
 		type: 'POST',
 		dataType:'JSON',
-		data: JSON.stringify(paramData),
-		contentType: 'application/json',
+		data:{ user_code: userCode },
 		success:function(data) {
 			console.log(data.result);
 			if(data.result === "success" ){
-				alert('등록이 완료되었습니다.');
-				location.href='/course/list.go';
+				alert('사원번호 확인완료 되었습니다.');
+				$('#user_code').attr("readonly",true); 
 			}else{
-				alert('등록에 실패하였습니다.');
+				alert('입력하신 사원번호는 없는번호이니 다시 입력해주세요.');
 			}
 		},
 		error:function(request, status, error){
@@ -776,6 +777,42 @@ function checkUserCode(){
 		
 	}); 
 }
+
+
+$('#submitButton').click(function() {
+	
+	var userCode = $('#user_code').val();
+	var courseTitle = $('#title').val();
+	var coursePrice = $('#course_price').val();
+	var rezCourse = $('#reservTextareaGo .reservation-item').find('span').html();
+	var editorContent = editor.getHTML();
+	var formatContent = $('#content').val(editorContent);
+	var content = formatContent.val();
+    console.log("rezCourse",rezCourse);
+	
+    if ($("#user_code").attr("readonly") == undefined){
+        alert('사원여부확인 체크해주세요.');
+        return false;
+    }
+    if (courseTitle === ''){
+        alert('강의명을 입력해주세요.');
+        $('#title').focus();
+        return false;
+    }
+    if (coursePrice === ''){
+        alert('강의료를 입력해주세요.');
+        $('#course_price').focus();
+        return false;
+    }
+    if (rezCourse === undefined){
+        alert('강의실예약은 필수입니다.');
+        return false;
+    }else{
+    	submitCourseWrite();
+    }
+
+});
+
 
 function submitCourseWrite(){
 	var userCode = $('#user_code').val();

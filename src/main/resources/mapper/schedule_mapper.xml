@@ -68,7 +68,9 @@
 	</select>
 	
 	<update id="scheduleDelete">
-		UPDATE schedule SET is_del = 1 WHERE sked_no = #{param1}
+		UPDATE schedule 
+		SET is_del = 1 
+		WHERE sked_no = #{param1}
 	</update>
 	
 	<update id="scheduleUpdate"  parameterType="schedule">
@@ -87,4 +89,27 @@
 			sked_no = #{sked_no}
 	</update>
 
+	<select id="teamUserList" resultType="String">
+      	SELECT user_code 
+      	FROM user 
+      	WHERE team_code = #{param1}
+   </select>
+   
+   <select id="getAllUserCodes" resultType="String">
+		SELECT user_code 
+		FROM user 
+		WHERE classify_code IN ('U01', 'U02')
+	</select>
+	
+	<!-- 못하겠음 -->
+	<select id="scheduleForNoti" resultType="schedule">
+		SELECT s.title
+			 , s.contents
+			 , s.start_date
+			 , s.end_date
+			 , u.name
+		FROM schedule s
+		LEFT JOIN user u ON s.user_code = u.user_code
+		WHERE sked_no = #{param1}
+	</select>
 </mapper>

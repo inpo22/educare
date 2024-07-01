@@ -149,4 +149,10 @@
 		JOIN course c on cr.course_no  = c.course_no
 		JOIN user u on c.user_code = u.user_code
 	</select>
+	
+	<select id="checkUserCode" resultType="Integer">
+		SELECT count(user_code)
+		FROM user 
+		WHERE user_code  = #{param1}
+	</select>
 </mapper>
