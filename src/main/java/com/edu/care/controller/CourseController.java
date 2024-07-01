@@ -122,10 +122,27 @@ public class CourseController {
 	@ResponseBody
 	public Map<String, Object> courseCheck(@RequestParam(value="course_space", required=false) String course_space, HttpSession session) {
 		logger.info("##### schedule list ajax controller IN #####");
-		logger.info("##### sked_type : ", course_space);
+		logger.info("##### course_space : ", course_space);
 		
 		Map<String, Object> map = courseService.courseCheck();
 		return map;
 	}
 	
+	@PostMapping(value="/course/checkUserCode.ajax")
+	@ResponseBody
+	public Map<String, String> checkUserCode(@RequestParam(value="user_code") String user_code, HttpSession session) {
+		logger.info("##### course checkUserCode ajax controller IN #####");
+		logger.info("##### user_code=> ",user_code);
+		Boolean result = courseService.checkUserCode(user_code);
+		logger.info("##### result=> ",result);
+		
+		Map<String, String> map = new HashMap<String, String>();
+		
+		if(result) {
+			 map.put("result", "success");
+		}else {
+			 map.put("result", "fail");
+		}
+		return map;
+	}
 }

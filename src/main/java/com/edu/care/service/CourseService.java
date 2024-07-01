@@ -114,5 +114,15 @@ public class CourseService {
 		return result;
 	}
 
+	public Boolean checkUserCode(String user_code) {
+		int row = courseDAO.checkUserCode(user_code);
+		if(row > 0) {
+			return true;
+		}else {
+			return false;
+		}
+		
+	}
+
 
 }

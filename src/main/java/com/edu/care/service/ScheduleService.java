@@ -24,9 +24,25 @@ public class ScheduleService {
 	public int scheduleWrite(ScheduleDTO scheduleDTO) {
 		int row = scheduleDAO.scheduleWrite(scheduleDTO);
 		if(row > 0) {
+			List<String> teamUserList = scheduleDAO.teamUserList(scheduleDTO.getTeam_code());
+			List<String> allUserList = scheduleDAO.getAllUserCodes();
+			logger.info("alarm noti userList:{}  >>>>>",teamUserList);
 			String userCode = scheduleDTO.getUser_code();
 			String skedNo = ""+scheduleDTO.getSked_no();
-			notiDAO.sendNoti(userCode, userCode, skedNo, 3);
+			String skedType = scheduleDTO.getSked_type();
+			logger.info("scheduleWrite get Sked_type >>>>>"+skedType);
+			
+			if(skedType.equals("SKED_TP02")) {
+				logger.info("::::alarm noti 부서일정 IN ::::");
+				for(String toTeamUser : teamUserList) {
+					notiDAO.sendNoti(toTeamUser, userCode, skedNo, 5);
+				}
+			}else if(skedType.equals("SKED_TP01")) {
+				logger.info("::::alarm noti 전사일정 IN ::::");
+				for(String toAllUser : allUserList) {
+					notiDAO.sendNoti(toAllUser, userCode, skedNo, 3);
+				}
+			}
 		}
 		return row;
 	}
@@ -39,17 +55,25 @@ public class ScheduleService {
 		return result;
 	}
 
-	public int scheduleDelete(String sked_no) {
+	public int scheduleDelete(String sked_no, String sked_type) {
 		int row = scheduleDAO.scheduleDelete(sked_no);
 		if(row > 0 ) {
-			logger.info("delete noti sked_no>>>>>"+sked_no);
-			notiDAO.deleteNoti(sked_no, 3);
+			if(sked_type.equals("SKED_TP02")) {
+				notiDAO.deleteNoti(sked_no, 5);
+				
+			}else if(sked_type.equals("SKED_TP01")) {
+				notiDAO.deleteNoti(sked_no, 3);
+			}
 		}
 		return row;
 	}
 
 	public Boolean scheduleUpdate(ScheduleDTO scheduleDTO) {
 		return scheduleDAO.scheduleUpdate(scheduleDTO);
+	}
+
+	public ScheduleDTO scheduleForNoti(String sked_no) {
+		return scheduleDAO.scheduleForNoti(sked_no);
 	}
 	
 	
