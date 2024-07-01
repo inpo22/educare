@@ -275,13 +275,14 @@ public class MailService {
 	}
 	
 	@Transactional
-	public void autoMailSend(String receive_user_code, String code_name, int type) {
+	public void autoMailSend(String receive_user_code, String code, int type) {
 		// type == 0 > 부서이동
 		// type == 1 > 전자결재 완료
 		// type == 2 > 전자결재 반려
 		
 		MailDTO dto = new MailDTO();
 		String send_user_code = "system";
+		String code_name = "";
 		StringBuilder builder = new StringBuilder();
 		builder.append("<p><img src=\"/resources/img/EDUcare_logo.png\"></p>");
 		builder.append("<p></p>");
@@ -291,6 +292,7 @@ public class MailService {
 		int mail_no = -1;
 		
 		if (type == 0) {
+			code_name = mailDAO.findDeptName(code);
 			subject = "[에듀케어] 부서 이동 안내";
 			builder.append("<p>귀하의 부서가 " + code_name + "으로 이동되었음을 알려드립니다.</p>");
 			builder.append("<p></p>");
@@ -308,8 +310,11 @@ public class MailService {
 			
 			mailDAO.mailReceiverWrite(mail_no, receive_user_code);
 		} else if (type == 1) {
+			code_name = mailDAO.findApprovalName(code);
 			subject = "[에듀케어] 결재 완료 : " + code_name;
 			builder.append("<p>귀하께서 상신하신 " + code_name + " 문서가 결재 완료되었음을 알려드립니다.</p>");
+			builder.append("<p></p>");
+			builder.append("<p><button class=\"btn btn-primary\" onclick=\"location.href='/approval/detail.go?au_code=" + code + "'\">바로가기</button></p>");
 			builder.append("<p></p>");
 			builder.append("<p>이상입니다. 감사합니다.</p>");
 			
@@ -325,8 +330,11 @@ public class MailService {
 			
 			mailDAO.mailReceiverWrite(mail_no, receive_user_code);
 		} else if (type == 2) {
+			code_name = mailDAO.findApprovalName(code);
 			subject = "[에듀케어] 결재 반려 : " + code_name;
 			builder.append("<p>귀하께서 상신하신 " + code_name + " 문서가 반려되었음을 알려드립니다.</p>");
+			builder.append("<p></p>");
+			builder.append("<p><button class=\"btn btn-primary\" onclick=\"location.href='/approval/detail.go?au_code=" + code + "'\">바로가기</button></p>");
 			builder.append("<p></p>");
 			builder.append("<p>이상입니다. 감사합니다.</p>");
 			
