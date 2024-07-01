@@ -171,7 +171,7 @@ body {
 				                    <div class="info-group mt-3">
 				                        <p><strong>성실도:</strong></p>
 				                        <div class="progress">
-				                            <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">75%</div>
+				                            <div id="attdRate" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
 				                        </div>
 				                    </div>
 				                </div>
@@ -321,6 +321,34 @@ var msg = '${msg}'; // 쿼터 빠지면 넣은 문구가 변수로 인식됨.
 if(msg != ''){
 	alert(msg);
 }
+
+//성실도(출석률)
+$(document).ready(function(){
+	var user_code=$('#user_code').val();
+	
+	$.ajax({
+		type:'get',
+		url:'/mypage/attRate.ajax',
+		data:{
+			'user_code':user_code
+		},
+		dataType:'json',
+		success:function(data){
+			console.log(data);
+			
+			var attdRate = parseFloat(data);
+			
+			$('#attdRate').css('width', attdRate + '%');
+            $('#attdRate').attr('aria-valuenow', attdRate);
+            $('#attdRate').text(attdRate + '%');
+		},
+		error:function(error){
+			console.log(error);
+		}
+	});
+});
+
+
 
 //Pagination 전 변수 선언
 var type = -1;

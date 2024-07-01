@@ -246,6 +246,16 @@ public class StuController {
 		return "redirect:/std/detail.go?user_code="+user_code;
 	}
 	
+	// 출석률
+	@ResponseBody
+	@GetMapping(value="/std/attRate.ajax")
+	public String attdRate(@RequestParam("user_code") String user_code) {
+		logger.info("user_code:"+user_code);
+		
+		String attdRate = stuService.attRate(user_code);
+		return attdRate;
+	}
+	
 	
 	
 	

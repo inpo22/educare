@@ -202,5 +202,10 @@ public class MypageService {
 		result.put("totalPage", mypageDAO.stdattdListPageCnt(pagePerCnt, Asearchbox, user_code));
 		return result;
 	}
+
+
+	public String attRate(String user_code) {
+		return mypageDAO.attRate(user_code);
+	}
 	
 }
