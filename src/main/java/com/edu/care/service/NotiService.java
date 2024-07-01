@@ -27,14 +27,12 @@ public class NotiService {
 //		int notiCnt = notiDAO.getNotiCnt(param);
 		int notiCnt = notiList.size();
 		
-		if(notiCnt > 0) {
-			msg = "success";
-			result.put("msg", msg);
-			result.put("notiList", notiList);
-			result.put("notiCnt", notiCnt);
-			logger.info("알림 리스트 조회 결과: "+msg);
-			logger.info("result: "+notiList.size()+"/cnt"+notiCnt);
-		}
+		msg = "success";
+		result.put("msg", msg);
+		result.put("notiList", notiList);
+		result.put("notiCnt", notiCnt);
+		logger.info("알림 리스트 조회 결과: "+msg);
+		logger.info("result: "+notiList.size()+"/cnt"+notiCnt);
 		return result;
 	}
 
@@ -48,7 +46,7 @@ public class NotiService {
 		}
 		logger.info("알림 읽음 결과: "+msg);
 		result.put("msg", msg);
-		return null;
+		return result;
 	}
 
 }
