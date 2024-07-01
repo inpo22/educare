@@ -36,5 +36,9 @@
 	<select id="pwFindCheck" resultType="Integer">
 		SELECT COUNT(u.user_code) FROM user u WHERE u.id = #{param1} AND u.email = #{param2}
 	</select>
+	
+	<update id="updateTempPassword">
+		UPDATE user SET pw = #{param2} WHERE id = #{param1}
+	</update>
 
 </mapper>

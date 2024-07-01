@@ -298,10 +298,10 @@ public class ApprovalService {
 			notiDAO.sendNoti(to_user_code, from_user_code, noti_content_no, noti_type);
 		} else if (is_comp == 1) {
 			String receive_user_code = dto.getUser_code();
-			String code_name = dto.getTitle();
+			String code = au_code;
 			int type = 1;
 			
-			mailService.autoMailSend(receive_user_code, code_name, type);
+			mailService.autoMailSend(receive_user_code, code, type);
 			
 			if (dto.getAu_type() == 1) {
 				approvalDAO.scheduleWrite(dto);
@@ -315,10 +315,10 @@ public class ApprovalService {
 		ApprovalDTO dto = approvalDAO.approvalDetail(au_code);
 		
 		String receive_user_code = dto.getUser_code();
-		String code_name = dto.getTitle();
+		String code = au_code;
 		int type = 2;
 		
-		mailService.autoMailSend(receive_user_code, code_name, type);
+		mailService.autoMailSend(receive_user_code, code, type);
 		
 		if (dto.getAu_type() == 1) {
 			double va_days = dto.getVa_days();
