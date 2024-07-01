@@ -88,6 +88,11 @@
 									</div>
 									<br/>
 									<div class="row">
+										<div class="col-lg-3 col-md-4 label">직책</div>
+										<div class="col-lg-9 col-md-8">${dto.position_name}</div>
+									</div>
+									<br/>
+									<div class="row">
 										<div class="col-lg-3 col-md-4 label">연락처</div>
 										<div class="col-lg-9 col-md-8">${dto.phone}</div>
 									</div>
@@ -95,6 +100,11 @@
 									<div class="row">
 										<div class="col-lg-3 col-md-4 label">이메일</div>
 										<div class="col-lg-9 col-md-8">${dto.email}</div>
+									</div>
+									<br/>
+									<div class="row">
+										<div class="col-lg-3 col-md-4 label ">사원번호</div>
+										<div class="col-lg-9 col-md-8">${sessionScope.user_code}</div>
 									</div>
 									<br/>
 									<div class="row">
@@ -142,6 +152,31 @@
 												<input name="phone" type="text" class="form-control" id="phone" oninput="phoneNumber(this)" value="${dto.phone}">
 											</div>
 										</div>
+										<div class="row mb-3">
+											<label for="profileImage" class="col-md-4 col-lg-3 col-form-label">서명 사진</label>
+											<div class="col-md-8 col-lg-9">
+												<span class="profile-default-img" id="sign-change-img">
+													<c:if test="${dto.sign_photo eq null}">
+														<img src="/resources/img/approve_mark.png"/>
+													</c:if>
+													<c:if test="${dto.sign_photo ne null}">
+														<img src="/photo/${dto.sign_photo}" class="load-sign-img">
+													</c:if>
+												</span>
+												<div class="pt-2">
+													<a href="#" class="btn btn-primary btn-sm" id="sign-draw-img-button">
+														<i class="bi bi-pencil-square"></i>
+													</a>
+													<a href="#" class="btn btn-primary btn-sm" id="sign-update-img-button">
+														<i class="bi bi-upload"></i>
+													</a>
+													<a href="#" class="btn btn-danger btn-sm" id="sign-remove-img-button">
+														<i class="bi bi-trash"></i>
+													</a>
+													<input type="file" name="sign_photo" id="sign-update-img"/>
+												</div>
+											</div>
+										</div>
 										<div class="text-center">
 											<button type="button" class="btn btn-primary" id="profileEdit-submit">저장하기</button>
 										</div>
@@ -187,7 +222,25 @@
 		</section>
 	</main>
 	<!-- End #main -->
-
+	
+	<!-- 받는 사람 모달 -->
+	<div id="sign-modal" class="modal" onclick="closeModal()">
+		<div class="modal-content" onclick="event.stopPropagation()">
+			<div>
+				<span class="modal-title">서명 그리기</span>
+				<span class="close" onclick="closeModal()">&times;</span>
+				<br/><br/>
+				<div class="canvas-div">
+					<canvas id="sign-canvas"></canvas>
+				</div>
+				<br/>
+				<div class="text-align-right">
+					<button class="btn btn-primary btn-sm" id="sign-save">저장</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
 	<jsp:include page="/views/common/footer.jsp"></jsp:include>
 
 </body>
@@ -196,7 +249,11 @@
 	if (msg) {
 		alert(msg);
 	}
-
+	
+	function closeModal() {
+		$('#sign-modal').css('display', 'none');
+	}
+	
 	$('#profile-update-img-button').click(function(e) {
 		e.preventDefault();
 		
@@ -229,15 +286,125 @@
 	
 	$('#profile-remove-img-button').click(function(e) {
 		e.preventDefault();
-		if ('${dto.photo}' != null) {
-			var content = '<img src="/photo/${dto.photo}" alt="Profile" class="load-profile-img">';
-		} else {
-			var content = '<i class="bi bi-person-bounding-box"></i>';
-		}
+		var content = '<i class="bi bi-person-bounding-box"></i>';
 		$('#profile-change-img').html(content);
 		$('#profile-update-img').val('')
 	});
-
+	
+	$('#sign-update-img-button').click(function(e) {
+		e.preventDefault();
+		
+		$('#sign-update-img').click();
+	});
+	
+	$('#sign-update-img').change(function() {
+		var file = this.files[0];
+		var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/;
+		
+		var content = '';
+		
+		if (!allowedExtensions.exec(file.name)) {
+			alert("이미지 파일 첨부만 가능합니다.");
+			this.value = '';
+			return;
+		}
+		
+		if (file) {
+			var reader = new FileReader();
+			reader.readAsDataURL(file);
+			reader.onload = function (){
+				content += '<img src="' + reader.result + '" class="load-sign-img"/>';
+				// console.log(content);
+				
+				$('#sign-change-img').html(content);
+			};
+		}
+	});
+	
+	$('#sign-remove-img-button').click(function(e) {
+		e.preventDefault();
+		var content = '<img src="/resources/img/approve_mark.png"/>';
+		$('#sign-change-img').html(content);
+		$('#sign-update-img').val('')
+	});
+	
+	$('#sign-draw-img-button').click(function(e) {
+		e.preventDefault();
+		
+		$('#sign-modal').css('display', 'block');
+	});
+	
+	// 캔버스
+	var canvas = $('#sign-canvas');
+	// 캔버스의 오브젝트를 가져옵니다.
+	var ctx = canvas[0].getContext('2d');
+	var drawble = false;
+	
+	var div = canvas.parent('div');
+	canvas[0].height = div.height();
+	canvas[0].width = div.width();
+	
+	// 캔버스 스타일 설정
+	ctx.strokeStyle = "#000000";  // 검은색 선
+	ctx.lineWidth = 5;  
+		
+	// pc에서 서명을 할 경우 사용되는 이벤트입니다.
+	function draw(e){
+		function getPosition(){
+			return {
+				X: e.offsetX,
+				Y: e.offsetY
+			}
+		}
+		
+		switch(e.type) {
+			case 'mousedown': {
+				drawble = true;
+				ctx.beginPath();
+				ctx.moveTo(getPosition().X, getPosition().Y);
+				console.log('mousedown', getPosition());
+				break;
+			}
+			case 'mousemove': {
+				if (drawble) {
+					ctx.lineTo(getPosition().X, getPosition().Y);
+					ctx.stroke();
+					console.log('mousemove', getPosition());
+				}
+				break;
+			}
+			case 'mouseup': case 'mouseout': {
+				drawble = false;
+				ctx.closePath();
+				console.log('mouseup', getPosition());
+				break;
+			}
+		}
+	}
+	
+	canvas.on('mousedown', draw);
+	canvas.on('mousemove', draw);
+	canvas.on('mouseup', draw);
+	canvas.on('mouseout', draw);
+	
+	$('#sign-save').on('click', function() {
+		var signImgContent = '';
+		var signImg = canvas[0].toDataURL('image/png');
+		
+		if (signImg) {
+			var link = document.createElement('a');
+			// base64데이터 링크 달기
+			link.href = canvas[0].toDataURL("image/png");
+			// 다운로드시 파일명 지정
+			link.download = "image.png";
+			// body에 추가
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+		}
+		closeModal();
+	});
+	
 	$('#profileEdit-submit').click(function() {
 		var $email = $('#email');
 		var $phone = $('#phone');
