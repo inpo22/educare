@@ -625,6 +625,7 @@
 			, (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code) AS class_name
 			, u.team_code
 			, (SELECT d.team_name FROM department d WHERE d.team_code = u.team_code) AS team_name
+			, u.sign_photo
 			, a.title
 			, a.contents
 			, a.reg_date
@@ -643,6 +644,7 @@
 				ao.*
 				, u.name AS user_name
 				, (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code) AS class_name
+				, u.sign_photo
 				, ROW_NUMBER() OVER (PARTITION BY ao.au_code ORDER BY ao.apv_no) AS row_num
 				, MAX(ao.state) OVER (PARTITION BY ao.au_code) AS is_rejected
 			FROM approval_order ao JOIN user u ON ao.user_code = u.user_code
@@ -653,9 +655,9 @@
 				WHEN aoc.row_num = 1 AND aoc.state = 0 AND aoc.user_code = #{param2} THEN 1
 				WHEN aoc.row_num = 1 AND aoc.state = 1 AND aoc.user_code = #{param2} THEN 0
 				WHEN aoc.row_num != 1 AND aoc.user_code = #{param2}
-					AND (SELECT ao.state FROM approval_order ao WHERE ao.apv_no = (aoc.apv_no - 1)) = 0 THEN 1
+					AND aoc.apv_date IS NULL THEN 1
 				WHEN aoc.row_num != 1 AND aoc.user_code = #{param2}
-					AND (SELECT ao.state FROM approval_order ao WHERE ao.apv_no = (aoc.apv_no - 1)) = 1 THEN 0
+					AND aoc.apv_date IS NOT NULL THEN 0
 				WHEN aoc.is_rejected = 2 THEN 0
 				ELSE 0
 			END AS is_my_turn

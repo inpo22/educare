@@ -104,7 +104,12 @@
 						</tr>
 						<tr>
 							<td class="text-align-center vertical-align-bottom">
-								<img src="/resources/img/approve_mark.png" class="approve-img"/>
+								<c:if test="${dto.sign_photo eq null}">
+									<img src="/resources/img/approve_mark.png" class="approve-img"/>
+								</c:if>
+								<c:if test="${dto.sign_photo ne null}">
+									<img src="/photo/${dto.sign_photo}" class="approve-img"/>
+								</c:if>
 								<br/>
 								${dto.user_name}
 							</td>
@@ -125,7 +130,12 @@
 								<c:forEach items="${orderList}" var="order">
 									<td class="text-align-center vertical-align-bottom">
 										<c:if test="${order.state eq 1}">
-											<img src="/resources/img/approve_mark.png" class="approve-img"/>
+											<c:if test="${order.sign_photo eq null}">
+												<img src="/resources/img/approve_mark.png" class="approve-img"/>
+											</c:if>
+											<c:if test="${order.sign_photo ne null}">
+												<img src="/photo/${order.sign_photo}" class="approve-img"/>
+											</c:if>
 											<br/>
 										</c:if>
 										<c:if test="${order.state eq 2}">

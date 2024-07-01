@@ -164,9 +164,9 @@
 		SELECT
 			<![CDATA[
 			CASE
+				WHEN o.work_hour < 5 THEN 2
 				WHEN o.start_time > CONCAT(CURDATE(), ' 09:00:00') THEN 0
 				WHEN o.end_time < CONCAT(CURDATE(), ' 18:00:00') THEN 1
-				WHEN o.work_hour < 5 THEN 2
 				ELSE -1 END AS state_check
 			]]>
 		FROM officehour o

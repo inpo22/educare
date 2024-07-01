@@ -18,6 +18,7 @@ public class ApprovalDTO {
 	private Timestamp start_date;
 	private Timestamp end_date;
 	private int va_type;
+	private String sign_photo;
 	
 	private int apv_no;
 	private int state;
@@ -216,6 +217,12 @@ public class ApprovalDTO {
 	}
 	public void setIs_comp(int is_comp) {
 		this.is_comp = is_comp;
+	}
+	public String getSign_photo() {
+		return sign_photo;
+	}
+	public void setSign_photo(String sign_photo) {
+		this.sign_photo = sign_photo;
 	}
 	
 }

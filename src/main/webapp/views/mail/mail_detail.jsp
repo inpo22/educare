@@ -12,11 +12,9 @@
 
 <jsp:include page="/views/common/head.jsp"></jsp:include>
 <!-- css -->
-<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
 <link href="/resources/mail/style.css" rel="stylesheet">
 
 <!-- js -->
-<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 
 <style>
 	.first-col {
@@ -62,7 +60,13 @@
 					</tr>
 					<tr>
 						<th class="table-active justify-content-center">보낸 사람</th>
-						<td>${dto.send_user_name}</td>
+						<td>
+							<span class="badge bg-primary">${dto.send_user_name}
+								<c:if test="${dto.class_name ne null}">
+									&nbsp;${dto.class_name}
+								</c:if>
+							</span>
+						</td>
 					</tr>
 					<tr>
 						<th class="table-active">받는 사람</th>
@@ -97,7 +101,7 @@
 					</tr>
 					<tr>
 						<td colspan="2">
-							<div id="viewer"></div>
+							<div id="viewer">${dto.content}</div>
 						</td>
 					</tr>
 				</table>
@@ -114,14 +118,6 @@
 
 </body>
 <script>
-	var content = '${dto.content}';
-	
-	const viewer = toastui.Editor.factory({
-		el: document.querySelector('#viewer'),
-		viewer: true,
-		initialValue: content
-	});
-
 	var mail_no = '${dto.mail_no}'
 	var writeType = -1;
 	

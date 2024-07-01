@@ -54,9 +54,10 @@ public class MypageController {
 	
 	@PostMapping(value="/mypageEmp/profile/update.do")
 	public String empProfileEdit(@RequestParam(value="photo") MultipartFile photo
+			, @RequestParam(value="sign_photo") MultipartFile sign_photo
 			, @RequestParam Map<String, String> param, HttpSession session) {
 		String user_code = (String) session.getAttribute("user_code");
-		mypageService.empProfileEdit(photo, param, user_code);
+		mypageService.empProfileEdit(photo, sign_photo, param, user_code);
 		
 		return "redirect:/mypageEmp.go";
 	}

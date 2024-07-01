@@ -26,13 +26,6 @@
 	.vertical-align-middle {
 		vertical-align: middle;
 	}
-	.btn-verify {
-		width: 130px;
-		text-align: center;
-	}
-	.display-none {
-		display: none;
-	}
 </style>
 </head>
 <body>
