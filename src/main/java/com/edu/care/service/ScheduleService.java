@@ -24,22 +24,28 @@ public class ScheduleService {
 	public int scheduleWrite(ScheduleDTO scheduleDTO) {
 		int row = scheduleDAO.scheduleWrite(scheduleDTO);
 		if(row > 0) {
-			List<String> teamUserList = scheduleDAO.teamUserList(scheduleDTO.getTeam_code());
-			List<String> allUserList = scheduleDAO.getAllUserCodes();
-			logger.info("alarm noti userList:{}  >>>>>",teamUserList);
 			String userCode = scheduleDTO.getUser_code();
 			String skedNo = ""+scheduleDTO.getSked_no();
 			String skedType = scheduleDTO.getSked_type();
 			logger.info("scheduleWrite get Sked_type >>>>>"+skedType);
 			
 			if(skedType.equals("SKED_TP02")) {
+				List<String> teamUserList = scheduleDAO.teamUserList(scheduleDTO.getTeam_code());
+				logger.info("alarm noti userList:{}  >>>>>",teamUserList);
 				logger.info("::::alarm noti 부서일정 IN ::::");
 				for(String toTeamUser : teamUserList) {
+					if(userCode.equals(toTeamUser)) {
+						continue;
+					}
 					notiDAO.sendNoti(toTeamUser, userCode, skedNo, 5);
 				}
 			}else if(skedType.equals("SKED_TP01")) {
+				List<String> allUserList = scheduleDAO.getAllUserCodes();
 				logger.info("::::alarm noti 전사일정 IN ::::");
 				for(String toAllUser : allUserList) {
+					if(userCode.equals(toAllUser)) {
+						continue;
+					}
 					notiDAO.sendNoti(toAllUser, userCode, skedNo, 3);
 				}
 			}

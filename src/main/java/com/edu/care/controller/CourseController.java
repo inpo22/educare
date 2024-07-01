@@ -145,4 +145,19 @@ public class CourseController {
 		}
 		return map;
 	}
+	
+	@GetMapping(value="/course/update.go")
+	public ModelAndView courseUpdate(@RequestParam("course_no") int course_no) {
+		logger.info("##### course courseUpdate controller IN #####");
+		logger.info("##### course_no >>> "+course_no);
+		ModelAndView mv = new ModelAndView();
+		//int course_no_int = Integer.parseInt(String.valueOf(course_no));
+		List<CourseDTO> courseList = courseService.courseDetail(course_no);
+		  
+		
+		mv.addObject("courseDTO",courseList);
+        mv.setViewName("course/course_update");
+		
+		return mv;
+	}
 }

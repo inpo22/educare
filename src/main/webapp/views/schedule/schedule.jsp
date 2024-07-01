@@ -290,7 +290,7 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
         eventDidMount: function(info) {
             var popover = new bootstrap.Popover(info.el, {
                 title: info.event.title,
-                trigger: 'hover',
+                trigger: 'click',
                 placement: 'top',
                 container: 'body'
             });
@@ -395,6 +395,7 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
     });
     
     function detailModalOpen(info) {
+    	$('#infoUser').remove();
     	console.log(info.event);
     	var beforEnd = new Date(info.event.end);
     	beforEnd.setDate(beforEnd.getDate() - 1);
@@ -414,7 +415,7 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
     	console.log("####end>>"+end);
     	var name = info.event.extendedProps.name;
     	var team_name = info.event.extendedProps.team_name;
-    	var info_user = '<div class="input-group input-group-sm mb-3 name_info"><span class="input-group-text" id="basic-user">작성자</span> <input type="text" class="form-control" id="name"><span class="input-group-text team_name_info" id="basic-addon1">소속부서</span> <input type="text" class="form-control" id="team_name"></div>';	
+    	var info_user = '<div id="infoUser" class="input-group input-group-sm mb-3 name_info"><span class="input-group-text" id="basic-user">작성자</span> <input type="text" class="form-control" id="name"><span class="input-group-text team_name_info" id="basic-addon1">소속부서</span> <input type="text" class="form-control" id="team_name"></div>';	
     	var parent = document.querySelector("form");
     	var sessionUserCode = document.getElementById('sessionUserCode').value;
     	var user_code = info.event.extendedProps.user_code;
