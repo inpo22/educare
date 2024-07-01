@@ -12,11 +12,9 @@
 
 <jsp:include page="/views/common/head.jsp"></jsp:include>
 <!-- css -->
-<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
 <link href="/resources/mail/style.css" rel="stylesheet">
 
 <!-- js -->
-<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 
 <style>
 	.first-col {
