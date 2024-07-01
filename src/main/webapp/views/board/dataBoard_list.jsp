@@ -69,7 +69,7 @@
 			<div class="searchContainer">
 				<select id="searchCategory" >
 					<option value="title">제목</option>
-					<option value="course_name">강의명</option>
+					<option value="contents">내용</option>
 				</select>
 				<input type="text" id="searchWord" placeholder="검색단어입력" maxlength="30"/>
 				<input type="button" id="searchBtn" value="검색" class="btn btn-primary"/>
@@ -80,7 +80,6 @@
 					<col width="5%" />
 					<col width="25%" />
 					<col width="10%" />
-					<col width="10%" />
 					<col width="15%" />
 					<col width="5%" />
 				</colgroup>
@@ -89,7 +88,6 @@
 					<th scope="col">No.</th>
 					<th scope="col">제목</th>
 					<th scope="col">작성자</th>
-					<th scope="col">강의명</th>
 					<th scope="col">작성일자</th>
 					<th scope="col">조회수</th>
 				  </tr>
@@ -116,7 +114,6 @@ var page = 1;
 var totalPage = 0;
 var searchCategory = '';
 var searchWord = '';
-var topFixed = false;
 var searchFlag = false;
 listCall(page, searchCategory, searchWord);
 
@@ -139,39 +136,19 @@ function listCall(page, searchCategory, searchWord){
 		success: function(data){
 			console.log(data);
 			var context = '';
-			var topFixedContext = '';
 			totalPage = data.totalPage;
-			if (page == 1) {
-				topFixed = false;
-			}
-			if(topFixed == false){
-				for (item of data.topFixedList){
-					topFixedContext += '<tr class="boardTableTr" onclick="locationMove('+item.post_no+')">'
-					topFixedContext += '<td scope="col"><b>'+ item.post_no +'</b></td>'
-					topFixedContext += '<td scope="col"><b>' + item.title + '</b></td>'
-					topFixedContext += '<td scope="col"><b>' + item.user_name + '</b></td>'
-					topFixedContext += '<td scope="col"><b>' + item.course_name + '</b></td>'
-					topFixedContext += '<td scope="col"><b>' + formatDate(item.reg_date) + '</b></td>'
-					topFixedContext += '<td scope="col"><b>' + item.bHit + '</b></td>'
-					topFixedContext += '</tr>';
-				}
-				topFixed = true;
-			}
 			for (var item of data.list) {
 				context += '<tr class="boardTableTr" onclick="locationMove('+item.post_no+')">'
 				context += '<td scope="col">'+ item.post_no +'</td>'
 				context += '<td scope="col">' + item.title + '</td>'
 				context += '<td scope="col">' + item.user_name + '</td>'
-				context += '<td scope="col">' + item.course_name + '</td>'
 				context += '<td scope="col">' + formatDate(item.reg_date) + '</td>'
 				context += '<td scope="col">' + item.bHit + '</td>'
 				context += '</tr>';
 			}
 			if(page > 1 || searchFlag){
 				$('#list').html(context);
-			}else{
-			$('#list').html(topFixedContext+context);
-			}
+			
 			setupPagination(page, totalPage);
 		},
 		error: function(error){
@@ -279,7 +256,6 @@ $('#searchBtn').click(function() {
 
 $('#BoardTitle').click(function(){
 	searchFlag = false;
-	topFixed=false;
 	location.href='/dataBoard/list.go';
 });
 

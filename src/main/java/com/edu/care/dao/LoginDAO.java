@@ -14,6 +14,8 @@ public interface LoginDAO {
 
 	int pwFindCheck(String id, String email);
 
+	void updateTempPassword(String id, String tempPassword);
+
 
 	
 

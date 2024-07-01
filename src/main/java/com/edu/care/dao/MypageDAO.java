@@ -41,5 +41,7 @@ public interface MypageDAO {
 
 	void pwUpdate(String new_enc_pw, String user_code);
 
+	String attRate(String user_code);
+
 
 }

@@ -28,4 +28,6 @@ public interface CourseDAO {
 
 	List<CourseDTO> courseCheck();
 
+	int checkUserCode(String user_code);
+
 }

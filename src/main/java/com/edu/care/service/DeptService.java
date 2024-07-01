@@ -19,6 +19,7 @@ public class DeptService {
 	Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Autowired DeptDAO deptDAO;
+	@Autowired MailService mailService;
 
 	// 부서 리스트 조회
 	public Map<String, Object> getDept() {
@@ -120,6 +121,13 @@ public class DeptService {
 		
 		if(row > 0) {
 			msg = "success";
+			
+			// 부서 이동 시 메일 전송
+			String receive_user_code = (String) param.get("user_code");
+			String code = (String) param.get("team_code");
+			int type = 0;
+			
+			mailService.autoMailSend(receive_user_code, code, type);
 		}
 		logger.info("부서원 이동 결과: "+msg);
 		result.put("msg", msg);

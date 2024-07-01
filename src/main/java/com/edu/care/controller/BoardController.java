@@ -363,7 +363,7 @@ public class BoardController {
 		String user_code = (String) session.getAttribute("user_code");
 		logger.info("\n DTO Title :{}", dto.getTitle());
 		logger.info("\n DTO contents :{}", dto.getContents());
-		logger.info("\n DTO fixed_yn :{}", dto.getFixed_yn());
+		logger.info("\n DTO course_name :{}", dto.getCourse_name());
 		logger.info("attachFile =" + attachFile[0].getContentType());
 		logger.info("attachFile =" + attachFile[0].getOriginalFilename());
 		logger.info("attachFile =" + attachFile[0].getSize());
@@ -393,21 +393,9 @@ public class BoardController {
 		String[] fileNumbers = param.get("fileNumbers").split(",");
 		param.put("user_code", user_code);
 		boardService.fileDelete(fileNumbers, param.get("post_no"));
-		boardService.boardUpdate(attachFile, param);
+		boardService.databoardUpdate(attachFile, param);
 		return "redirect:/dataBoard/detail.go?post_no=" + param.get("post_no");
 	}
-	
-	// 강의선택 모달 
-	@ResponseBody
-	@PostMapping(value="/board/course_modal.ajax")
-	public Map<String, Object> CourseSelectModal(){
-		logger.info("강의선택 모달창 띄우기");
-		Map<String, Object> map = boardService.courseSelectModal();
-		return map;
-	}
-	
-	
-	
 	
 	
 	

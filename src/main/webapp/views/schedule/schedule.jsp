@@ -179,6 +179,7 @@ textarea {
 			<!-- End Schedule Calendar -->
 			<!-- Start #writeModal -->
 			<div class="modal fade" id="writeModal" tabindex="-1" aria-labelledby="writeModalLabel" aria-hidden="true">
+				<input type="hidden" id="forDeleteType" value="${skedType}" />		
 				<div class="modal-dialog modal-dialog-centered">
 					<div class="modal-content">
 						<div class="modal-header">
@@ -641,14 +642,17 @@ function sch_submit() {
 	}
 };
 
-function sch_del(){
+function sch_del(info){
 	var delNo = $('#deleteButton').attr('data-val');
-	
+	var skedType = $('#selectSchRange').val();
+	console.log("DELETE skedTypeskedType>>>"+skedType);
 	if(confirm("해당 일정을 삭제하시겠습니까?")){
 		$.ajax({
 			url:'/schedule/delete.ajax',
 			type:'POST',
-			data: { sked_no: delNo },
+			data: { sked_no: delNo,
+				sked_type:skedType
+			},
 			success : function(data){
 				if(data.row > 0){
 					alert('삭제되었습니다.');

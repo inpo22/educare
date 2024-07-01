@@ -18,7 +18,7 @@ public class BoardDTO {
 	private String user_name;
 	private String team_code;
 	private String date;
-	
+	private String name;
 	
 	private String class_name;
 	private String team_name;
@@ -281,6 +281,14 @@ public class BoardDTO {
 
 	public void setTeamCode(String teamCode) {
 		this.teamCode = teamCode;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

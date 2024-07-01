@@ -1,5 +1,6 @@
 package com.edu.care.service;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.edu.care.dao.LoginDAO;
@@ -115,25 +117,32 @@ public class LoginService {
 	public String idFindResult(String name, String email) {
 		return (String) loginDAO.idFindResult(name,email);
 	}
-
-	public Map<String, Object> sendVerifyMail(String id, String email) {
-		Map<String, Object> result = new HashMap<String, Object>();
+	
+	@Transactional
+	public ModelAndView sendVerifyMail(String id, String email) {
+		ModelAndView mav = new ModelAndView();
 		
 		int cnt = loginDAO.pwFindCheck(id, email);
 		
 		if (cnt == 1) {
-			result.put("result", cnt);
+			mav.setViewName("login/login");
 			
-			String subject = "EDUcare 비밀번호 변경 이메일 인증";
+			String subject = "[EDUcare] 임시비밀번호 안내";
 			String content = "";
+			String tempPassword = getTempPassword();
+			String enc_tempPassword = encoder.encode(tempPassword);
+			
+			loginDAO.updateTempPassword(id, enc_tempPassword);
 			
 			StringBuilder builder = new StringBuilder();
-			builder.append("<h1>EDUcare 이메일 인증 코드</h1>");
+			builder.append("<h3>EDUcare 임시비밀번호</h3>");
 			builder.append("<p></p>");
-			builder.append("<p>인증코드는 아래와 같습니다.</p>");
+			builder.append("<p></p>");
+			builder.append("<p>임시비밀번호는 아래와 같습니다.</p>");
+			builder.append("<p></p>");
 			builder.append("<div style=\"display: table-cell; text-align: center; vertical-align: middle; width: 300px; height: 100px; "
 					+ "background-color: lightgray; font-weight: bold;\">");
-			builder.append("인증코드");
+			builder.append(tempPassword);
 			builder.append("</div>");
 			
 			content = builder.toString();
@@ -155,14 +164,14 @@ public class LoginService {
 			
 			try {
 				MimeMessage message = new MimeMessage(session);
-				message.setFrom(new InternetAddress(mailId));
-				message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
+				message.setFrom(new InternetAddress(mailId, "에듀케어", "UTF-8"));
+				message.addRecipient(Message.RecipientType.TO, new InternetAddress("inpyo8086@naver.com"));
 				
 				message.setSubject(subject);
 				
 				// 메일 본문 설정
 				MimeBodyPart textPart = new MimeBodyPart();
-				textPart.setText(content);
+				textPart.setText(content, "UTF-8", "html");
 				
 				// 멀티파트 설정
 				MimeMultipart multipart = new MimeMultipart();
@@ -177,13 +186,30 @@ public class LoginService {
 				e.printStackTrace();
 			} catch (MessagingException e) {
 				e.printStackTrace();
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
 			}
 			
 		} else {
-			result.put("result", 0);
+			mav.setViewName("login/pwFind");
+			mav.addObject("msg", "입력한 정보가 없거나 정보 입력이 잘못되었습니다.");
 		}
 		
-		return result;
+		return mav;
+	}
+	private String getTempPassword() {
+		char[] charSet = new char[] {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 
+				'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+		
+		String tempPassword = "";
+		
+		int idx = 0;
+		for (int i = 0; i < 10; i++) {
+			idx = (int) (charSet.length * Math.random());
+			tempPassword += charSet[idx];
+		}
+		
+		return tempPassword;
 	}
 
 }

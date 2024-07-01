@@ -100,10 +100,6 @@
 			</div>
 			<br/>
 			<form action="/dataBoard/update.do" method="post" id="updateForm" enctype="multipart/form-data">
-				<div id="courseBtn">
-
-					<input type="button" id="courseSelect" value="강의선택" class="btn btn-primary" onclick="courseSelect()"/>
-				</div>
 				<br/>
 				<table class="table table-borderless">
 					<tr>
@@ -135,7 +131,6 @@
 				</div>
 				<input type="hidden" name="post_no" id="post_no" value="${dto.post_no}"/>
 				<input type="hidden" name="contents" id="content"/>
-				<input type="hidden" name="fixed_yn" id="checkBox"/>
 				<input type="hidden" name="fileNumbers" id="fileNumbers"/>
 			</form>
 		</div>
@@ -149,6 +144,8 @@
 </body>
 <script>
 console.log();
+const MAX_CONTENT_SIZE = 5 * 1024 * 1024; // 5MB를 바이트로 변환
+
 const editor = new toastui.Editor({
 	   el: document.querySelector('#editor'),
 	   height: '300px',
@@ -231,24 +228,22 @@ console.log(fileList);
 		var editContent = editor.getHTML()+'';
 		$('#content').val(editContent);
 		console.log(editor.getMarkdown());
-		var isChecked = $('#flexSwitchCheckChecked').prop('checked');
-		console.log(isChecked);
+
 	    var fileNumbers = fileList.map(file => file.file_no).join(',');
 	    $('#fileNumbers').val(fileNumbers);
-		if(isChecked == true){
-			$('#checkBox').val(1);		
-		}else{
-			$('#checkBox').val(0);
-		}
+
 		var $title = $('#titleText');
 		var $content = $('#content');
+		
 		if($title.val() == ''){
 			alert('제목을 입력해 주세요.');
 			$title.focus();
 		}else if(editor.getMarkdown() == ''){
 			alert('내용을 입력해 주세요.');
 			editor.focus();
-		}else{
+		} else if (new Blob([editContent]).size > MAX_CONTENT_SIZE) {
+	        alert('내용의 용량이 초과되었습니다. 이미지의 크기나 갯수를 줄여 주세요.');
+		} else{
 			var result = confirm('수정 하시겠습니까?');
 			if (result) {
 				alert('수정이 완료되었습니다.');

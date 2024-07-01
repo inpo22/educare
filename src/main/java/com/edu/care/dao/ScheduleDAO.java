@@ -17,4 +17,10 @@ public interface ScheduleDAO {
 
 	Boolean scheduleUpdate(ScheduleDTO scheduleDTO);
 
+	List<String> teamUserList(String team_code);
+
+	List<String> getAllUserCodes();
+
+	ScheduleDTO scheduleForNoti(String sked_no);
+
 }

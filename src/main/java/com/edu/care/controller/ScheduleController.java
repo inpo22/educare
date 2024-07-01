@@ -1,6 +1,8 @@
 package com.edu.care.controller;
 
+import java.sql.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
@@ -9,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -69,13 +72,14 @@ public class ScheduleController {
 	
 	@PostMapping(value="/schedule/delete.ajax")
 	@ResponseBody
-	public Map<String, Object> scheduleDelete(@RequestParam(value="sked_no") String sked_no, HttpSession session) {
+	public Map<String, Object> scheduleDelete(@RequestParam(value="sked_no") String sked_no, @RequestParam(value="sked_type") String sked_type,HttpSession session) {
 		logger.info("##### schedule delete ajax controller IN #####");
 		logger.info("sked_no:{}",sked_no);
+		logger.info("sked_typ:{}",sked_type);
 	
 		Map<String, Object> map = new HashMap<String, Object>();
 		
-		int row =  scheduleService.scheduleDelete(sked_no);
+		int row =  scheduleService.scheduleDelete(sked_no,sked_type);
 		if(row > 0) {
 			map.put("row", row);
 		}
@@ -99,4 +103,5 @@ public class ScheduleController {
 		
 		return map;
 	}
+	
 }

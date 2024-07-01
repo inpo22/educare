@@ -199,7 +199,7 @@ body {
 				                    <div class="info-group mt-3">
 				                        <p><strong>성실도:</strong></p>
 				                        <div class="progress">
-				                            <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">75%</div>
+				                            <div id="attdRate" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
 				                        </div>
 				                    </div>
 				                </div>
@@ -399,7 +399,31 @@ $('#stdList_go').click(function(){
 });
 
 
-
+//성실도(출석률)
+$(document).ready(function(){
+	var user_code=$('#user_code').val();
+	
+	$.ajax({
+		type:'get',
+		url:'/std/attRate.ajax',
+		data:{
+			'user_code':user_code
+		},
+		dataType:'json',
+		success:function(data){
+			console.log(data);
+			
+			var attdRate = parseFloat(data);
+			
+			$('#attdRate').css('width', attdRate + '%');
+            $('#attdRate').attr('aria-valuenow', attdRate);
+            $('#attdRate').text(attdRate + '%');
+		},
+		error:function(error){
+			console.log(error);
+		}
+	});
+});
 
 
 
@@ -414,6 +438,7 @@ var Asearchbox='';
 var user_code = '${stdDto.user_code}';
 
 CourseListCall(page, Csearchbox, user_code);
+
 
 /* !모든 강의선택 모달 스크립트 시작! */
 

@@ -4,193 +4,203 @@
 
 <mapper namespace="com.edu.care.dao.MypageDAO">
 
-<!-- 학생 개인정보수정 쿼리문 -->
-<update id="update" parameterType="map">
-	UPDATE user SET
-		email=#{email}, 
-		phone=#{phone},
-		birth=#{birth},
-		gender=#{gender},
-		pw = CASE WHEN #{pw} IS NULL THEN pw ELSE #{pw} END,
-		photo = CASE WHEN #{photo} IS NULL THEN photo ELSE #{photo} END
-	WHERE user_code='2024U030001'		
-</update>
-
-<!-- 학생 마이페이지 정보 불러오기 쿼리문 -->
-<select id="mypageStd" resultType="mypage">
-	SELECT
-		user_code,
-		name, 
-		id,
-		email,
-		phone,
-		birth,
-		gender,
-		pw,
-		photo
-	FROM 
-		user
-	WHERE
-		user_code=#{user_code}
-</select>
-
-
-<!-- 학생마이페이지 - 수강이력 리스트 쿼리문 -->
-<select id="StdcourseList" parameterType="String" resultType="course">
-	SELECT 
-		c.course_name ,
-		u.name,
-		DATE_FORMAT(c.course_start, '%Y-%m-%d') AS course_start,
-        DATE_FORMAT(c.course_end, '%Y-%m-%d') AS course_end,
-		p.pay_state,
-		c.course_no, 
-		c.course_price,
-		p.user_code
-	FROM 
-		course c 
-	LEFT JOIN
-		`user` u ON c.user_code = u.user_code
-	LEFT JOIN 
-		payment p ON c.course_no = p.course_no 
-	WHERE 
-		p.user_code = #{param4}
-	<if test="param3 != null and param3 != ''">
-    	AND c.course_name LIKE CONCAT('%', #{param3}, '%')
-	</if>
-	ORDER BY 
-		p.pay_code DESC
-	LIMIT #{param1}, #{param2}
-</select>
-
-<!-- 학생마이페이지 - 수강이력 리스트 페이징 쿼리문 -->
-<select id="StdcourseListPageCnt" parameterType="String" resultType="Integer">
-	SELECT 	
-		CEIL(COUNT(p.pay_state)/#{param1})
-	FROM 
-		course c 
-	LEFT JOIN
-		`user` u ON c.user_code = u.user_code
-	LEFT JOIN 
-		payment p ON c.course_no = p.course_no 
-	WHERE 
-		p.user_code = #{param3}
-	<if test="param2 != null and param2 != ''">
-    	AND c.course_name LIKE CONCAT('%', #{param2}, '%')
-	</if>
-
-</select>
-
-<!-- 학생마이페이지 - 결제내역 리스트 쿼리문 -->
-<select id="StdpayList" parameterType="String" resultType="payment">
-	SELECT 
-	    c.course_name AS course_name,
-	    u.name AS name,
-	    p.course_price,
-	    p.pay_date,
-	    p.user_code
-	FROM 
-	    payment p
-	LEFT JOIN 
-	    course c ON p.course_no = c.course_no
-	LEFT JOIN 
-	    `user` u ON c.user_code = u.user_code
-	WHERE 
-		p.user_code=#{param4}
-	AND
-		p.pay_date IS NOT NULL
-	<if test="param3 != null and param3 != ''">
-    	AND c.course_name LIKE CONCAT('%', #{param3}, '%')
-	</if>
-	ORDER BY
-		p.pay_date DESC
-	LIMIT #{param1}, #{param2}
-</select>
-
-<!-- 학생마이페이지 - 결제내역 리스트 페이징 쿼리문 -->
-<select id="StdpatListPageCnt" parameterType="String" resultType="Integer">
-	SELECT
-		CEIL(COUNT(p.course_price)/#{param1})
-	FROM 
-		payment p
-	LEFT JOIN 
-	    course c ON p.course_no = c.course_no
-	LEFT JOIN 
-	    `user` u ON c.user_code = u.user_code
-	WHERE 
-		p.user_code=#{param3} 
-	AND
-		p.pay_date IS NOT NULL
-	<if test="param2 != null and param2 != ''">
-    	AND c.course_name LIKE CONCAT('%', #{param2}, '%')
-	</if>
-	ORDER BY
-		p.pay_date DESC
-</select>
-
-<!-- 결제취소 쿼리문 -->
-<update id="cancel" parameterType="String">
-    UPDATE payment SET
-        pay_state = 2
-    WHERE course_no IN (SELECT course_no FROM course WHERE course_name = #{course_name})
-    AND user_code = #{user_code}
-</update>
-
-
-<!-- 학생 마이페이지 - 출석현황 리스트 쿼리문 -->
-<select id="stdattdList" parameterType="String" resultType="mypage">
-	SELECT 
-		c.course_name,
-		a. att_date,
-		a.att_state
-	FROM 
-		attendance a
-	LEFT JOIN
-		course c ON a.course_no = c.course_no
-	WHERE a.user_code = #{param4}
-	AND
-		a.att_state IN(1,2)
-	AND 
-		DATE(a.att_date) <![CDATA[<=]]> CURDATE()
-	<if test="param3 != null and param3 != ''">
-    	AND c.course_name LIKE CONCAT('%', #{param3}, '%')
-	</if>
-	ORDER BY 	
-		a.att_date DESC
-	LIMIT #{param1}, #{param2}
-</select>	
-
-<!-- 출석현황 리스트 페이징 쿼리문 -->
-<select id="stdattdListPageCnt" parameterType="String" resultType="Integer">
-	SELECT 		
-		CEIL(COUNT(a.att_state)/#{param1})
-	FROM 
-		attendance a
-	LEFT JOIN
-		course c ON a.course_no = c.course_no
-	WHERE a.user_code = #{param3}
-	AND
-		a.att_state IN(1,2)
-	AND 
-		DATE(a.att_date) <![CDATA[<=]]> CURDATE()
-	<if test="param2 != null and param2 != ''">
-    	AND c.course_name LIKE CONCAT('%', #{param2}, '%')
-	</if>
+	<!-- 학생 개인정보수정 쿼리문 -->
+	<update id="update" parameterType="map">
+		UPDATE user SET
+			email=#{email}, 
+			phone=#{phone},
+			birth=#{birth},
+			gender=#{gender},
+			pw = CASE WHEN #{pw} IS NULL THEN pw ELSE #{pw} END,
+			photo = CASE WHEN #{photo} IS NULL THEN photo ELSE #{photo} END
+		WHERE user_code='2024U030001'		
+	</update>
 	
-</select>	
+	<!-- 학생 마이페이지 정보 불러오기 쿼리문 -->
+	<select id="mypageStd" resultType="mypage">
+		SELECT
+			user_code,
+			name, 
+			id,
+			email,
+			phone,
+			birth,
+			gender,
+			pw,
+			photo
+		FROM 
+			user
+		WHERE
+			user_code=#{user_code}
+	</select>
 	
-<select id="empMypage" resultType="mypage">
-	SELECT
-		u.user_code
-		, u.name AS user_name
-		, u.phone
-		, u.email
-		, u.reg_date
-		, u.photo
-		, ac.code_name AS class_name
-		, d.team_name
-	FROM user u JOIN all_code ac ON u.class_code = ac.code JOIN department d ON u.team_code = d.team_code
-	WHERE u.user_code = #{param1}
-</select>
+	
+	<!-- 학생마이페이지 - 수강이력 리스트 쿼리문 -->
+	<select id="StdcourseList" parameterType="String" resultType="course">
+		SELECT 
+			c.course_name ,
+			u.name,
+			DATE_FORMAT(c.course_start, '%Y-%m-%d') AS course_start,
+	        DATE_FORMAT(c.course_end, '%Y-%m-%d') AS course_end,
+			p.pay_state,
+			c.course_no, 
+			c.course_price,
+			p.user_code
+		FROM 
+			course c 
+		LEFT JOIN
+			`user` u ON c.user_code = u.user_code
+		LEFT JOIN 
+			payment p ON c.course_no = p.course_no 
+		WHERE 
+			p.user_code = #{param4}
+		<if test="param3 != null and param3 != ''">
+	    	AND c.course_name LIKE CONCAT('%', #{param3}, '%')
+		</if>
+		ORDER BY 
+			p.pay_code DESC
+		LIMIT #{param1}, #{param2}
+	</select>
+	
+	<!-- 학생마이페이지 - 수강이력 리스트 페이징 쿼리문 -->
+	<select id="StdcourseListPageCnt" parameterType="String" resultType="Integer">
+		SELECT 	
+			CEIL(COUNT(p.pay_state)/#{param1})
+		FROM 
+			course c 
+		LEFT JOIN
+			`user` u ON c.user_code = u.user_code
+		LEFT JOIN 
+			payment p ON c.course_no = p.course_no 
+		WHERE 
+			p.user_code = #{param3}
+		<if test="param2 != null and param2 != ''">
+	    	AND c.course_name LIKE CONCAT('%', #{param2}, '%')
+		</if>
+	
+	</select>
+	
+	<!-- 학생마이페이지 - 결제내역 리스트 쿼리문 -->
+	<select id="StdpayList" parameterType="String" resultType="payment">
+		SELECT 
+		    c.course_name AS course_name,
+		    u.name AS name,
+		    p.course_price,
+		    p.pay_date,
+		    p.user_code
+		FROM 
+		    payment p
+		LEFT JOIN 
+		    course c ON p.course_no = c.course_no
+		LEFT JOIN 
+		    `user` u ON c.user_code = u.user_code
+		WHERE 
+			p.user_code=#{param4}
+		AND
+			p.pay_date IS NOT NULL
+		<if test="param3 != null and param3 != ''">
+	    	AND c.course_name LIKE CONCAT('%', #{param3}, '%')
+		</if>
+		ORDER BY
+			p.pay_date DESC
+		LIMIT #{param1}, #{param2}
+	</select>
+	
+	<!-- 학생마이페이지 - 결제내역 리스트 페이징 쿼리문 -->
+	<select id="StdpatListPageCnt" parameterType="String" resultType="Integer">
+		SELECT
+			CEIL(COUNT(p.course_price)/#{param1})
+		FROM 
+			payment p
+		LEFT JOIN 
+		    course c ON p.course_no = c.course_no
+		LEFT JOIN 
+		    `user` u ON c.user_code = u.user_code
+		WHERE 
+			p.user_code=#{param3} 
+		AND
+			p.pay_date IS NOT NULL
+		<if test="param2 != null and param2 != ''">
+	    	AND c.course_name LIKE CONCAT('%', #{param2}, '%')
+		</if>
+		ORDER BY
+			p.pay_date DESC
+	</select>
+	
+	<!-- 결제취소 쿼리문 -->
+	<update id="cancel" parameterType="String">
+	    UPDATE payment SET
+	        pay_state = 2
+	    WHERE course_no IN (SELECT course_no FROM course WHERE course_name = #{course_name})
+	    AND user_code = #{user_code}
+	</update>
+	
+	
+	<!-- 학생 마이페이지 - 출석현황 리스트 쿼리문 -->
+	<select id="stdattdList" parameterType="String" resultType="mypage">
+		SELECT 
+			c.course_name,
+			a. att_date,
+			a.att_state
+		FROM 
+			attendance a
+		LEFT JOIN
+			course c ON a.course_no = c.course_no
+		WHERE a.user_code = #{param4}
+		AND
+			a.att_state IN(1,2)
+		AND 
+			DATE(a.att_date) <![CDATA[<=]]> CURDATE()
+		<if test="param3 != null and param3 != ''">
+	    	AND c.course_name LIKE CONCAT('%', #{param3}, '%')
+		</if>
+		ORDER BY 	
+			a.att_date DESC
+		LIMIT #{param1}, #{param2}
+	</select>	
+	
+	<!-- 출석현황 리스트 페이징 쿼리문 -->
+	<select id="stdattdListPageCnt" parameterType="String" resultType="Integer">
+		SELECT 		
+			CEIL(COUNT(a.att_state)/#{param1})
+		FROM 
+			attendance a
+		LEFT JOIN
+			course c ON a.course_no = c.course_no
+		WHERE a.user_code = #{param3}
+		AND
+			a.att_state IN(1,2)
+		AND 
+			DATE(a.att_date) <![CDATA[<=]]> CURDATE()
+		<if test="param2 != null and param2 != ''">
+	    	AND c.course_name LIKE CONCAT('%', #{param2}, '%')
+		</if>
+		
+	</select>	
+	
+	<!-- 출석률 계산 -->
+	<select id="attRate" parameterType="String" resultType="String">
+		SELECT 
+			ROUND((COUNT(CASE WHEN att_state = 1 THEN 1 ELSE NULL END)/COUNT(CASE WHEN att_state IN (1,2) THEN 1 ELSE NULL END))*100,1) AS 출석률
+		FROM 	
+			attendance a 
+		WHERE 
+			user_code =#{user_code}
+	</select>
+		
+	<select id="empMypage" resultType="mypage">
+		SELECT
+			u.user_code
+			, u.name AS user_name
+			, u.phone
+			, u.email
+			, u.reg_date
+			, u.photo
+			, ac.code_name AS class_name
+			, d.team_name
+		FROM user u JOIN all_code ac ON u.class_code = ac.code JOIN department d ON u.team_code = d.team_code
+		WHERE u.user_code = #{param1}
+	</select>
 	
 	<update id="empProfileEdit" parameterType="mypage">
 		UPDATE user

@@ -72,10 +72,6 @@ td {
 					<td scope="col">${dto.user_name}</td>
 				</tr>
 				<tr>
-					<th class="th" scope="col">강의명</th>
-					<td scope="col">${dto.course_name}</td>
-				</tr>
-				<tr>
 					<th class="th" scope="col">작성날짜</th>
 					<td scope="col" id="reg_date">${dto.reg_date}</td>
 				</tr>
