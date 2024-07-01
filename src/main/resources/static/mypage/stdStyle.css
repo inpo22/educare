@@ -43,3 +43,6 @@ h1{
     color: red !important;
     font-weight: bold;
 }
+.no-course, .no-attd, .no-payment{
+	text-align: center;
+}

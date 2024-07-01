@@ -163,6 +163,8 @@
 		<if test="param3 != null and param3 != ''">
 	    	AND c.course_name LIKE CONCAT('%', #{param3}, '%')
 		</if>
+		ORDER BY
+			p.pay_date DESC
 		LIMIT #{param1}, #{param2}
 	</select>
 	

@@ -108,7 +108,7 @@
 			<!-- Start table -->
 			<table class="table">
 			  <thead>
-			    <tr>
+			    <tr class="table-active">
 			      <th scope="col">사원번호</th>
 			      <th scope="col">이름</th>
 			      <th scope="col">부서</th>

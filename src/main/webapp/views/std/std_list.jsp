@@ -89,7 +89,7 @@
 	      	<!-- Start table -->
 			<table class="table">
 			  <thead>
-			    <tr>
+			    <tr class="table-active">
 			      <th scope="col">학생번호</th>
 			      <th scope="col">이름</th>
 			      <th scope="col">연락처</th>

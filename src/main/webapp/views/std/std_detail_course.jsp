@@ -146,7 +146,7 @@
 				                    <div class="info-group mt-3">
 				                        <p><strong>성실도:</strong></p>
 				                        <div class="progress">
-				                            <div id="attdRate" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+				                            <div id="attdRate" class="progress-bar progress-bar-striped" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
 				                        </div>
 				                    </div>
 				                </div>
@@ -196,7 +196,7 @@
                 
 					<!-- Start table -->
 					<table class="table">
-					  <thead>
+					  <thead class="table-light">
 					    <tr>
 					      <th scope="col">강의명</th>
 					      <th scope="col">강사명</th>
@@ -230,7 +230,7 @@
 					
 					<!-- Start table -->
 					<table class="table">
-					  <thead>
+					  <thead class="table-light">
 					    <tr>
 					      <th scope="col">강의명</th>
 					      <th scope="col">날짜</th>
@@ -262,7 +262,7 @@
 					
 					<!-- Start table -->
 					<table class="table">
-					  <thead>
+					  <thead class="table-light">
 					    <tr>
 					      <th scope="col">강의명</th>
 					      <th scope="col">강사명</th>
@@ -513,23 +513,28 @@ function CourseListCall(page, Csearchbox, user_code){
 // 수강이력 리스트 그리기 시작
 function drawCourseList(courseList){
 	var content = '';
-	console.log(courseList);
 	
-	for(data of courseList){
-		content += '<tr>';
-		content += '<td>' + data.course_name + '</td>';
-		content += '<td>' + data.name + '</td>';
-		content += '<td>' + data.course_start + '</td>';
-		content += '<td>' + data.course_end + '</td>';
-		if(data.pay_state == 0) {
-			content += '<td class="payment-pending">결제대기</td>';
-        } else if(data.pay_state == 1) {
-        	content += '<td class="payment-completed">결제완료</td>';
-        } else if(data.pay_state == 2) {
-        	content += '<td class="payment-cancelled">결제취소</td>';
-        }
-		content += '</tr>';
-	}
+	if(courseList.length == 0){
+		content = '<tr><td colspan ="5" class="no-course">등록된 강의가 없습니다.</td></tr>';
+	}else{
+		console.log(courseList);
+		
+		for(data of courseList){
+			content += '<tr>';
+			content += '<td>' + data.course_name + '</td>';
+			content += '<td>' + data.name + '</td>';
+			content += '<td>' + data.course_start + '</td>';
+			content += '<td>' + data.course_end + '</td>';
+			if(data.pay_state == 0) {
+				content += '<td class="payment-pending">결제대기</td>';
+	        } else if(data.pay_state == 1) {
+	        	content += '<td class="payment-completed">결제완료</td>';
+	        } else if(data.pay_state == 2) {
+	        	content += '<td class="payment-cancelled">결제취소</td>';
+	        }
+			content += '</tr>';
+		}
+	}	
 	$("#courseList").html(content);
 }
 
@@ -585,24 +590,29 @@ function attdListCall(page, Asearchbox, user_code){
 // 출석현황 리스트 그리기 시작
 function drawAttdList(attdList){
 	var content = '';
-	console.log(attdList);
 	
-	for(data of attdList){
-		content += '<tr>';
-		content += '<td>' + data.course_name + '</td>';
-		content += '<td>' + data.att_date + '</td>';
-		if(data.att_state == 0){
-			content += '<td>';
-			content += '<button id="attd_btn" class="btn btn-danger btn-sm" onclick="attd(\'' + data.course_name + '\', \'' + data.att_date + '\')">출석</button>';
-			content += '<button id="absent_btn" class="btn btn-primary btn-sm" onclick="absent(\'' + data.course_name + '\', \'' + data.att_date + '\')">결석</button>';
-			content += '</td>';
-		}else if(data.att_state == 1){
-			content += '<td class = "attd_success">출석</td>';
-		}else if(data.att_state == 2){
-			content += '<td class="attd_fail">결석</td>';
+	if(attdList.length == 0){
+		content = '<tr><td colspan ="3" class="no-attd">출석내역이 없습니다.</td></tr>';
+	}else{
+		console.log(attdList);
+		
+		for(data of attdList){
+			content += '<tr>';
+			content += '<td>' + data.course_name + '</td>';
+			content += '<td>' + data.att_date + '</td>';
+			if(data.att_state == 0){
+				content += '<td>';
+				content += '<button id="attd_btn" class="btn btn-danger btn-sm" onclick="attd(\'' + data.course_name + '\', \'' + data.att_date + '\')">출석</button>';
+				content += '<button id="absent_btn" class="btn btn-primary btn-sm" onclick="absent(\'' + data.course_name + '\', \'' + data.att_date + '\')">결석</button>';
+				content += '</td>';
+			}else if(data.att_state == 1){
+				content += '<td class = "attd_success">출석</td>';
+			}else if(data.att_state == 2){
+				content += '<td class="attd_fail">결석</td>';
+			}
+			content += '</tr>';
 		}
-		content += '</tr>';
-	}
+	}	
 	$('#attdList').html(content);
 }
 
@@ -674,16 +684,21 @@ function listCall(page, Psearchbox, user_code){
 /* 결제내역 리스트 그리기 시작 */
 function drawPayList(payList){
 	var content = '';
-	console.log(payList);
 	
-	for(data of payList){
-		content += '<tr>';
-		content += '<td>' + data.course_name + '</td>';
-		content += '<td>' + data.name + '</td>';
-		content += '<td>' + data.course_price + '</td>';
-		content += '<td>' + data.pay_date + '</td>';
-		content += '</tr>';
-	}
+	if(payList.length == 0){
+		content = '<tr><td colspan ="4" class="no-payment">결제내역이 없습니다.</td></tr>';
+	}else{
+		console.log(payList);
+		
+		for(data of payList){
+			content += '<tr>';
+			content += '<td>' + data.course_name + '</td>';
+			content += '<td>' + data.name + '</td>';
+			content += '<td>' + data.course_price + '</td>';
+			content += '<td>' + data.pay_date + '</td>';
+			content += '</tr>';
+		}
+	}	
 	$('#payList').html(content);
 }
 /* 결제내역 리스트 그리기 끝 */
