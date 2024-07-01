@@ -10,18 +10,18 @@ public class CourseDTO {
 	private int course_no;
 	private String user_code;
 	private String course_name;
-	private String course_start;
-	private String course_end;
-	public String getCourse_start() {
+	private Date course_start;
+	private Date course_end;
+	public Date getCourse_start() {
 		return course_start;
 	}
-	public void setCourse_start(String course_start) {
+	public void setCourse_start(Date course_start) {
 		this.course_start = course_start;
 	}
-	public String getCourse_end() {
+	public Date getCourse_end() {
 		return course_end;
 	}
-	public void setCourse_end(String course_end) {
+	public void setCourse_end(Date course_end) {
 		this.course_end = course_end;
 	}
 	private String course_con;
