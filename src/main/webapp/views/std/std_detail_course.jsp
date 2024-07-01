@@ -12,35 +12,11 @@
 
 <!-- css -->
 <jsp:include page="/views/common/head.jsp"></jsp:include>
+<link href="/resources/std/std.css" rel="stylesheet">
 <!-- js -->
 
 <style>
-#backBoard {
-    background-color: white;
-    width: 100%;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
-}
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-}
-#detailBoard {
-    background-color: #E2E2E2;
-    width: 100%;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
-}
-.bi.bi-person-fill {
-    font-size: 150px;
-    height: auto; 
-    margin-left: 30px;
-}
+
 .col-md-3{
 	margin:10px 0 0 50px;
 }
@@ -98,41 +74,12 @@ body {
 #courseReg_btn{
 	margin : 7px 0 7px 10px;
 }
-.bi.bi-arrow-clockwise{
-	font-size: 24px;
-}
+
 #stdList_go{
 	height:38px;
 	margin-right: 7px;
 }
-.modal-body{
-	max-height: 200px; 
-	overflow-y: auto;
-}
-/* 텍스트 박스 스타일 */
-#selected-course {
-    width: 100%;
-    border: none;
-    background: none;
-    outline: none;
-    resize: none;
-    overflow: hidden;
-    text-align: center;
-    margin-top: 20px;
-}
-/* 레이블과 텍스트 박스 정렬 */
 
-.selected-course-wrapper {
-    width: 100%;
-    text-align: center;
-    margin-bottom: 10px;
-}
-.modal-footer button {
-    margin-left: auto;
-}
-.selected td{
-	background-color: #87CEFA;
-}
 #attd_btn{
 	margin-right: 7px;
 }

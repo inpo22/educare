@@ -122,7 +122,8 @@
 			gender,
 			pw,
 			status,
-			photo
+			photo,
+			reg_date
 		FROM 
 			user
 		WHERE
