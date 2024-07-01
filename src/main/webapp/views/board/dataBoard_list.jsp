@@ -148,7 +148,9 @@ function listCall(page, searchCategory, searchWord){
 			}
 			if(page > 1 || searchFlag){
 				$('#list').html(context);
-			
+			} else{
+			$('#list').html(context);
+			}
 			setupPagination(page, totalPage);
 		},
 		error: function(error){
@@ -249,6 +251,7 @@ $('#pagination').on('click', '.page-link', function(e) {
 });
 
 $('#searchBtn').click(function() {
+	topFixed=false;
 	searchCategory = $('#searchCategory').val();
 	searchWord = $('#searchWord').val();
 	listCall(page, searchCategory, searchWord);
@@ -256,6 +259,7 @@ $('#searchBtn').click(function() {
 
 $('#BoardTitle').click(function(){
 	searchFlag = false;
+	topFixed=false;
 	location.href='/dataBoard/list.go';
 });
 

@@ -15,6 +15,16 @@
 <!-- js -->
 
 <style>
+#backBoard{
+	background-color: white;
+	width: 100%;
+    border-radius: 20px;
+	padding: 20px 0;
+}
+
+#vacaTitle{
+	margin-left: 20px;
+}
 </style>
 </head>
 
@@ -24,9 +34,10 @@
 	<jsp:include page="/views/common/sidebar.jsp"></jsp:include>
 
 	<main id="main" class="main">
-
-		<div class="pagetitle">
-			<h1>연차 내역</h1>
+		<div id="backBoard">
+			<div class="pagetitle">
+				<h1 id="vacaTitle">연차 내역</h1>
+			</div>
 		</div>
 		<!-- End Page Title -->
 

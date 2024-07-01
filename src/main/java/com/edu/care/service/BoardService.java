@@ -123,6 +123,9 @@ public class BoardService {
 			
 			List<String> allUserCodes = boardDAO.getAllUserCodes(); 
 			for (String toUserCode : allUserCodes) {
+				if(userCode.equals(toUserCode)) {
+					continue;
+				}
 				notiDAO.sendNoti(toUserCode, userCode, postNo, 1);				
 			}
 		}
@@ -269,10 +272,16 @@ public class BoardService {
 		int row = boardDAO.teamBoardWrite(dto);
 		
 		if(row > 0) {
+			String userCode = dto.getUser_code();
+			String postNo = ""+dto.getPost_no();
+			
 			List<String> teamUserList = boardDAO.teamUserList(dto.getTeamCode());
 			
 			for (String toTeamUser : teamUserList) {
-				notiDAO.sendNoti(toTeamUser, dto.getUser_code(),  ""+dto.getPost_no(), 4);
+				if(userCode.equals(toTeamUser)) {
+					continue;
+				}
+				notiDAO.sendNoti(toTeamUser, userCode,  postNo, 4);
 			}
 		}
 		

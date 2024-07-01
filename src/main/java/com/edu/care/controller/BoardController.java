@@ -363,7 +363,6 @@ public class BoardController {
 		String user_code = (String) session.getAttribute("user_code");
 		logger.info("\n DTO Title :{}", dto.getTitle());
 		logger.info("\n DTO contents :{}", dto.getContents());
-		logger.info("\n DTO course_name :{}", dto.getCourse_name());
 		logger.info("attachFile =" + attachFile[0].getContentType());
 		logger.info("attachFile =" + attachFile[0].getOriginalFilename());
 		logger.info("attachFile =" + attachFile[0].getSize());

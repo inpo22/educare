@@ -119,14 +119,19 @@
             <form action="/teamBoard/write.do" method="post" id="writeForm" enctype="multipart/form-data">
                 <div class="selectBox">
                     <div class="teamSelectContainer">
-                        <c:if test="${isPerm}">
-                            <select id="teamCode" name="teamCode">
-                            	<option value="">부서 선택</option>
-                                <c:forEach items="${teamList}" var="team">
-                                    <option value="${team.team_code}">${team.team_name}</option>
-                                </c:forEach>
-                            </select>
-                        </c:if>
+                    	<c:choose>
+	                      	<c:when test="${isPerm}">
+	                            <select id="teamCode" name="teamCode">
+	                            	<option value="">부서 선택</option>
+	                                <c:forEach items="${teamList}" var="team">
+	                                    <option value="${team.team_code}">${team.team_name}</option>
+	                                </c:forEach>
+	                            </select>                      	
+	                      	</c:when>
+	                      	<c:otherwise>
+	                      		<input type="hidden" name="teamCode" value="${sessionScope.team_code}"/>
+	                      	</c:otherwise>   	
+                    	</c:choose>
                     </div>
                 </div>
                 <div class="form-check form-switch" id="fixedYn">
