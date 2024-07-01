@@ -280,7 +280,13 @@ $('#search_btn').click(function(){
 
 //리셋버튼 함수
 $('#reset_btn').click(function(){
-	window.location.href = '/std/list.go';
+	$('#searchbox').val('');
+	$('#startDate').val('');
+	$('#endDate').val('');
+	searchbox='';
+	startDate='';
+	endDate='';
+	listCall(page, type, searchbox, startDate, endDate);
 });
 
 // 학생등록 페이지 이동
