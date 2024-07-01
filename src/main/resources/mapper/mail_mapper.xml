@@ -242,4 +242,12 @@
 			)
 	</insert>
 	
+	<select id="findDeptName" resultType="String">
+		SELECT d.team_name FROM department d WHERE d.team_code = #{param1}
+	</select>
+	
+	<select id="findApprovalName" resultType="String">
+		SELECT a.title FROM approval a WHERE a.au_code = #{param1}
+	</select>
+	
 </mapper>

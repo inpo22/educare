@@ -102,9 +102,8 @@ public class LoginController {
 		return "login/pwFind";
 	}
 	
-	@PostMapping(value="/login/sendVerifyMail.ajax")
-	@ResponseBody
-	public Map<String, Object> sendVerifyMail(String id, String email) {
+	@PostMapping(value="/login/tempPw.do")
+	public ModelAndView sendVerifyMail(String id, String email) {
 		return loginService.sendVerifyMail(id, email);
 	}
 	
