@@ -210,7 +210,7 @@
 		<![CDATA[
 		WHERE p.user_code = #{param1} AND TIMESTAMPDIFF(MINUTE, cr.start_time, CURRENT_TIMESTAMP()) < 0 AND p.pay_state = 1
 		]]>
-		ORDER cr.start_time ASC, cr.rez_no ASC LIMIT 5;
+		ORDER  cr.start_time ASC, cr.rez_no ASC LIMIT 5;
 	</select>
 	
 	

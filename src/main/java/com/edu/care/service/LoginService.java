@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.edu.care.dao.LoginDAO;
@@ -91,8 +90,8 @@ public class LoginService {
 			logger.info("team_code:{}", loginInfo.getTeam_code());
 			logger.info("photo :{} ", loginInfo.getPhoto());
 			
-			page = "redirect:/"; //MainController "/"경로로 이동시킴
-			
+			page = "redirect:/";  /*MainController "/"경로로 이동시킴*/
+			/*
 			String team_code = loginInfo.getTeam_code();
 			String classify_code = loginInfo.getClassify_code();
 			
@@ -104,7 +103,7 @@ public class LoginService {
 	                }
 	            } else if (classify_code.equals("U03")) {
 	                page = "redirect:/main/stdMain.go";
-	            }
+	            }*/
 			
 				}else {
 					mav.addObject("msg", msg);
@@ -113,8 +112,8 @@ public class LoginService {
 					return mav;	
 
 				}
-	public Object idFindAccess(String name, String email) {
-		return loginDAO.idFindAccess(name,email);
+	public String idFindResult(String name, String email) {
+		return (String) loginDAO.idFindResult(name,email);
 	}
 
 	public Map<String, Object> sendVerifyMail(String id, String email) {
