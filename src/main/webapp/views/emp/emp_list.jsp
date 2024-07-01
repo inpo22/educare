@@ -110,7 +110,7 @@
 			<!-- Start table -->
 			<table class="table">
 			  <thead>
-			    <tr>
+			    <tr class="table-active">
 			      <th scope="col">사원번호</th>
 			      <th scope="col">이름</th>
 			      <th scope="col">부서</th>
@@ -362,7 +362,13 @@ function quit(){
 
 //리셋버튼 함수
 $('#reset_btn').click(function(){
-	window.location.href = '/emp/list.go';
+	$('#searchbox').val('');
+	$('#startDate').val('');
+	$('#endDate').val('');
+	searchbox='';
+	startDate='';
+	endDate='';
+	listCall(page, type, searchbox, startDate, endDate);
 });
 
 </script>

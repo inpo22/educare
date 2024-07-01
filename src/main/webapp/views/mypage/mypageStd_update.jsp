@@ -12,34 +12,10 @@
 
 <!-- css -->
 <jsp:include page="/views/common/head.jsp"></jsp:include>
+<link href="/resources/mypage/stdStyle.css" rel="stylesheet">
 <!-- js -->
 
 <style>
-#backBoard {
-    background-color: white;
-    width: 100%;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
-}
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-}
-h1{
-	margin-top: 10px;
-}
-#photo-preview{
-	display: none;
-	width : 250px;
-	height:250px;
-	margin:0 0 0 200px;
-}
-
-
-
 .form-row {
     display: flex;
     gap: 20px;
@@ -85,6 +61,9 @@ input:focus, select:focus {
 }
 #id{
 	width:39.5%;
+}
+#id, #user_code, #name{
+	font-weight: bold;
 }
 </style>
 </head>
@@ -147,7 +126,7 @@ input:focus, select:focus {
 	             </div>   
 		         <div class="form-row">
 	                 <div class="form-group">
-	                     <label for="pw">비밀번호:</label>
+	                     <label for="pw">새로운 비밀번호:</label>
 	                     <input type="password" id="pw" name="pw" required>
 	                     <br/><span id="length-msg"></span>
 	                     <br/><span id="pattern-msg"></span>
@@ -160,7 +139,7 @@ input:focus, select:focus {
 	             </div>
 	             <div class="form-row">
 	             	<div class="form-group">
-	             		<label for="photo">등록한 사진:</label>
+	             		<label for="photo">선택한 사진:</label>
 		                 <img id="photo-preview" src="" alt="Photo Preview"> 
 		             </div>	
 		             <div class="form-group">

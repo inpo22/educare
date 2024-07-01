@@ -12,41 +12,13 @@
 
 <!-- css -->
 <jsp:include page="/views/common/head.jsp"></jsp:include>
+<link href="/resources/mypage/stdStyle.css" rel="stylesheet">
 <!-- js -->
 <!-- 포트원 결제 -->
 <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
 <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
 
 <style>
-#backBoard {
-    background-color: white;
-    width: 100%;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
-}
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-}
-#detailBoard {
-    background-color: #E2E2E2;
-    width: 100%;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
-}
-
-
-
-.bi.bi-person-fill {
-    font-size: 150px;
-    height: auto; 
-    margin-left: 30px;
-}
 .col-md-3{
 	margin:10px 0 0 50px;
 }
@@ -99,8 +71,20 @@ body {
 {
 	margin : 7px 5px;
 }
-#pay_btn{
+/* #pay_btn, img{
+	width:46px;
+	height:31px;
 	margin-right: 7px;
+} */
+.btn-kakaopay img {
+    width: 40px;  /* 이미지 너비를 줄입니다 */
+    height: 21px; /* 이미지 높이를 줄입니다 */
+    margin-right: 2px;
+}
+.btn-tosspay img {
+    width: 70px;  /* 이미지 너비를 줄입니다 */
+    height: 21px; /* 이미지 높이를 줄입니다 */
+    margin-right: 2px;
 }
 
 </style>
@@ -171,7 +155,7 @@ body {
 				                    <div class="info-group mt-3">
 				                        <p><strong>성실도:</strong></p>
 				                        <div class="progress">
-				                            <div id="attdRate" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+				                            <div id="attdRate" class="progress-bar progress-bar-striped" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
 				                        </div>
 				                    </div>
 				                </div>
@@ -218,7 +202,7 @@ body {
                 
 					<!-- Start table -->
 					<table class="table">
-					  <thead>
+					  <thead class="table-light">
 					    <tr>
 					      <th scope="col">강의명</th>
 					      <th scope="col">강사명</th>
@@ -252,7 +236,7 @@ body {
 					
 					<!-- Start table -->
 					<table class="table">
-					  <thead>
+					  <thead class="table-light">
 					    <tr>
 					      <th scope="col">강의명</th>
 					      <th scope="col">날짜</th>
@@ -284,7 +268,7 @@ body {
 					
 					<!-- Start table -->
 					<table class="table">
-					  <thead>
+					  <thead class="table-light">
 					    <tr>
 					      <th scope="col">강의명</th>
 					      <th scope="col">강사명</th>
@@ -392,44 +376,102 @@ function CourseListCall(page, Csearchbox, user_code){
 //수강이력 리스트 그리기 시작
 function drawCourseList(courseList){
 	var content = '';
-	console.log(courseList);
 	
-	for(data of courseList){
-		content += '<tr>';
-		content += '<td>' + data.course_name + '</td>';
-		content += '<td>' + data.name + '</td>';
-		content += '<td>' + data.course_start + '</td>';
-		content += '<td>' + data.course_end + '</td>';
-		if(data.pay_state == 0) {
-			content += '<td>';
-            content += '<button id="pay_btn" class="btn btn-info btn-sm" onclick="pay(\'' + data.course_no + '\', \'' + data.course_name + '\', \'' + data.course_price + '\')")>결제</button>';
-            content += '<button id="cancel_btn" class="btn btn-info btn-sm" onclick="cancel(\'' + data.course_name + '\')">취소</button>';
-            content += '</td>';
-        } else if(data.pay_state == 1) {
-            content += '<td>결제완료</td>';
-        } else if(data.pay_state == 2) {
-            content += '<td>결제취소</td>';
-        }
-		content += '</tr>';
-	}
+	if(courseList.length == 0){
+		content = '<tr><td colspan ="5" class="no-course">등록된 강의가 없습니다.</td></tr>';
+	}else{
+		console.log(courseList);
+		
+		for(data of courseList){
+			content += '<tr>';
+			content += '<td>' + data.course_name + '</td>';
+			content += '<td>' + data.name + '</td>';
+			content += '<td>' + data.course_start + '</td>';
+			content += '<td>' + data.course_end + '</td>';
+			if(data.pay_state == 0) {
+				content += '<td>';
+				content += '<button id="pay_btn" class="btn btn-kakaopay" onclick="kakaopay(\'' + data.course_no + '\', \'' + data.course_name + '\', \'' + data.course_price + '\')">';
+                content += '<img src="/resources/img/kakaopay.png"></button>';
+                content += '<button id="pay_btn" class="btn btn-tosspay" onclick="tosspay(\'' + data.course_no + '\', \'' + data.course_name + '\', \'' + data.course_price + '\')">';
+                content += '<img src="/resources/img/logo-toss-pay.png"></button>';                
+                content += '<button id="cancel_btn" class="btn btn-info btn-sm" onclick="cancel(\'' + data.course_name + '\')">취소</button>';
+	            content += '</td>';
+	        } else if(data.pay_state == 1) {
+	        	content += '<td class="payment-completed">결제완료</td>';
+	        } else if(data.pay_state == 2) {
+	        	content += '<td class="payment-cancelled">결제취소</td>';
+	        }
+			content += '</tr>';
+		}
+	}	
 	$("#courseList").html(content);
 }
 
 // 결제하기버튼
-function pay(course_no, course_name, course_price){
+function kakaopay(course_no, course_name, course_price){
 	var name = '${mypageDto.name}';
 	var user_code = '${mypageDto.user_code}';
 	
-	payment(course_no,course_name,course_price,name,user_code);
+	kakaopayment(course_no,course_name,course_price,name,user_code);
+}
+
+function tosspay(course_no, course_name, course_price){
+	var name = '${mypageDto.name}';
+	var user_code = '${mypageDto.user_code}';
+	
+	tosspayment(course_no,course_name,course_price,name,user_code);
 }
 
 // 결제 함수
-function payment(course_no,course_name,course_price,name,user_code){
+function kakaopayment(course_no,course_name,course_price,name,user_code){
 	var IMP = window.IMP; // 생략가능
     IMP.init('imp22121407'); // <-- 본인 가맹점 식별코드 삽입
     
     IMP.request_pay({
         pg: "kakaopay",
+        pay_method: "card",
+        merchant_uid: 'merchant_' + new Date().getTime(),
+        name: course_name,
+        course_no: course_no,
+        amount: course_price,
+        buyer_name: name
+    }, function (rsp) {
+        console.log(rsp);
+
+        if (rsp.success) {
+            var msg = '결제가 완료되었습니다.';
+            msg += '결제금액:' + course_price;
+            $.ajax({
+                type: 'POST',
+                url: '/pay/payment.ajax',
+                data: {
+                    'course_no': course_no,
+                    'amount': course_price,
+                    'name': rsp.name,
+                    'user_code': user_code,
+                    'merchant_uid': rsp.merchant_uid
+                },
+                success: function (data) {
+                    alert(data.msg);
+                    location.href="/mypageStd.go?user_code="+user_code;
+                },
+                error: function (error) {
+                    alert('결제 정보를 저장하는 중 오류가 발생했습니다.');
+                }
+            });
+        } else {
+            var msg = "결제에 실패했습니다. 에러 내용: " + rsp.error_msg;
+            alert(msg);
+        }
+    });
+}
+
+function tosspayment(course_no,course_name,course_price,name,user_code){
+	var IMP = window.IMP; // 생략가능
+    IMP.init('imp22121407'); // <-- 본인 가맹점 식별코드 삽입
+    
+    IMP.request_pay({
+        pg: "tosspay",
         pay_method: "card",
         merchant_uid: 'merchant_' + new Date().getTime(),
         name: course_name,
@@ -529,19 +571,24 @@ function attdListCall(page, Asearchbox, user_code){
 // 출석현황 리스트 그리기 시작
 function drawAttdList(attdList){
 	var content = '';
-	console.log(attdList);
 	
-	for(data of attdList){
-		content += '<tr>';
-		content += '<td>' + data.course_name + '</td>';
-		content += '<td>' + data.att_date + '</td>';
-		if(data.att_state == 1){
-			content += '<td>출석</td>';
-		}else if(data.att_state == 2){
-			content += '<td>결석</td>';
+	if(attdList.length == 0){
+		content = '<tr><td colspan ="3" class="no-attd">출석내역이 없습니다.</td></tr>';
+	}else{
+		console.log(attdList);
+		
+		for(data of attdList){
+			content += '<tr>';
+			content += '<td>' + data.course_name + '</td>';
+			content += '<td>' + data.att_date + '</td>';
+			if(data.att_state == 1){
+				content += '<td class = "attd_success">출석</td>';
+			}else if(data.att_state == 2){
+				content += '<td class="attd_fail">결석</td>';
+			}
+			content += '</tr>';
 		}
-		content += '</tr>';
-	}
+	}	
 	$('#attdList').html(content);
 }
 
@@ -601,16 +648,21 @@ function listCall(page, Psearchbox, user_code){
 /* 결제내역 리스트 그리기 시작 */
 function drawPayList(payList){
 	var content = '';
-	console.log(payList);
 	
-	for(data of payList){
-		content += '<tr>';
-		content += '<td>' + data.course_name + '</td>';
-		content += '<td>' + data.name + '</td>';
-		content += '<td>' + data.course_price + '</td>';
-		content += '<td>' + data.pay_date + '</td>';
-		content += '</tr>';
-	}
+	if(payList.length == 0){
+		content = '<tr><td colspan ="4" class="no-payment">결제내역이 없습니다.</td></tr>';
+	}else{
+		console.log(payList);
+		
+		for(data of payList){
+			content += '<tr>';
+			content += '<td>' + data.course_name + '</td>';
+			content += '<td>' + data.name + '</td>';
+			content += '<td>' + data.course_price + '</td>';
+			content += '<td>' + data.pay_date + '</td>';
+			content += '</tr>';
+		}
+	}		
 	$('#payList').html(content);
 }
 /* 결제내역 리스트 그리기 끝 */

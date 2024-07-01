@@ -19,7 +19,14 @@ public class StuDTO {
 	private String photo;
 	private Date reg_date;
 	private String status;
+	private String reset_pw;
 	
+	public String getReset_pw() {
+		return reset_pw;
+	}
+	public void setReset_pw(String reset_pw) {
+		this.reset_pw = reset_pw;
+	}
 	public String getUser_code() {
 		return user_code;
 	}

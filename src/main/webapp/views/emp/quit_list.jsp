@@ -108,7 +108,7 @@
 			<!-- Start table -->
 			<table class="table">
 			  <thead>
-			    <tr>
+			    <tr class="table-active">
 			      <th scope="col">사원번호</th>
 			      <th scope="col">이름</th>
 			      <th scope="col">부서</th>
@@ -311,7 +311,14 @@ $('#search_btn').click(function(){
 
 // 리셋버튼 함수
 $('#reset_btn').click(function(){
-	window.location.href = '/emp/quitList.go';
+	$('#searchbox').val('');
+	$('#startDate').val('');
+	$('#endDate').val('');
+	searchbox='';
+	startDate='';
+	endDate='';
+	listCall(page, dateType, type, searchbox, startDate, endDate);
 });
+
 </script>
 </html>
