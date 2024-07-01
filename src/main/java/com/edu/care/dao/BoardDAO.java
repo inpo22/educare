@@ -80,6 +80,8 @@ public interface BoardDAO {
 
 	List<String> teamUserList(String team_code);
 
+	void databoardUpdate(Map<String, String> param);
+
 
 
 

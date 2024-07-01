@@ -253,7 +253,9 @@ console.log(fileList);
 		}else if(editor.getMarkdown() == ''){
 			alert('내용을 입력해 주세요.');
 			editor.focus();
-		}else{
+		} else if (new Blob([editContent]).size > MAX_CONTENT_SIZE) {
+	        alert('내용의 용량이 초과되었습니다. 이미지의 크기나 갯수를 줄여 주세요.');
+		} else{
 			var result = confirm('수정 하시겠습니까?');
 			if (result) {
 				alert('수정이 완료되었습니다.');

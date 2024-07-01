@@ -108,6 +108,15 @@
 .modal-footer button {
     margin-left: auto;
 }
+
+#course-sel tr:hover{
+	cursor:pointer;
+}
+
+.selected-row {
+    background-color: #cce5ff !important; /* 선택된 행의 배경색 */
+}
+
 </style>
 </head>
 
@@ -124,10 +133,6 @@
 			</div>
 			<br/>
 			<form action="/dataBoard/write.do" method="post" id="writeForm" enctype="multipart/form-data">
-				<div id="courseBtn">
-					<span id="courseName"></span>
-					<input type="button" id="courseSelect" value="강의선택" class="btn btn-primary" onclick="openModal()"/>
-				</div>
 				<br/>
 				<table class="table table-borderless">
 					<tr>
@@ -152,45 +157,12 @@
 					<input type="button" id="finishBtn" value="작성완료" class="btn btn-primary" onclick="writeSubmit()"/>
 				</div>
 				<input type="hidden" name="contents" id="content"/>
-				<input type="hidden" name="fixed_yn" id="checkBox"/>
 			</form>
 		</div>
 		<!-- End Page Title -->
 	</main>
 	<!-- End #main -->
 	
-<!-- 강의 등록 모달 -->
-	<div class="modal" id="course-modal">
-		<div class="modal-dialog modal-m">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h3 class="modal-title">강의선택</h3>
-					<button type="button" class="btn-close" data-bs-dismiss=".modal" onclick="CloseModal()"></button>					
-				</div>
-				<div class="modal-body">
-				    <table class="table">
-				        <thead>
-				        	<tr>
-						      <th scope="col">강의명</th>
-						      <th scope="col">강사명</th>
-						      <th scope="col">강의실</th>
-						    </tr>
-				        </thead>
-				        <tbody id="course-sel"></tbody>
-				    </table>
-				</div>
-				<div class="modal-footer">
-					<div class="selected-course-wrapper">
-	                    <span><strong>선택한 강의: </strong></span>
-	                    <textarea id="selected-course" readonly></textarea>
-	                </div>
-	                	<input type="hidden" id="post_no" name="post_no" value="${dto.post_no}"/>
-						<input type="hidden" id="course_name" name="course_name"/>					
-						<button id="course_reg" class="btn btn-dark">선택하기</button>
-				</div>
-			</div>			
-		</div>
-	</div>
 	<jsp:include page="/views/common/footer.jsp"></jsp:include>
 
 </body>
@@ -252,15 +224,11 @@ const editor = new toastui.Editor({
 		location.href = '/dataBoard/list.go';
 	}
 
-	// 작성완료
-	function writeSubmit() {
+// 작성완료
+function writeSubmit() {
     var editContent = editor.getHTML();
     $('#content').val(editContent);
     console.log(editor.getMarkdown());
-    
-    var isChecked = $('#flexSwitchCheckChecked').prop('checked');
-    console.log(isChecked);
-    $('#checkBox').val(isChecked ? 1 : 0);
     
     var $title = $('#titleText');
     var $content = $('#content');
@@ -281,100 +249,6 @@ const editor = new toastui.Editor({
         }
     }
 }
-
-	/* !모든 강의선택 모달 스크립트 시작! */
-
-	function select(row) {
-	    // 기존 선택된 행을 초기화
-	    var rows = document.querySelectorAll('#course-sel tr');
-	    rows.forEach(function(r) {
-	        r.classList.remove('selected');
-	    });
-	    // 선택된 행에 클래스 추가
-	    row.classList.add('selected');
-	    
-	 	// 선택된 행의 값 출력
-	    var selectedCourse = {
-	        course_name: row.cells[0].textContent,
-	        name: row.cells[1].textContent,
-	        course_space: row.cells[2].textContent
-	    };
-	    console.log('선택된 강의:', selectedCourse);
-	    
-	 // 선택된 행의 값을 텍스트 박스에 출력
-	    var selectedCourse = row.cells[0].textContent + ' - ' + row.cells[1].textContent + ' - ' + row.cells[2].textContent;
-	    var selectedCourseInput = document.getElementById('selected-course');
-	    selectedCourseInput.value = selectedCourse;
-	    
-	    // 강의 명 추출 후 텍스트 박스에 입력
-	    var course_name = document.getElementById('course_name');
-	    course_name.value = row.cells[0].textContent;
-	    
-	    // 텍스트 박스 크기 조절
-	    resizeTextarea(selectedCourseInput);
-	}
-
-	function resizeTextarea(textarea) {
-	    textarea.style.height = 'auto';
-	    textarea.style.height = textarea.scrollHeight + 'px';
-	}
-
-	// 선택하기 버튼
-	$('#course_reg').click(function(){
-		course_name = $('#course_name').val();
-		if(course_name == ''){
-			alert("강의를 선택해주세요.");
-			event.preventDefault();
-		}
-	});
-
-	// 강의 선택 모달 리스트 뿌리기
-	function CourseSelectModal(){
-		$.ajax({
-			type:'post',
-			url:'/board/course_modal.ajax',
-			data:{
-				
-			},
-			dataType:'json',
-			success:function(data){
-				console.log(data);
-				drawCourseModal(data.courseList);
-			},
-			error:function(error){
-				console.log(error);
-			}
-		});
-	}
-
-
-	//강의 선택 모달 리스트 그리기
-	function drawCourseModal(CourseSelectModal){
-		var content='';
-		console.log(CourseSelectModal);
-		
-		for(data of CourseSelectModal){
-			content += '<tr onclick="select(this)">';
-			content += '<td>' + data.course_name + '</td>';
-			content += '<td>' + data.name + '</td>';
-			content += '<td>' + data.course_space + '</td>';
-			content += '</tr>';
-		}
-		$('#course-sel').html(content);
-	}
-
-	function openModal() {
-	    $('#course-modal').css('display', 'block');
-	    var post_no = document.getElementById('post_no').value; 
-	    CourseSelectModal(); 
-	} 
-
-	function CloseModal() {
-	    $('#course-modal').css('display', 'none');
-	    
-	} 
-
-	/* !모든 강의선택 모달 스크립트 끝! */
 </script>
 </html>
 

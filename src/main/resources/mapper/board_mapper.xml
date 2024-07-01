@@ -373,21 +373,18 @@
 	</select> 
 
 	<select id="dataDetail" resultType="board">
-	SELECT 
-		p.title
-		, u.name AS user_name 
-		, c.course_name
-		, p.reg_date
-		, p.edit_date
-		, p.fixed_yn
-		, p.bHit
-		, p.contents
-	FROM post p 
-	JOIN board b ON p.board_no = b.board_no 
-	JOIN user u ON u.user_code = p.user_code
-	JOIN course c ON u.user_code = c.user_code
-	WHERE p.is_del = 0 AND p.post_no = #{param1}
-</select>
+		SELECT 
+			p.title
+			, u.name AS user_name 
+			, p.reg_date
+			, p.edit_date
+			, p.bHit
+			, p.contents
+		FROM post p 
+		JOIN board b ON p.board_no = b.board_no 
+		JOIN user u ON u.user_code = p.user_code
+		WHERE p.is_del = 0 AND p.post_no = #{param1}
+	</select>
 
 <insert id="stdBoardWrite" useGeneratedKeys="true" keyColumn="post_no"
 	keyProperty="post_no" parameterType="board" >
@@ -403,24 +400,18 @@
 			, p.title
 			, p.bHit
 			, p.reg_date
-			, c.course_name
-			, p.fixed_yn
 		FROM post p 
 		JOIN board b ON p.board_no = b.board_no
 		JOIN user u ON p.user_code = u.user_code 
-		JOIN course c ON c.user_code = u.user_code 
 		WHERE p.is_del = 0 AND b.board_no = 4 
-		<if test="param4 == null or param4 == ''">
-			AND p.fixed_yn = 0	
-		</if> 
 		<if test="param4 != ''">
        		AND (
 	        <choose>
 	            <when test="param3 == 'title'">
 	                p.title LIKE CONCAT('%', #{param4}, '%')
 	            </when>
-	            <when test="param3 == 'course_name'">
-	                c.course_name LIKE CONCAT ('%',#{param4},'%')
+	            <when test="param3 == 'contents'">
+	                p.contents LIKE CONCAT('%', #{param4}, '%')
 	            </when>
 	        </choose>
 	        )
@@ -448,45 +439,22 @@
     	</if>
 	</select>
 
-	<select id="topFixedDataList" resultType="board">
-		SELECT  
-			p.post_no
-			, u.name AS user_name
-			, p.title
-			, p.bHit
-			, p.reg_date
-			, p.fixed_yn 
-		FROM post p 
-		JOIN board b ON p.board_no = b.board_no 
-		JOIN user u ON p.user_code = u.user_code
-		WHERE p.is_del = 0 AND b.board_no = 4 AND p.fixed_yn = 1
-	    ORDER BY p.post_no DESC LIMIT 5
-	</select> 
-
 	<insert id="dataBoardWrite" useGeneratedKeys="true" keyColumn="post_no"
 		keyProperty="post_no" parameterType="board" >
-		INSERT INTO post(title, contents, fixed_yn, user_code, board_no)
-		VALUES(#{title},#{contents},#{fixed_yn}, #{user_code}, 4)
+		INSERT INTO post(title, contents, user_code, board_no)
+		VALUES(#{title}, #{contents}, #{user_code}, 4)
 	</insert>
-	
-	<!-- 강의선택 모달  -->
-	<select id="courseSelectModal" resultType="board">
-		SELECT 
-	      c.course_name,
-	      u.name,
-	      cr.course_space
-	   FROM 
-	      course c
-	   LEFT JOIN 
-	      `user` u ON c.user_code = u.user_code 
-	   LEFT JOIN 
-	      course_rez cr ON c.course_no = cr.course_no
-	   GROUP BY 
-	       c.course_name, u.name, cr.course_space
-	</select>
 
-
-
+	<update id="databoardUpdate" parameterType="map">
+		    UPDATE post 
+		    <trim prefix="SET" suffixOverrides=",">
+		        title = #{title},
+		        contents = #{contents}, 
+		        edit_date = NOW(), 
+		        edit_user_code = #{user_code}
+		    </trim>
+		    WHERE post_no = #{post_no}
+	</update>
 
 
 
