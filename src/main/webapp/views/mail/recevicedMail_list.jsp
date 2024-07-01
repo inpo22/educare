@@ -245,7 +245,11 @@
 				
 				
 				content += '<th scope="row" class="first-col"><input type="checkbox" class="select-box" value="' + row.mail_no + '"/></th>';
-				content += '<td>' + row.send_user_name + ' ' + row.class_name + '</td>';
+				content += '<td>' + row.send_user_name;
+				if (row.class_name != null) {
+					content += ' ' + row.class_name;
+				}
+				content += '</td>';
 				content += '<td><a class="list-title" href="/mail/detail.go?mail_no=' + row.mail_no; 
 				content += '&is_read_receiver=' + row.is_read_receiver + '">' + row.subject + '</a></td>';
 				

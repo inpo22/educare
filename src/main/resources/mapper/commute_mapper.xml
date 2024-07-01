@@ -4,4 +4,44 @@
 
 <mapper namespace="com.edu.care.dao.CommuteDAO">
 	
+	<select id="empList" resultType="String">
+		SELECT u.user_code FROM user u WHERE classify_code IN ('U01', 'U02')
+	</select>
+	
+	<select id="todayCommute" resultType="commute">
+		SELECT o.* FROM officehour o WHERE o.user_code = #{param1} AND o.work_date LIKE CONCAT(CURDATE(), '%')
+	</select>
+	
+	<insert id="autoCommute">
+		INSERT INTO officehour(user_code, work_date, state)
+			VALUES(#{param1}, CURDATE(), 2)
+	</insert>
+	
+	<update id="autoLeaveWork">
+		UPDATE officehour
+			SET end_time = CONCAT(CURDATE(), ' 18:00:00')
+				, work_hour = TIMESTAMPDIFF(HOUR, (SELECT o.start_time FROM officehour o 
+					WHERE user_code = #{param1} AND work_date LIKE CONCAT(CURDATE(), '%')), CONCAT(CURDATE(), ' 18:00:00'))
+		WHERE user_code = #{param1} AND work_date LIKE CONCAT(CURDATE(), '%')
+	</update>
+	
+	<select id="stateCheck" resultType="Integer">
+		SELECT
+			<![CDATA[
+			CASE
+				WHEN o.work_hour < 5 THEN 2
+				WHEN o.start_time > CONCAT(CURDATE(), ' 09:00:00') THEN 0
+				WHEN o.end_time < CONCAT(CURDATE(), ' 18:00:00') THEN 1
+				ELSE -1 END AS state_check
+			]]>
+		FROM officehour o
+		WHERE o.user_code = #{param1} AND o.work_date LIKE CONCAT(CURDATE(), '%')
+	</select>
+	
+	<update id="autoStateUpdate">
+		UPDATE officehour
+			SET state = #{param2}
+		WHERE user_code = #{param1} AND work_date LIKE CONCAT(CURDATE(), '%')
+	</update>
+	
 </mapper>

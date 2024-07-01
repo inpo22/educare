@@ -220,7 +220,7 @@ public class ApprovalService {
 		} else if (listType.equals("request")) {
 			list = approvalDAO.reqeustApprovalListCall(start, pagePerCnt, user_code, condition, content);
 			totalPage = approvalDAO.requestApprovalPageCnt(pagePerCnt, user_code, condition, content);
-		} else if (listType.equals("request")) {
+		} else if (listType.equals("finish")) {
 			list = approvalDAO.finishApprovalListCall(start, pagePerCnt, user_code, condition, content);
 			totalPage = approvalDAO.finishApprovalPageCnt(pagePerCnt, user_code, condition, content);
 		} else if (listType.equals("rejected")) {
