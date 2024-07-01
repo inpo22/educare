@@ -10,8 +10,20 @@ public class CourseDTO {
 	private int course_no;
 	private String user_code;
 	private String course_name;
-	private Date course_start;
-	private Date course_end;
+	private String course_start;
+	private String course_end;
+	public String getCourse_start() {
+		return course_start;
+	}
+	public void setCourse_start(String course_start) {
+		this.course_start = course_start;
+	}
+	public String getCourse_end() {
+		return course_end;
+	}
+	public void setCourse_end(String course_end) {
+		this.course_end = course_end;
+	}
 	private String course_con;
 	private int course_price;
 	private int is_confirm;
@@ -47,18 +59,7 @@ public class CourseDTO {
 	public void setCourse_name(String course_name) {
 		this.course_name = course_name;
 	}
-	public Date getCourse_start() {
-		return course_start;
-	}
-	public void setCourse_start(Date course_start) {
-		this.course_start = course_start;
-	}
-	public Date getCourse_end() {
-		return course_end;
-	}
-	public void setCourse_end(Date course_end) {
-		this.course_end = course_end;
-	}
+	
 	public String getCourse_con() {
 		return course_con;
 	}
