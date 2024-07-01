@@ -27,14 +27,14 @@ public class NotiController {
 	@ResponseBody
 	public Map<String, Object> getNotis(HttpSession session){
 		logger.info(":: 알림 리스트 ::");
-		String user_code = (String) session.getAttribute("user_code");
-		String team_code = (String) session.getAttribute("team_code");
-		logger.info("user_code:",user_code,"/ team_cod:",team_code);
+		String user_code = (String)session.getAttribute("user_code");
+		String team_code = (String)session.getAttribute("team_code");
+		logger.info("user_code:"+user_code+"/ team_cod:"+team_code);
 		
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("user_code", user_code);
 		param.put("team_code", team_code);
-		logger.info("param:",param);
+		logger.info("param:"+param);
 
 		return notiService.getNotis(param);
 	}

@@ -166,7 +166,7 @@
 			<input class="form-check-input me-2" type="checkbox"> 
 			<i class="ri-account-circle-fill"></i> 
 			<span class="list_userName me-2"></span>
-			<span class="badge rounded-pill bg-primary badge-leader">부서장</span>
+			<span class="badge rounded-pill bg-primary badge-leader">팀장</span>
 <!-- 			<span class="badge border-primary border-1 text-primary badge-member">부서원</span> -->
 		</li>
 	</ul>
@@ -212,7 +212,7 @@
 	
 	// modal 객체
 	var modal = new bootstrap.Modal(
-			document.getElementById('updateMemberDept_modal'), { keyboard: false });
+			document.getElementById('updateMemberDept_modal'), { keyboard: false } );
 
 	// tree 객체
 	var tree = new tui.Tree('#deptTree', {
@@ -287,18 +287,20 @@
 	// tree-select event
 	tree.on('select', function(e){
 		selected_id = e.nodeId;
-		console.log('click: '+e.nodeId);
+		//console.log('click: '+e.nodeId);
 		//console.log('selected node data: '+nodeData.team_code,'/'+nodeData.team_name,'/'+nodeData.upper_code);
-		loadContent(selected_tab, selected_id);
+		console.log('tab:',selected_tab,'id:',selected_id);
+		//loadContent(selected_tab, selected_id);
+		clickTab(selected_tab);
 	});
 	
 	modalTree.on('select', function(e){
-		console.log('modal click: '+e.nodeId);
+		//console.log('modal click: '+e.nodeId);
 		var data = modalTree.getNodeData(e.nodeId);
 		
 		if(tree.getNodeData(selected_id).team_code != data.team_code){
 			selected_modalId = e.nodeId;
-			console.log('selected node data: '+data.team_code,'/'+data.team_name,'/'+data.upper_code);			
+			//console.log('selected node data: '+data.team_code,'/'+data.team_name,'/'+data.upper_code);			
 		}else{
 			alert('이미 해당 부서입니다. 다른 부서를 선택해주세요.');
 			selected_modalId = modalTree.getRootNodeId();
@@ -306,8 +308,6 @@
 		//console.log('now selected:',selected_modalId);
 		
 	});
-
-
 	tree.on('beforeCreateChildNode', function(e) {
 		if (event.cause === 'blur') {
 			tree.finishEditing();
@@ -321,10 +321,9 @@
 				'team_name' : e.value,
 				'upper_code': tree.getNodeData(selected_id).team_code
 			}
-			console.log('add dept:',e.value,'-',add_param);
+			//console.log('add dept:',e.value,'-',add_param);
 			createDept_ajax(add_param);
 			tree.select(e.nodeId)
-
 		}else{
 			tree.finishEditing();
 			tree.remove(e.nodeId);
@@ -344,8 +343,8 @@
 		}else{
 			var result = confirm('부서명을 수정하시겠습니까?');
 			if(result){
-				console.log("::edit Dept::");
-				console.log(data.team_code,':',data.team_name,'->',edit_name);
+				//console.log("::edit Dept::");
+				//console.log(data.team_code,':',data.team_name,'->',edit_name);
 				if(edit_name != null){
 					var edit_param = {
 							'nodeId'	: e.nodeId,
@@ -356,7 +355,7 @@
 					updateDept_ajax(edit_param);	// update DB
 					
 				}else{
-					console.log('update fail');
+					//console.log('update fail');
 				}
 			}else{
 				tree.finishEditing();
@@ -370,9 +369,8 @@
 		var edit_data = tree.getNodeData(e.nodeId);
 		var og_upper = tree.getNodeData(tree.getParentId(e.nodeId));
 		var new_upper = tree.getNodeData(e.newParentId);
-		console.log('::move Dept::');
-		console.log(edit_data.team_code,':',og_upper.team_name,'->',new_upper.team_name);
-		
+		//console.log('::move Dept::');
+		//console.log(edit_data.team_code,':',og_upper.team_name,'->',new_upper.team_name);
 		if(new_upper.team_name != null){
 			var move_param = {
 				'nodeId'	: e.nodeId,
@@ -383,7 +381,7 @@
 			//tree.setNodeData(e.nodeId, {upper_code: new_upper.team_code});	// update node data
 			updateDept_ajax(move_param);	// update DB
 		}else{
-			console.log('update fail');
+			//console.log('update fail');
 		}
 	});
 	
@@ -396,10 +394,12 @@
 	});
 	// open modal to move dept of member
 	$('#moveMember_btn').on('click', function(){
-		console.log('checked list:',checked.size,'/',checked);
+		//console.log('checked list:',checked.size,'/',checked);
 		if(checked.size == null || checked.size < 1){
 			alert('부서 이동시킬 부서원을 1명 이상 선택 해주세요.')
 		} else{
+			selected_modalId = modal_rootId;
+			modalTree.select(selected_modalId);
 			modal.show();
 		}
 
@@ -407,7 +407,7 @@
 	// all/each check-box event
  	$('.form-check-input').on('click', function(){
 		var code = $(this).attr('name');
-		console.log('click:',code)
+		//console.log('click:',code)
  		if(code == 'all'){
 			if($(this).is(':checked')){
 				$('.form-check-input').each(function(i, item){
@@ -435,7 +435,7 @@
  	});
 	// close button event
  	$('.btn-close').on('click',function(){
-		console.log('close');
+		//console.log('close');
 		modal.hide();
 		clearChecked();
 	});
@@ -443,30 +443,29 @@
 
 	//ajax
 	function getDept_ajax(){
-		console.log('::init Dept list::')
-
+		//console.log('::init Dept list::')
 		$.ajax({
 			type	: 'get',
 			url		: '/dept/list.ajax',
 			dataType: 'json',
 			success	: function(result){
 	 			if(result.deptList.length > 0){
-	 				console.log(result.deptList);
+	 				//console.log(result.deptList);
 	 				createTree(result.deptList);
 	 				newTC = result.newTC;
 				}else{
-					console.log('dept list empty');
+					//console.log('dept list empty');
 				}
 	 		},
 			error	: function(error){
-				console.log(error);
+				//console.log(error);
 			}
 		});
 	 }
 
  	function getMember_ajax(code){
 		var ajax_result;
-		console.log('::init Dept Members::')
+		//console.log('::init Dept Members::')
 
 		$.ajax({
 			type	: 'get',
@@ -481,12 +480,12 @@
 	 			if(result.userList != null){
 	 				ajax_result = result.userList;
 	 				var emp_cnt = result.userList.length;
-					console.log('부서 인원수: ', emp_cnt);
+					//console.log('부서 인원수: ', emp_cnt);
 					tree.setNodeData(selected_id, {
 						emp_cnt: emp_cnt
 					});
 				}else{
-					console.log('dept member list empty');
+					//console.log('dept member list empty');
 				}
 	 		},
 			error	: function(error){
@@ -498,31 +497,28 @@
 	}
 		
 	function createDept_ajax(param){
-		console.log('::create Dept::');
-		console.log('param:',param);
-		
+		//console.log('::create Dept::');
+		//console.log('param:',param);
 		$.ajax({
 			type	: 'post',
 			url		: '/dept/register.ajax',
 			data	: param,
 			dataType: 'json',
 			success	: function(result){
-				console.log('createDept_ajax: ',result.msg);
-				
+				//console.log('createDept_ajax: ',result.msg);				
 				if(result.msg == 'success'){
 					//alert('해당 부서가 등록되었습니다.');
 					getDept_ajax();
 				}
 	 		},
 			error	: function(error){
-				console.log(error);
+				//console.log(error);
 			}
 		});
 	}
 	
 	function removeDept_ajax(code){
-		console.log(':: remove Dept -', code);
-		
+		//console.log(':: remove Dept -', code);
 		$.ajax({
 			type	: 'get',
 			url		: '/dept/delete.ajax',
@@ -531,12 +527,12 @@
 			},
 			dataType: 'json',
 			success	: function(result){
-				console.log('removeDept_ajax: ',result.msg);
+				//console.log('removeDept_ajax: ',result.msg);
 				
 				if(result.msg == 'success'){
 					//alert('해당 부서가 삭제되었습니다.');
 					tree.remove(selected_id);
-					getDept_ajax()
+					getDept_ajax();
 				}
 	 		},
 			error	: function(error){
@@ -552,20 +548,19 @@
 			data	: param,
 			dataType: 'json',
 			success	: function(result){
-				console.log('updateDept_ajax:',result.msg);
+				//console.log('updateDept_ajax:',result.msg);
 				if(result.msg == 'success'){
-					//getDept();
 					if(result.type == 'code'){
 					 	tree.on('move', function(e){
 							tree.setNodeData(e.nodeId, {upper_code: param.team_code});	// update node data
 							selected_id = e.nodeId;
-							console.log('updated node data: ',tree.getNodeData(e.nodeId));
+							//console.log('updated node data: ',tree.getNodeData(e.nodeId));
 					 	});
 					}else if(result.type == 'name'){
 						tree.finishEditing();
 						tree.setNodeData(param.nodeId, {team_name: param.team_name});	// update node data
 						selected_id = param.nodeId;
-						console.log('updated node data: ', tree.getNodeData(param.nodeId));
+						//console.log('updated node data: ', tree.getNodeData(param.nodeId));
 					}
 					getDept_ajax();
 				}else{
@@ -579,16 +574,15 @@
 	}
 	
 	function changeLeader_ajax(param){
-		console.log('::changeLeader_ajax::');
-		console.log('param:',param);
-	
+		//console.log('::changeLeader_ajax::');
+		//console.log('param:',param);
 		$.ajax({
 			type	: 'post',
 			url		: '/dept/leader/update.ajax',
 			data	: param,
 			dataType: 'json',
 			success	: function(result){
-				console.log('changeLeader_ajax: ',result.msg);
+				//console.log('changeLeader_ajax: ',result.msg);
 				if(result.msg == 'success'){
 					alert('부서장으로 변경되었습니다.')	
 					tree.select(selected_id);
@@ -604,8 +598,8 @@
 	}
 
 	function moveMember_ajax(param){
-		console.log('::moveMember_ajax::');
-		console.log('param:',param);
+		//console.log('::moveMember_ajax::');
+		//console.log('param:',param);
 		
 		var ajax_result = false;
 		
@@ -615,7 +609,7 @@
 			data	: param,
 			dataType: 'json',
 			success	: function(result){
-				console.log('moveMember_ajax: ',result.msg);
+				//console.log('moveMember_ajax: ',result.msg);
 				if(result.msg == 'success'){
 					ajax_result = true;
 				}else  {
@@ -636,7 +630,7 @@
 	// method
 	// tab click
 	function clickTab(type){
-		console.log('click tab: ',type);
+		//console.log('click tab: ',type);
 		if(type == 'deptInfo'){
 			selected_tab = type;
 			loadContent(type, selected_id);
@@ -647,19 +641,23 @@
 	}
 	
 	function loadContent(type, nodeId){
-		selected_modalId = modalTree.getRootNodeId();
+		var now = tree.getNodeData(nodeId);
+		var parent = tree.getNodeData(tree.getParentId(nodeId));
+		var child = tree.getNodeData(tree.getChildIds(nodeId)[0]);
+		var code = tree.getNodeData(nodeId).team_code;
+		var userList = getMember_ajax(code);
+		var newList = $('#deptUser_list');
+		//console.log('load: ',nodeId);
+		//console.log('parent:',parent.team_name);
+		//console.log('child:',child);
+		//console.log('code: ', code);
+		//selected_modalId = modal_rootId;
 		modal.hide();
 		
 		if(type == 'deptInfo'){
-			var now = tree.getNodeData(nodeId);
-			var parent = tree.getNodeData(tree.getParentId(nodeId));
-			var child = tree.getNodeData(tree.getChildIds(nodeId)[0]);
+			//console.log('::load deptInfo table::');
 			var ogTable = $('#deptInfo_table_sample tbody').clone(true);
 			var newTable = $('#deptInfo_table');
-			console.log('::load deptInfo table::');
-			console.log('load: ',nodeId);
-			//console.log('parent:',parent.team_name);
-			//console.log('child:',child);
 			
 			ogTable.find('td').eq(0).text(now.team_name);
 			ogTable.find('td').eq(1).text(now.team_code);
@@ -687,13 +685,8 @@
 			newTable.attr('style', "display:'';");
 		
 		} else if(type='deptUser'){
-			console.log('::load deptUser list::');
-			var code = tree.getNodeData(nodeId).team_code;
-			var userList = getMember_ajax(code);
-			var newList = $('#deptUser_list');
-			//console.log('code: ', code);
-			console.log('userList: ',userList);
-			
+			//console.log('::load deptUser list::');
+			//console.log('userList: ',userList);
 			clearChecked()
 			
 			// 부서원 리스트 출력
@@ -733,8 +726,8 @@
  			//console.log('====================================================')
 		});
 
-		selected_id = rootId;
 		selected_tab = 'deptInfo';
+		selected_id = rootId;
 		tree.select(selected_id);
 	}
 
@@ -782,13 +775,17 @@
  		var data = tree.getNodeData(selected_id);
 		var result = confirm('해당 부서를 삭제 하시겠습니까?');
 		if(result){
-			console.log('remove param:',data.team_code)
-			removeDept_ajax(data.team_code);
+			if(data.emp_cnt > 0){
+				alert('해당 부서는 부서원이 있어 삭제가 불가능합니다.');
+			}else {
+				//console.log('remove param:',data.team_code)
+				removeDept_ajax(data.team_code);
+			}
 		}		
 	}
 
  	function changeLeader(){
-		console.log('checked list:',checked.size,'/',checked);
+		//console.log('checked list:',checked.size,'/',checked);
 		var result = confirm('해당 사원을 부서장으로 위임하시겠습니까?')
 		
 		if(result){
@@ -808,7 +805,7 @@
 	}
 
 	function moveMember(){
-		console.log('checked list:',checked.size,'/',checked);
+		//console.log('checked list:',checked.size,'/',checked);
 		var result = confirm('해당 부서로 이동시키겠습니까?')
 		var runCnt = checked.size;
 		var mt = Number(selected_modalId.substring(14))-1;
@@ -822,21 +819,18 @@
 						'team_code'	: newData.team_code,
 						'user_code'	: user_code
 				}
-				console.log('<<부서 이동 시 메일로 전송>>');
-				console.log('부서 이동한 사용자:',user_code);
-				console.log('이동 경로:',oldData.team_name,'->',newData.team_name);
-				console.log('===============================');
 				moveMember_ajax(update_param);
 				runCnt--;
 			}
 		} else{
 			clearChecked();
 		}
+		
 		if(runCnt == 0){
 			//modal.hide();
 			alert('해당 부서원(들)을 부서 이동했습니다.')
 			selected_id = 'tui-tree-node-'+mt;
-			console.log(selected_id);
+			//console.log(selected_id);
 			tree.select(selected_id);
 			loadContent(selected_tab, selected_id);
 		}
