@@ -14,7 +14,9 @@ public class MypageDTO {
 	private String email;
 	private Timestamp reg_date;
 	private String photo;
+	private String sign_photo;
 	private String class_name;
+	private String position_name;
 	private String team_name;
 	private String id;
 	private String pw;
@@ -134,5 +136,17 @@ public class MypageDTO {
 	}
 	public void setCourse_price(int course_price) {
 		this.course_price = course_price;
+	}
+	public String getPosition_name() {
+		return position_name;
+	}
+	public void setPosition_name(String position_name) {
+		this.position_name = position_name;
+	}
+	public String getSign_photo() {
+		return sign_photo;
+	}
+	public void setSign_photo(String sign_photo) {
+		this.sign_photo = sign_photo;
 	}
 }
