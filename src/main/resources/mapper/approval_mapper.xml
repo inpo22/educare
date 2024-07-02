@@ -696,11 +696,6 @@
 		UPDATE approval_order SET state = 2, apv_date = CURRENT_TIMESTAMP() WHERE au_code = #{param1} AND user_code = #{param2}
 	</update>
 	
-	<update id="plusRemainVaca">
-		UPDATE vacation_history SET remain = remain + #{param1}
-			WHERE user_code = #{param2} AND year = YEAR(#{param3})
-	</update>
-	
 	<select id="orderCompCheck" resultType="Integer">
 		WITH approval_order_check AS (
 			SELECT 
