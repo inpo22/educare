@@ -294,7 +294,7 @@
 	
 	<!-- 강의 등록 모달 -->
 	<div class="modal" id="course-modal">
-		<div class="modal-dialog modal-m">
+		<div class="modal-dialog modal-lg modal-dialog-centered">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h3 class="modal-title">강의선택</h3>
@@ -527,11 +527,14 @@ function drawCourseList(courseList){
 		console.log(courseList);
 		
 		for(data of courseList){
+			var start = data.course_start.split("T")[0];
+			var end = data.course_end.split("T")[0];
+			
 			content += '<tr>';
 			content += '<td>' + data.course_name + '</td>';
 			content += '<td>' + data.name + '</td>';
-			content += '<td>' + data.course_start + '</td>';
-			content += '<td>' + data.course_end + '</td>';
+			content += '<td>' + start + '</td>';
+			content += '<td>' + end + '</td>';
 			if(data.pay_state == 0) {
 				content += '<td class="payment-pending">결제대기</td>';
 	        } else if(data.pay_state == 1) {

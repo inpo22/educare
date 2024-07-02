@@ -239,17 +239,19 @@
 	<!-- 강의선택 모달 리스트 -->
 	<select id="courseModalList" resultType="course">
 		SELECT 
-			c.course_name,
-			u.name,
-			cr.course_space
+		    c.course_name,
+		    u.name,
+		    cr.course_space
 		FROM 
-			course c
+		    course c
 		LEFT JOIN 
-			`user` u ON c.user_code = u.user_code 
+		    `user` u ON c.user_code = u.user_code 
 		LEFT JOIN 
-			course_rez cr ON c.course_no = cr.course_no
+		    course_rez cr ON c.course_no = cr.course_no
+		WHERE 
+		    c.course_start > CURDATE()
 		GROUP BY 
-	    	c.course_name, u.name, cr.course_space
+		    c.course_name, u.name, cr.course_space
 	</select>
 	
 	<!-- 선택한 강의 등록 쿼리문 -->
