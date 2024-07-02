@@ -74,7 +74,6 @@ public class LoginService {
 		
 		ModelAndView mav = new ModelAndView();
 		if (success) {
-			//page = "main/superAdminMain";
 			session.setAttribute("user_code", loginInfo.getUser_code());
 			session.setAttribute("user_name", loginInfo.getName());
 			session.setAttribute("class_name", loginInfo.getClass_name());

@@ -106,7 +106,7 @@ public class LoginController {
 		
 	}
 	
-	/*
+	/* 모달창에서 페이지이동으로 변경
 	// ID찾기
 	@PostMapping(value = "login/idFind.ajax")
 	@ResponseBody
