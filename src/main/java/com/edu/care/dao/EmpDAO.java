@@ -36,6 +36,10 @@ public interface EmpDAO {
 	int quitListPageCnt(int pagePerCnt, String dateType, String type, String searchbox, String startDate,
 			String endDate);
 
+	int empCnt();
+
+	int quitCnt();
+
 
 
 }

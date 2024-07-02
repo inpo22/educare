@@ -43,5 +43,7 @@ public interface MypageDAO {
 
 	String attRate(String user_code);
 
+	String getPw(String user_code);
+
 
 }

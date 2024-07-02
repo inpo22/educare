@@ -13,7 +13,9 @@
 <!-- css -->
 <jsp:include page="/views/common/head.jsp"></jsp:include>
 <link href="/resources/mypage/stdStyle.css" rel="stylesheet">
+
 <!-- js -->
+<script src="/resources/js/pagination_module.js" type="text/javascript"></script>
 <!-- 포트원 결제 -->
 <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
 <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
@@ -360,13 +362,18 @@ function CourseListCall(page, Csearchbox, user_code){
 		},
 		dataType:'json',
 		success:function(data){
-			console.log(data);
-			
-			type = 0;
-			
+			//console.log(data);
 			totalPage = data.totalPage;
-			setupPagination(page, totalPage,type);
 			drawCourseList(data.cList);
+			
+			var option = {
+				totalPages: totalPage,
+				startPage: page
+			};
+			window.pagination.init($('#pagination_course'), option, function(currentPage) {
+				page = currentPage;
+				CourseListCall(page, Csearchbox, user_code);
+			});
 		},
 		error:function(error){
 			console.log(error);
@@ -554,13 +561,19 @@ function attdListCall(page, Asearchbox, user_code){
 		},
 		dataType:'json',
 		success:function(data){
-			console.log(data);
-			
-			type = 1;
-			
+			//console.log(data);
+
 			totalPage = data.totalPage;
-			setupPagination(page, totalPage,type);			
 			drawAttdList(data.aList);
+			
+			var option = {
+				totalPages: totalPage,
+				startPage: page
+			};
+			window.pagination.init($('#pagination_attd'), option, function(currentPage) {
+				page = currentPage;
+				attdListCall(page, Asearchbox, user_code);
+			});
 		},
 		error:function(error){
 			console.log(error);
@@ -629,13 +642,18 @@ function listCall(page, Psearchbox, user_code){
 		},
 		dataType:'json',
 		success:function(data){
-			console.log(data);
-			
-			type=2;
-			
-			totalPage = data.totalPage;
-			setupPagination(page, totalPage,type);			
+			//console.log(data);
+			totalPage = data.totalPage;			
 			drawPayList(data.list);
+			
+			var option = {
+				totalPages: totalPage,
+				startPage: page
+			};
+			window.pagination.init($('#pagination_pay'), option, function(currentPage) {
+				page = currentPage;
+				listCall(page, Psearchbox, user_code);
+			});
 		},
 		error:function(error){
 			console.log(error);
@@ -690,104 +708,6 @@ $('#reset_btn').click(function(){
 /* -------------------------------------------------------------------------------------- */
 
 /* 페이징처리 스크립트 시작 */
-
-//totalPage 활용하여 Pagination 버튼 설정
-function setupPagination(page, totalPage,type) {
-	var count = 0;
-	var pagination;
-	
-	if(type == 0){
-		pagination = $('#pagination_course');
-	}else if(type == 1){
-		pagination = $('#pagination_attd');
-	}else if(type == 2){
-		pagination = $('#pagination_pay');
-	}
-	
-	pagination.empty();
-	
-	var content = '<li class="page-item">';
-	content += '<a class="page-link" href="#">&laquo;</a>';
-	content += '</li>';
-	content += '<li class="page-item">';
-	content += '<a class="page-link" href="#">&lsaquo;</a>';
-	content += '</li>';
-	
-	if (page < 3) {
-		for (var i = 1; i <= totalPage; i++) {
-			content += '<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>';
-			count++;
-			if (count == 5) {
-				break;
-			}
-		}
-	}else if (page >= 3 && page < (totalPage - 2)) {
-		for (var i = page - 2; i <= totalPage; i++) {
-			content += '<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>';
-			count++;
-			if (count == 5) {
-				break;
-			}
-		}
-	}else if (page >= 3 && page >= (totalPage - 2)) {
-		for (var i = totalPage - 4; i <= totalPage; i++) {
-			if (i < 1) {
-				continue;
-			}
-			content += '<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>';
-			count++;
-			if (count == 5) {
-				break;
-			}
-		}
-	}
-	
-	content += '<li class="page-item">';
-	content += '<a class="page-link" href="#">&rsaquo;</a>';
-	content += '</li>';
-	
-	content += '<li class="page-item">';
-	content += '<a class="page-link" href="#">&raquo;</a>';
-	content += '</li>';
-	
-	pagination.html(content);
-	pagination.find('.page-item').removeClass('active');
-	
-	$('.page-link').each(function() {
-		if ($(this).html() == page) {
-			$(this).parent().addClass('active');
-		}
-	});
-	
-}
-
-//페이징 버튼 클릭 이벤트 설정
-$('.pagination').on('click', '.page-link', function(e) {
-    e.preventDefault();
-    var clickedPage = $(this).html();
-    if (clickedPage == '«') {
-        page = 1;
-    } else if (clickedPage == '‹') {
-        if (page > 1) {
-            page--;
-        }
-    } else if (clickedPage == '›') {
-        if (page < totalPage) {
-            page++;
-        }
-    } else if (clickedPage == '»') {
-        page = totalPage;
-    } else {
-        page = parseInt(clickedPage);
-    }
-    if (type == 0) {
-        CourseListCall(page, Csearchbox, user_code);
-    } else if (type == 1) {
-        attdListCall(page, Asearchbox, user_code);
-    } else if (type == 2) {
-        listCall(page, Psearchbox, user_code);
-    }
-});
 
 $('.nav-link').click(function() {
 	var html = $(this).html();

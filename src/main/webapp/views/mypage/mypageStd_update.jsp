@@ -207,7 +207,6 @@ function edit(){
 			return false;
 		
 		}else{
-			alert("정보수정에 성공했습니다.");
 			$('form').submit();
 		}
 	

@@ -13,7 +13,9 @@
 <!-- css -->
 <jsp:include page="/views/common/head.jsp"></jsp:include>
 <link href="/resources/emp/emp.css" rel="stylesheet">
+
 <!-- js -->
+<script src="/resources/js/pagination_module.js" type="text/javascript"></script>
 
 <style>
 #searchbox, #date {
@@ -124,6 +126,7 @@
 			<!-- End table -->
 			
 			<br/>
+			<p>퇴사자 수 : 총  ${quitCnt}명</p>
 			
 			<!-- 페이징 시작 -->
 			<ul class="pagination d-flex justify-content-center" id="pagination"></ul>
@@ -169,10 +172,17 @@ function listCall(page, dateType, type, searchbox, startDate, endDate){
 		dataType:'json',
 		success:function(data){
 			//console.log(data);
-			totalPage = data.totalPage;
-			setupPagination(page, totalPage);
-			
+			totalPage = data.totalPage;		
 			drawQuitList(data.Qlist);
+			
+			var option = {
+				totalPages: totalPage,
+				startPage: page
+			};
+			window.pagination.init($('#pagination'), option, function(currentPage) {
+				page = currentPage;
+				listCall(page, dateType, type, searchbox, startDate, endDate);
+			});
 		},
 		error:function(error){
 			console.log(error)
@@ -197,91 +207,6 @@ function drawQuitList(quitList){
 	}
 	$('#quitList').html(content);
 }
-
-/* 페이징처리 스크립트 시작 */
-//totalPage 활용하여 Pagination 버튼 설정
-function setupPagination(page, totalPage) {
-	var pagination = $('#pagination');
-	var count = 0;
-	
-	pagination.empty();
-	
-	var content = '<li class="page-item">';
-	content += '<a class="page-link" href="#">&laquo;</a>';
-	content += '</li>';
-	content += '<li class="page-item">';
-	content += '<a class="page-link" href="#">&lsaquo;</a>';
-	content += '</li>';
-	
-	if (page < 3) {
-		for (var i = 1; i <= totalPage; i++) {
-			content += '<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>';
-			count++;
-			if (count == 5) {
-				break;
-			}
-		}
-	}else if (page >= 3 && page < (totalPage - 2)) {
-		for (var i = page - 2; i <= totalPage; i++) {
-			content += '<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>';
-			count++;
-			if (count == 5) {
-				break;
-			}
-		}
-	}else if (page >= 3 && page >= (totalPage - 2)) {
-		for (var i = totalPage - 4; i <= totalPage; i++) {
-			if (i == 0) {
-				continue;
-			}
-			content += '<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>';
-			count++;
-			if (count == 5) {
-				break;
-			}
-		}
-	}
-	
-	content += '<li class="page-item">';
-	content += '<a class="page-link" href="#">&rsaquo;</a>';
-	content += '</li>';
-	
-	content += '<li class="page-item">';
-	content += '<a class="page-link" href="#">&raquo;</a>';
-	content += '</li>';
-	
-	pagination.html(content);
-	pagination.find('.page-item').removeClass('active');
-	
-	$('.page-link').each(function() {
-		if ($(this).html() == page) {
-			$(this).parent().addClass('active');
-		}
-	});
-	
-}
-
-//설정된 버튼에 이벤트 적용
-$('#pagination').on('click', '.page-link', function(e) {
-    e.preventDefault();
-    if ($(this).html() == '«') {
-        page = 1;
-    } else if ($(this).html() == '‹') {
-        if (page > 1) {
-            page--;
-        }
-    } else if ($(this).html() == '›') {
-        if (page < totalPage) {
-            page++;
-        }
-    } else if ($(this).html() == '»') {
-        page = totalPage;
-    } else {
-        page = parseInt($(this).html());
-    }
-    listCall(page, dateType, type, searchbox, startDate, endDate);
-});
-/* 페이징처리 스크립트 끝 */
 
 // 날짜 검색 버튼 함수
 $('#searchdate_btn').click(function(){

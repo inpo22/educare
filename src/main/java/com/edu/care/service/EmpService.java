@@ -181,6 +181,14 @@ public class EmpService {
 		return result;
 	}
 
+	public int empCnt() {
+		return empDAO.empCnt();
+	}
+
+	public int quitCnt() {
+		return empDAO.quitCnt();
+	}
+
 
 	
 	

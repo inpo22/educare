@@ -29,6 +29,7 @@ public class MypageController {
 	Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Autowired MypageService mypageService;
+	@Autowired PasswordEncoder encoder;
 	
 	@GetMapping(value="/mypage.go")
 	public String mypage(HttpSession session) {
@@ -168,20 +169,32 @@ public class MypageController {
 	
 	// 학생 개인정보 수정
 	@PostMapping(value="/mypageStd/update.do")
-	public String myStuUpdate(MultipartFile photo, Model model, @RequestParam Map<String, String> param, @RequestParam("user_code") String user_code) {
+	public String myStuUpdate(MultipartFile photo, RedirectAttributes rAttr, @RequestParam Map<String, String> param, @RequestParam("user_code") String user_code) {
 		String page = "mypageStd";
 		String msg = "정보수정에 실패했습니다.";
 		logger.info("param :"+param);
 		
+		// 새 비밀번호 저장
+		String newPw = param.get("pw");
+		
+		// 기존 비밀번호
+		String oldPw = mypageService.getPw(user_code);
+		
+		
 		int row = mypageService.update(photo, param, user_code);
-		logger.info("insert count :"+row);
+		logger.info("insert count :"+row); 	
 		
 		if(row == 1) {
-			page = "redirect:/mypageStd.go?user_code="+user_code;
-			msg = "정보수정에 성공했습니다.";
+			// 새 비밀번호가 기존 비밀번호와 다를 경우
+	        if (newPw != null && !newPw.isEmpty() && !encoder.matches(newPw, oldPw)) {
+	            page = "redirect:/login.go"; // 로그인 페이지로 리디렉션
+	            msg = "비밀번호가 변경되었습니다. 다시 로그인 해주세요.";
+	        } else {
+	            page = "redirect:/mypageStd.go?user_code=" + user_code;
+	            msg = "정보수정에 성공했습니다.";
+	        }	
+	        rAttr.addFlashAttribute("msg", msg);
 		}
-		model.addAttribute("msg", msg);
-		
 		return page;
 	}
 	
