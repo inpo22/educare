@@ -30,4 +30,12 @@ public interface CourseDAO {
 
 	int checkUserCode(String user_code);
 
+	int courseUpdateAjax(CourseDTO courseDTO);
+
+	List<CourseDTO> courseStuCheck(String userCode);
+
+	List<CourseDTO> courseStuCheckList(String userCode);
+
+	List<CourseDTO> getCourseSpaceList();
+
 }

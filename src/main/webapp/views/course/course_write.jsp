@@ -201,6 +201,12 @@ small{
     color: white;
     border-radius: 20px;
 }
+
+.disabled {
+    color: #ccc; 
+    pointer-events: none; 
+    background-color: transparent; 
+}
 </style>
 </head>
 
@@ -407,7 +413,7 @@ var preMonthLastDate = preMonthLast.getDate();
 var preMonthLastDay = preMonthLast.getDay();
 
 function drawCalendar() {
-
+	
     $('#year-month').html(preYear + "년 " + (preMonth + 1) + "월");
 
     var count = 1;
@@ -441,21 +447,28 @@ function drawCalendar() {
         var tmonth = new String(tdate.getMonth()+1); 
         var tday = new String(tdate.getDate()); 
         
-        //클릭한 날의 날짜 : 현재날짜와 비교하기용으로 만듬
-        var clickDayDate = calYear + "" +calMonth + "" +selectDay;
-        console.log("clickDayDate>>>"+clickDayDate);
-		
-        var todayForSelectDay = tyear + tmonth +  tday;
-        console.log("todayForSelectDay>>>"+todayForSelectDay);
-
         if(calMonth.toString().length < 2){
         	calMonth = '0' + calMonth;
         }
         
         if(selectDay.toString().length < 2){
         	selectDay = '0' + selectDay;
-        	console.log(selectDay);
         }
+        
+        if(tmonth.toString().length < 2){
+        	tmonth = '0' + tmonth;
+        }
+        
+        if(tday.toString().length < 2){
+        	tday = '0' + tday;
+        }
+        
+        //클릭한 날의 날짜 : 현재날짜와 비교하기용으로 만듬
+        var clickDayDate = calYear + "" +calMonth + "" +selectDay;
+        console.log("clickDayDate>>>"+clickDayDate);
+        
+        var todayForSelectDay = tyear + tmonth +  tday;
+        console.log("todayForSelectDay>>>"+todayForSelectDay);
         
         // (미완료)20240701 : 현재날짜보다 이전 날 안보이게하기...근데 아직 못한고.................... =_=
         // 일단 없어지게해둠.. 나중에 아예 모달 들어올때부터 안보이게할거
@@ -475,8 +488,6 @@ function drawCalendar() {
         }
     });
 }
-
-
 
 $('#prevBtn').on("click", function() {
 	event.preventDefault();
@@ -533,6 +544,12 @@ function reDrawCalendar(){
 
 	$('#year-month').html(preYear + "년 " + (preMonth + 1) + "월");
 	
+	//오늘날짜 구하기 
+  	var today = new Date();
+    var tyear = today.getFullYear();
+    var tmonth = today.getMonth();
+    var tday = today.getDate();
+    
 	var count = 1;
     var total = 42;
 
@@ -543,15 +560,18 @@ function reDrawCalendar(){
         if (i < rePreMonthFirstDay || count > rePreMonthLastDate) {
             con += '<div class="emptyDay"></div>';
         } else {
-        	var checkToday = (preYear === today.getFullYear() && preMonth === today.getMonth() && count === currentDay) ? ' today' : '';
-			var highLightDay = '';
-			for (var j = 0; j < chkDay.length; j++) {
-				if (preYear === chkDay[j].year && (preMonth+1) === chkDay[j].month && count === chkDay[j].day) {
-					highLightDay = ' highlight';
-					break;
-				}
-			}
-        	con += '<div class="day' + checkToday + highLightDay + '" id="select-day-' + count + '" data-day="' + count + '">' + count + '</div>';
+            var dateToCheck = new Date(preYear, preMonth, count);
+            var isDisabled = (dateToCheck < today) ? ' disabled' : '';
+
+            var checkToday = (preYear === tyear && preMonth === tmonth && count === tday) ? ' today' : '';
+            var highLightDay = '';
+            for (var j = 0; j < chkDay.length; j++) {
+                if (preYear === chkDay[j].year && (preMonth + 1) === chkDay[j].month && count === chkDay[j].day) {
+                    highLightDay = ' highlight';
+                    break;
+                }
+            }
+            con += '<div class="day' + checkToday + highLightDay + isDisabled + '" id="select-day-' + count + '" data-day="' + count + '">' + count + '</div>';
             count++;
         }
     }
@@ -767,7 +787,6 @@ function removeReservCalendarDate(date) {
     });
 }
 
-// 다음달 전달로가도 기록남게....
 // 현재날짜보다 이전날짜 클릭안되게하는거...
 // 하..
 
@@ -801,7 +820,7 @@ function checkUserCode(){
 
 
 $('#submitButton').click(function() {
-	
+	var num_check=/([^0-9])/;
 	var userCode = $('#user_code').val();
 	var courseTitle = $('#title').val();
 	var coursePrice = $('#course_price').val();
@@ -809,26 +828,34 @@ $('#submitButton').click(function() {
 	var editorContent = editor.getHTML();
 	var formatContent = $('#content').val(editorContent);
 	var content = formatContent.val();
+	var MAX_CONTENT_SIZE = 5 * 1024 * 1024;
     console.log("rezCourse",rezCourse);
 	
     if ($("#user_code").attr("readonly") == undefined){
         alert('사원여부확인 체크해주세요.');
         return false;
-    }
-    if (courseTitle === ''){
+    }else if (courseTitle === ''){
         alert('강의명을 입력해주세요.');
         $('#title').focus();
         return false;
-    }
-    if (coursePrice === ''){
+    }else if (coursePrice === ''){
         alert('강의료를 입력해주세요.');
         $('#course_price').focus();
         return false;
-    }
-    if (rezCourse === undefined){
+    }else if (num_check.test(coursePrice)){
+   		alert('강의료는 숫자로만 입력해주세요.');
+   		$('#course_price').val= '';
+   		$('#course_price').focus();
+   		return false;
+    }else if (rezCourse === undefined){
         alert('강의실예약은 필수입니다.');
         return false;
-    }else{
+    }else if (editor.getMarkdown() === '') {
+        alert('내용을 입력해 주세요.');
+        editor.focus();
+    } else if (new Blob([editorContent]).size > MAX_CONTENT_SIZE) {
+        alert('내용의 용량이 초과되었습니다. 이미지의 크기나 갯수를 줄여 주세요.');
+    } else{
     	submitCourseWrite();
     }
 

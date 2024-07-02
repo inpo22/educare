@@ -209,6 +209,10 @@ small{
 #deleteBtn{
 	margin-right: 10px;
 }
+
+.title-cate{
+	color:#012970;
+}
 </style>
 </head>
 
@@ -219,7 +223,7 @@ small{
 
 	<main id="main" class="main">
 		<div class="pagetitle">
-			<h1>강의 관리 > 강의 상세정보</h1>
+			<h1><a href="/course/list.go" class="title-cate" >강의 관리</a> > 강의 상세정보</h1>
 		</div>
 		<!-- End Page Title -->
 	<div class="board mt-4">

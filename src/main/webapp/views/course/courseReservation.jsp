@@ -62,7 +62,6 @@
 .toastui-calendar-detail-container{
 	height:170px !important;
 	border-radius: 28px !important;
-	background-color: #ffffffa3 !important;
 	min-width: 245px !important;
 	max-width: 245px !important;
 }
@@ -161,8 +160,11 @@ textarea {
 		</div>
 		<!-- End Page Title -->
 		
-		<div class="row-sm-4 mx-auto mt-4">
-			<fieldset>
+		<div class="row-sm-4 mx-auto mt-3">
+			<select class="form-select form-select mb-3" id="selectCourse" aria-label="Large select example">
+				  <option value="all" selected>모든 강의실 예약현황</option>
+			</select>
+			<!-- <fieldset>
 				<button type="button" class="filter_btn w-10" id="all" data-type="all" style="border: 0; border-radius: 7px; background-color: #525252;">ALL</button>
 				<button type="button" class="filter_btn w-10" id="A101" data-type="A101" style="border: 0; border-radius: 7px; background-color: #db7e6a;">A101</button>
 				<button type="button" class="filter_btn w-10" id="A102" data-type="A102" style="border: 0; border-radius: 7px; background-color: #faab23;">A102</button>
@@ -170,10 +172,10 @@ textarea {
 				<button type="button" class="filter_btn w-10" id="B102" data-type="B102" style="border: 0; border-radius: 7px; background-color: #7db0c7;">B102</button>
 				<button type="button" class="filter_btn w-10" id="C101" data-type="C101" style="border: 0; border-radius: 7px; background-color: #7774b6;">C101</button>
 				<button type="button" class="filter_btn w-10" id="C102" data-type="C102" style="border: 0; border-radius: 7px; background-color: #b789a9;">C102</button>
-			</fieldset>
+			</fieldset> -->
 		</div>
 
-		<div class="calendar-view mt-4">
+		<div class="calendar-view mt-3">
 			<div class="calendar-header mb-2 d-flex align-items-center justify-content-between">
 				<div>
 					<button onclick="goPrevOrNext('prev')" class="goPrevOrNextBtn"><i class="bi bi-arrow-left-square mt-2"></i></button>
@@ -349,6 +351,49 @@ function goPrevOrNext(result){
 	}
 }
 
+$.ajax({
+  	url: '/course/getCourseSpaceList.ajax',
+    type: 'POST',
+    contentType: 'application/json',
+    dataType: 'json',
+    success: function(response) {
+   		response.spaceList.forEach(function(item){
+   			content= '<option value="'+item.course_space+'">';
+   			content+=item.course_space;
+   			content+= '</option>';
+   			$('#selectCourse').append(content);
+   		});
+    },
+    error: function(request, status, error) {
+        console.log(error);
+    }
+});
+
+$('#selectCourse').on('change',function(){
+	var eventType = $(this).val();
+	 var event = calendar.getEvent(eventType, eventType);
+	    
+	    calendar.setCalendarVisibility('A101', false);
+	    calendar.setCalendarVisibility('A102', false);
+	    calendar.setCalendarVisibility('B101', false);
+	    calendar.setCalendarVisibility('B102', false);
+	    calendar.setCalendarVisibility('C101', false);
+	    calendar.setCalendarVisibility('C102', false);
+
+	    if(eventType == 'all'){
+	    	 calendar.setCalendarVisibility('A101', true);
+	    	 calendar.setCalendarVisibility('A102', true);
+	    	 calendar.setCalendarVisibility('B101', true);
+	    	 calendar.setCalendarVisibility('B102', true);
+	    	 calendar.setCalendarVisibility('C101', true);
+	    	 calendar.setCalendarVisibility('C101', true);
+		}else{
+			 calendar.setCalendarVisibility(eventType, true);
+		}
+	    
+	    calendar.render();
+});
+/* 
 $(".filter_btn").click(function () {
 	
     var eventType = $(this).data('type');
@@ -376,6 +421,8 @@ $(".filter_btn").click(function () {
     calendar.render();
     
 });
+ */
+
 
 </script>
 </html>

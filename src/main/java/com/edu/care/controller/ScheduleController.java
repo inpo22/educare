@@ -29,8 +29,16 @@ public class ScheduleController {
 	@Autowired ScheduleService scheduleService;
 	
 	@GetMapping(value="/schedule.go")
-	public String schedule() {
-		return "schedule/schedule";
+	public String schedule(HttpSession session) {
+		String page = "";
+		String classify_code = (String) session.getAttribute("classify_code");
+		if (classify_code.equals("U01") || classify_code.equals("U02")) {
+			page = "schedule/schedule";
+		} else {
+			page = "redirect:/scheduleStu.go";
+		}
+		
+		return page;
 	}
 	
 	@PostMapping(value="/schedule/write.ajax")
