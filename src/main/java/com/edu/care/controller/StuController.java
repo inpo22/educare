@@ -27,7 +27,9 @@ public class StuController {
 	@Autowired StuService stuService;
 	
 	@GetMapping(value="/std/list.go")
-	public String stuList() {
+	public String stuList(Model model) {
+		int stdCnt = stuService.stdCnt();
+		model.addAttribute("stdCnt", stdCnt);
 		return "std/std_list";
 	}
 	

@@ -61,6 +61,7 @@
 			<br/>
 			<br/>
 			
+			
 			<div class="row mb-2">          
 	          <div class="d-flex">
 	              <select id="type" class="form-select" aria-label="Default select example">
@@ -105,6 +106,7 @@
 			<!-- End table -->
 			
 			<br/>
+			<p>학생 수 : 총  ${stdCnt}명</p>
 			
 			<!-- 페이징 시작 -->
 			<ul class="pagination d-flex justify-content-center" id="pagination"></ul>

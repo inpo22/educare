@@ -189,5 +189,9 @@ public class StuService {
 	public String attRate(String user_code) {
 		return stuDAO.attRate(user_code);
 	}
+
+	public int stdCnt() {
+		return stuDAO.stdCnt();
+	}
 	
 }

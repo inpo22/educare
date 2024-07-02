@@ -92,6 +92,24 @@
     u.reg_date ASC 
 </select>
 
+<!-- 재직 중인 사원 수 쿼리문 -->
+<select id="empCnt" resultType="Integer">
+	SELECT 
+	    COUNT(*) AS emp
+	FROM `user` u 
+	WHERE (user_code LIKE '%U01%' OR user_code LIKE '%U02%')
+	AND quit_date IS NULL
+</select>
+
+<!-- 퇴사자 수 쿼리문 -->
+<select id="quitCnt" resultType="Integer">
+	SELECT 
+	    COUNT(*) AS quit
+	FROM `user` u 
+	WHERE (user_code LIKE '%U01%' OR user_code LIKE '%U02%')
+	AND quit_date IS NOT NULL
+</select>
+
 <!-- 퇴사처리 쿼리문 -->
 <update id="quitEmp">
     UPDATE user

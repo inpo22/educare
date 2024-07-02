@@ -129,6 +129,7 @@
 			<!-- End table -->
 			
 			<br/>
+			 <p>사원 수 : 총  ${empCnt}명</p>
 			
 			<!-- 페이징 시작 -->
 			<ul class="pagination d-flex justify-content-center" id="pagination"></ul>

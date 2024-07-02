@@ -50,4 +50,6 @@ public interface StuDAO {
 	String attRate(String user_code);
 
 	int checkCourse(Map<String, String> param);
+
+	int stdCnt();
 }

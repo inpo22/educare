@@ -126,6 +126,7 @@
 			<!-- End table -->
 			
 			<br/>
+			<p>퇴사자 수 : 총  ${quitCnt}명</p>
 			
 			<!-- 페이징 시작 -->
 			<ul class="pagination d-flex justify-content-center" id="pagination"></ul>
