@@ -217,5 +217,6 @@ public class MypageService {
 	public String getPw(String user_code) {
 		return mypageDAO.getPw(user_code);
 	}
+
 	
 }
