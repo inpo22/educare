@@ -74,8 +74,6 @@ public interface ApprovalDAO {
 
 	void reject(String au_code, String user_code);
 
-	void plusRemainVaca(double va_days, String au_user_code, Timestamp reg_date);
-
 	int orderCompCheck(String au_code, String user_code);
 
 	void scheduleWrite(ApprovalDTO dto);

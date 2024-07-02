@@ -159,14 +159,8 @@
 											<fmt:formatDate value="${order.apv_date}" pattern="yyyy.MM.dd."/>
 										</c:if>
 										<c:if test="${order.is_my_turn eq 1}">
-											<button class="btn btn-primary btn-sm" 
-												onclick="location.href='/approval/approve.do?au_code=${dto.au_code}&apv_no=${order.apv_no}'">
-												결재
-											</button>
-											<button class="btn btn-danger btn-sm" 
-												onclick="location.href='/approval/reject.do?au_code=${dto.au_code}&apv_no=${order.apv_no}'">
-												반려
-											</button>
+											<button class="btn btn-primary btn-sm" onclick="approve()">결재</button>
+											<button class="btn btn-danger btn-sm" onclick="reject()">반려</button>
 										</c:if>
 									</td>
 								</c:forEach>
@@ -261,6 +255,22 @@
 	
 	function approvalList() {
 		location.href = '/getApproval/list.go';
+	}
+	
+	var au_code = '${dto.au_code}';
+	
+	function approve() {
+		var result = confirm('결재 하시겠습니까?');
+		if (result) {
+			location.href = '/approval/approve.do?au_code=' + au_code;
+		}
+	}
+	
+	function reject() {
+		var result = confirm('반려 하시겠습니까?');
+		if (result) {
+			location.href = '/approval/reject.do?au_code=' + au_code;
+		}
 	}
 </script>
 </html>
