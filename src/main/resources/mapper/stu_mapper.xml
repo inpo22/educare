@@ -193,7 +193,7 @@
 			c.course_name ,
 			u.name,
 			DATE_FORMAT(c.course_start, '%Y-%m-%d') AS course_start,
-	        DATE_FORMAT(c.course_end, '%Y-%m-%d') AS course_end,
+        	DATE_FORMAT(c.course_end, '%Y-%m-%d') AS course_end,
 			p.pay_state
 		FROM 
 			course c 

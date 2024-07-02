@@ -29,6 +29,7 @@ public class MypageController {
 	Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Autowired MypageService mypageService;
+	@Autowired PasswordEncoder encoder;
 	
 	@GetMapping(value="/mypage.go")
 	public String mypage(HttpSession session) {
@@ -173,12 +174,23 @@ public class MypageController {
 		String msg = "정보수정에 실패했습니다.";
 		logger.info("param :"+param);
 		
+		// 기존과 새 비밀번호 비교
+		String oldPw = mypageService.getPw(user_code);
+		String newPw = param.get("pw");
+		
 		int row = mypageService.update(photo, param, user_code);
 		logger.info("insert count :"+row);
 		
 		if(row == 1) {
-			page = "redirect:/mypageStd.go?user_code="+user_code;
-			msg = "정보수정에 성공했습니다.";
+			if (!encoder.matches(newPw, oldPw)) {
+	            // 비밀번호가 변경된 경우
+	            page = "redirect:/login.go"; // 로그인 페이지로
+	            msg = "비밀번호가 변경되었습니다. 다시 로그인 해주세요.";
+	        } else {
+	            page = "redirect:/mypageStd.go?user_code=" + user_code;
+	            msg = "정보수정에 성공했습니다.";
+	        }
+			
 		}
 		model.addAttribute("msg", msg);
 		

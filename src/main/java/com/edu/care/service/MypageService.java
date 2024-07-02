@@ -212,5 +212,10 @@ public class MypageService {
 	public String attRate(String user_code) {
 		return mypageDAO.attRate(user_code);
 	}
+
+
+	public String getPw(String user_code) {
+		return mypageDAO.getPw(user_code);
+	}
 	
 }
