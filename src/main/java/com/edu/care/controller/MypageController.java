@@ -182,7 +182,7 @@ public class MypageController {
 		
 		
 		int row = mypageService.update(photo, param, user_code);
-		logger.info("insert count :"+row);
+		logger.info("insert count :"+row); 	
 		
 		if(row == 1) {
 			// 새 비밀번호가 기존 비밀번호와 다를 경우
@@ -192,10 +192,9 @@ public class MypageController {
 	        } else {
 	            page = "redirect:/mypageStd.go?user_code=" + user_code;
 	            msg = "정보수정에 성공했습니다.";
-	        }	        
+	        }	
+	        rAttr.addFlashAttribute("msg", msg);
 		}
-		rAttr.addFlashAttribute("msg", msg);
-		
 		return page;
 	}
 	
