@@ -186,13 +186,13 @@ public class MypageController {
 		
 		if(row == 1) {
 			// 새 비밀번호가 기존 비밀번호와 다를 경우
-	        if (!encoder.matches(newPw, oldPw)) {
-	            page = "redirect:/login"; // 로그인 페이지로 리디렉션
+	        if (newPw != null && !newPw.isEmpty() && !encoder.matches(newPw, oldPw)) {
+	            page = "redirect:/login.go"; // 로그인 페이지로 리디렉션
 	            msg = "비밀번호가 변경되었습니다. 다시 로그인 해주세요.";
 	        } else {
 	            page = "redirect:/mypageStd.go?user_code=" + user_code;
 	            msg = "정보수정에 성공했습니다.";
-	        }
+	        }	        
 		}
 		rAttr.addFlashAttribute("msg", msg);
 		

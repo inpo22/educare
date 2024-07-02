@@ -37,8 +37,15 @@ public class MypageService {
 		
 		// 비밀번호 암호화
         String rawPassword = param.get("pw");
-        String encodedPassword = encoder.encode(rawPassword);
-        param.put("pw", encodedPassword);
+        
+        if(rawPassword != null && !rawPassword.isEmpty()) {
+        	String encodedPassword = encoder.encode(rawPassword);
+            param.put("pw", encodedPassword);
+        }else {
+        	//비밀번호 입력되지않으면 기존 비밀번호 유지
+        	param.remove("pw");
+        }
+        
 		
 		// 파일 처리 로직
         String newFileName = null;
