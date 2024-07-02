@@ -48,4 +48,6 @@ public interface StuDAO {
 	int absent(String course_name, String user_code, String att_date);
 
 	String attRate(String user_code);
+
+	int checkCourse(Map<String, String> param);
 }

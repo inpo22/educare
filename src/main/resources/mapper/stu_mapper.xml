@@ -246,17 +246,43 @@
 	
 	<!-- 선택한 강의 등록 쿼리문 -->
 	<insert id="courseReg" parameterType="map">
-		INSERT INTO payment (user_code, course_no, course_price, pay_state)
-			SELECT
-				#{user_code},
-				c.course_no,
-				c.course_price,
-				0
-			FROM
-				course c
-			WHERE
-				c.course_name = #{course_name}
+	    INSERT INTO payment (user_code, course_no, course_price, pay_state)
+	    SELECT
+	        #{user_code},
+	        c.course_no,
+	        c.course_price,
+	        0
+	    FROM
+	        course c
+	    WHERE
+	        c.course_name = #{course_name}
+	        AND NOT EXISTS (
+	            SELECT 1
+	            FROM payment p
+	            WHERE p.user_code = #{user_code}
+	            AND p.course_no = c.course_no
+	        )
 	</insert>
+	
+	<!-- 강의 중복 여부 -->
+	<select id="checkCourse" parameterType="map" resultType="Integer">
+		SELECT 
+			COUNT(1)
+		FROM
+			payment p
+		JOIN course c ON p.course_no = c.course_no
+		WHERE
+			p.user_code=#{user_code}
+		AND
+			c.course_no = (
+			SELECT
+				course_no
+			FROM
+				course
+			WHERE course_name = #{course_name}
+			)
+	</select>
+
 	
 	<!-- 출석현황 리스트 쿼리문 -->
 	<select id="attdList" parameterType="String" resultType="mypage">

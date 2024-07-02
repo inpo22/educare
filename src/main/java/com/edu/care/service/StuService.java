@@ -154,6 +154,13 @@ public class StuService {
 
 	public int courseReg(Map<String, String> param, String user_code) {
 		param.put("user_code", user_code);
+		
+		// 강의 존재 확인
+		int count = stuDAO.checkCourse(param);
+		if(count > 0) {
+			// 이미 존재하는 강의 일 경우 2 반환
+			return 2;
+		}
 		return stuDAO.courseReg(param);
 	}
 
