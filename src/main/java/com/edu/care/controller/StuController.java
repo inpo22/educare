@@ -27,7 +27,9 @@ public class StuController {
 	@Autowired StuService stuService;
 	
 	@GetMapping(value="/std/list.go")
-	public String stuList() {
+	public String stuList(Model model) {
+		int stdCnt = stuService.stdCnt();
+		model.addAttribute("stdCnt", stdCnt);
 		return "std/std_list";
 	}
 	
@@ -117,6 +119,8 @@ public class StuController {
 		
 		if(row == 1) {
 			msg = "강의등록 성공";	
+		}else if (row ==2 ) {
+			msg = "이미 존재하는 강의입니다.";
 		}
 		reAttr.addFlashAttribute("msg", msg);
 		

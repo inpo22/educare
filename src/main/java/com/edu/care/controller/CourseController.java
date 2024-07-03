@@ -160,4 +160,51 @@ public class CourseController {
 		
 		return mv;
 	}
+	
+	@PostMapping(value="/course/update.ajax")
+	@ResponseBody
+	public Map<String, String> courseUpdateAjax(@RequestBody CourseDTO courseDTO, HttpSession session) {
+		logger.info("##### course courseUpdate Ajax controller IN #####");
+		
+		int course_no = courseDTO.getCourse_no();
+		String course_name  = courseDTO.getCourse_name();
+		String course_con = courseDTO.getCourse_con();
+		
+		Boolean result = courseService.courseUpdateAjax(courseDTO);
+		logger.info("##### result=> ",result);
+		
+		Map<String, String> map = new HashMap<String, String>();
+		
+		if(result) {
+			 map.put("result", "success");
+		}else {
+			 map.put("result", "fail");
+		}
+		return map;
+	}
+
+	@GetMapping(value="/scheduleStu.go")
+	public String scheduleStu() {
+		return "course/courseReservationStu";
+	}
+	
+	@PostMapping(value="/course/stuCheck.ajax")
+	@ResponseBody
+	public Map<String, Object> courseStuCheck(HttpSession session) {
+		logger.info("##### schedule courseStuCheck list ajax controller IN #####");
+		String userCode = (String)session.getAttribute("user_code");
+		Map<String, Object> map = courseService.courseStuCheck(userCode);
+		return map;
+	}
+	
+	@PostMapping(value="/course/getCourseSpaceList.ajax")
+	@ResponseBody
+	public Map<String, Object> getCourseSpaceList(HttpSession session) {
+		logger.info("##### schedule courseStuCheck list ajax controller IN #####");
+		List<CourseDTO> spaceList = courseService.getCourseSpaceList();
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("spaceList", spaceList);
+		
+		return map;
+	}
 }

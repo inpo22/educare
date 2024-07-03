@@ -13,6 +13,7 @@
 <!-- css -->
 <jsp:include page="/views/common/head.jsp"></jsp:include>
 <!-- js -->
+<script src="/resources/js/pagination_module.js" type="text/javascript"></script>
 
 <style>
 .pln_btn {
@@ -67,6 +68,14 @@
 .pointer{
 	cursor: pointer;
 }
+
+.title-cate{
+	color:#012970;
+}
+
+.table-light{
+	--bs-table-bg: #a2a2a2;
+}
 </style>
 </head>
 
@@ -78,7 +87,7 @@
 	<main id="main" class="main">
 
 		<div class="pagetitle">
-			<h1>강의 관리</h1>
+			<h1><a href="/course/list.go" class="title-cate" >강의 관리</a></h1>
 		</div>
 		<!-- End Page Title -->
 		<div class="row">
@@ -166,10 +175,18 @@ function read_courseList(page, searchFilter, searchContent, showCourse){
 			'showCourse':showCourse
 		},
 		success: function(data){
-			console.log(data);
+			// console.log(data);
 			totalPage = data.totalPage;
 			drawList(data.list);
-			setupPagination(page, totalPage);
+			
+			var option = {
+				totalPages: totalPage,
+				startPage: page
+			};
+			window.pagination.init($('#pagination'), option, function(currentPage) {
+				page = currentPage;
+				read_courseList(page, searchFilter, searchContent, showCourse);
+			});
 		},
 		error:function(request, status, error){
 			console.log(error);
@@ -178,96 +195,20 @@ function read_courseList(page, searchFilter, searchContent, showCourse){
 	});
 }
 
-function setupPagination(page, totalPage) {
-	var pagination = $('#pagination');
-	var count = 0;
-	
-	pagination.empty();
-	
-	var content = '<li class="page-item">';
-	content += '<a class="page-link" href="#">&laquo;</a>';
-	content += '</li>';
-	content += '<li class="page-item">';
-	content += '<a class="page-link" href="#">&lsaquo;</a>';
-	content += '</li>';
-	
-	if (page < 3) {
-		for (var i = 1; i <= totalPage; i++) {
-			content += '<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>';
-			count++;
-			if (count == 5) {
-				break;
-			}
-		}
-	}else if (page >= 3 && page < (totalPage - 2)) {
-		for (var i = page - 2; i <= totalPage; i++) {
-			content += '<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>';
-			count++;
-			if (count == 5) {
-				break;
-			}
-		}
-	}else if (page >= 3 && page >= (totalPage - 2)) {
-		for (var i = totalPage - 4; i <= totalPage; i++) {
-			if (i == 0) {
-				continue;
-			}
-			content += '<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>';
-			count++;
-			if (count == 5) {
-				break;
-			}
-		}
-	}
-	
-	content += '<li class="page-item">';
-	content += '<a class="page-link" href="#">&rsaquo;</a>';
-	content += '</li>';
-	
-	content += '<li class="page-item">';
-	content += '<a class="page-link" href="#">&raquo;</a>';
-	content += '</li>';
-	
-	pagination.html(content);
-	pagination.find('.page-item').removeClass('active');
-	
-	$('.page-link').each(function() {
-		if ($(this).html() == page) {
-			$(this).parent().addClass('active');
-		}
-	});
-	
-}
-
-$('#pagination').on('click', '.page-link', function(e) {
-	e.preventDefault();
-	// console.log(page);
-	// console.log($(this).html());
-	if ($(this).html() == '«') {
-		page = 1;
-	}else if ($(this).html() == '‹') {
-		if (page > 1) {
-			page--;
-		}
-	}else if ($(this).html() == '›') {
-		if (page < totalPage) {
-			page++;
-		}
-	}else if ($(this).html() == '»') {
-		page = totalPage;
-	}else {
-		page = parseInt($(this).html());
-	}
-	// console.log(page);
-	read_courseList(page, searchFilter, searchContent);
-});
-
 function drawList(list){
+	var now = new Date().toISOString();
+	var formatNow = now.split('T')[0];
+	console.log("nownow",formatNow);
 	var con = '';
 	for(var list of list){
-		con += '<tr class="pointer" onclick="location.href=\'/course/detail.go?course_no=' + list.course_no + '\'">';
+		console.log("start.",list.course_start.substring(0,10));
+		if(list.course_start.substring(0,10) >= formatNow){
+			con += '<tr class="pointer" onclick="location.href=\'/course/detail.go?course_no=' + list.course_no + '\'">';
+		}else{
+			con += '<tr class="pointer table-light" onclick="location.href=\'/course/detail.go?course_no=' + list.course_no + '\'">';
+		}
 		con += '<td>'+list.name+'</td>';
-		con += '<td>'+list.course_name+'</td>';
+		con += '<td class="text-truncate">'+list.course_name+'</td>';
 		con += '<td>'+list.course_space+'</td>';
 		con += '<td>'+list.course_start.substring(0,10)+'</td>';
 		con += '<td>'+list.course_end.substring(0,10)+'</td>';

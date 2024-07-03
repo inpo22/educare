@@ -30,7 +30,9 @@ public class EmpController {
 	@Autowired EmpService empService;
 	
 	@GetMapping(value="/emp/list.go")
-	public String empList() {
+	public String empList(Model model) {
+		int empCnt = empService.empCnt();
+		model.addAttribute("empCnt", empCnt);
 		return "emp/emp_list";
 	}
 	
@@ -98,7 +100,9 @@ public class EmpController {
 	
 	// 퇴사자목록 페이지 이동
 	@GetMapping(value="/emp/quitList.go")
-	public String quitList() {
+	public String quitList(Model model) {
+		int quitCnt = empService.quitCnt();
+		model.addAttribute("quitCnt", quitCnt);
 		return "emp/quit_list";
 	}
 	

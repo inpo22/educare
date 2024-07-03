@@ -155,4 +155,47 @@
 		FROM user 
 		WHERE user_code  = #{param1}
 	</select>
+	
+	<update id="courseUpdateAjax" parameterType="course">
+		UPDATE 
+			course 
+		SET 
+			course_name = #{course_name}
+		  	, course_con = #{course_con}
+		WHERE 
+			course_no = #{course_no}
+	</update>
+	
+	<select id="courseStuCheck" resultType="course">
+		SELECT c.course_name
+			 , u.name
+			 , c.course_no
+			 , cr.course_space
+			 , cr.start_time
+			 , cr.end_time 
+		FROM course c 
+		JOIN payment p ON c.course_no = p.course_no 
+		JOIN user u ON u.user_code  = c.user_code 
+		JOIN course_rez cr ON c.course_no = cr.course_no
+		WHERE p.user_code = #{param1}
+		AND p.pay_state = 1
+	</select>
+	
+	<select id="courseStuCheckList" resultType="course">
+		SELECT c.course_name
+			 , c.course_start
+			 , c.course_end 
+		FROM course c 
+		JOIN payment p ON c.course_no = p.course_no 
+		JOIN user u ON u.user_code  = c.user_code 
+		WHERE p.user_code = #{param1}
+		AND p.pay_state = 1
+		ORDER BY c.course_start ASC
+	</select>
+	
+	<select id="getCourseSpaceList" resultType="course">
+		SELECT cr.course_space 
+		FROM course_rez cr
+		GROUP BY course_space	
+	</select>
 </mapper>

@@ -21,51 +21,65 @@
             background-color: white;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            text-align: center;
         }
 
-        .result-container img {
-            display: block;
-            margin: 0 auto 20px;
+        .result-container h3,
+        .result-container p {
+            margin: 0;
+            padding: 10px 0;
+        }
+
+        .result-container p.id {
+            font-size: 1.5rem;
+            font-weight: bold;
         }
 
         .btn-group {
             display: flex;
-            justify-content: space-between;
+            justify-content: space-around;
             width: 100%;
+            margin-top: 20px;
         }
 
         .btn-group .btn {
-            width: 48%;
+            flex: 1;
             border-radius: 8px !important;
-        }
-
-        .btn-group .btn:not(:last-child) {
-            margin-right: 4%;
+            margin: 5px; 
+            padding: 12px;
+            flex-basis: 100%; 
+            max-width: 200px; 
+            
         }
     </style>
 </head>
 <body>
-    <div class="result-container">
-        <h3 class="text-center">아이디 찾기 결과</h3>
-        <p class="text-center">고객님의 정보와 일치하는 아이디입니다.</p>
-        <br>
-        <p class="text-center" style="font-size: 1.5rem; font-weight: bold;">아이디: ${userId}</p>
-        <div class="btn-group">
-            <button class="btn btn-primary" onclick="redirectToPwFind()">비밀번호 찾기</button>
-            <button class="btn btn-secondary" onclick="redirectToLogin()">로그인</button>
-        </div>
-    </div>
+     <table class="result-container">
+        <tr>
+            <td colspan="2">
+                <h3>아이디 찾기 확인</h3>
+                <p>고객님의 정보와 일치하는 아이디입니다.</p>
+                <br>
+                <p class="id">아이디: ${userId}</p>
+            </td>
+        </tr>
+        <tr class="btn-group">
+            <td>
+                <button class="btn btn-primary" onclick="ToPwFind()">비밀번호 찾기</button>
+            </td>
+            <td>
+                <button class="btn btn-secondary" onclick="ToLogin()">로그인</button>
+            </td>
+        </tr>
+    </table>
+</body>
     <script>
-        function redirectToLogin() {
+        function ToPwFind() {
+            window.location.href = "/login/pwFind.go";
+        }
+        function ToLogin() {
             window.location.href = "/login.go";
         }
 
-        function redirectToPwFind() {
-            window.location.href = "/login/pwFind.go";
-        }
     </script>
-</body>
 </html>

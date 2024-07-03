@@ -102,7 +102,6 @@ public class ApprovalService {
 			}
 		}
 		
-		approvalDAO.minusRemainVaca(user_code, au_code);
 		
 		fileSave(au_code, attachFile, user_code);
 		
@@ -305,6 +304,8 @@ public class ApprovalService {
 			
 			if (dto.getAu_type() == 1) {
 				approvalDAO.scheduleWrite(dto);
+
+				approvalDAO.minusRemainVaca(user_code, au_code);
 			}
 		}
 	}
@@ -319,13 +320,5 @@ public class ApprovalService {
 		int type = 2;
 		
 		mailService.autoMailSend(receive_user_code, code, type);
-		
-		if (dto.getAu_type() == 1) {
-			double va_days = dto.getVa_days();
-			String au_user_code = dto.getUser_code();
-			Timestamp reg_date = dto.getReg_date();
-			
-			approvalDAO.plusRemainVaca(va_days, au_user_code, reg_date);
-		}
 	}
 }

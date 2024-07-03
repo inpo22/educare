@@ -105,6 +105,18 @@ textarea {
 	resize: none;
 }
 
+#courseInfo{
+	border: 5px double #e8e8e8;
+    background-color: white;
+    resize: none;
+    color: black;
+  	height: 72px;
+    overflow: auto;
+    border-radius: 6px;
+    font-size: 15px;
+    padding: 2px 10px;
+}
+
 #calendar {
 	height:680px;
 }
@@ -156,25 +168,10 @@ textarea {
 	<!-- Start #main -->
 	<main id="main" class="main">
 		<div class="pagetitle">
-			<h1>강의실 관리</h1>
+			<h1>MY CLASS CALENDAR</h1>
 		</div>
 		<!-- End Page Title -->
-		
-		<div class="row-sm-4 mx-auto mt-3">
-			<select class="form-select form-select mb-3" id="selectCourse" aria-label="Large select example">
-				  <option value="all" selected>모든 강의실 예약현황</option>
-			</select>
-			<!-- <fieldset>
-				<button type="button" class="filter_btn w-10" id="all" data-type="all" style="border: 0; border-radius: 7px; background-color: #525252;">ALL</button>
-				<button type="button" class="filter_btn w-10" id="A101" data-type="A101" style="border: 0; border-radius: 7px; background-color: #db7e6a;">A101</button>
-				<button type="button" class="filter_btn w-10" id="A102" data-type="A102" style="border: 0; border-radius: 7px; background-color: #faab23;">A102</button>
-				<button type="button" class="filter_btn w-10" id="B101" data-type="B101" style="border: 0; border-radius: 7px; background-color: #87b27c;">B101</button>
-				<button type="button" class="filter_btn w-10" id="B102" data-type="B102" style="border: 0; border-radius: 7px; background-color: #7db0c7;">B102</button>
-				<button type="button" class="filter_btn w-10" id="C101" data-type="C101" style="border: 0; border-radius: 7px; background-color: #7774b6;">C101</button>
-				<button type="button" class="filter_btn w-10" id="C102" data-type="C102" style="border: 0; border-radius: 7px; background-color: #b789a9;">C102</button>
-			</fieldset> -->
-		</div>
-
+		<div id="courseInfo" class="shadow-sm"> :: ${sessionScope.user_name}의 수강 목록 ::</div> 
 		<div class="calendar-view mt-3">
 			<div class="calendar-header mb-2 d-flex align-items-center justify-content-between">
 				<div>
@@ -203,7 +200,7 @@ textarea {
 var container = document.getElementById('calendar');
 
 var options = {
-    defaultView: 'week',
+    defaultView: 'month',
     timezone: [{
         timezoneName: 'Asia/Seoul',
         displayLabel: 'Seoul'
@@ -223,7 +220,7 @@ var options = {
     },
     template: {
   		popupDetailAttendees({ attendees }) {
-  	      return attendees;
+  	      return attendees + ' 강사님';
   	    },
   	  	popupDetailTitle({ title }) {
   	      return title;
@@ -265,7 +262,7 @@ function getNavbarRange(tzStart, tzEnd, viewType) {
 }
 
 $.ajax({
-    url: '/course/check.ajax',
+    url: '/course/stuCheck.ajax',
     type: 'POST',
     contentType: 'application/json',
     dataType: 'json',
@@ -276,7 +273,7 @@ $.ajax({
             var event = {
             	id: item.course_space,
             	calendarId: item.course_space,
-                title: item.course_space,
+                title: item.course_name,
                 nameCourse: item.course_name,
                 location : item.course_space,
                 attendees : item.name,
@@ -294,6 +291,14 @@ $.ajax({
             };
             events.push(event);
         });
+        
+        response.stuCourselist.forEach(function(item) {
+        	var content = '<div>';
+        	content += "📚 " +item.course_name + " ( " + item.course_start.split('T')[0] + " ~ " + item.course_end.split('T')[0]+ " ) ";
+        	content += '</div>';
+        	$('#courseInfo').append(content);
+        });
+        
         calendar.createEvents(events);
         calendar.render();
         displayRenderRange();
@@ -350,79 +355,6 @@ function goPrevOrNext(result){
 		displayRenderRange();
 	}
 }
-
-$.ajax({
-  	url: '/course/getCourseSpaceList.ajax',
-    type: 'POST',
-    contentType: 'application/json',
-    dataType: 'json',
-    success: function(response) {
-   		response.spaceList.forEach(function(item){
-   			content= '<option value="'+item.course_space+'">';
-   			content+=item.course_space;
-   			content+= '</option>';
-   			$('#selectCourse').append(content);
-   		});
-    },
-    error: function(request, status, error) {
-        console.log(error);
-    }
-});
-
-$('#selectCourse').on('change',function(){
-	var eventType = $(this).val();
-	 var event = calendar.getEvent(eventType, eventType);
-	    
-	    calendar.setCalendarVisibility('A101', false);
-	    calendar.setCalendarVisibility('A102', false);
-	    calendar.setCalendarVisibility('B101', false);
-	    calendar.setCalendarVisibility('B102', false);
-	    calendar.setCalendarVisibility('C101', false);
-	    calendar.setCalendarVisibility('C102', false);
-
-	    if(eventType == 'all'){
-	    	 calendar.setCalendarVisibility('A101', true);
-	    	 calendar.setCalendarVisibility('A102', true);
-	    	 calendar.setCalendarVisibility('B101', true);
-	    	 calendar.setCalendarVisibility('B102', true);
-	    	 calendar.setCalendarVisibility('C101', true);
-	    	 calendar.setCalendarVisibility('C101', true);
-		}else{
-			 calendar.setCalendarVisibility(eventType, true);
-		}
-	    
-	    calendar.render();
-});
-/* 
-$(".filter_btn").click(function () {
-	
-    var eventType = $(this).data('type');
-    console.log("click: " + eventType);
-    var event = calendar.getEvent(eventType, eventType);
-    
-    calendar.setCalendarVisibility('A101', false);
-    calendar.setCalendarVisibility('A102', false);
-    calendar.setCalendarVisibility('B101', false);
-    calendar.setCalendarVisibility('B102', false);
-    calendar.setCalendarVisibility('C101', false);
-    calendar.setCalendarVisibility('C102', false);
-
-    if(eventType == 'all'){
-    	 calendar.setCalendarVisibility('A101', true);
-    	 calendar.setCalendarVisibility('A102', true);
-    	 calendar.setCalendarVisibility('B101', true);
-    	 calendar.setCalendarVisibility('B102', true);
-    	 calendar.setCalendarVisibility('C101', true);
-    	 calendar.setCalendarVisibility('C101', true);
-	}else{
-		 calendar.setCalendarVisibility(eventType, true);
-	}
-    
-    calendar.render();
-    
-});
- */
-
 
 </script>
 </html>

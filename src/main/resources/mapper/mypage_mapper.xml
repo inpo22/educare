@@ -16,6 +16,15 @@
 		WHERE user_code=#{user_code}		
 	</update>
 	
+	<!-- 기존 비밀번호 가져오는 쿼리문 -->
+	<select id="getPw" parameterType="String" resultType="String">
+		SELECT
+			pw
+		FROM
+			user
+		WHERE user_code=#{user_code}
+	</select>
+	
 	<!-- 학생 마이페이지 정보 불러오기 쿼리문 -->
 	<select id="mypageStd" resultType="mypage">
 		SELECT

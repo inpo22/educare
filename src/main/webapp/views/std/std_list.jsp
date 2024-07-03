@@ -13,7 +13,9 @@
 <!-- css -->
 <jsp:include page="/views/common/head.jsp"></jsp:include>
 <link href="/resources/std/std.css" rel="stylesheet">
+
 <!-- js -->
+<script src="/resources/js/pagination_module.js" type="text/javascript"></script>
 
 <style>
 @media (min-width: 768px) {
@@ -59,6 +61,7 @@
 			<br/>
 			<br/>
 			
+			
 			<div class="row mb-2">          
 	          <div class="d-flex">
 	              <select id="type" class="form-select" aria-label="Default select example">
@@ -103,6 +106,7 @@
 			<!-- End table -->
 			
 			<br/>
+			<p>학생 수 : 총  ${stdCnt}명</p>
 			
 			<!-- 페이징 시작 -->
 			<ul class="pagination d-flex justify-content-center" id="pagination"></ul>
@@ -142,9 +146,16 @@ function listCall(page, type, searchbox, startDate, endDate){
 		success:function(data){
 			//console.log(data);
 			totalPage = data.totalPage;
-			setupPagination(page, totalPage);
+			drawStdList(data.list);
 			
-			drawStdList(data.list)
+			var option = {
+				totalPages: totalPage,
+				startPage: page
+			};
+			window.pagination.init($('#pagination'), option, function(currentPage) {
+				page = currentPage;
+				listCall(page, searchCondition, searchContent);
+			});
 		},
 		error:function(error){
 			console.log(error);

@@ -202,6 +202,9 @@ small{
 #deleteBtn{
 	margin-right: 10px;
 }
+
+.title-cate{
+	color:#012970;
 }
 </style>
 </head>
@@ -213,7 +216,7 @@ small{
 
 	<main id="main" class="main">
 		<div class="pagetitle">
-			<h1>강의 관리 > 강의 상세정보</h1>
+			<h1><a href="/course/list.go" class="title-cate" >강의 관리</a> > 강의 수정</h1>
 		</div>
 		<!-- End Page Title -->
 	<div class="board mt-4">
@@ -302,10 +305,49 @@ const editor = toastui.Editor.factory({
 	hideModeSwitch : true,
 	initialValue: content
 });
+editor.removeToolbarItem('code');
+editor.removeToolbarItem('codeblock');
 
 function cancelCourseUpdate(){
 	var course_no = '${courseDTO[0].course_no}';
 	location.href="/course/detail.go?course_no=" + course_no;
+}
+
+function updateCourseSubmit(){
+	var course_no = '${courseDTO[0].course_no}';
+	var courseName = $('#course_name').val();
+	console.log("course_name >> "+ course_name);
+	var editorContent = editor.getHTML();
+	var formatContent = $('#content').val(editorContent);
+	var content = formatContent.val();
+	console.log("content >> "+ content);
+	
+	var paramData = {
+		course_no: course_no,
+		course_name: courseName,
+		course_con: content
+	}
+	
+	$.ajax({
+		url:'/course/update.ajax',
+		type:'POST',
+		dataType:'JSON',
+		data: JSON.stringify(paramData),
+		contentType: 'application/json',
+		success:function(data) {
+			console.log(data.result);
+			if(data.result === "success" ){
+				alert('수정이 완료되었습니다.');
+				location.href='/course/detail.go?course_no='+course_no;
+			}else{
+				alert('수정에 실패하였습니다.');
+			}
+		},
+		error:function(request, status, error){
+			console.log(error);
+		}
+		
+	}); 
 }
 
 </script>

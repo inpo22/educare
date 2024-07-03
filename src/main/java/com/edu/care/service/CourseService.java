@@ -124,5 +124,27 @@ public class CourseService {
 		
 	}
 
+	public Boolean courseUpdateAjax(CourseDTO courseDTO) {
+		int row = courseDAO.courseUpdateAjax(courseDTO);
+		if(row > 0) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+
+	public Map<String, Object> courseStuCheck(String userCode) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		List<CourseDTO> list = courseDAO.courseStuCheck(userCode);
+		List<CourseDTO> stuCourselist = courseDAO.courseStuCheckList(userCode);
+		
+		result.put("list", list);
+		result.put("stuCourselist", stuCourselist);
+		return result;
+	}
+
+	public List<CourseDTO> getCourseSpaceList() {
+		return courseDAO.getCourseSpaceList();
+	}
 
 }
