@@ -115,26 +115,24 @@ public class DeptService {
 			
 			mailService.autoMailSend(receive_user_code, code, type);
 		}
-		logger.info("부서장 수정 결과: "+msg);
+		logger.info("팀장 변경 결과: "+msg);
 		result.put("msg", msg);
 		return result;
 	}
 
 	// 부서원 부서 이동
-	public Map<String, Object> moveMember(Map<String, Object> param) {
+	public Map<String, Object> moveMember(String team_code, List<String> users) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		String msg = "fail";
-		int row = deptDAO.moveMember(param);
-		
-		if(row > 0) {
-			msg = "success";
-			
-			// 부서 이동 시 메일 전송
-			String receive_user_code = (String) param.get("user_code");
-			String code = (String) param.get("team_code");
-			int type = 0;
-			
-			mailService.autoMailSend(receive_user_code, code, type);
+		int row = 0;
+		for (String user_code : users) {
+			logger.info("user_code: "+user_code);
+			row = deptDAO.moveMember(team_code, user_code);
+			if(row > 0) {
+				msg = "success";
+				// 부서 이동 시 메일 전송
+				mailService.autoMailSend(user_code, team_code, 0);
+			}
 		}
 		logger.info("부서원 이동 결과: "+msg);
 		result.put("msg", msg);
