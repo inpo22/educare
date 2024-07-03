@@ -47,7 +47,7 @@
                     </li>
 
                     <li>
-                        <hr class="dropdown-divider">
+                         <hr style="border-top: 1px solid #6c757d; margin: 0;">
                     </li>
 
                     <li>
@@ -57,7 +57,7 @@
                         </a>
                     </li>
                     <li>
-                        <hr class="dropdown-divider">
+                         <hr style="border-top: 1px solid #6c757d; margin: 0;">
                     </li>
 
                     <li>
