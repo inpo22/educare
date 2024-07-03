@@ -133,43 +133,43 @@
 			list.forEach(function(data, i){
 				var notiDate = new Date(data.noti_date);
 				var ogList = $('#noti_list_sample').clone(true);
-				//console.log(i,':',data.noti_no,'-',data.noti_content_title);
+				//console.log(i,':',data.noti_no,'-',data);
 				// 알림 내용 표시
 				// 0:결재 1:공지 2: 메일 3: 일정
 				switch(data.noti_type){
 				case 0:
 					//console.log('type:0-결재');
-					title = '[결재 요청] '+data.noti_content_title;
+					title = '[결재요청] '+data.noti_content_title;
 					icon_class = "noti_list_icon bi bi-clipboard me-3 text-secondary ";
 					link_addr = "/approval/detail.go?au_code="+data.noti_content_no;
 					break;
 				case 1:
 					//console.log('type:1-전사 공지');
-					title = '[전사 공지] '+data.noti_content_title;
+					title = '[전사공지] '+data.noti_content_title;
 					icon_class = "noti_list_icon bi bi-bell-fill me-3 text-warning";
 					link_addr = "/allBoard/detail.go?post_no="+data.noti_content_no;
 					break;
 				case 2:
 					//console.log('type:2-메일');
-					title = '[메일 수신] '+data.noti_content_title;
+					title = '[메일수신] '+data.noti_content_title;
 					icon_class = "noti_list_icon bi bi-envelope-fill me-3 text-success";
 					link_addr = '/mail/detail.go?mail_no='+data.noti_content_no;
 					break;
 				case 3:
 					//console.log('type:3-전사 일정');
-					title = '[전사 일정] '+data.noti_content_title;
+					title = '[전사일정] '+data.noti_content_title;
 					icon_class = "noti_list_icon bi bi-calendar me-3 text-danger";
 					link_addr = "/schedule.go";
 					break;
 				case 4:
 					//console.log('type:4-부서 공지');
-					title = '[부서 공지] '+data.noti_content_title;
+					title = '[부서공지] '+data.noti_content_title;
 					icon_class = "noti_list_icon bi bi-bell-fill me-3 text-warning";
 					link_addr = "/allBoard/detail.go?post_no="+data.noti_content_no;
 					break;
 				case 5:
 					//console.log('type:5-부서 일정');
-					title = '[부서 일정] '+data.noti_content_title;
+					title = '[부서일정] '+data.noti_content_title;
 					icon_class = "noti_list_icon bi bi-calendar me-3 text-danger";
 					link_addr = "/schedule.go";
 					break;
@@ -192,7 +192,10 @@
 					noti_time = diffMin+' 분 전';
 					//console.log('min:',noti_time);
 				}
-				
+				// 알림 작성자 표시
+				if(data.from_user_code == 'system'){
+					data.from_user_class = '';
+				}
 				// 리스트 값 대입 및 속성 추가
 				ogList.attr('id',data.noti_no);
 				ogList.addClass('newNoti');

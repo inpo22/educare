@@ -15,9 +15,9 @@
   height: 100px;
   align-items: center;
   padding-left: 15px;
-  padding-right: 10px;
-  padding-top: 5px;
-  padding-bottom: 5px;
+  padding-right: 0px;
+  padding-top: 10px;
+  padding-bottom: 0px;
   transition: 0.3s;
 }
 
@@ -33,16 +33,16 @@
   overflow: hidden;
   white-space: nowrap;
   font-size: 17px;
-  margin: 0;
+  margin: 1px;
 }
 
 .noti_list_name {
-  margin: 0;
+  margin: 1px;
   font-size: 15px;
 }
 
 .noti_list_datetime {
-  margin: 0;
+  margin: 1px;
   color: #6c757d;
   font-size: 15px;
 }

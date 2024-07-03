@@ -27,7 +27,7 @@ public interface DeptDAO {
 
 	int changeLeader(Map<String, Object> param);
 
-	int moveMember(Map<String, Object> param);
+	int moveMember(String team_code, String user_code);
 
 
 }
