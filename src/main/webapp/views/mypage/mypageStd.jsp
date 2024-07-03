@@ -383,9 +383,7 @@ function CourseListCall(page, Csearchbox, user_code){
 //수강이력 리스트 그리기 시작
 function drawCourseList(courseList){
 	var content = '';
-	var today = new Date();
-	today.setHours(0,0,0,0); // 오늘 날짜의 시간을 00:00:00으로 설정
-	
+		
 	if(courseList.length == 0){
 		content = '<tr><td colspan ="5" class="no-course">등록된 강의가 없습니다.</td></tr>';
 	}else{
@@ -394,14 +392,6 @@ function drawCourseList(courseList){
 		for(data of courseList){
 			var start = data.course_start.split("T")[0];
 			var end = data.course_end.split("T")[0];
-			
-			// 날짜 비교를 위해 Date 객체 생성
-			var startDate = new Date(start);
-			
-			// 시작일이 오늘 날짜보다 전이면 결제 취소 상태로 설정
-			if(startDate < today) {
-				data.pay_state = 2; // 결제 취소 상태로 변경
-			}
 			
 			content += '<tr>';
 			content += '<td>' + data.course_name + '</td>';

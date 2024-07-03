@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -187,8 +190,27 @@ public class MypageService {
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		List<PaymentDTO> cList = mypageDAO.StdcourseList(start, pagePerCnt, Csearchbox, user_code);
+	
 		logger.info("cList : {}", cList);
 		logger.info("cList size : " + cList.size());
+		
+		// 현재 날짜 가져오기
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        // 각 강의의 시작일을 확인하여 결제 상태를 업데이트
+        for (PaymentDTO course : cList) {
+        	LocalDateTime startDateTime = LocalDateTime.parse(course.getCourse_start(), formatter);
+            LocalDate startDate = startDateTime.toLocalDate();
+
+            // 강의 시작일이 오늘보다 이전이면 결제 상태를 '결제취소'로 변경
+            if (startDate.isBefore(today)) {
+                if (course.getPay_state() != 2) { // 이미 취소된 상태가 아니라면
+                    course.setPay_state(2); // 결제취소 상태로 변경
+                    mypageDAO.updatePayState(course.getCourse_no()); // 데이터베이스 업데이트
+                }
+            }
+        }
 		
 		result.put("cList", cList);
 		result.put("totalPage", mypageDAO.StdcourseListPageCnt(pagePerCnt, Csearchbox, user_code));

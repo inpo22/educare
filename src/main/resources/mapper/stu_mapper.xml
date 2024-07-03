@@ -200,8 +200,8 @@
 		SELECT 
 			c.course_name ,
 			u.name,
-			DATE_FORMAT(c.course_start, '%Y-%m-%d') AS course_start,
-        	DATE_FORMAT(c.course_end, '%Y-%m-%d') AS course_end,
+			c.course_start,
+        	c.course_end,
 			p.pay_state
 		FROM 
 			course c 
@@ -266,6 +266,7 @@
 	        course c
 	    WHERE
 	        c.course_name = #{course_name}
+	        AND c.course_start > CURRENT_DATE()
 	        AND NOT EXISTS (
 	            SELECT 1
 	            FROM payment p
@@ -273,25 +274,21 @@
 	            AND p.course_no = c.course_no
 	        )
 	</insert>
+
 	
 	<!-- 강의 중복 여부 -->
 	<select id="checkCourse" parameterType="map" resultType="Integer">
-		SELECT 
-			COUNT(1)
-		FROM
-			payment p
-		JOIN course c ON p.course_no = c.course_no
-		WHERE
-			p.user_code=#{user_code}
-		AND
-			c.course_no = (
-			SELECT
-				course_no
-			FROM
-				course
-			WHERE course_name = #{course_name}
-			)
+	    SELECT 
+	        COUNT(1)
+	    FROM
+	        payment p
+	    JOIN course c ON p.course_no = c.course_no
+	    WHERE
+	        p.user_code = #{user_code}
+	    AND
+	        c.course_name = #{course_name}
 	</select>
+
 
 	
 	<!-- 출석현황 리스트 쿼리문 -->
