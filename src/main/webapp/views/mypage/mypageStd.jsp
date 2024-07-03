@@ -383,18 +383,21 @@ function CourseListCall(page, Csearchbox, user_code){
 //수강이력 리스트 그리기 시작
 function drawCourseList(courseList){
 	var content = '';
-	
+		
 	if(courseList.length == 0){
 		content = '<tr><td colspan ="5" class="no-course">등록된 강의가 없습니다.</td></tr>';
 	}else{
 		console.log(courseList);
 		
 		for(data of courseList){
+			var start = data.course_start.split("T")[0];
+			var end = data.course_end.split("T")[0];
+			
 			content += '<tr>';
 			content += '<td>' + data.course_name + '</td>';
 			content += '<td>' + data.name + '</td>';
-			content += '<td>' + data.course_start + '</td>';
-			content += '<td>' + data.course_end + '</td>';
+			content += '<td>' + start + '</td>';
+			content += '<td>' + end + '</td>';
 			if(data.pay_state == 0) {
 				content += '<td>';
 				content += '<button id="pay_btn" class="btn btn-kakaopay" onclick="kakaopay(\'' + data.course_no + '\', \'' + data.course_name + '\', \'' + data.course_price + '\')">';

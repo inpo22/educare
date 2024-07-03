@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.edu.care.dto.CourseDTO;
 import com.edu.care.dto.MypageDTO;
 import com.edu.care.dto.PaymentDTO;
 
@@ -44,6 +45,8 @@ public interface MypageDAO {
 	String attRate(String user_code);
 
 	String getPw(String user_code);
+
+	int updatePayState(String course_no);
 
 
 }

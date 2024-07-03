@@ -55,7 +55,7 @@ h1{
 	background-color: #87CEFA;
 }
 .modal-body{
-	max-height: 200px; 
+	max-height: 250px;
 	overflow-y: auto;
 }
 #photo-preview{

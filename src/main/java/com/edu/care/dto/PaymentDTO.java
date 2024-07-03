@@ -13,7 +13,28 @@ public class PaymentDTO {
 	private String name;
 	private Date pay_date;
 	private String course_price;
+	private int pay_state;
+	private String course_start;
+	private String course_end;
 	
+	public String getCourse_start() {
+		return course_start;
+	}
+	public void setCourse_start(String course_start) {
+		this.course_start = course_start;
+	}
+	public String getCourse_end() {
+		return course_end;
+	}
+	public void setCourse_end(String course_end) {
+		this.course_end = course_end;
+	}
+	public int getPay_state() {
+		return pay_state;
+	}
+	public void setPay_state(int pay_state) {
+		this.pay_state = pay_state;
+	}
 	public String getUser_code() {
 		return user_code;
 	}
