@@ -7,9 +7,11 @@
 	height: 100%;
 }
 #right-section {
-	width: 84%;
+	width: 85%;
 	height: 100%;
 	background-color: white;
+	border-radius: 10px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 	padding: 30px;
 }
 .second-sidebar td {

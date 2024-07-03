@@ -40,7 +40,7 @@
             <ul id="commute-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
                     <a href="/commuteState.go">
-                        <i class="bi bi-circle"></i><span>근태 현황</span>
+                        <i class="bi bi-circle"></i><span>근태 관리</span>
                     </a>
                 </li>
                 <li>
