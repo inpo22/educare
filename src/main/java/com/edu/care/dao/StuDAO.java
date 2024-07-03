@@ -31,7 +31,7 @@ public interface StuDAO {
 
 	int payListPageCnt(int pagePerCnt, String Psearchbox, String user_code);
 
-	List<CourseDTO> courseList(int start, int pagePerCnt, String Csearchbox, String user_code);
+	List<PaymentDTO> courseList(int start, int pagePerCnt, String Csearchbox, String user_code);
 
 	int courseListPageCnt(int pagePerCnt, String Csearchbox, String user_code);
 
@@ -52,4 +52,6 @@ public interface StuDAO {
 	int checkCourse(Map<String, String> param);
 
 	int stdCnt();
+
+	int updatePayState(String course_no);
 }
