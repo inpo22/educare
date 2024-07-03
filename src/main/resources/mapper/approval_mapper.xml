@@ -40,7 +40,7 @@
             		#{va_days},
             	</if>
             	<if test="va_days != 0.5">
-            		DATEDIFF(#{end_date}, #{start_date}),
+            		(DATEDIFF(#{end_date}, #{start_date}) + 1),
             	</if>
             	#{start_date}, #{end_date}, #{va_type}
 			)

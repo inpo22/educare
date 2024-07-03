@@ -66,10 +66,29 @@
 		LIMIT #{param2} OFFSET #{param1}
 	</select>
 	
+	<select id="attList" resultType="commute">
+		SELECT
+			o.work_date
+			, o.start_time
+			, o.end_time
+			, o.work_hour
+			, o.state
+		FROM officehour o
+		WHERE o.user_code = #{param3}
+		<if test="param4 != '' and param5 != ''">
+			o.work_date BETWEEN(#{param4}, #{param5})
+		</if>
+		ORDER BY o.work_date LIMIT #{param1} OFFSET #{param2}
+	</select>
+	
+	<select id="attListPageCnt" resultType="Integer">
+		SELECT 
+			CEIL(COUNT(o.work_date)/#{param1}) 
+		FROM officehour o
+		WHERE o.user_code = #{param2}
+		<if test="param3 != '' and param4 != ''">
+			o.work_date BETWEEN(#{param3}, #{param4})
+		</if>
+	</select>
+	
 </mapper>
-
-
-
-
-
-

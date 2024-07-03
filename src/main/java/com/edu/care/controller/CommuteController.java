@@ -44,7 +44,15 @@ public class CommuteController {
 		return map;
 	}
 	
-	
+	@GetMapping(value="/commute/att/List.ajax")
+	@ResponseBody
+	public Map<String, Object> attList(String page, String start_date, String end_date, HttpSession session) {
+		String user_code = (String) session.getAttribute("user_code");
+		int currPage = Integer.parseInt(page);
+		int pagePerCnt = 5;
+		
+		return commuteService.attList(currPage, pagePerCnt, start_date, end_date, user_code);
+	}
 	
 }
 

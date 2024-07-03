@@ -32,4 +32,20 @@ public class CommuteService {
 		return result;
 	}
 
+	public Map<String, Object> attList(int currPage, int pagePerCnt, String start_date, String end_date,
+			String user_code) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		
+		int start = (currPage - 1) * pagePerCnt;
+		int totalPage = 0;
+		
+		List<CommuteDTO> list = commuteDAO.attList(start, pagePerCnt, user_code, start_date, end_date);
+		totalPage = commuteDAO.attListPageCnt(pagePerCnt, user_code, start_date, end_date);
+		
+		result.put("list", list);
+		result.put("totalPage", totalPage);
+		
+		return result;
+	}
+	
 }
