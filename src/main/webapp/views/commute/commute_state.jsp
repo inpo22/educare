@@ -11,9 +11,11 @@
 <meta content="" name="description">
 <meta content="" name="keywords">
 
-<!-- css -->
 <jsp:include page="/views/common/head.jsp"></jsp:include>
+<!-- css -->
+
 <!-- js -->
+<script src="/resources/js/pagination_module.js" type="text/javascript"></script>
 
 <style>
 .main-section {
@@ -68,6 +70,9 @@
 	width: 200px;
 	display: inline;
 }
+.medium-font-size {
+	font-size: 35px;
+}
 </style>
 </head>
 
@@ -96,28 +101,28 @@
 								<p><b>출근시간</b></p>
 								<br/>
 								<div class="text-align-center">
-									<c:if test="${att.start_time eq null}">
+									<c:if test="${todayAtt.start_time eq null}">
 										<button class="btn btn-primary btn-lg" onclick="attendance()">출근하기</button>
 									</c:if>
-									<c:if test="${att.start_time ne null}">
-										<span><fmt:formatDate value="${att.start_time}" pattern="HH:mm:ss"/></span>
+									<c:if test="${todayAtt.start_time ne null}">
+										<span class="medium-font-size"><fmt:formatDate value="${todayAtt.start_time}" pattern="HH:mm:ss"/></span>
 									</c:if>
 								</div>
 								<br/>
 							</td>
-							<th scope="col">
+							<td scope="col">
 								<p><b>퇴근시간</b></p>
 								<br/>
 								<div class="text-align-center">
-									<c:if test="${att.start_time ne null and att.end_time eq null}">
+									<c:if test="${todayAtt.start_time ne null and todayAtt.end_time eq null}">
 										<button class="btn btn-primary btn-lg" onclick="leaveWork()">퇴근하기</button>
 									</c:if>
-									<c:if test="${att.end_time ne null}">
-										<span><fmt:formatDate value="${att.end_time}" pattern="HH:mm:ss"/></span>
+									<c:if test="${todayAtt.end_time ne null}">
+										<span class="medium-font-size"><fmt:formatDate value="${todayAtt.end_time}" pattern="HH:mm:ss"/></span>
 									</c:if>
 								</div>
 								<br/>
-							</th>
+							</td>
 						</tr>
 					</table>
 				</div>
@@ -130,21 +135,21 @@
 								<div class="display-flex">
 									<div class="small-section text-align-center">
 										<div class="blue-circle">
-											<span class="big-font-size white-color">50</span>
+											<span class="big-font-size white-color">${monthAtt.late_cnt}</span>
 										</div>
 										<br/>
 										<b>지각</b>
 									</div>
 									<div class="small-section text-align-center">
 										<div class="blue-circle">
-											<span class="big-font-size white-color">50</span>
+											<span class="big-font-size white-color">${monthAtt.early_cnt}</span>
 										</div>
 										<br/>
 										<b>조퇴</b>
 									</div>
 									<div class="small-section text-align-center">
 										<div class="blue-circle">
-											<span class="big-font-size white-color">50</span>
+											<span class="big-font-size white-color">${monthAtt.absent_cnt}</span>
 										</div>
 										<br/>
 										<b>결근</b>
@@ -183,7 +188,9 @@
 				</thead>
 				<tbody id="attList"></tbody>
 			</table>
-			<ul class="pagination d-flex justify-content-center" id="pagination"></ul>
+			<div id="pagination-div">
+				<ul class="pagination d-flex justify-content-center" id="pagination"></ul>
+			</div>
 		</div>
 	</main>
 	<!-- End #main -->
@@ -240,7 +247,7 @@
 	function listCall(page, start_date, end_date) {
 		$.ajax({
 			type:'get',
-			url:'/commute/att/List.ajax',
+			url:'/commuteState/att/List.ajax',
 			data:{
 				'page':page,
 				'start_date':start_date,
@@ -275,48 +282,96 @@
 		
 		if (list.length == 0) {
 			content += '<tr>';
-			content += '<td colspan="5">조회할 수 있는 근태 자료가 없습니다.</td>';
+			content += '<td colspan="5" class="text-align-center">조회할 수 있는 근태 자료가 없습니다.</td>';
 			content += '</tr>';
 			
-			$('#pagination').css('display', 'none');
+			$('#pagination-div').css('display', 'none');
 		} else {
+			$('#pagination-div').css('display', 'block');
+			
+			var options = {
+				hour: '2-digit',
+				minute: '2-digit',
+				second: '2-digit',
+				hour12: false
+			};
+			
 			for (var item of list) {
-				content = '<tr>';
-
-				var date = new Date(item.work_date);
-				var dateStr = date.toLocaleDateString("ko-KR");
-				content = '<td class="text-align-center">' + dateStr + '</td>';
+				content += '<tr>';
 				
-				date = new Date(item.start_time);
-				dateStr = date.toLocaleDateString("ko-KR");
-				content = '<td class="text-align-center">' + dateStr + '</td>';
+				if (item.work_date != null) {
+					var date = new Date(item.work_date);
+					var dateStr = date.toLocaleDateString("ko-KR");
+					content += '<td class="text-align-center">' + dateStr + '</td>';
+				} else {
+					content += '<td></td>';
+				}
 				
-				date = new Date(item.end_time);
-				dateStr = date.toLocaleDateString("ko-KR");
-				content = '<td class="text-align-center">' + dateStr + '</td>';
+				if (item.start_time != null) {
+					var date = new Date(item.start_time);
+					var dateStr = date.toLocaleTimeString ("ko-KR", options);
+					content += '<td class="text-align-center">' + dateStr + '</td>';
+				} else {
+					content += '<td></td>';
+				}
 				
-				content = '<td class="text-align-center">' + item.work_hour + '</td>';
+				if (item.end_time != null) {
+					var date = new Date(item.end_time);
+					var dateStr = date.toLocaleTimeString ("ko-KR", options);
+					content += '<td class="text-align-center">' + dateStr + '</td>';
+				} else {
+					content += '<td></td>';
+				}
+				
+				if (item.work_hour == -1) {
+					content += '<td></td>';
+				} else {
+					content += '<td class="text-align-center">' + item.work_hour + '</td>';
+				}
 				
 				if (item.state == 0) {
-					content = '<td class="text-align-center">지각</td>';
+					content += '<td class="text-align-center">지각</td>';
 				} else if (item.state == 1) {
-					content = '<td class="text-align-center">조퇴</td>';
+					content += '<td class="text-align-center">조퇴</td>';
 				} else if (item.state == 2) {
-					content = '<td class="text-align-center">결근</td>';
+					content += '<td class="text-align-center">결근</td>';
+				} else {
+					content += '<td></td>';
 				}
-				content = '</tr>';
+				content += '</tr>';
 			}
 		}
-		
 		$('#attList').html(content);
 	}
 	
+	function searchList() {
+		var $start_date = $('#start_date');
+		var $end_date = $('#end_date');
+		
+		// console.log($start_date.val());
+		// console.log($end_date.val());
+		
+		if ($start_date.val() == '') {
+			alert('검색 시작 일자를 선택해주세요.');
+		} else if ($end_date.val() == '') {
+			alert('검색 종료 일자를 선택해주세요.');
+		} else if ($end_date.val() < $start_date.val()) {
+			alert('올바르지 않는 검색 범위입니다.');
+		} else {
+			start_date = $('#start_date').val();
+			end_date = $('#end_date').val();
+			page = 1;
+			
+			listCall(page, start_date, end_date);
+		}
+	}
+	
 	function attendance() {
-		location.href = "/commute/attendance.do";
+		location.href = "/commuteState/attendance.do";
 	}
 	
 	function leaveWork() {
-		location.href = "/commute/leaveWork.do";
+		location.href = "/commuteState/leaveWork.do";
 	}
 </script>
 </html>

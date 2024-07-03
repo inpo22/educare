@@ -96,7 +96,7 @@ public class ScheduleUtil {
 				} else if (todayCommute != null && todayCommute.getEnd_time() == null) {
 					commuteDAO.autoLeaveWork(user_code);
 					int type = commuteDAO.stateCheck(user_code);
-					commuteDAO.autoStateUpdate(user_code, type);
+					commuteDAO.stateUpdate(user_code, type);
 				}
 			}
 		}
