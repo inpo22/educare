@@ -155,7 +155,7 @@ public class StuService {
 
                 // 강의 시작일이 오늘보다 이전이면 결제 상태를 '결제취소'로 변경
                 if (startDate.isBefore(today)) {
-                    if (course.getPay_state() != 2) { // 이미 취소된 상태가 아니라면
+                    if (course.getPay_state() == 0) { // 이미 취소된 상태가 아니라면
                         course.setPay_state(2); // 결제취소 상태로 변경
                         stuDAO.updatePayState(course.getCourse_no()); // 데이터베이스 업데이트
                     }
