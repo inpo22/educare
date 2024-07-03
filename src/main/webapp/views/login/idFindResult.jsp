@@ -33,6 +33,10 @@
         .result-container p.id {
             font-size: 1.5rem;
             font-weight: bold;
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ced4da;
         }
 
         .btn-group {
@@ -45,34 +49,24 @@
         .btn-group .btn {
             flex: 1;
             border-radius: 8px !important;
-            margin: 5px; 
+            margin: 5px;
             padding: 12px;
-            flex-basis: 100%; 
-            max-width: 200px; 
-            
+            flex-basis: 100%;
+            max-width: 200px;
         }
     </style>
 </head>
 <body>
-     <table class="result-container">
-        <tr>
-            <td colspan="2">
-                <h3>아이디 찾기 확인</h3>
-                <p>고객님의 정보와 일치하는 아이디입니다.</p>
-                <br>
-                <p class="id">아이디: ${userId}</p>
-            </td>
-        </tr>
-        <tr class="btn-group">
-            <td>
-                <button class="btn btn-primary" onclick="ToPwFind()">비밀번호 찾기</button>
-            </td>
-            <td>
-                <button class="btn btn-secondary" onclick="ToLogin()">로그인</button>
-            </td>
-        </tr>
-    </table>
-</body>
+    <div class="result-container">
+        <h3>아이디 찾기 확인</h3>
+        <p>고객님의 정보와 일치하는 아이디입니다.</p>
+        <br>
+        <p class="id">아이디: ${userId}</p>
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="ToPwFind()">비밀번호 찾기</button>
+            <button class="btn btn-secondary" onclick="ToLogin()">로그인</button>
+        </div>
+    </div>
     <script>
         function ToPwFind() {
             window.location.href = "/login/pwFind.go";
@@ -80,6 +74,6 @@
         function ToLogin() {
             window.location.href = "/login.go";
         }
-
     </script>
+</body>
 </html>
