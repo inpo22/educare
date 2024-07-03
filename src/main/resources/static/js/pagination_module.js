@@ -56,7 +56,7 @@
 			}
 		}else if (page >= 3 && page >= (totalPage - 2)) {
 			for (var i = totalPage - 4; i <= totalPage; i++) {
-				if (i == 0) {
+				if (i < 1) {
 					continue;
 				}
 				content += '<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>';
