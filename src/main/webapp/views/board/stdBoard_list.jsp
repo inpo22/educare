@@ -14,7 +14,7 @@
 <!-- css -->
 <link rel="stylesheet" href="/resources/board/board.css">
 <!-- js -->
-
+<script src="/resources/js/pagination_module.js" type="text/javascript"></script>
 <style>
 .table {
 	text-align: center;

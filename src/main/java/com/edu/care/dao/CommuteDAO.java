@@ -21,4 +21,8 @@ public interface CommuteDAO {
 
 	void autoStateUpdate(String user_code, int type);
 
+	int vacaListPageCnt(int pagePerCnt, String user_code);
+
+	List<CommuteDTO> vacaUseList(int start, int pagePerCnt, String user_code);
+
 }
