@@ -24,9 +24,6 @@
                     <when test="param3 == 'course_name'">
                        	c.course_name LIKE CONCAT('%', #{param4}, '%')
                     </when>
-                    <when test="param3 == 'course_space'">
-                        cr.course_space LIKE CONCAT('%', #{param4}, '%')
-                    </when>
                 </choose>
             	)
 			</if>
@@ -54,9 +51,6 @@
                     </when>
                     <when test="param2 == 'course_name'">
                        	c.course_name LIKE CONCAT('%', #{param3}, '%')
-                    </when>
-                    <when test="param2 == 'course_space'">
-                        cr.course_space LIKE CONCAT('%', #{param3}, '%')
                     </when>
                 </choose>
             	)

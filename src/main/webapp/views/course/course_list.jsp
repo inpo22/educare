@@ -108,7 +108,6 @@
 					<select class="form-select text-secondary" id="searchFilter" aria-label="Default select example">
 						<option value="name">강사명</option>
 						<option value="course_name">강의명</option>
-						<option value="course_space">강의실</option>
 					</select> 
 					<input type="text" class="form-control w-25" id="searchContent" aria-label="Text input with dropdown button" onKeyPress="if(event.keyCode==13) { $('#searchClick').click();}">
 					<button class="btn form-control btn-outline-secondary w-10 search-btn" id="searchClick" type="button"><i class="bi bi-search"></i></button>
