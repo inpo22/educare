@@ -174,6 +174,7 @@
 														<i class="bi bi-trash"></i>
 													</a>
 													<input type="file" name="sign_photo" id="sign-update-img"/>
+													<input type="hidden" name="sign_canvas_photo" id="sign-canvas-img"/>
 												</div>
 											</div>
 										</div>
@@ -235,6 +236,7 @@
 				</div>
 				<br/>
 				<div class="text-align-right">
+					<button class="btn btn-danger btn-sm" id="sign-del">지우기</button>
 					<button class="btn btn-primary btn-sm" id="sign-save">저장</button>
 				</div>
 			</div>
@@ -252,6 +254,7 @@
 	
 	function closeModal() {
 		$('#sign-modal').css('display', 'none');
+		signDel();
 	}
 	
 	$('#profile-update-img-button').click(function(e) {
@@ -298,6 +301,7 @@
 	});
 	
 	$('#sign-update-img').change(function() {
+		$('#sign-canvas-img').val('');
 		var file = this.files[0];
 		var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/;
 		
@@ -325,7 +329,8 @@
 		e.preventDefault();
 		var content = '<img src="/resources/img/approve_mark.png"/>';
 		$('#sign-change-img').html(content);
-		$('#sign-update-img').val('')
+		$('#sign-update-img').val('');
+		$('#sign-canvas-img').val('');
 	});
 	
 	$('#sign-draw-img-button').click(function(e) {
@@ -362,21 +367,21 @@
 				drawble = true;
 				ctx.beginPath();
 				ctx.moveTo(getPosition().X, getPosition().Y);
-				console.log('mousedown', getPosition());
+				// console.log('mousedown', getPosition());
 				break;
 			}
 			case 'mousemove': {
 				if (drawble) {
 					ctx.lineTo(getPosition().X, getPosition().Y);
 					ctx.stroke();
-					console.log('mousemove', getPosition());
+					// console.log('mousemove', getPosition());
 				}
 				break;
 			}
 			case 'mouseup': case 'mouseout': {
 				drawble = false;
 				ctx.closePath();
-				console.log('mouseup', getPosition());
+				// console.log('mouseup', getPosition());
 				break;
 			}
 		}
@@ -392,6 +397,7 @@
 		var signImg = canvas[0].toDataURL('image/png');
 		
 		if (signImg) {
+			/*
 			var link = document.createElement('a');
 			// base64데이터 링크 달기
 			link.href = canvas[0].toDataURL("image/png");
@@ -401,9 +407,28 @@
 			document.body.appendChild(link);
 			link.click();
 			document.body.removeChild(link);
+			*/
+			
+			var dataURL = canvas[0].toDataURL("image/png");
+			
+			var content = '<img src="' + dataURL + '"/>';
+			$('#sign-change-img').html(content);
+			$('#sign-update-img').val('');
+			$('#sign-canvas-img').val(dataURL);
+			
+			
 		}
 		closeModal();
 	});
+	
+	$('#sign-del').click(function() {
+		signDel();
+	});
+	
+	function signDel() {
+		// 캔버스 지우기
+		ctx.clearRect(0, 0, canvas[0].width, canvas[0].height);
+	}
 	
 	$('#profileEdit-submit').click(function() {
 		var $email = $('#email');
