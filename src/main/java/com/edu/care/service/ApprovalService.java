@@ -305,7 +305,7 @@ public class ApprovalService {
 			if (dto.getAu_type() == 1) {
 				approvalDAO.scheduleWrite(dto);
 
-				approvalDAO.minusRemainVaca(user_code, au_code);
+				approvalDAO.minusRemainVaca(receive_user_code, au_code);
 			}
 		}
 	}

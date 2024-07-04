@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.edu.care.service.CommuteService;
 
@@ -23,8 +24,10 @@ public class CommuteController {
 	@Autowired CommuteService commuteService;
 	
 	@GetMapping(value="/commuteState.go")
-	public String commuteState() {
-		return "commute/commute_state";
+	public ModelAndView commuteState(HttpSession session) {
+		String user_code = (String) session.getAttribute("user_code");
+		
+		return commuteService.commuteState(user_code);
 	}
 	
 	@GetMapping(value="/vacaHistory.go")
@@ -47,7 +50,7 @@ public class CommuteController {
 		return map;
 	}
 	
-	@GetMapping(value="/commute/att/List.ajax")
+	@GetMapping(value="/commuteState/att/List.ajax")
 	@ResponseBody
 	public Map<String, Object> attList(String page, String start_date, String end_date, HttpSession session) {
 		String user_code = (String) session.getAttribute("user_code");
@@ -57,19 +60,20 @@ public class CommuteController {
 		return commuteService.attList(currPage, pagePerCnt, start_date, end_date, user_code);
 	}
 	
+	@GetMapping(value="/commuteState/attendance.do")
+	public String attendance(HttpSession session) {
+		String user_code = (String) session.getAttribute("user_code");
+		commuteService.attendance(user_code);
+		
+		return "redirect:/commuteState.go";
+	}
+	
+	@GetMapping(value="/commuteState/leaveWork.do")
+	public String leaveWork(HttpSession session) {
+		String user_code = (String) session.getAttribute("user_code");
+		commuteService.leaveWork(user_code);
+		
+		return "redirect:/commuteState.go";
+	}
+	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
