@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="/resources/board/board.css">
 <!-- js -->
 <script src="/resources/js/pagination_module.js" type="text/javascript"></script>
+
 <style>
 .table {
 	text-align: center;
@@ -135,23 +136,20 @@ function listCall(page, searchCategory, searchWord){
 		dataType: 'JSON',
 		success: function(data){
 			console.log(data);
-			var context = '';
 			totalPage = data.totalPage;
-			for (var item of data.list) {
-				context += '<tr class="boardTableTr" onclick="locationMove('+item.post_no+')">'
-				context += '<td scope="col">'+ item.post_no +'</td>'
-				context += '<td scope="col">' + item.title + '</td>'
-				context += '<td scope="col">' + item.user_name + '</td>'
-				context += '<td scope="col">' + formatDate(item.reg_date) + '</td>'
-				context += '<td scope="col">' + item.bHit + '</td>'
-				context += '</tr>';
-			}
-			if(page > 1 || searchFlag){
-				$('#list').html(context);
-			} else{
-			$('#list').html(context);
-			}
-			setupPagination(page, totalPage);
+			
+			var searchFlag = !!searchWord;
+			
+			drawList(data, page, searchFlag);
+			
+			var option = {
+	                totalPages: totalPage,
+	                startPage: page
+            };
+            window.pagination.init($('#pagination'), option, function(currentPage) {
+                page = currentPage;
+                listCall(page, searchCategory, searchWord);
+            });
 		},
 		error: function(error){
 			console.log(error);
@@ -159,96 +157,25 @@ function listCall(page, searchCategory, searchWord){
 	});
 }
 
+function drawList(data, page, searchFlag){
+	var context = '';
+	
+	for (var item of data.list) {
+		context += '<tr class="boardTableTr" onclick="locationMove('+item.post_no+')">'
+		context += '<td scope="col">'+ item.post_no +'</td>'
+		context += '<td scope="col">' + item.title + '</td>'
+		context += '<td scope="col">' + item.user_name + '</td>'
+		context += '<td scope="col">' + formatDate(item.reg_date) + '</td>'
+		context += '<td scope="col">' + item.bHit + '</td>'
+		context += '</tr>';
+	}
+	$('#list').html(context);
+}
+
 function locationMove(post_no){
 	location.href='/dataBoard/detail.go?post_no='+post_no;
 }
-//totalPage 활용하여 Pagination 버튼 설정
-// totalPage 활용하여 Pagination 버튼 설정
-	function setupPagination(page, totalPage) {
-		var pagination = $('#pagination');
-		var count = 0;
-		
-		pagination.empty();
-		
-		var content = '<li class="page-item">';
-		content += '<a class="page-link" href="#">&laquo;</a>';
-		content += '</li>';
-		content += '<li class="page-item">';
-		content += '<a class="page-link" href="#">&lsaquo;</a>';
-		content += '</li>';
-		
-		if (page < 3) {
-			for (var i = 1; i <= totalPage; i++) {
-				content += '<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>';
-				count++;
-				if (count == 5) {
-					break;
-				}
-			}
-		}else if (page >= 3 && page < (totalPage - 2)) {
-			for (var i = page - 2; i <= totalPage; i++) {
-				content += '<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>';
-				count++;
-				if (count == 5) {
-					break;
-				}
-			}
-		}else if (page >= 3 && page >= (totalPage - 2)) {
-			for (var i = totalPage - 4; i <= totalPage; i++) {
-				if (i == 0) {
-					continue;
-				}
-				content += '<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>';
-				count++;
-				if (count == 5) {
-					break;
-				}
-			}
-		}
-		
-		content += '<li class="page-item">';
-		content += '<a class="page-link" href="#">&rsaquo;</a>';
-		content += '</li>';
-		
-		content += '<li class="page-item">';
-		content += '<a class="page-link" href="#">&raquo;</a>';
-		content += '</li>';
-		
-		pagination.html(content);
-		pagination.find('.page-item').removeClass('active');
-		
-		$('.page-link').each(function() {
-			if ($(this).html() == page) {
-				$(this).parent().addClass('active');
-			}
-		});
-		
-	}
 
-//설정된 버튼에 이벤트 적용
-$('#pagination').on('click', '.page-link', function(e) {
-	e.preventDefault();
-	// console.log(page);
-	// console.log($(this).html());
-	if ($(this).html() == '«') {
-		page = 1;
-	}else if ($(this).html() == '‹') {
-		if (page > 1) {
-			page--;
-		}
-	}else if ($(this).html() == '›') {
-		if (page < totalPage) {
-			page++;
-		}
-	}else if ($(this).html() == '»') {
-		page = totalPage;
-	}else {
-		page = parseInt($(this).html());
-	}
-	// console.log(page);
-	listCall(page, searchCategory, searchWord);
-	
-});
 
 $('#searchBtn').click(function() {
 	topFixed=false;

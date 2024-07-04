@@ -176,101 +176,101 @@
 
 </body>
 <script>
-    const MAX_CONTENT_SIZE = 5 * 1024 * 1024; // 5MB를 바이트로 변환
+	const MAX_CONTENT_SIZE = 5 * 1024 * 1024; // 5MB를 바이트로 변환
 
-    const editor = new toastui.Editor({
-        el: document.querySelector('#editor'),
-        height: '300px',
-        initialEditType: 'wysiwyg',
-        hideModeSwitch: true
-    });
-    editor.removeToolbarItem('code');
-    editor.removeToolbarItem('codeblock');
+	$('#teamCode').val('${category}');
+    
+	const editor = new toastui.Editor({
+		el: document.querySelector('#editor'),
+		height: '300px',
+		initialEditType: 'wysiwyg',
+		hideModeSwitch: true
+	});
+	editor.removeToolbarItem('code');
+	editor.removeToolbarItem('codeblock');
 
-    var fileList = [];
+	var fileList = [];
 
-    $('#fileInputButton').click(function() {
-        $('#attachFile').click();
-    });
+	$('#fileInputButton').click(function() {
+		$('#attachFile').click();
+	});
 
-    $('#attachFile').change(function() {
-        var files = this.files;
-        for (var file of files) {
-            fileList.push(file);
-        }
-        updateFileList();
-        updateAttachFile();
-    });
+	$('#attachFile').change(function() {
+		var files = this.files;
+		for (var file of files) {
+		    fileList.push(file);
+		}
+		updateFileList();
+		updateAttachFile();
+	});
 
-    function updateFileList() {
-        $('#fileList').empty();
-        fileList.forEach((file, index) => {
-            var li = $('<li></li>').text(file.name);
-            li.append('&nbsp;&nbsp;&nbsp;');
-            var removeBtn = $('<span></span>')
-                .html('X')
-                .addClass('remove-x')
-                .on('click', function() {
-                    fileList.splice(index, 1);
-                    updateFileList();
-                    updateAttachFile();
-                });
-            li.append(removeBtn);
-            $('#fileList').append(li);
-        });
-    }
+	function updateFileList() {
+		$('#fileList').empty();
+		fileList.forEach((file, index) => {
+			var li = $('<li></li>').text(file.name);
+			li.append('&nbsp;&nbsp;&nbsp;');
+			var removeBtn = $('<span></span>')
+				.html('X')
+				.addClass('remove-x')
+				.on('click', function() {
+					fileList.splice(index, 1);
+					updateFileList();
+					updateAttachFile();
+				});
+			li.append(removeBtn);
+			$('#fileList').append(li);
+		});
+	}
 
-    function updateAttachFile() {
-        var dataTransfer = new DataTransfer();
-        fileList.forEach(file => {
-            dataTransfer.items.add(file);
-        });
-        $('#attachFile')[0].files = dataTransfer.files;
-    }
+	function updateAttachFile() {
+		var dataTransfer = new DataTransfer();
+		fileList.forEach(file => {
+			dataTransfer.items.add(file);
+		});
+		$('#attachFile')[0].files = dataTransfer.files;
+	}
 
-    // 작성취소
-    function writeCancle() {
-        location.href = '/teamBoard/list.go';
-    }
+	// 작성취소
+	function writeCancle() {
+		location.href = '/teamBoard/list.go?category='+$('#teamCode').val()
+	}
 
-    // 작성완료
-    function writeSubmit() {
-        var editContent = editor.getHTML();
-        $('#content').val(editContent);
-        console.log(editor.getMarkdown());
+	// 작성완료
+	function writeSubmit() {
+		var editContent = editor.getHTML();
+		$('#content').val(editContent);
+		console.log(editor.getMarkdown());
+	
+		var isChecked = $('#flexSwitchCheckChecked').prop('checked');
+		console.log(isChecked);
+		$('#checkBox').val(isChecked ? 1 : 0);
 
-        var isChecked = $('#flexSwitchCheckChecked').prop('checked');
-        console.log(isChecked);
-        $('#checkBox').val(isChecked ? 1 : 0);
-
-        var $title = $('#titleText');
-        var $content = $('#content');
-		var isPerm = '${isPerm}';
-		console.log(isPerm);
-		if(isPerm == 'true'){
-	        	if($('#teamCode').val() == ''){
-	        		
-	        		alert('부서를 선택해 주세요.');
-	        		return;
-	        	}
-	        	console.log('권한체크 들어옴');
-	        }
-        if ($title.val() === '') {
-            alert('제목을 입력해 주세요.');
-            $title.focus();
-        } else if (editor.getMarkdown() === '') {
-            alert('내용을 입력해 주세요.');
-            editor.focus();
-        } else if (new Blob([editContent]).size > MAX_CONTENT_SIZE) {
-            alert('내용의 용량이 초과되었습니다. 이미지의 크기나 갯수를 줄여 주세요.');
-        } else {
-            var result = confirm('작성 하시겠습니까?');
-            if (result) {
-                alert('작성이 완료되었습니다.');
-                $('form').submit();
-            }
-        }
-    }
+	var $title = $('#titleText');
+	var $content = $('#content');
+	var isPerm = '${isPerm}';
+	console.log(isPerm);
+	if(isPerm == 'true'){
+		if($('#teamCode').val() == ''){
+			alert('부서를 선택해 주세요.');
+			return;
+		}
+		console.log('권한체크 들어옴');
+		}if ($title.val() === '') {
+			alert('제목을 입력해 주세요.');
+			$title.focus();
+		}else if (editor.getMarkdown() === '') {
+			alert('내용을 입력해 주세요.');
+			editor.focus();
+		}else if (new Blob([editContent]).size > MAX_CONTENT_SIZE) {
+			alert('내용의 용량이 초과되었습니다. 이미지의 크기나 갯수를 줄여 주세요.');
+		}else {
+			var result = confirm('작성 하시겠습니까?');
+			if (result) {
+				alert('작성이 완료되었습니다.');
+				$('form').submit();
+			}
+		}
+	}
 </script>
 
 </html>

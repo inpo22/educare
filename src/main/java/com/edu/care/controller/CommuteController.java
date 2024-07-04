@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -30,7 +31,9 @@ public class CommuteController {
 	}
 	
 	@GetMapping(value="/vacaHistory.go")
-	public String vacaHistory() {
+	public String vacaHistory(HttpSession session, Model model) {
+		String user_code = (String) session.getAttribute("user_code");
+		commuteService.vacaHistory(user_code, model);
 		return "commute/vaca_history";
 	}
 	

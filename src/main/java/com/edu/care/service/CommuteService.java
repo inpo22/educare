@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -61,6 +62,12 @@ public class CommuteService {
 		return result;
 	}
 
+	public void vacaHistory(String user_code, Model model) {
+		CommuteDTO dto = commuteDAO.vacaHistory(user_code);
+		dto.setUser_code(user_code);
+		model.addAttribute("dto",dto);
+	}
+
 	public void attendance(String user_code) {
 		commuteDAO.attendance(user_code);
 	}
@@ -74,7 +81,8 @@ public class CommuteService {
 		}
 		
 	}
-
-	
 	
 }
+
+
+

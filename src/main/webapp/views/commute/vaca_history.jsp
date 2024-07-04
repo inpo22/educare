@@ -33,14 +33,14 @@
 	margin-left: 20px;
 }
 
-.table1 {
+.leaveVacation {
     text-align: center;
     border-collapse: collapse; 
-    width: 60%; 
+    width: 95%; 
     margin-left: 20px;
 }
 
-.table1 .thead th {
+.leaveVacation .thead th {
     background-color: lightgray;
     border: 1px solid darkgray; 
     font-size: 20px; 
@@ -48,7 +48,7 @@
     vertical-align: middle;
 }
 
-.table1 .tbody td {
+.leaveVacation .tbody td {
     border: 1px solid darkgray; 
     color: rgba(52, 152, 219, 0.76); 
     font-weight: bold; 
@@ -57,14 +57,14 @@
     vertical-align: middle;
 }
 
-.table2 {
+.useVacationHistory {
 	text-align: center;
 	border-collapse: collapse;
 	width: 95%;
 	margin: 0px 20px;
 }
 
-.table2 .thead th {
+.useVacationHistory .thead th {
 	background-color: lightgray;
     border: 1px solid darkgray;
     font-size: 17px; 
@@ -73,7 +73,7 @@
     vertical-align: middle;
 }
 
-.table2 .tbody td{
+.useVacationHistory .tbody td{
 	border: 1px solid darkgray;
 	height : 30px;
     vertical-align: middle;
@@ -96,7 +96,7 @@
 			<br/>
 			<div class="subTitle"><h5>남은 연차</h5></div>
 			<br/>
-			<table class="table1">
+			<table class="leaveVacation">
 				<thead class="thead">
 					<tr>
 						<th scope="col">총 연차</th>
@@ -107,7 +107,7 @@
 				<tbody class="tbody">
 					<tr>
 						<td scope="col" id="totalLeave">15</td>
-						<td scope="col" id="useLeave">사용 연차</td>
+						<td scope="col" id="useLeave">${dto.useLeave}</td>
 						<td scope="col" id="remain">${dto.remain}</td>
 					</tr>
 				</tbody>
@@ -115,7 +115,7 @@
 			<br/><br/>
 			<div class="subTitle"><h5>연차 사용 이력</h5></div>
 			<br/>
-			<table class="table2">
+			<table class="useVacationHistory">
 				<colgroup>
 					<col width="15%">
 					<col width="20%">
@@ -186,7 +186,7 @@ function listCall(page){
 function drawList(list){
 	var context = '';
 	for (var item of list){
-		context += '<tr class="table2Tr">'
+		context += '<tr class="useVacationHistoryTr">'
 		context += '<td scope="col">'+formatDate(item.reg_date)+'</td>'
 		context += '<td scope="col">'+formatDate(item.start_date)+' ~ '+formatDate(item.end_date)+'</td>'
 		context += '<td scope="col">'+getVacationTypeName(item.va_type)+'</td>'
@@ -196,6 +196,7 @@ function drawList(list){
 	$('#list').html(context);
 }
 
+// 휴가 종류 반환 
 function getVacationTypeName(vaType) {
     switch (vaType) {
         case 0: return "연차";
