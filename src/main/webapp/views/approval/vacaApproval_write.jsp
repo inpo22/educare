@@ -500,12 +500,19 @@
 		var $start_date = $('#start_date');
 		var $end_date = $('#end_date');
 		
+		console.log($start_date.val());
+		console.log($end_date.val());
+		console.log($end_date.val() < $start_date.val());
+		
 		if ($start_date.val() == '') {
 			alert('휴가 시작일을 입력해주세요.');
 			$start_date.focus();
-		} else if (!$va_type.val() == 1 && !$va_type.val() == 2) {
+		} else if (!($va_type.val() == 1 || $va_type.val() == 2)) {
 			if ($end_date.val() == '') {
 				alert('휴가 종료일을 입력해주세요.');
+				$end_date.focus();
+			} else if ($end_date.val() < $start_date.val()) {
+				alert('잘못된 휴가 일정입니다. 다시 입력해주세요.');
 				$end_date.focus();
 			}
 		} else if ($subject.val() == '') {

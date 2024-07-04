@@ -44,4 +44,51 @@
 		WHERE user_code = #{param1} AND work_date LIKE CONCAT(CURDATE(), '%')
 	</update>
 	
+	<select id="vacaListPageCnt" resultType="Integer">
+		SELECT CEIL(COUNT(a.au_code)/#{param1})
+		FROM approval a 
+		JOIN user u ON a.user_code = u.user_code
+		WHERE au_type = 1 AND a.user_code = #{param2}
+	</select>
+	
+	<select id="vacaUseList" resultType="commute">
+		SELECT 
+			a.user_code
+			, a.reg_date
+			, a.start_date
+			, a.end_date
+			, a.va_type
+			, a.va_days
+		FROM approval a
+		JOIN user u ON a.user_code = u.user_code
+		WHERE a.au_type =1 AND a.user_code = #{param3}
+		ORDER BY a.au_code DESC
+		LIMIT #{param2} OFFSET #{param1}
+	</select>
+	
+	<select id="attList" resultType="commute">
+		SELECT
+			o.work_date
+			, o.start_time
+			, o.end_time
+			, o.work_hour
+			, o.state
+		FROM officehour o
+		WHERE o.user_code = #{param3}
+		<if test="param4 != '' and param5 != ''">
+			o.work_date BETWEEN(#{param4}, #{param5})
+		</if>
+		ORDER BY o.work_date LIMIT #{param1} OFFSET #{param2}
+	</select>
+	
+	<select id="attListPageCnt" resultType="Integer">
+		SELECT 
+			CEIL(COUNT(o.work_date)/#{param1}) 
+		FROM officehour o
+		WHERE o.user_code = #{param2}
+		<if test="param3 != '' and param4 != ''">
+			o.work_date BETWEEN(#{param3}, #{param4})
+		</if>
+	</select>
+	
 </mapper>

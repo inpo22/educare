@@ -1,5 +1,7 @@
 package com.edu.care.controller;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpSession;
 
@@ -19,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.edu.care.dto.CourseDTO;
 import com.edu.care.dto.MypageDTO;
 import com.edu.care.dto.StuDTO;
 import com.edu.care.service.MypageService;
@@ -102,7 +105,7 @@ public class MypageController {
 		int pagePerCnt = 10;
 		
 		Map<String, Object> map = mypageService.StdcourseList(currPage, pagePerCnt,Csearchbox, user_code);
-	
+		
 		return map;
 	}
 	
