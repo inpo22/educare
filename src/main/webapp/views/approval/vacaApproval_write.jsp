@@ -18,6 +18,7 @@
 <!-- js -->
 <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 <script src="https://uicdn.toast.com/tui-tree/latest/tui-tree.js"></script>
+<script src="/resources/dept/js/deptModal_module.js"></script>
 
 <style>
 	.first-col {
@@ -282,11 +283,23 @@
 	}
 	
 	// 부서 Tree
-	var data = [{
-		text: '에듀케어',
-		value: 'T000'
-	}];
+	var option = {
+		id: 'dept',
+		treeId: '#dept-tree',
+		data: [{
+			text: '에듀케어',
+			team_code: 'T000',
+			team_name: '에듀케어',
+			upper_code: 'T000',
+			reg_date: '2002-02-02'
+		}],
+		modalId: 'emp-modal'
+	};
 	
+	var treeObj = treeModule.init(option);
+	treeModule.loadTree(treeObj);
+	treeModule.loadMember(treeObj);
+	/*
 	const tree = new tui.Tree('#dept-tree', {
 		data: data,
 		nodeDefaultState: 'opened'
@@ -340,7 +353,7 @@
 	    
 	    return null;
 	}
-	
+	*/
 	var orderTextList = [];
 	var orderValueList = [];
 	var selectedNodeText = '';
@@ -349,9 +362,8 @@
 	var removeNodeText = '';
 	var removeNodeValue = '';
 	
-	tree
-		.enableFeature('Selectable')
-		.on('select', function(e) {
+	var deptTree = treeObj.var.tree;
+	deptTree.on('select', function(e) {
 			selectedNodeText = '';
 			selectedNodeValue = '';
 			$('.list-add-button').addClass('disabled-button');
@@ -359,10 +371,13 @@
 			
 			$('.selected-value').removeClass('selected-value');
 			
-			if (tree.getChildIds(e.nodeId) == '' && tree.getNodeData(e.nodeId).value != '${sessionScope.user_code}') {
-				selectedNodeText = tree.getNodeData(e.nodeId).text;
-				selectedNodeValue = tree.getNodeData(e.nodeId).value;
-				$('.list-add-button').removeClass('disabled-button');
+			if (deptTree.getChildIds(e.nodeId) == '' && deptTree.getNodeData(e.nodeId).value != '${sessionScope.user_code}') {
+				selectedNodeText = deptTree.getNodeData(e.nodeId).text;
+				selectedNodeValue = deptTree.getNodeData(e.nodeId).user_code;
+				// console.log(selectedNodeValue);
+				if (selectedNodeValue != undefined) {
+					$('.list-add-button').removeClass('disabled-button');
+				}
 			}
 			// console.log('nodeText : ' + selectedNodeText);
 			// console.log('nodeValue : ' + selectedNodeValue);
@@ -370,7 +385,6 @@
 	});
 	
 	$('.list-add-button').click(function() {
-		
 		var content = '<li class="value-' + selectedNodeValue + '">' + selectedNodeText + '</li>';
 		
 		if (!orderValueList.includes(selectedNodeValue)) {

@@ -335,6 +335,8 @@
 					content += '<td class="text-align-center">조퇴</td>';
 				} else if (item.state == 2) {
 					content += '<td class="text-align-center">결근</td>';
+				} else if (item.state == 3) {
+					content += '<td class="text-align-center">휴가</td>';
 				} else {
 					content += '<td></td>';
 				}

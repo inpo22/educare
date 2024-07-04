@@ -64,6 +64,7 @@ var treeModule = (function (module,$){
 			console.log('selected: ',tree_obj.var.select_id);
 			console.log('selected: ',tree_obj.var.select_data);
 		});
+		
 		// tree modal
 		tree_obj.var.tree.modal = new bootstrap.Modal(
 			document.getElementById(final_option.modalId), { keyboard: false } );
@@ -80,6 +81,7 @@ var treeModule = (function (module,$){
 			type	: 'get',
 			url		: '/dept/list.ajax',
 			dataType: 'json',
+			async: false,
 			success	: function(result){
 	 			if(result.deptList.length > 0){
 	 				//console.log(result.deptList);
@@ -139,6 +141,7 @@ var treeModule = (function (module,$){
 			url:'/approval/deptList.ajax',
 			data:{},
 			dataType:'JSON',
+			async: false,
 			success:function(result) {
 				//console.log(result.empList);
 				// create tree
