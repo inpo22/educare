@@ -57,6 +57,7 @@ var treeModule = (function (module,$){
 		tree_obj.var.tree.enableFeature('Selectable', {
 			selectedClassName: 'tui-tree-selected',
 		});
+
 		// tree modal
 		tree_obj.var.tree.modal = new bootstrap.Modal(
 			document.getElementById(final_option.modalId), { keyboard: false } );

@@ -18,6 +18,7 @@
 <!-- js -->
 <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 <script src="https://uicdn.toast.com/tui-tree/latest/tui-tree.js"></script>
+<script src="/resources/dept/js/deptModal_module.js"></script>
 
 <style>
 	.first-col {
@@ -252,26 +253,17 @@
 	
 	// 결재선 모달 창 열기
 	function openOrderModal() {
-		deptListCall();
-		
-		tree.add([{
-			text: '에듀케어',
-			value: 'T000'
-		}]);
+		treeModule.loadTree(treeObj);
+		treeModule.loadMember(treeObj);
 		
 		$('.dept-modal-title').html('결재선 추가');
 	    $('#dept-modal').css('display', 'block');
 	    $('.modal-content').css('width', '900px');
 	}
 	
-	// 결재선 모달 창 열기
+	// 수신부서 모달 창 열기
 	function openReceiveModal() {
-		deptListCall();
-		
-		tree.add([{
-			text: '에듀케어',
-			value: 'T000'
-		}]);
+		treeModule.loadTree(treeObj);
 		
 		$('.dept-modal-title').html('수신부서 추가');
 	    $('#dept-modal').css('display', 'block');
@@ -295,16 +287,35 @@
 		$('.modal-content').css('width', '400px');
 		$('.send-list').addClass('disabled-button');
 		
-		var rootNode = tree.getRootNodeId();
-		var childIds = tree.getChildIds(rootNode);
+		var rootNode = deptTree.getRootNodeId();
+		var firstNode = deptTree.getChildIds(rootNode)[0];
+		var childIds =  deptTree.getChildIds(firstNode);
 		
 		for (var i = 0; i < childIds.length; i++) {
 			var removeNodeId = childIds[i];
-			tree.remove(removeNodeId);
+			// console.log('removeNodeId : ' + removeNodeId);
+			deptTree.remove(removeNodeId);
 		}
 	}
 	
 	// 부서 Tree
+	var option = {
+		id: 'dept',
+		treeId: '#dept-tree',
+		data: [{text: '에듀케어',
+			team_code: 'T000',
+			team_name: '에듀케어',
+			upper_code: 'T000',
+			reg_date: '2002-02-02'
+		}],
+		modalId: 'dept-modal'
+	};
+	
+	var treeObj = treeModule.init(option);
+	var deptTree = treeObj.var.tree;
+	
+	
+	/*
 	const tree = new tui.Tree('#dept-tree', {
 		nodeDefaultState: 'opened'
 	});
@@ -360,6 +371,7 @@
 	    
 	    return null;
 	}
+	*/
 	
 	var textList = [];
 	var valueList = [];
@@ -369,9 +381,8 @@
 	var removeNodeText = '';
 	var removeNodeValue = '';
 	
-	tree
-		.enableFeature('Selectable')
-		.on('select', function(e) {
+	
+	deptTree.on('select', function(e) {
 			selectedNodeText = '';
 			selectedNodeValue = '';
 			$('.list-add-button').addClass('disabled-button');
@@ -379,13 +390,20 @@
 			
 			$('.selected-value').removeClass('selected-value');
 			
-			if (tree.getChildIds(e.nodeId) == '' && tree.getNodeData(e.nodeId).value != '${sessionScope.user_code}') {
-				selectedNodeText = tree.getNodeData(e.nodeId).text;
-				selectedNodeValue = tree.getNodeData(e.nodeId).value;
-				$('.list-add-button').removeClass('disabled-button');
+			if (deptTree.getChildIds(e.nodeId) == '' && deptTree.getNodeData(e.nodeId).user_code != '${sessionScope.user_code}') {
+				selectedNodeText = deptTree.getNodeData(e.nodeId).text;
+				if ($('.dept-modal-title').html() == '수신부서 추가') {
+					selectedNodeValue = deptTree.getNodeData(e.nodeId).team_code;
+				} else if ($('.dept-modal-title').html() == '결재선 추가') {
+					selectedNodeValue = deptTree.getNodeData(e.nodeId).user_code;
+				}
+				
+				if (selectedNodeValue != undefined) {
+					$('.list-add-button').removeClass('disabled-button');
+				}
 			}
-			// console.log('nodeText : ' + selectedNodeText);
-			// console.log('nodeValue : ' + selectedNodeValue);
+			console.log('nodeText : ' + selectedNodeText);
+			console.log('nodeValue : ' + selectedNodeValue);
 			
 	});
 	
