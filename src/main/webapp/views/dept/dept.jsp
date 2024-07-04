@@ -10,19 +10,15 @@
 <style>
 </style>
 <jsp:include page="/views/common/head.jsp"></jsp:include>
-
 <!-- style css -->
 <link href="/resources/dept/css/style.css" rel="stylesheet">
-
 <!-- tui-tree -->
 <link rel="stylesheet" href="https://uicdn.toast.com/tui.context-menu/latest/tui-context-menu.css" />
 <link rel="stylesheet" href="/resources/dept/tui-tree/css/tree.css">
 <script src="https://uicdn.toast.com/tui.context-menu/latest/tui-context-menu.js"></script>
 <script src="https://uicdn.toast.com/tui-tree/latest/tui-tree.js"></script>
-
-<!-- 
-<link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui-tree/latest/tui-tree.css" />
- -->
+<!-- module -->
+<script src="/resources/dept/js/deptModal_module.js"></script>
 </head>
 <body>
 	<jsp:include page="/views/common/header.jsp"></jsp:include>
@@ -390,7 +386,8 @@
 	$('#moveMember_btn').on('click', function(){
 		//console.log('checked list:',checked.size,'/',checked);
 		if(checked.size == null || checked.size < 1){
-			alert('부서 이동시킬 부서원을 1명 이상 선택 해주세요.')
+			alert('부서 이동시킬 부서원을 1명 이상 선택 해주세요.');
+			clearChecked();
 		} else{
 			selected_modalId = modal_rootId;
 			modalTree.select(selected_modalId);
@@ -780,7 +777,8 @@
 		
 		if(result){
 			if(checked.size != 1){
-				alert('부서장으로 위임할 사람을 1명 선택해주세요.')
+				alert('부서장으로 위임할 사람을 1명 선택해주세요.');
+				clearChecked();
 			}else{
 				var update_param = {
 						'team_code'	: tree.getNodeData(selected_id).team_code,
