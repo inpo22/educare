@@ -58,7 +58,7 @@ public interface BoardDAO {
 
 	List<BoardDTO> topFixedStdList();
 
-	int stdBoardWrite(BoardDTO dto);
+	void stdBoardWrite(BoardDTO dto);
 
 	List<BoardDTO> teamSelectList();
 
@@ -70,7 +70,7 @@ public interface BoardDAO {
 
 	List<BoardDTO> dataList(int start, int pagePerCnt, String searchCategory, String searchWord);
 
-	int dataBoardWrite(BoardDTO dto);
+	void dataBoardWrite(BoardDTO dto);
 
 	BoardDTO dataDetail(String post_no);
 

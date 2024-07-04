@@ -66,6 +66,15 @@
 		LIMIT #{param2} OFFSET #{param1}
 	</select>
 	
+	<select id="vacaHistory" resultType="commute">
+		SELECT	
+			vh.user_code
+			, vh.remain
+			, 15-vh.remain AS useLeave
+		FROM vacation_history vh
+		WHERE vh.user_code = #{param1}
+	</select>
+	
 	<select id="attList" resultType="commute">
 		SELECT
 			o.work_date

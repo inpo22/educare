@@ -29,4 +29,6 @@ public interface CommuteDAO {
 
 	int attListPageCnt(int pagePerCnt, String user_code, String start_date, String end_date);
 
+	CommuteDTO vacaHistory(String user_code);
+
 }

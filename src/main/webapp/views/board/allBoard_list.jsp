@@ -127,76 +127,75 @@ function formatDate(dateStr) {
 }
 
 function listCall(page, searchCategory, searchWord) {
-    $.ajax({
-        type: 'post',
-        url: '/allBoard/list.ajax',
-        data: {
-            'page': page,
-            'searchCategory': searchCategory,
-            'searchWord': searchWord
-        },
-        dataType: 'JSON',
-        success: function(data) {
-            console.log(data);
-            totalPage = data.totalPage;
-
-            var searchFlag = !!searchWord; // 검색어가 있으면 true, 없으면 false
-
-            drawList(data, page, searchFlag);
-
-            var option = {
-                totalPages: totalPage,
-                startPage: page
-            };
-            window.pagination.init($('#pagination'), option, function(currentPage) {
-                page = currentPage;
-                listCall(page, searchCategory, searchWord);
-            });
-        },
-        error: function(error) {
-            console.log(error);
-        }
-    });
+	$.ajax({
+	    type: 'post',
+	    url: '/allBoard/list.ajax',
+	    data: {
+	        'page': page,
+	        'searchCategory': searchCategory,
+	        'searchWord': searchWord
+	    },
+	    dataType: 'JSON',
+	    success: function(data) {
+	        console.log(data);
+	        totalPage = data.totalPage;
+	
+	        var searchFlag = !!searchWord; // 검색어가 있으면 true, 없으면 false
+	
+	        drawList(data, page, searchFlag);
+	
+	        var option = {
+	            totalPages: totalPage,
+	            startPage: page
+	        };
+	        window.pagination.init($('#pagination'), option, function(currentPage) {
+	            page = currentPage;
+	            listCall(page, searchCategory, searchWord);
+	        });
+	    },
+	    error: function(error) {
+	        console.log(error);
+	    }
+	});
 }
 
 function drawList(data, page, searchFlag) {
-    var context = '';
-    var topFixedContext = '';
+	var context = '';
+	var topFixedContext = '';
 
-    if (page == 1) {
-        for (var item of data.topFixedList) {
-            topFixedContext += '<tr class="boardTableTr" onclick="locationMove(' + item.post_no + ')">';
-            topFixedContext += '<td scope="col"><b>' + item.post_no + '</b></td>';
-            topFixedContext += '<td scope="col"><b>' + item.title + '</b></td>';
-            topFixedContext += '<td scope="col"><b>' + item.user_name + ' ' + item.class_name + '</b></td>';
-            topFixedContext += '<td scope="col"><b>' + item.team_name + '</b></td>';
-            topFixedContext += '<td scope="col"><b>' + formatDate(item.reg_date) + '</b></td>';
-            topFixedContext += '<td scope="col"><b>' + item.bHit + '</b></td>';
-            topFixedContext += '</tr>';
-        }
-    }
+	if (page == 1) {
+		for (var item of data.topFixedList) {
+		topFixedContext += '<tr class="boardTableTr" onclick="locationMove(' + item.post_no + ')">';
+		topFixedContext += '<td scope="col"><b>' + item.post_no + '</b></td>';
+		topFixedContext += '<td scope="col"><b>' + item.title + '</b></td>';
+		topFixedContext += '<td scope="col"><b>' + item.user_name + ' ' + item.class_name + '</b></td>';
+		topFixedContext += '<td scope="col"><b>' + item.team_name + '</b></td>';
+		topFixedContext += '<td scope="col"><b>' + formatDate(item.reg_date) + '</b></td>';
+		topFixedContext += '<td scope="col"><b>' + item.bHit + '</b></td>';
+		topFixedContext += '</tr>';
+	}
+}
 
-    for (var item of data.list) {
-        context += '<tr class="boardTableTr" onclick="locationMove(' + item.post_no + ')">';
-        context += '<td scope="col">' + item.post_no + '</td>';
-        context += '<td scope="col">' + item.title + '</td>';
-        context += '<td scope="col">' + item.user_name + ' ' + item.class_name + '</td>';
-        context += '<td scope="col">' + item.team_name + '</td>';
-        context += '<td scope="col">' + formatDate(item.reg_date) + '</td>';
-        context += '<td scope="col">' + item.bHit + '</td>';
-        context += '</tr>';
-    }
+	for (var item of data.list) {
+		context += '<tr class="boardTableTr" onclick="locationMove(' + item.post_no + ')">';
+		context += '<td scope="col">' + item.post_no + '</td>';
+		context += '<td scope="col">' + item.title + '</td>';
+		context += '<td scope="col">' + item.user_name + ' ' + item.class_name + '</td>';
+		context += '<td scope="col">' + item.team_name + '</td>';
+		context += '<td scope="col">' + formatDate(item.reg_date) + '</td>';
+		context += '<td scope="col">' + item.bHit + '</td>';
+		context += '</tr>';
+	}
+// 	console.log("Page:", page);
+// 	console.log("SearchFlag:", searchFlag);
+// 	console.log("TopFixedContext:", topFixedContext);
+// 	console.log("Context:", context);
 
-    console.log("Page:", page);
-    console.log("SearchFlag:", searchFlag);
-    console.log("TopFixedContext:", topFixedContext);
-    console.log("Context:", context);
-
-    if (page > 1 || searchFlag) {
-        $('#list').html(context);
-    } else {
-        $('#list').html(topFixedContext + context);
-    }
+	if (page > 1 || searchFlag) {
+		$('#list').html(context);
+	} else {
+		$('#list').html(topFixedContext + context);
+	}
 }
 
 function locationMove(post_no){

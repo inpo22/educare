@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 import com.edu.care.dao.CommuteDAO;
 import com.edu.care.dto.CommuteDTO;
@@ -47,5 +48,14 @@ public class CommuteService {
 		
 		return result;
 	}
+
+	public void vacaHistory(String user_code, Model model) {
+		CommuteDTO dto = commuteDAO.vacaHistory(user_code);
+		dto.setUser_code(user_code);
+		model.addAttribute("dto",dto);
+	}
 	
 }
+
+
+

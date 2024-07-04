@@ -22,6 +22,10 @@ public class CommuteDTO {
 	private int va_type;
 	private double va_days;
 	
+	private double remain;
+	private double useLeave;
+	
+	
 	public String getUser_code() {
 		return user_code;
 	}
@@ -124,6 +128,22 @@ public class CommuteDTO {
 
 	public void setVa_days(double va_days) {
 		this.va_days = va_days;
+	}
+
+	public double getRemain() {
+		return remain;
+	}
+
+	public void setRemain(double remain) {
+		this.remain = remain;
+	}
+
+	public double getUseLeave() {
+		return useLeave;
+	}
+
+	public void setUseLeave(double useLeave) {
+		this.useLeave = useLeave;
 	}
 	
 }
