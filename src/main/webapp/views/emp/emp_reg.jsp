@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-<title>사원관리 - 에듀케어</title>
+<title>사원등록 - 사원관리 - 에듀케어</title>
 <meta content="" name="description">
 <meta content="" name="keywords">
 
@@ -16,6 +16,7 @@
 <link href="/resources/emp/emp.css" rel="stylesheet">
 <!-- js -->
 <script src="https://uicdn.toast.com/tui-tree/latest/tui-tree.js"></script>
+<script src="/resources/dept/js/deptModal_module.js"></script>
 
 <style>
 #msg,#length-msg,#pattern-msg,#email-msg{
@@ -227,7 +228,7 @@ label[for="id"]{
 	</main>
 	<!-- End #main -->
 
-	<!-- 받는 사람 모달 -->
+	<!-- 부서 지정 모달 -->
 	<div id="dept-modal" class="modal" onclick="closeModal()">
 		<div class="modal-content" onclick="event.stopPropagation()">
 			<div>
@@ -280,10 +281,29 @@ function closeModal() {
 }
 
 // 부서 Tree
+var option = {
+	id: 'dept',
+	treeId: '#dept-tree',
+	data: [{text: '에듀케어',
+		team_code: 'T000',
+		team_name: '에듀케어',
+		upper_code: 'T000',
+		reg_date: '2002-02-02'
+	}],
+	modalId: 'dept-modal'
+};
+
+var treeObj = treeModule.init(option);
+var deptTree = treeObj.var.tree;
+treeModule.loadTree(treeObj);
+
+/*	
+
 var data = [{
 	text: '에듀케어',
 	value: 'T000'
 }];
+
 
 const tree = new tui.Tree('#dept-tree', {
 	data: data,
@@ -330,25 +350,24 @@ function findNodeByValue(node, value) {
     
     return null;
 }
+*/
 
 var selectedNodeText = '';
 var selectedNodeValue = '';
 
-tree
-	.enableFeature('Selectable')
-	.on('select', function(e) {
+deptTree.on('select', function(e) {
 		selectedNodeText = '';
 		selectedNodeValue = '';
 		
 		$('.selected-value').removeClass('selected-value');
 		
-		var childIds = tree.getChildIds(e.nodeId);
+		var childIds = deptTree.getChildIds(e.nodeId);
 		
 		// console.log(childIds);
 		
 		if (childIds == '') {
-			selectedNodeText = tree.getNodeData(e.nodeId).text;
-			selectedNodeValue = tree.getNodeData(e.nodeId).value;
+			selectedNodeText = deptTree.getNodeData(e.nodeId).text;
+			selectedNodeValue = deptTree.getNodeData(e.nodeId).team_code;
 			
 			// console.log('테스트 완료');
 			$('.dept-reg').removeClass('disabled-button');
