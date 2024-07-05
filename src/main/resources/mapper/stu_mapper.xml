@@ -196,12 +196,12 @@
 	</select>
 	
 	<!-- 수강이력 쿼리문 -->
-	<select id="courseList" parameterType="String" resultType="course">
+	<select id="courseList" parameterType="String" resultType="payment">
 		SELECT 
 			c.course_name ,
 			u.name,
-			c.course_start,
-        	c.course_end,
+			DATE_FORMAT(c.course_start, '%Y-%m-%d') AS course_start,
+        	DATE_FORMAT(c.course_end, '%Y-%m-%d') AS course_end,
 			p.pay_state
 		FROM 
 			course c 
@@ -363,5 +363,12 @@
 		WHERE 
 			user_code =#{user_code}
 	</select>
+	
+	<!-- 자동결제취소 쿼리문 -->
+	<update id="updatePayState" parameterType="String">
+		UPDATE payment SET
+			pay_state = 2
+		WHERE course_no = #{course_no}
+	</update>
 	
 </mapper>
