@@ -6,13 +6,14 @@
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-<title>Dashboard - NiceAdmin Bootstrap Template</title>
+<title>일정 관리 - 에듀케어</title>
 <meta content="" name="description">
 <meta content="" name="keywords">
 
 <!-- css -->
-<link href='https://cdn.jsdelivr.nenpm/bootstrap@4.5.0/dist/css/bootstrap.css' rel='stylesheet'>
 <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/main.min.css' rel='stylesheet' />
+<link href="/resources/schedule/schedule.css" rel="stylesheet">
+
 <jsp:include page="/views/common/head.jsp"></jsp:include>
 
 <!-- js -->
@@ -25,118 +26,6 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <style>
-
-.pln_btn {
-	height: 54px;
-}
-
-.card-header {
-	font-weight: bold;
-}
-
-.card-body {
-	padding: 10px;
-}
-
-.modal-header {
-background: #EEEEEE;
-color: #707070;
-}
-
-.modal-footer {
-background: #EEEEEE;
-color: #707070;
-}
-
-.all {
-	background-color: #535050;
-	color: white;
-	padding: 0px;
-	font-size: 13px;
-}
-
-.common {
-	background-color: #ffd146;
-	color: white;
-	padding: 0px;
-	font-size: 13px;
-}
-
-.dept {
-	background-color: #6fb171;
-	color: white;
-	padding: 0px;
-	font-size: 13px;
-}
-
-.private {
-	background-color: #55b4ff;
-	color: white;
-	padding: 0px;
-	font-size: 13px;
-}
-
-.all:hover, .common:hover, .dept:hover, .private:hover {
-    box-shadow: inset 1px 1px 2px 0px #403e3ed9;
-    color: black;
-}
-
-textarea {
-	resize: none;
-}
-
-
-#calendar {
-	background-color: white;
-	padding: 15px;
-	border-radius: 10px;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-:root { -
-	-fc-border-color: #e9ecef;
-}
-
-.fc-day-sat .fc-daygrid-day-number {
-	color: blue;
-}
-
-.fc-day-sun .fc-daygrid-day-number {
-	color: red;
-}
-
-.fc-day-mon .fc-daygrid-day-number, .fc-day-tue .fc-daygrid-day-number,
-.fc-day-wed .fc-daygrid-day-number, .fc-day-thu .fc-daygrid-day-number,
-.fc-day-fri .fc-daygrid-day-number {
-	color: black;
-}
-
-.fc-day-sun .fc-col-header-cell-cushion {
-	color: red;
-}
-
-.fc-day-sat .fc-col-header-cell-cushion {
-	color: blue;
-}
-
-.fc-day-mon .fc-col-header-cell-cushion, .fc-day-tue .fc-col-header-cell-cushion,
-.fc-day-wed .fc-col-header-cell-cushion, .fc-day-thu .fc-col-header-cell-cushion,
-.fc-day-fri .fc-col-header-cell-cushion {
-	color: black;
-}
-
-.fc-event-start {
-	border: none;
-}
-
-.fc-direction-ltr .fc-daygrid-event.fc-event-end, .fc-direction-rtl .fc-daygrid-event.fc-event-start{
-	border: none;
-}
-
-.fc-toolbar-chunk{
-	font-size: 19px;
-}
-
 </style>
 </head>
 

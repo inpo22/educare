@@ -6,13 +6,13 @@
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-<title>Dashboard - NiceAdmin Bootstrap Template</title>
+<title>일정 관리 - 에듀케어</title>
 <meta content="" name="description">
 <meta content="" name="keywords">
 
 <!-- css -->
-<link href='https://cdn.jsdelivr.nenpm/bootstrap@4.5.0/dist/css/bootstrap.css' rel='stylesheet'>
 <link rel="stylesheet" href="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.css" />
+<link href="resources/course/courseReservation.css" rel="stylesheet">
 
 <jsp:include page="/views/common/head.jsp"></jsp:include>
 
@@ -24,139 +24,7 @@
 <script src="https://uicdn.toast.com/calendar/latest/toastui-calendar.ie11.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <style>
-.toastui-calendar-template-timegridDisplayPrimaryTime{
-	font-size: 16px;
-}
 
-.toastui-calendar-event-time-content{
-	padding: 7px 5px !important;
-    font-size: 14px !important;
-    color:white !important;
-}
-
-.toastui-calendar-event-time{
-    border-radius: 10px !important;
-    border-left: 0px solid rgb(101 101 101) !important;
-}
-
-.toastui-calendar-edit-button {
-    display: none !important; 
-}
-
-.toastui-calendar-delete-button {
-     display: none !important;
-}
-
-.toastui-calendar-popup-section toastui-calendar-section-button{
-	display: none !important;
-}
-
-.toastui-calendar-vertical-line{
-	display: none !important;
-}
-
-.toastui-calendar-detail-container .toastui-calendar-section-button {
-	border: none !important;
-}
-
-.toastui-calendar-detail-container{
-	height:170px !important;
-	border-radius: 28px !important;
-	min-width: 245px !important;
-	max-width: 245px !important;
-}
-
-.toastui-calendar-events{
-	margin-right: 0px !important;
-}
-
-.toastui-calendar-week-view-day-names{
-	height: 46px !important;
-}
-
-.toastui-calendar-popup-container{
-	border-radius: 28px !important;
-}
-
-
-.pln_btn {
-	height: 54px;
-}
-
-.card-header {
-	font-weight: bold;
-}
-
-.card-body {
-	padding: 10px;
-}
-
-.modal-header {
-background: #EEEEEE;
-color: #707070;
-}
-
-.modal-footer {
-background: #EEEEEE;
-color: #707070;
-}
-
-textarea {
-	resize: none;
-}
-
-#courseInfo{
-	border: 5px double #e8e8e8;
-    background-color: white;
-    resize: none;
-    color: black;
-  	height: 72px;
-    overflow: auto;
-    border-radius: 6px;
-    font-size: 15px;
-    padding: 2px 10px;
-}
-
-#calendar {
-	height:680px;
-}
-
-.calendar-view{
-	background-color: white;
-	padding: 15px;
-	border-radius: 10px;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-:root { -
-	-fc-border-color: #e9ecef;
-}
-
-.filter_btn{
-	padding:6px;
-	color:white;
-}
-
-.w-10{
-	width: 10% !important;
-}
-
-
-.bi-arrow-left-square{
-	font-size:33px;
-	color: #727070;
-}
-
-.bi-arrow-right-square{
-	font-size:33px;
-	color: #727070;
-}
-
-.goPrevOrNextBtn{
-	width:70px;
-	background-color: white;
-	border:none;
-}
 </style>
 </head>
 

@@ -9,12 +9,13 @@
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-<title>::EDUcare 강의상세 페이지::</title>
+<title>${courseDTO[0].course_name} - 강의 관리 - 에듀케어</title>
 <meta content="" name="description">
 <meta content="" name="keywords">
 
 <!-- css -->
 <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+<link href="/resources/course/course.css" rel="stylesheet">
 
 <jsp:include page="/views/common/head.jsp"></jsp:include>
 
@@ -22,197 +23,6 @@
 <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 
 <style>
-.pln_btn {
-	height: 54px;
-}
-
-.board {
-	background-color: white;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.card-header {
-	font-weight: bold;
-}
-
-.search-btn {
-	border: none;
-	box-shadow: 3px 1px 6px #929297;
-}
-
-textarea {
-	resize: none;
-	height: 91px;
-}
-
-.reserv-textarea{
-	resize: none;
-	height: 280px;
-	overflow: auto; 
-}
-
-.reservTextareaGo{
-	resize: none;
-	height: 91px;
-	overflow: auto; 
-	pointer-events: none;
-	background-color: #e9ecef;
-}
-
-.modal-body{
-	padding: 0px 22px !important;
-}
-#calendar {
-  	border-radius: 12px;
-}
-
-.cal-header {
-    display: flex;
-    justify-content: space-between;
-    text-align: center;
-    padding: 10px 5px;
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-}
-
-.cal-header .nav-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 20px;
-    color: #6c757d;
-}
-
-.cal-header .nav-btn:hover {
-    color: black;
-}
-
-#year-month {
-    font-size: 20px;
-    font-weight: 600;
-    color: black;
-}
-
-.mainRow {
-    display: flex;
-    padding: 10px 0px;
-}
-
-.mainRow .day {
-    flex: 1;
-    text-align: center;
-    font-weight: 600;
-    color: #495057;
-    text-transform: uppercase;
-    font-size: 14px;
-}
-
-.days {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.days .day, .days .emptyDay {
-    width: calc(100% / 7);
-    height: 30px;
-    box-sizing: border-box;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 16px;
-    margin-bottom: 3px;
-}
-
-.days .day {
-    cursor: pointer;
-    border: 1px solid transparent; 
-}
-
-.days .day:hover {
-    background-color: #FFC107;
-    color: white;
-    border-radius:20px;
-    border: 1px solid transparent; 
-}
-
-.days .emptyDay {
-    background-color: transparent;
-    border: none; 
-}
-
-.input-group .btn {
-    width: 70px;
-}
-
-.reservation-item {
-    display: inline-block;
-    margin-right: 5px;
-    margin-bottom: 5px;
-    padding: 3px 8px;
-    background-color: #d5d5d5;
-    border-radius: 10px;
-}
-
-.btn-remove {
-    font-size: 0.8rem;
-    padding: 0.2rem 0.4rem;
-    background-color: transparent;
-    border: none;
-    color: #333;
-    width: 20px !important;
-}
-
-.btn-remove:hover {
-    background-color: #ccc;
-    color: #fff; 
-    border-radius: 50%; 
-}
-
-.highlight {
-    background-color: #545fc8 !important;
-    color: white;
-    border-radius: 20px;
-}
-
-.today {
-    background-color: #f78686;
-    color: white;
-    border-radius: 20px;
-}
-
-.miniBox{
- 	background-color: #545fc8;
- 	font-size:8px;
-    color: white;
-    border-radius: 20px;
-}
-small{
-	font-size: 10px;
-}
-.todayBox{
-	background-color: #f78686;
- 	font-size: 8px;
-    color: white;
-    border-radius: 20px;
-}
-
-#viewer {
-	min-height: 500px;
-    border: 1px solid #dfe1e5;
-    border-radius: 8px;
-    padding: 8px 25px;
-    background-color: #eaecef;
-}
-
-#deleteBtn{
-	margin-right: 10px;
-}
-
-.title-cate{
-	color:#012970;
-}
 </style>
 </head>
 
@@ -259,9 +69,9 @@ small{
 						</div>
 					</div>
 				</div>
-				<div class="form-control reservTextareaGo" id="reservTextareaGo" aria-label="With textarea">
+				<div class="form-control reservTextareaGoIn" id="reservTextareaGo" aria-label="With textarea">
 					<c:forEach items="${courseDTO}" var="course">
-						<div class="reservation-item mt-1"><span><fmt:formatDate value="${course.start_time}" pattern="yyyy-MM-dd HH:mm:ss" /></span></div>
+						<div class="reservation-itemIn mt-1"><span><fmt:formatDate value="${course.start_time}" pattern="yyyy-MM-dd HH:mm:ss" /></span></div>
 					</c:forEach>
 				</div>
 			</div>

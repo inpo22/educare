@@ -7,12 +7,13 @@
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-<title>::EDUcare 강의등록 페이지::</title>
+<title>강의 관리 - 에듀케어</title>
 <meta content="" name="description">
 <meta content="" name="keywords">
 
 <!-- css -->
 <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+<link href="/resources/course/course.css" rel="stylesheet">
 
 <jsp:include page="/views/common/head.jsp"></jsp:include>
 
@@ -20,193 +21,6 @@
 <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 
 <style>
-.pln_btn {
-	height: 54px;
-}
-
-.board {
-	background-color: white;
-	padding: 15px;
-	border-radius: 10px;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.card-header {
-	font-weight: bold;
-}
-
-.search-btn {
-	border: none;
-	box-shadow: 3px 1px 6px #929297;
-}
-
-textarea {
-	resize: none;
-	height: 91px;
-}
-
-.reserv-textarea{
-	resize: none;
-	height: 280px;
-	overflow: auto; 
-}
-
-.reservTextareaGo{
-	resize: none;
-	height: 91px;
-	overflow: auto; 
-	pointer-events: none;
-}
-
-.modal-body{
-	padding: 0px 22px !important;
-}
-#calendar {
-  	border-radius: 12px;
-}
-
-.cal-header {
-    display: flex;
-    justify-content: space-between;
-    text-align: center;
-    padding: 10px 5px;
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-}
-
-.cal-header .nav-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 20px;
-    color: #6c757d;
-}
-
-.cal-header .nav-btn:hover {
-    color: black;
-}
-
-#year-month {
-    font-size: 20px;
-    font-weight: 600;
-    color: black;
-}
-
-.mainRow {
-    display: flex;
-    padding: 10px 0px;
-}
-
-.mainRow .day {
-    flex: 1;
-    text-align: center;
-    font-weight: 600;
-    color: #495057;
-    text-transform: uppercase;
-    font-size: 14px;
-}
-
-.days {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.days .day, .days .emptyDay {
-    width: calc(100% / 7);
-    height: 30px;
-    box-sizing: border-box;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 16px;
-    margin-bottom: 3px;
-}
-
-.days .day {
-    cursor: pointer;
-    border: 1px solid transparent; 
-}
-
-.days .day:hover {
-    background-color: #FFC107;
-    color: white;
-    border-radius:20px;
-    border: 1px solid transparent; 
-}
-
-.days .emptyDay {
-    background-color: transparent;
-    border: none; 
-}
-
-.input-group .btn {
-    width: 70px;
-}
-
-.user-code-btn{
-	background-color: #f8f9fa;
-    border: 1px solid #dfe1e5;
-    width: 110px !important;
-}
-
-.reservation-item {
-    display: inline-block;
-    margin-right: 5px;
-    margin-bottom: 5px;
-    padding: 3px 8px;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-}
-
-.btn-remove {
-    font-size: 0.8rem;
-    padding: 0.2rem 0.4rem;
-    background-color: transparent;
-    border: none;
-    color: #333;
-    width: 20px !important;
-}
-
-.btn-remove:hover {
-    background-color: #ccc;
-    color: #fff; 
-    border-radius: 50%; 
-}
-
-.highlight {
-    background-color: #545fc8 !important;
-    color: white;
-    border-radius: 20px;
-}
-
-.today {
-    background-color: #f78686;
-    color: white;
-    border-radius: 20px;
-}
-
-.miniBox{
- 	background-color: #545fc8;
- 	font-size:8px;
-    color: white;
-    border-radius: 20px;
-}
-small{
-	font-size: 10px;
-}
-.todayBox{
-	background-color: #f78686;
- 	font-size: 8px;
-    color: white;
-    border-radius: 20px;
-}
-
-.disabled {
-    color: #ccc; 
-    pointer-events: none; 
-    background-color: transparent; 
-}
 </style>
 </head>
 
@@ -415,7 +229,13 @@ var preMonthLastDay = preMonthLast.getDay();
 function drawCalendar() {
 	
     $('#year-month').html(preYear + "년 " + (preMonth + 1) + "월");
-
+	
+  	//오늘날짜 구하기 
+  	var today = new Date();
+    var tyear = today.getFullYear();
+    var tmonth = today.getMonth();
+    var tday = today.getDate();
+    
     var count = 1;
     var total = 42; //공식인가봄?
 
@@ -426,8 +246,10 @@ function drawCalendar() {
         if (i < preMonthFirstDay || count > preMonthLastDate) {
             con += '<div class="emptyDay"></div>';
         } else {
+        	var dateToCheck = new Date(preYear, preMonth, count);
+            var isDisabled = (dateToCheck < today) ? ' disabled' : '';
         	var checkToday = (preYear === today.getFullYear() && preMonth === today.getMonth() && count === currentDay) ? ' today' : '';
-        	con += '<div class="day' + checkToday + '" id="select-day-' + count + '" data-day="' + count + '">' + count + '</div>';
+        	con += '<div class="day' + checkToday  + isDisabled + '" id="select-day-' + count + '" data-day="' + count + '">' + count + '</div>';
             count++;
         }
     }
@@ -441,40 +263,12 @@ function drawCalendar() {
         var calMonth = preMonth+1;
         var calYear = preYear;
         
-        //오늘날짜 구하기 
-        var tdate = new Date(); 
-        var tyear = tdate.getFullYear(); 
-        var tmonth = new String(tdate.getMonth()+1); 
-        var tday = new String(tdate.getDate()); 
-        
         if(calMonth.toString().length < 2){
         	calMonth = '0' + calMonth;
         }
         
         if(selectDay.toString().length < 2){
         	selectDay = '0' + selectDay;
-        }
-        
-        if(tmonth.toString().length < 2){
-        	tmonth = '0' + tmonth;
-        }
-        
-        if(tday.toString().length < 2){
-        	tday = '0' + tday;
-        }
-        
-        //클릭한 날의 날짜 : 현재날짜와 비교하기용으로 만듬
-        var clickDayDate = calYear + "" +calMonth + "" +selectDay;
-        console.log("clickDayDate>>>"+clickDayDate);
-        
-        var todayForSelectDay = tyear + tmonth +  tday;
-        console.log("todayForSelectDay>>>"+todayForSelectDay);
-        
-        // (미완료)20240701 : 현재날짜보다 이전 날 안보이게하기...근데 아직 못한고.................... =_=
-        // 일단 없어지게해둠.. 나중에 아예 모달 들어올때부터 안보이게할거
-        if(clickDayDate < todayForSelectDay){
-        	$(this).css("visibility","hidden");
-        	return false;
         }
         
         var formatDay = preYear +'-' + calMonth +'-'+selectDay; 
@@ -715,20 +509,25 @@ function selectTimeBtnEvent() {
 	    $('.time-btn[data-time="' + removeTime + '"]').removeAttr('style');
 	});
 	
+	
+	var selectedRoom = $('#select-space').val();
+	
 	$(document).on('change', '#select-space', function(event) {
 		 var selectDate =  $('#selectDate').val();
-		 var selectedRoom = $(this).val();
-		if(confirm("강의실 변경시 선택하셨던 일정은 모두 삭제됩니다. 정말 변경하시겠습니까?")){
-			$('.reservation-item').remove();
-			$('.day').removeClass('highlight');
-			$('.time-btn').removeAttr('style');
-			timeBtn(selectDate,selectedRoom);
-		}else{
-			$(this).val(selectedRoom);
-			console.log('selectedRoom : ', selectedRoom);
-		}
+		 if($('#reserv-textarea').html() != ''){
+			if(confirm("강의실 변경시 선택하셨던 일정은 모두 삭제됩니다. 정말 변경하시겠습니까?")){
+				$('.reservation-item').remove();
+				$('.day').removeClass('highlight');
+				$('.time-btn').removeAttr('style');
+				timeBtn(selectDate,selectedRoom);
+			}else{
+				$(this).val(selectedRoom);
+				console.log('selectedRoom : ', selectedRoom); 
+				return false;
+			}
+		 }
 	});
-	
+
 }
 
 

@@ -1,0 +1,115 @@
+@charset "UTF-8";
+
+/* 일정 추가 버튼 START*/
+.pln_btn {
+	height: 54px !important;
+}
+
+/* 일정 필터 버튼 START*/
+.card-header {
+	font-weight: bold;
+}
+
+.card-body {
+	padding: 10px;
+}
+
+.all {
+	background-color: #535050 !important;
+	color: white !important;
+	padding: 0px !important;
+	font-size: 13px !important;
+}
+
+.common {
+	background-color: #ffd146 !important;
+	color: white !important;
+	padding: 0px !important;
+	font-size: 13px !important;
+}
+
+.dept {
+	background-color: #6fb171 !important;
+	color: white !important;
+	padding: 0px !important;
+	font-size: 13px !important;
+}
+
+.private {
+	background-color: #55b4ff !important;
+	color: white !important;
+	padding: 0px !important;
+	font-size: 13px !important;
+}
+
+.all:hover, .common:hover, .dept:hover, .private:hover {
+    box-shadow: inset 1px 1px 2px 0px #403e3ed9 !important;
+    color: black !important;
+}
+
+/* 일정 모달 창 START */
+.modal-header {
+	background: #EEEEEE !important;
+	color: #707070 !important;
+}
+
+textarea {
+	resize: none !important;
+}
+
+.modal-footer {
+	background: #EEEEEE;
+	color: #707070;
+}
+
+/* 캘린더 START */
+#calendar {
+	background-color: white;
+	padding: 15px;
+	border-radius: 10px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+:root { -
+	-fc-border-color: #e9ecef;
+}
+
+.fc-day-sat .fc-daygrid-day-number {
+	color: blue;
+}
+
+.fc-day-sun .fc-daygrid-day-number {
+	color: red;
+}
+
+.fc-day-mon .fc-daygrid-day-number, .fc-day-tue .fc-daygrid-day-number,
+.fc-day-wed .fc-daygrid-day-number, .fc-day-thu .fc-daygrid-day-number,
+.fc-day-fri .fc-daygrid-day-number {
+	color: black;
+}
+
+.fc-day-sun .fc-col-header-cell-cushion {
+	color: red;
+}
+
+.fc-day-sat .fc-col-header-cell-cushion {
+	color: blue;
+}
+
+.fc-day-mon .fc-col-header-cell-cushion, .fc-day-tue .fc-col-header-cell-cushion,
+.fc-day-wed .fc-col-header-cell-cushion, .fc-day-thu .fc-col-header-cell-cushion,
+.fc-day-fri .fc-col-header-cell-cushion {
+	color: black;
+}
+
+.fc-event-start {
+	border: none;
+}
+
+.fc-direction-ltr .fc-daygrid-event.fc-event-end, .fc-direction-rtl .fc-daygrid-event.fc-event-start{
+	border: none;
+}
+
+.fc-toolbar-chunk{
+	font-size: 19px;
+}
