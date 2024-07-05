@@ -102,7 +102,10 @@ var treeModule = (function (module,$){
 				var code = tree.getNodeData(id).team_code;
 				
 				if(code == data.upper_code){
-					var addedId = tree.add({text: data.team_name}, id);
+					var addedId = tree.add({
+						text: data.team_name,
+						value: data.team_code
+						}, id);
 					tree.setNodeData(addedId, {
 						team_code: data.team_code,
 						team_name: data.team_name,

@@ -11,7 +11,7 @@
 </style>
 <jsp:include page="/views/common/head.jsp"></jsp:include>
 <!-- style css -->
-<link href="/resources/dept/css/style.css" rel="stylesheet">
+<link rel="stylesheet" href="/resources/dept/css/style.css">
 <!-- tui-tree -->
 <link rel="stylesheet" href="https://uicdn.toast.com/tui.context-menu/latest/tui-context-menu.css" />
 <link rel="stylesheet" href="/resources/dept/tui-tree/css/tree.css">
@@ -41,11 +41,11 @@
 								</div>
 								<div>
 									<button id="createDept_btn" type="button" onclick="createDetp()"
-										class="btn btn-outline-success">
+										class="btn btn-outline-success m-1">
 										<i class="bi bi-folder-plus"></i>
 									</button>
 									<button id="removeDept_btn" type="button" onclick="removeDept()"
-										class="btn btn-outline-danger">
+										class="btn btn-outline-danger m-1">
 										<i class="bi bi-folder-minus"></i>
 									</button>
 								</div>
@@ -94,8 +94,8 @@
 							<!-- care-header End -->
 							<div id="card-body-list" class="card-body">
 								<!-- 부서 card body 내용 -->
-								<div class="tab-content pt-2" id="tabContent">
-									<div class="tab-pane fade show active"
+								<div class="tab-content mt-3" id="tabContent">
+									<div class="tab-pane ms-5 fade show active"
 										id="deptInfo_tab_content" role="tabpanel"
 										aria-labelledby="deptInfo_tab">
 										<table id="deptInfo_table" class="table table-borderless">
@@ -158,10 +158,11 @@
 	<ul id="deptUser_list_sample" class="list-group">
 		<li class="list-group-item">
 			<input class="form-check-input me-2" type="checkbox"> 
-			<i class="ri-account-circle-fill"></i> 
-			<span class="list_userName me-2"></span>
-			<span class="badge rounded-pill bg-primary badge-leader">팀장</span>
-<!-- 			<span class="badge border-primary border-1 text-primary badge-member">부서원</span> -->
+			<i class="ri-account-circle-fill"></i>
+			<a class="list_userLink" href="#">
+				<span class="list_userName me-2"></span>
+				<span class="badge rounded-pill bg-primary badge-leader">팀장</span>
+			</a>
 		</li>
 	</ul>
 	<!-- deptUser List End -->
@@ -193,91 +194,33 @@
 </body>
 <script>
 	$(document).ready(function() {
-		getDept_ajax();
+		loadTree();
 	});
 	
-	var rootId = 'tui-tree-node-1';
-	var modal_rootId = 'tui-tree-node-3';
-	var newTC;
 	var selected_tab;
-	var selected_id;
-	var selected_modalId;
 	var checked = new Set();
 	
-	// modal 객체
-	var modal = new bootstrap.Modal(
-			document.getElementById('updateMemberDept_modal'), { keyboard: false } );
+	// tree module
+	var mainModule = treeModule.init({
+		id: 'main',
+		treeId: '#deptTree',
+		modalId:'updateMemberDept_modal'
+	});
+	var tree = mainModule.var.tree;				// tree 객체
+	var rootId = mainModule.var.rootId;	// 선택한 트리 rootId
+	var selected_id = mainModule.var.selectId;	// 선택한 부서 nodeId
 
-	// tree 객체
-	var tree = new tui.Tree('#deptTree', {
-		data: [{text: '에듀케어'}],
-		nodeDefaultState: 'opened'
+	var subModule = treeModule.init({
+		id: 'sub',
+		nodeId: 'tui-tree-node-3',
+		modalId:'updateMemberDept_modal'
 	});
-	
-	var modalTree = new tui.Tree('#modalTree', {
-		data: [{text: '에듀케어'}],
-		nodeDefaultState: 'opened'
-	});
-	
-	// set root node data
-	tree.setNodeData(rootId, {
-		team_code: 'T000',
-		team_name: '에듀케어',
-		upper_code: 'T000',
-		reg_date: '2002-02-02'
-	});
-	
-	modalTree.setNodeData(modal_rootId, {
-		team_code: 'T000',
-		team_name: '에듀케어',
-		upper_code: 'T000',
-		reg_date: '2002-02-02'
-	});
-	
+	var modalTree = subModule.var.tree;				// tree 객체
+	var modal = subModule.var.tree.modal;		// modal 객체	
+	var modal_rootId = subModule.var.rootId;	// 선택한 트리 rootId
+	var selected_modalId = subModule.var.selectId;	// 선택한 부서 nodeId
+
 	// event
-	// add tree option
-	tree.enableFeature('Selectable', {
-		selectedClassName: 'tui-tree-selected',
-	}).enableFeature('Draggable', {
-		helperClassName: 'tui-tree-drop',
-		lineClassName: 'tui-tree-line',
-		isSortable: true
-	}).enableFeature('Editable', {
-		dataKey: 'text'
-	}).enableFeature('ContextMenu', {
-		 menuData: [
-			{title: 'create', command: 'create'},
-			{title: 'update', command: 'update'},
-			{title: 'remove', command: 'remove'}
-		]
-	});
-	
-	modalTree.enableFeature('Selectable', {
-		selectedClassName: 'tui-tree-selected',
-	});
-
-	// tree-contextmenu event
-	tree.on('selectContextMenu', function(e) {
-		var command = e.command;
-		var nodeId = e.nodeId;
-		var data = tree.getNodeData(nodeId);
-
-		tree.select(nodeId);
-		switch (command) {
-			case 'create':
-				tree.createChildNode(nodeId);
-				break;
-			case 'update':
-				tree.editNode(nodeId);
-				break;
-			case 'remove':
-				selected_id = nodeId;
-				//tree.remove(nodeId);
-				removeDept();
-				break;
-		}
-	});
-	
 	// tree-select event
 	tree.on('select', function(e){
 		selected_id = e.nodeId;
@@ -301,6 +244,45 @@
 		//console.log('now selected:',selected_modalId);
 		
 	});
+
+	// add tree option
+	tree.enableFeature('Draggable', {
+		helperClassName: 'tui-tree-drop',
+		lineClassName: 'tui-tree-line',
+		isSortable: true
+	}).enableFeature('Editable', {
+		dataKey: 'text'
+	}).enableFeature('ContextMenu', {
+		 menuData: [
+			{title: 'create', command: 'create'},
+			{title: 'update', command: 'update'},
+			{title: 'remove', command: 'remove'}
+		]
+	});
+	
+	// tree-contextmenu event
+	tree.on('selectContextMenu', function(e) {
+		var command = e.command;
+		var nodeId = e.nodeId;
+		var data = tree.getNodeData(nodeId);
+		
+		tree.select(e.nodeId);
+		
+		switch (command) {
+			case 'create':
+				tree.createChildNode(nodeId);
+				break;
+			case 'update':
+				tree.editNode(nodeId);
+				break;
+			case 'remove':
+				selected_id = nodeId;
+				//tree.remove(nodeId);
+				removeDept();
+				break;
+		}
+	});
+	
 	tree.on('beforeCreateChildNode', function(e) {
 		if (event.cause === 'blur') {
 			tree.finishEditing();
@@ -310,7 +292,6 @@
 		var result = confirm('새로운 부서를 추가하시겠습니까?');
 		if(result){
 			var add_param = {
-				'team_code' : newTC,
 				'team_name' : e.value,
 				'upper_code': tree.getNodeData(selected_id).team_code
 			}
@@ -330,11 +311,8 @@
 	tree.on('beforeEditNode', function(e) {
 		//console.log('edit: ',e.nodeId, '/',e.'e.nodeId, '/',e.value, '/',e.cause'e = e.value);
 		var data = tree.getNodeData(e.nodeId);
-		var edit_name = e.value
-		if (e.cause === 'blur') {
-			tree.finishEditing();
-			return false;
-		}else{
+		if(data.team_name != e.value){
+			var edit_name = e.value;
 			var result = confirm('부서명을 수정하시겠습니까?');
 			if(result){
 				//console.log("::edit Dept::");
@@ -354,7 +332,10 @@
 			}else{
 				tree.finishEditing();
 				return false;
-			}
+			}			
+		} else{
+			tree.finishEditing();
+			return false;
 		}
 	});
 
@@ -389,6 +370,7 @@
 			alert('부서 이동시킬 부서원을 1명 이상 선택 해주세요.');
 			clearChecked();
 		} else{
+			treeModule.loadTree(subModule);
 			selected_modalId = modal_rootId;
 			modalTree.select(selected_modalId);
 			modal.show();
@@ -433,30 +415,6 @@
 	//eventEnd
 
 	//ajax
-	function getDept_ajax(){
-		//console.log('::init Dept list::')
-		$.ajax({
-			type	: 'get',
-			url		: '/dept/list.ajax',
-			dataType: 'json',
-			success	: function(result){
-	 			if(result.deptList.length > 0){
-	 				//console.log(result.deptList);
-	 				createTree(result.deptList);
-	 				newTC = result.newTC;
-	 				selected_tab = 'deptInfo';
-	 				selected_id = rootId;
-	 				tree.select(selected_id);
-				}else{
-					//console.log('dept list empty');
-				}
-	 		},
-			error	: function(error){
-				//console.log(error);
-			}
-		});
-	 }
-
  	function getMember_ajax(code){
 		var ajax_result;
 		//console.log('::init Dept Members::')
@@ -484,6 +442,7 @@
 						var ogList = $('#deptUser_list_sample li').clone(true);
 						//console.log(i,':',data.name);
 						ogList.find('input').attr('name', data.user_code);
+						ogList.find('a').attr('href', '/emp/detail.go?user_code='+data.user_code);
 						ogList.find('.list_userName').text(data.name+' '+data.class_name);
 
 						if(data.position_code == 'P01'){// 부서장
@@ -521,7 +480,7 @@
 				//console.log('createDept_ajax: ',result.msg);				
 				if(result.msg == 'success'){
 					//alert('해당 부서가 등록되었습니다.');
-					getDept_ajax();
+					loadTree();
 				}
 	 		},
 			error	: function(error){
@@ -545,7 +504,7 @@
 				if(result.msg == 'success'){
 					//alert('해당 부서가 삭제되었습니다.');
 					tree.remove(selected_id);
-					getDept_ajax();
+					loadTree();
 				}
 	 		},
 			error	: function(error){
@@ -575,7 +534,7 @@
 						selected_id = param.nodeId;
 						//console.log('updated node data: ', tree.getNodeData(param.nodeId));
 					}
-					getDept_ajax();
+					loadTree();
 				}else{
 					alert('해당 부서 수정을 실패했습니다.');
 				}
@@ -622,7 +581,7 @@
 				//console.log('moveMember_ajax: ',result.msg);
 				if(result.msg == 'success'){
 					alert('해당 부서원(들)을 부서 이동했습니다.');
-					getDept_ajax();
+					loadTree();
 				}else  {
 					alert('부서 이동을 실패했습니다 다시 시도해주세요.')
 				}
@@ -637,57 +596,12 @@
 	
 	
 	// method
-	function createTree(list){
-		// clear node
-		tree.removeAllChildren(rootId);
-		modalTree.removeAllChildren(modal_rootId);
-				
-		list.forEach(function (data, idx, tree){
-			//console.log(idx,':', data);
-			addNode(rootId, data);
- 			//console.log('====================================================')
-		});
+	function loadTree(){
+		treeModule.loadTree(mainModule);
+		selected_tab = 'deptInfo';
+		tree.select(selected_id);
+		clearChecked();
 	}
-
-	function addNode(id, data){
-		var result;
-		var mt = Number(id.substring(14))+1;
-		if(tree.getNodeData(id)){
-			var code = tree.getNodeData(id).team_code;
-
-			if(code == data.upper_code){
-				// 기본 tree에 생성
-				var addedId = tree.add({text: data.team_name}, id);
-				tree.setNodeData(addedId, {
-					team_code: data.team_code,
-					team_name: data.team_name,
-					upper_code: data.upper_code,
-					reg_date: data.reg_date
-				});
-				// modalTree에 생성
- 				if(mt == 2){ mt = 3; }
-				
-				mt_id = 'tui-tree-node-'+mt;
-				var mt_data = tree.getNodeData(addedId);
-				var mt_addId = modalTree.add({text: data.team_name}, mt_id);
-				modalTree.setNodeData(mt_addId, mt_data);
-				//console.log('id: ',id,'-',mt_id);				
-				//console.log('added node Id:',addedId,'-',mt_addId);
-				//console.log('added node data: ',tree.getNodeData(addedId))
-				//console.log('upper:',code,'-',data.upper_code,'=>',id);
-				result = true;
-			}else{
-				tree.getChildIds(id).forEach(function(child, i){
-					//console.log(i,'child: ',child)
-					addNode(child, data)
-				});
-			}
-		}else{
-			result = false;
-		}
-		return result;
-	}
-
 	// tab click
 	function clickTab(type){
 		//console.log('click tab: ',type);
@@ -766,7 +680,6 @@
 			}else {
 				//console.log('remove param:',data.team_code)
 				removeDept_ajax(data.team_code);
-				selected_tab = 'deptInfo';
 			}
 		}		
 	}
