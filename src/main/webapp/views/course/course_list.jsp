@@ -6,76 +6,19 @@
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-<title>Dashboard - NiceAdmin Bootstrap Template</title>
+<title>강의 관리 - 에듀케어</title>
 <meta content="" name="description">
 <meta content="" name="keywords">
 
 <!-- css -->
+<link href="/resources/course/course.css" rel="stylesheet">
+
 <jsp:include page="/views/common/head.jsp"></jsp:include>
+
 <!-- js -->
 <script src="/resources/js/pagination_module.js" type="text/javascript"></script>
 
 <style>
-.pln_btn {
-	height: 54px;
-}
-
-.board {
-	background-color: white;
-	padding: 15px;
-	border-radius: 10px;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.card-header {
-	font-weight: bold;
-}
-/*
-.form-select{
-	border: none;
-    box-shadow: -1px 1px 6px #929297;
-}
-
-.form-control{
-	border: none;
-    box-shadow: 1px 1px 6px #929297;
-}
-
-.search-btn {
-    border: none;
-    box-shadow: 3px 1px 6px #929297;
-}
-
-*/
-
-.search-btn {
-	border: 1px solid lightgray;
-}
-
-.input-group-text{
-	border:none;
-}
-
-.form-check-input:checked {
-    background-color: #000000;
-    border-color: #000000;
-}
-
-.w-50 {
-    width: 37% !important;
-}
-
-.pointer{
-	cursor: pointer;
-}
-
-.title-cate{
-	color:#012970;
-}
-
-.table-light{
-	--bs-table-bg: #a2a2a2;
-}
 </style>
 </head>
 
