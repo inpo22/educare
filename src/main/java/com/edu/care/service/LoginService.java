@@ -82,29 +82,16 @@ public class LoginService {
 			session.setAttribute("team_name", loginInfo.getTeam_name());
 			session.setAttribute("team_code", loginInfo.getTeam_code());
 			session.setAttribute("photo", loginInfo.getPhoto());
-			logger.info("user_code :{} ", loginInfo.getUser_code());
-			logger.info("user_name :{} ", loginInfo.getName());
-			logger.info("class_name :{} ", loginInfo.getClass_name());
-			logger.info("classify_name :{} ", loginInfo.getClassify_name());
-			logger.info("classify_code :{} ", loginInfo.getClassify_code());
-			logger.info("team_name :{} ", loginInfo.getTeam_name());
-			logger.info("team_code:{}", loginInfo.getTeam_code());
-			logger.info("photo :{} ", loginInfo.getPhoto());
+			//logger.info("user_code :{} ", loginInfo.getUser_code());
+			//logger.info("user_name :{} ", loginInfo.getName());
+			//logger.info("class_name :{} ", loginInfo.getClass_name());
+			//logger.info("classify_name :{} ", loginInfo.getClassify_name());
+			//logger.info("classify_code :{} ", loginInfo.getClassify_code());
+			//logger.info("team_name :{} ", loginInfo.getTeam_name());
+			//logger.info("team_code:{}", loginInfo.getTeam_code());
+			//logger.info("photo :{} ", loginInfo.getPhoto());
 			
-			page = "redirect:/";  /*MainController "/"경로로 이동시킴*/
-			/*
-			String team_code = loginInfo.getTeam_code();
-			String classify_code = loginInfo.getClassify_code();
-			
-			 if (team_code != null) {
-	                if (team_code.equals("T001") || team_code.equals("T006")) {
-	                    page = "redirect:/main/superAdminMain.go";
-	                } else {
-	                    page = "redirect:/main/adminMain.go";
-	                }
-	            } else if (classify_code.equals("U03")) {
-	                page = "redirect:/main/stdMain.go";
-	            }*/
+			page = "redirect:/";  
 			
 				}else {
 					mav.addObject("msg", msg);
