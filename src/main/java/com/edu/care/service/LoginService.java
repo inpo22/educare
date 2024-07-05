@@ -91,15 +91,27 @@ public class LoginService {
 			//logger.info("team_code:{}", loginInfo.getTeam_code());
 			//logger.info("photo :{} ", loginInfo.getPhoto());
 			
-			page = "redirect:/";  
+			String team_code = (String) session.getAttribute("team_code");
+			String classify_code = (String) session.getAttribute("classify_code");
 			
-				}else {
-					mav.addObject("msg", msg);
+			if (team_code != null) {
+				if (team_code.equals("T001") || team_code.equals("T006")) {
+					page = "redirect:/main/superAdminMain.go";
+				} else {
+					page = "redirect:/main/adminMain.go";
 				}
-					mav.setViewName(page);
-					return mav;	
-
-				}
+			}
+			if (classify_code.equals("U03") ) {
+				page = "redirect:/main/stdMain.go";
+			}
+			
+		}else {
+			mav.addObject("msg", msg);
+		}
+		mav.setViewName(page);
+		return mav;	
+	}
+	
 	public String idFindResult(String name, String email) {
 		return (String) loginDAO.idFindResult(name,email);
 	}
