@@ -4,7 +4,8 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>:: EduCare - 아이디 찾기 ::</title>
+    <title>아이디 찾기 - 에듀케어</title>
+     <link href="/resources/assets/img/favicon.png" rel="icon">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <style>

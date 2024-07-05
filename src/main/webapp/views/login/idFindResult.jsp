@@ -4,7 +4,8 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>:: EduCare - 아이디 찾기 결과 ::</title>
+    <title>아이디찾기 결과 - 에듀케어</title>
+     <link href="/resources/assets/img/favicon.png" rel="icon">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -58,7 +59,7 @@
 </head>
 <body>
     <div class="result-container">
-        <h3>아이디 찾기 확인</h3>
+        <h3>아이디 찾기 결과</h3>
         <p>고객님의 정보와 일치하는 아이디입니다.</p>
         <br>
         <p class="id">아이디: ${userId}</p>

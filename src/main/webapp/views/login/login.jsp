@@ -5,7 +5,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>EDUcare - Login</title>
+    <title>로그인 - 에듀케어</title>
+ 	<link href="/resources/assets/img/favicon.png" rel="icon">
+
     <link
         href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         rel="stylesheet">
@@ -88,7 +90,6 @@
 
 </head>
 <body>
-
     <div class="login-container">
         <img src="/resources/img/EDUcare_logo.png" alt="EduCare Logo" class="img-fluid">
         <form action="/login.do" method="post">
