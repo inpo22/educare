@@ -26,28 +26,22 @@ public class MainController {
 		String page = "";
 		
 		if (session.getAttribute("user_code") == null) {
-			session.setAttribute("user_code", "2024U010001");
-			session.setAttribute("user_name", "관리자");
-			session.setAttribute("class_name", "대리");
-			session.setAttribute("team_name", "인사총무팀");
-			session.setAttribute("classify_name", "정규직");
-			session.setAttribute("team_code", "T006");
-			session.setAttribute("classify_code", "U01");
-		}
-		
-		String team_code = (String) session.getAttribute("team_code");
-		String classify_code = (String) session.getAttribute("classify_code");
-		
-		
-		if (team_code != null) {
-			if (team_code.equals("T001") || team_code.equals("T006")) {
-				page = "redirect:/main/superAdminMain.go";
-			} else {
-				page = "redirect:/main/adminMain.go";
+			page = "redirect:/login.go";
+		} else {
+			String team_code = (String) session.getAttribute("team_code");
+			String classify_code = (String) session.getAttribute("classify_code");
+			
+			
+			if (team_code != null) {
+				if (team_code.equals("T001") || team_code.equals("T006")) {
+					page = "redirect:/main/superAdminMain.go";
+				} else {
+					page = "redirect:/main/adminMain.go";
+				}
 			}
-		}
-		if (classify_code.equals("U03") ) {
-			page = "redirect:/main/stdMain.go";
+			if (classify_code.equals("U03") ) {
+				page = "redirect:/main/stdMain.go";
+			}
 		}
 		
 		return page;
