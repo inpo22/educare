@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-<title>Dashboard - NiceAdmin Bootstrap Template</title>
+<title>전사 공지사항 작성 - 에듀케어</title>
 <meta content="" name="description">
 <meta content="" name="keywords">
 
@@ -106,7 +106,7 @@
 				<table class="table table-borderless">
 					<tr>
 						<th class="first-col">제목</th>
-						<td class="second-col"><input type="text" id="titleText" name="title" class="form-control"/></td>
+						<td class="second-col"><input type="text" id="titleText" name="title" class="form-control" maxlength="30"/></td>
 					</tr>
 					<tr>
 						<th>
@@ -225,6 +225,29 @@ const editor = new toastui.Editor({
     }
 }
 
+// 	$('#flexSwitchCheckChecked').on('click',function(){
+// 		var fixedCheck = $(this);
+// 		if(fixedCheck.prop('checked')){
+// 			$.ajax({
+// 				url:'/fixedCheck'
+// 				,type:'get'
+// 				,data:{
+// 					"board_no":1
+// 				}
+// 				,dataType:'json'
+// 				,success:function(data){
+// 					console.log(data);
+// 					if(data.result){
+// 						alert("이미 5개 이상의 상단고정 게시글이 존재합니다.");
+// 						fixedCheck.prop('checked',false);
+// 					}
+// 				}
+// 				,error:function(error){
+// 					console.log(error);
+// 				}
+// 			});
+// 		}
+// 	});
 </script>
 </html>
 

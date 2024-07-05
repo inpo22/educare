@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-<title>Dashboard - NiceAdmin Bootstrap Template</title>
+<title>학생 공지사항 수정 - 에듀케어</title>
 <meta content="" name="description">
 <meta content="" name="keywords">
 
@@ -260,5 +260,29 @@ console.log(fileList);
 			}
 		}
 	}
+	
+// 	$('#flexSwitchCheckChecked').on('click',function(){
+// 		var fixedCheck = $(this);
+// 		if(fixedCheck.prop('checked')){
+// 			$.ajax({
+// 				url:'/fixedCheck'
+// 				,type:'get'
+// 				,data:{
+// 					"board_no":3
+// 				}
+// 				,dataType:'json'
+// 				,success:function(data){
+// 					console.log(data);
+// 					if(data.result){
+// 						alert("이미 5개 이상의 상단고정 게시글이 존재합니다.");
+// 						fixedCheck.prop('checked',false);
+// 					}
+// 				}
+// 				,error:function(error){
+// 					console.log(error);
+// 				}
+// 			});
+// 		}
+// 	});
 </script>
 </html>

@@ -89,6 +89,7 @@ public class BoardController {
 		return "board/allBoard_update";
 	}
 
+	
 	// 전사 공지사항 수정
 	@PostMapping(value = "/allBoard/update.do")
 	public String allBoardUpdate(@RequestParam("attachFile") MultipartFile[] attachFile,
@@ -202,7 +203,7 @@ public class BoardController {
 
 	// 부서 글수정 페이지 이동
 	@GetMapping(value = "/teamBoard/update.go")
-	public String teamBoardUpdateGo(String post_no, Model model, HttpSession session) {
+	public String teamBoardUpdateGo(String post_no, Model model, HttpSession session,String category) {
 		logger.info("부서 글수정 페이지 접속");
 		String teamCode = (String) session.getAttribute("team_code");
 	    boolean isPerm = false;
@@ -213,6 +214,7 @@ public class BoardController {
 	    
 	    model.addAttribute("isPerm", isPerm);
 	    model.addAttribute("teamList", boardService.teamSelectList());
+	    model.addAttribute("category",category);
 		
 		boardService.detail(post_no, model);
 		return "board/teamBoard_update";
@@ -398,7 +400,11 @@ public class BoardController {
 	}
 	
 	
-	
+//	@GetMapping(value="/fixedCheck")
+//	@ResponseBody
+//	public Map<String, Object> fixedCheck(String board_no){
+//		return Map.of("result",boardService.fixedCheck(board_no));
+//	}
 	
 	
 	

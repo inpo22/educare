@@ -100,6 +100,7 @@
 	<select id="teamDetail" resultType="board">
 		SELECT 
 			p.title
+			, p.post_team_code
 			, (SELECT u.name FROM user u WHERE u.user_code = p.user_code) AS user_name
 			, (SELECT ac.code_name FROM all_code ac WHERE ac.code = (SELECT u2.class_code FROM user u2 WHERE u2.user_code = p.user_code)) AS class_name
 			, (SELECT d.team_name FROM department d WHERE d.team_code = (SELECT u3.team_code FROM user u3 WHERE u3.user_code = p.user_code)) AS team_name 
@@ -155,7 +156,7 @@
 	<insert id="allBoardWrite" useGeneratedKeys="true" keyColumn="post_no"
 		keyProperty="post_no" parameterType="board" >
 		INSERT INTO post(title, contents, fixed_yn, user_code, board_no)
-		VALUES(#{title},#{contents},#{fixed_yn}, #{user_code}, 1)
+		VALUES(#{title},#{contents},0, #{user_code}, 1)
 	</insert>
 
 	<insert id="fileSave" useGeneratedKeys="true" keyColumn="file_no"
@@ -180,7 +181,7 @@
 	        title = #{title},
 	        contents = #{contents}, 
 	        edit_date = NOW(), 
-	        fixed_yn = #{fixed_yn}, 
+		    fixed_yn = 0, 
 	        edit_user_code = #{user_code},
 	        <if test="teamCode != null">
 	            post_team_code = #{teamCode},
@@ -296,7 +297,7 @@
 	<insert id="teamBoardWrite" useGeneratedKeys="true" keyColumn="post_no"
 		keyProperty="post_no" parameterType="board" >
 		INSERT INTO post(title, contents, fixed_yn, user_code, board_no, post_team_code)
-		VALUES(#{title},#{contents},#{fixed_yn}, #{user_code}, 2, #{teamCode})
+		VALUES(#{title},#{contents},0, #{user_code}, 2, #{teamCode})
 	</insert>
 	
 	<select id="teamUserList" resultType="String">
@@ -389,7 +390,7 @@
 <insert id="stdBoardWrite" useGeneratedKeys="true" keyColumn="post_no"
 	keyProperty="post_no" parameterType="board" >
 	INSERT INTO post(title, contents, fixed_yn, user_code, board_no)
-	VALUES(#{title},#{contents},#{fixed_yn}, #{user_code}, 3)
+	VALUES(#{title},#{contents},0, #{user_code}, 3)
 </insert>
 
 <!-- 자료실 -->
@@ -455,11 +456,51 @@
 		    </trim>
 		    WHERE post_no = #{post_no}
 	</update>
+	
+	<select id="topFixedListCheck" resultType="Integer">
+		SELECT
+			post_no
+		FROM
+			(SELECT
+				p.post_no
+				, IFNULL(GREATEST(p.reg_date, p.edit_date), p.reg_date) AS last_date
+			FROM post p
+			WHERE p.fixed_yn = 1 AND p.board_no = #{param1}
+			<if test="param2 != ''">
+				AND p.post_team_code = #{param2}
+			</if>
+			) AS subquery
+		ORDER BY last_date ASC
+	</select>
+	
+	<update id="topFixedOn">
+		UPDATE post SET fixed_yn = 1 WHERE post_no = #{param1}
+	</update>
+	
+	<update id="topFixedOff">
+		UPDATE post SET fixed_yn = 0 WHERE post_no = #{param1}
+	</update>
+	
+	<select id="checkPostType" resultType="board">
+		SELECT p.board_no, IFNULL(p.post_team_code, '') AS post_team_code FROM post p WHERE p.post_no = #{param1}
+	</select>
 
+<!-- 	<select id="getOldFixedPostNo" resultType="Integer" parameterType="map"> -->
+<!-- 		SELECT post_no FROM post WHERE fixed_yn = 1 AND board_no = #{board_no} ORDER BY edit_date, reg_date LIMIT 1 -->
+<!-- 	</select> -->
 
+<!-- 	<select id="getFixedCount" resultType="boolean" parameterType="String"> -->
+<!-- 		SELECT CASE -->
+<!-- 		    WHEN COUNT(post_no) >= 5 THEN true -->
+<!-- 		    ELSE false -->
+<!-- 		END as result -->
+<!-- 		FROM post -->
+<!-- 		WHERE fixed_yn = 1 AND board_no = #{param1} -->
+<!-- 	</select> -->
 
-
-
+<!-- 	<update id="updateOldFixedPost" parameterType="int"> -->
+<!-- 		UPDATE post SET fixed_yn = 0 WHERE post_no = #{param1} -->
+<!-- 	</update> -->
 
 
 

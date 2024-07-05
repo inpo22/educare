@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-<title>Dashboard - NiceAdmin Bootstrap Template</title>
+<title>전사 공지사항 수정 - 에듀케어</title>
 <meta content="" name="description">
 <meta content="" name="keywords">
 
@@ -112,7 +112,7 @@
 				<table class="table table-borderless">
 					<tr>
 						<th class="first-col">제목</th>
-						<td class="second-col"><input type="text" id="titleText" name="title" class="form-control" value="${dto.title}"/></td>
+						<td class="second-col"><input type="text" id="titleText" name="title" class="form-control" value="${dto.title}" maxlength="30"/></td>
 					</tr>
 					<tr>
 						<th>
@@ -140,6 +140,7 @@
 				<input type="hidden" name="post_no" id="post_no" value="${dto.post_no}"/>
 				<input type="hidden" name="contents" id="content"/>
 				<input type="hidden" name="fixed_yn" id="checkBox"/>
+				<input type="hidden" name="board_no" value="1"/>
 				<input type="hidden" name="fileNumbers" id="fileNumbers"/>
 			</form>
 		</div>
@@ -226,6 +227,7 @@ console.log(fileList);
 	    $('#attachFile')[0].files = dataTransfer.files;
 	}
 
+	
 	// 수정취소
 	function updateCancle(){
 		location.href = '/allBoard/list.go';
@@ -263,5 +265,29 @@ console.log(fileList);
 			}
 		}
 	}
+	
+// 	$('#flexSwitchCheckChecked').on('click',function(){
+// 		var fixedCheck = $(this);
+// 		if(fixedCheck.prop('checked')){
+// 			$.ajax({
+// 				url:'/fixedCheck'
+// 				,type:'get'
+// 				,data:{
+// 					"board_no":1
+// 				}
+// 				,dataType:'json'
+// 				,success:function(data){
+// 					console.log(data);
+// 					if(data.result){
+// 						alert("이미 5개 이상의 상단고정 게시글이 존재합니다.");
+// 						fixedCheck.prop('checked',false);
+// 					}
+// 				}
+// 				,error:function(error){
+// 					console.log(error);
+// 				}
+// 			});
+// 		}
+// 	});
 </script>
 </html>

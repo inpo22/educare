@@ -134,12 +134,34 @@ public class BoardService {
 			fileSave(attachFile, dto);
 		}
 		
+		int post_no = dto.getPost_no();
+		int board_type = 1;
+		String team_code = "";
+		if (dto.getFixed_yn() == 1) {
+			updateTopFixed(post_no, board_type, team_code);
+		}
+		
 		logger.info("데이터 추가 후 현재 글번호 = " + dto.getPost_no());
 		return row;
 	}
 
 	
-	
+	// 상단 고정 업데이트
+	@Transactional
+	private void updateTopFixed(int post_no, int board_type, String team_code) {
+		List<Integer> noList = boardDAO.topFixedListCheck(board_type, team_code);
+		
+		if (noList.size() < 5) {
+			boardDAO.topFixedOn(post_no);
+		} else if (noList.size() == 5) {
+			int off_post_no = noList.get(0);
+			
+			boardDAO.topFixedOff(off_post_no);
+			boardDAO.topFixedOn(post_no);
+		}
+		
+	}
+
 	public void detail(String post_no, Model model) {
 		BoardDTO dto = boardDAO.detail(post_no);
 		List<BoardDTO> attachFileList = boardDAO.attachFileList(post_no);
@@ -172,9 +194,13 @@ public class BoardService {
 
 	}
 
+	@Transactional
 	public void boardUpdate(MultipartFile[] attachFile, Map<String, String> param) {
 		logger.info("param : {} ", param);
+		
 		boardDAO.boardUpdate(param);
+		
+		
 		
 		BoardDTO dto = new BoardDTO();
 		dto.setUser_code(param.get("user_code"));
@@ -182,6 +208,14 @@ public class BoardService {
 		
 		if (attachFile[0].getSize() != 0) {
 			fileSave(attachFile, dto);
+		}
+		
+		int fixed_yn = Integer.parseInt(param.get("fixed_yn"));
+		int post_no = Integer.parseInt(param.get("post_no"));
+		int board_type = boardDAO.checkPostType(post_no).getBoard_no();
+		String team_code = boardDAO.checkPostType(post_no).getPost_team_code();
+		if (fixed_yn == 1) {
+			updateTopFixed(post_no, board_type, team_code);
 		}
 	}
 
@@ -289,6 +323,14 @@ public class BoardService {
 		if (attachFile[0].getSize() != 0) {
 			fileSave(attachFile, dto);
 		}
+		
+		int post_no = dto.getPost_no();
+		int board_type = 2;
+		String team_code = dto.getTeamCode();
+		if (dto.getFixed_yn() == 1) {
+			updateTopFixed(post_no, board_type, team_code);
+		}
+		
 		logger.info("데이터 추가 후 현재 글번호 = " + dto.getPost_no());
 		
 		return row;
@@ -350,6 +392,13 @@ public class BoardService {
 			fileSave(attachFile, dto);
 		}
 		logger.info("데이터 추가 후 현재 글번호 = " + dto.getPost_no());
+		
+		int post_no = dto.getPost_no();
+		int board_type = 3;
+		String team_code = "";
+		if (dto.getFixed_yn() == 1) {
+			updateTopFixed(post_no, board_type, team_code);
+		}
 
 	}
 
@@ -415,6 +464,11 @@ public class BoardService {
 			fileSave(attachFile, dto);
 		}
 	}
+
+//	public boolean fixedCheck(String board_no) {
+//			
+//		return boardDAO.getFixedCount(board_no);
+//	}
 
 
 

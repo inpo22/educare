@@ -82,11 +82,18 @@ public interface BoardDAO {
 
 	void databoardUpdate(Map<String, String> param);
 
+	void topFixedOn(int post_no);
+
+	List<Integer> topFixedListCheck(int board_type, String team_code);
+
+	void topFixedOff(Integer integer);
+
+	BoardDTO checkPostType(int post_no);
+
+//	boolean getFixedCount(String board_no);
 
 
 
-
-//	List<BoardDTO> getNoticesByTeamCode(String teamCode);
 
 
 

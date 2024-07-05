@@ -7,7 +7,7 @@
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-<title>Dashboard - NiceAdmin Bootstrap Template</title>
+<title>부서 공지사항 - 에듀케어</title>
 <meta content="" name="description">
 <meta content="" name="keywords">
 
@@ -150,6 +150,7 @@ $('#write').on('click',function(){
 });
 
 $('#hiddenTeamCategory').val('${category}');
+
 function formatDate(dateStr) {
 	const options = {year: 'numeric', month: '2-digit', day: '2-digit' };
 	const date = new Date(dateStr);

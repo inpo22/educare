@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-<title>Dashboard - NiceAdmin Bootstrap Template</title>
+<title>${dto.title} - 부서 공지사항 - 에듀케어</title>
 <meta content="" name="description">
 <meta content="" name="keywords">
 
@@ -171,7 +171,7 @@ function BoardList(){
 
 // 수정
 function BoardUpdate(){
-	location.href = '/teamBoard/update.go?post_no='+${dto.post_no};
+	location.href = '/teamBoard/update.go?post_no='+${dto.post_no}+'&category='+'${dto.post_team_code}';
 }
 // 삭제
 function boardDel(){
