@@ -229,16 +229,16 @@ public class MypageService {
 		
 		// 현재 날짜 가져오기
         LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-     // 각 강의의 시작일을 확인하여 결제 상태를 업데이트
+        // 각 강의의 시작일을 확인하여 결제 상태를 업데이트
         for (PaymentDTO course : cList) {
             try {
-                LocalDateTime startDateTime = LocalDateTime.parse(course.getCourse_start()); // 예외 발생 가능
-                LocalDate startDate = startDateTime.toLocalDate();
+                LocalDate startDate = LocalDate.parse(course.getCourse_start(), formatter); // 예외 발생 가능
 
                 // 강의 시작일이 오늘보다 이전이면 결제 상태를 '결제취소'로 변경
                 if (startDate.isBefore(today)) {
-                    if (course.getPay_state() != 2) { // 이미 취소된 상태가 아니라면
+                    if (course.getPay_state() == 0) { // 이미 취소된 상태가 아니라면
                         course.setPay_state(2); // 결제취소 상태로 변경
                         mypageDAO.updatePayState(course.getCourse_no()); // 데이터베이스 업데이트
                     }
