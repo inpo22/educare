@@ -112,11 +112,11 @@ a {
 }
 .top-weather-icon {
 	color: #012970;
-	font-size: 120px;
+	font-size: 90px;
 }
 .bottom-weather-icon {
 	color: #012970;
-	font-size: 80px;
+	font-size: 60px;
 } 
 .top-weather th {
 	width: 30%;
@@ -137,10 +137,10 @@ a {
 }
 .top-temp {
 	font-weight: 600;
-	font-size: 50px;
+	font-size: 35px;
 }
 .bottom-temp {
-	font-size: 25px;
+	font-size: 20px;
 }
 .text-align-center {
 	text-align: center;

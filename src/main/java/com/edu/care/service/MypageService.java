@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -112,9 +113,40 @@ public class MypageService {
 		fileSave(photo, user_code, type);
 		
 		type = 1;
-		fileSave(sign_photo, user_code, type);
+		String sign_data = param.get("sign_canvas_photo");
+		// logger.info("sign : " + sign_data);
+		if (sign_data.equals("")) {
+			
+			fileSave(sign_photo, user_code, type);
+		} else {
+			signSave(sign_data, user_code, type);
+		}
+		
+		
 	}
 	
+	private void signSave(String sign_data, String user_code, int type) {
+		String base64Image = sign_data.split(",")[1];
+		byte[] bytes = Base64.getDecoder().decode(base64Image);
+
+		try {
+			String new_filename = System.currentTimeMillis() + ".png";
+			
+			Path path = Paths.get(root + new_filename);
+			Files.write(path, bytes);
+			
+			mypageDAO.profileImgSave(user_code, new_filename, type);
+			
+			Thread.sleep(1);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+
 	private void fileSave(MultipartFile photo, String user_code, int type) {
 		String ori_filename = photo.getOriginalFilename();
 		
