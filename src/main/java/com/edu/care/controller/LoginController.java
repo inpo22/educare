@@ -49,7 +49,7 @@ public class LoginController {
 				response.addCookie(cookie);
 			}
 
-			}
+		}
 		return mav;
 
 	}
@@ -102,20 +102,6 @@ public class LoginController {
 		return mav;
 		
 	}
-	
-	/* 모달창에서 페이지이동으로 변경
-	// ID찾기
-	@PostMapping(value = "login/idFind.ajax")
-	@ResponseBody
-	public Map<String, Object> idFindAccess(String name, String email) {
-		logger.info("::아이디 찾기 실행::");
-		logger.info("user_name :{}", name);
-		logger.info("user_email : {}", email);
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("use", loginService.idFindAccess(name, email));
-
-		return map;
-	}*/
 	
 	@GetMapping(value="/login/pwFind.go")
 	public String pwFindForm() {
