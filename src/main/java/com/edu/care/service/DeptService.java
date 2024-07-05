@@ -25,13 +25,11 @@ public class DeptService {
 	public Map<String, Object> getDept() {
 		Map<String, Object> result = new HashMap<String, Object>();
 		List<DeptDTO> deptList = deptDAO.getDept();
-		String newTC = deptDAO.getNewTC();
 		
 		if(deptList.size() < 0) {
 			logger.info("deptList is empty ");
 		}
 		result.put("deptList", deptList);
-		result.put("newTC", newTC);
 		return result;
 	}
 	// 부서원 리스트 조회
@@ -51,6 +49,9 @@ public class DeptService {
 	public Map<String, Object> createDept(Map<String, Object> param) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		String msg = "fail";
+		String newTC = deptDAO.getNewTC();
+		param.put("team_code", newTC);
+		logger.info("param: "+param);
 		int row = deptDAO.createDept(param);
 		
 		if(row > 0) {

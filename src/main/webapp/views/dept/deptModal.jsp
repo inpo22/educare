@@ -97,10 +97,10 @@
 
 	/* 
 	var module = treeModule.init(option);	// tree module
-	var tree = module.var tree;				// tree 객체
+	var tree = module.var.tree;				// tree 객체
 	var modal = module.var.tree.modal;		// modal 객체	
-	var rootId = module1.var.rootId;	// 선택한 트리 rootId
-	var selectId = module1.var.selectId;	// 선택한 부서 nodeId
+	var rootId = module.var.rootId;	// 선택한 트리 rootId
+	var selectId = module.var.selectId;	// 선택한 부서 nodeId
 	
 	// tree 새로운 이벤트 추가 예시
 	tree.enableFeature('Draggable', {
