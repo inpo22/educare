@@ -4,25 +4,28 @@
 <mapper namespace="com.edu.care.dao.DeptDAO">
 
 	<select id="getDept" resultType="dept">
-		SELECT team_name, team_code, upper_code, reg_date
+		SELECT team_code, team_name, upper_code, reg_date
 		 FROM department 
-		  ORDER BY team_code ASC
+		 ORDER BY team_code ASC
 	</select>
 	
 	<select id="getNewTC">
-		SELECT
-		 IFNULL(
-		  CONCAT('T', RIGHT(CONCAT('00', (SUBSTRING(
-		   (select max(team_code) FROM department d), 2) + 1)), 3)), 'T001')
-		     as new_code;
+		SELECT IFNULL(
+		  CONCAT('T', RIGHT(
+		  CONCAT('00', (
+		  SUBSTRING(
+		   (SELECT MAX(team_code) 
+			 FROM department d), 2) + 1)), 3)), 'T001') AS new_code;
 	</select>
 	
 	<select id="getMember" resultType="emp">
 		SELECT name, user_code, position_code, team_code, 
-		 (SELECT ac.code_name FROM all_code ac WHERE class_code = ac.code) AS 'class_name'
+		 (SELECT ac.code_name 
+			FROM all_code ac 
+			WHERE class_code = ac.code) AS 'class_name'
 		 FROM user
-		  WHERE team_code LIKE #{team_code} AND status LIKE '0'
-		  ORDER BY name ASC;
+		 WHERE team_code LIKE #{team_code} AND status LIKE '0'
+		 ORDER BY name ASC;
 	</select>
 	
 	<insert id="createDept" parameterType="map">
@@ -36,13 +39,14 @@
 	</delete>
 	
 	<update id="updateDeptName" parameterType="map">
-		UPDATE department SET team_name = #{team_name}
-		 WHERE team_code = #{team_code}
-		  AND team_name NOT LIKE(team_name)
+		UPDATE department 
+		 SET team_name = #{team_name}
+		 WHERE team_code = #{team_code} AND team_name NOT LIKE(#{team_name})
 	</update>
 
 	<update id="updateUpper" parameterType="map">
-		UPDATE department SET upper_code = #{upper_code}
+		UPDATE department
+		 SET upper_code = #{upper_code}
 		 WHERE team_code = #{team_code}
 	</update>
 
@@ -51,17 +55,16 @@
 		 SET position_code = CASE 
 		  WHEN user_code = #{user_code} THEN 'P01'
 		  WHEN position_code = 'P01' THEN 'P02' ELSE 'P02'
-		 END
-		  WHERE team_code = #{team_code} AND status LIKE '0'
+		  END
+		 WHERE team_code = #{team_code} AND status LIKE '0'
 	</update>
-
 
 	<update id="moveMember" parameterType="map">
 		UPDATE `user` 
 		 SET 
 		  team_code = #{team_code},
 		  position_code = 'P02'
-		   WHERE user_code = #{user_code} AND status LIKE '0'
+		 WHERE user_code = #{user_code} AND status LIKE '0'
 	</update>
 
 </mapper>

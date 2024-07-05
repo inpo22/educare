@@ -2,14 +2,22 @@
 * Template Name: dept
 */
 
+.card-header{
+	height: 135px;
+}
+.card-body{
+	height: 530px;
+}
 .tui-tree-root {
 	height: 450px;
 }
 
-#tabContent {
-	height: 450px;
+.list_userLink {
+	color: black;
 }
 
+#tabContent {
+}
 
 #deptInfo_table_sample{
 	display: none;
