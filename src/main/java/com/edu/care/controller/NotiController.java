@@ -46,4 +46,5 @@ public class NotiController {
 		logger.info("param: "+param.get("noti_no"));
 		return notiService.readNotis(param);
 	}
+	
 }
