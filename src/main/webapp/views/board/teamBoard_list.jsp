@@ -15,7 +15,7 @@
 <!-- css -->
 <link rel="stylesheet" href="/resources/board/board.css">
 <!-- js -->
-
+<script src="/resources/js/pagination_module.js" type="text/javascript"></script>
 
 <style>
 .table {
@@ -123,7 +123,7 @@
 				  
 				</tbody>
 			</table>
-			<button class="write" onclick="location.href='/teamBoard/write.go'">글쓰기</button>
+			<button class="write" id="write">글쓰기</button>
 			<ul class="pagination d-flex justify-content-center" id="pagination"></ul>
 			  
 		</div>
@@ -145,6 +145,11 @@ var searchFlag = false;
 var teamCode = '';
 listCall(page, searchCategory, searchWord, teamCode);
 
+$('#write').on('click',function(){
+	location.href='/teamBoard/write.go?category='+$('#hiddenTeamCategory').val();
+});
+
+$('#hiddenTeamCategory').val('${category}');
 function formatDate(dateStr) {
 	const options = {year: 'numeric', month: '2-digit', day: '2-digit' };
 	const date = new Date(dateStr);
@@ -153,7 +158,7 @@ function formatDate(dateStr) {
 
 function listCall(page, searchCategory, searchWord, teamCode){
 	console.log("listCall function called");
-    console.log("page:", page, "searchCategory:", searchCategory, "searchWord:", searchWord, "teamCode:", teamCode);
+	console.log("page:", page, "searchCategory:", searchCategory, "searchWord:", searchWord, "teamCode:", teamCode);
 
 	$.ajax({
 		type: 'post',
@@ -168,43 +173,21 @@ function listCall(page, searchCategory, searchWord, teamCode){
 		success: function(data){
 			console.log("AJAX request successful");
 			console.log(data);
-			var context = '';
-			var topFixedContext = '';
+
 			totalPage = data.totalPage;
-			if (page == 1) {
-				topFixed = false;
-			}
 			
-			if(topFixed == false){
-				for (item of data.topFixedTeamList){
-					topFixedContext += '<tr class="boardTableTr" onclick="locationMove('+item.post_no+')">'
-					topFixedContext += '<td scope="col"><b>'+ item.post_no +'</b></td>'
-					topFixedContext += '<td scope="col"><b>' + item.title + '</b></td>'
-					topFixedContext += '<td scope="col"><b>' + item.user_name + ' ' + item.class_name + '</b></td>'
-					topFixedContext += '<td scope="col"><b>' + item.team_name + '</b></td>'
-					topFixedContext += '<td scope="col"><b>' + formatDate(item.reg_date) + '</b></td>'
-					topFixedContext += '<td scope="col"><b>' + item.bHit + '</b></td>'
-					topFixedContext += '</tr>';
-				}
-				topFixed = true;
-			}
-			for (var item of data.list) {
-				context += '<tr class="boardTableTr" onclick="locationMove('+item.post_no+')">'
-				context += '<td scope="col">'+ item.post_no +'</td>'
-				context += '<td scope="col">' + item.title + '</td>'
-				context += '<td scope="col">' + item.user_name + ' ' + item.class_name + '</b></td>'
-				context += '<td scope="col">' + item.team_name + '</td>'
-				context += '<td scope="col">' + formatDate(item.reg_date) + '</td>'
-				context += '<td scope="col">' + item.bHit + '</td>'
-				context += '</tr>';
-			}
-			
-			if(page > 1){
-				$('#list').html(context);
-			}else{
-			$('#list').html(topFixedContext+context);
-			}
-			setupPagination(page, totalPage);
+			 var searchFlag = !!searchWord;
+			 
+			 drawList(data, page, searchFlag);
+
+			var option = {
+				totalPages: totalPage,
+				startPage: page
+			};
+			window.pagination.init($('#pagination'), option, function(currentPage) {
+				page = currentPage;
+				listCall(page, searchCategory, searchWord, teamCode);
+			});
 		},
 		error: function(request, status, error){
 			console.log("code: " + request.status)
@@ -214,96 +197,42 @@ function listCall(page, searchCategory, searchWord, teamCode){
 	});
 }
 
+function drawList(data, page, searchFlag){
+	var context = '';
+	var topFixedContext = '';
+    
+	if(page == 1){
+		for (var item of data.topFixedTeamList){
+			topFixedContext += '<tr class="boardTableTr" onclick="locationMove('+item.post_no+')">'
+			topFixedContext += '<td scope="col"><b>'+ item.post_no +'</b></td>'
+			topFixedContext += '<td scope="col"><b>' + item.title + '</b></td>'
+			topFixedContext += '<td scope="col"><b>' + item.user_name + ' ' + item.class_name + '</b></td>'
+			topFixedContext += '<td scope="col"><b>' + item.team_name + '</b></td>'
+			topFixedContext += '<td scope="col"><b>' + formatDate(item.reg_date) + '</b></td>'
+			topFixedContext += '<td scope="col"><b>' + item.bHit + '</b></td>'
+			topFixedContext += '</tr>';
+		}
+	}
+	for (var item of data.list) {
+		context += '<tr class="boardTableTr" onclick="locationMove('+item.post_no+')">'
+		context += '<td scope="col">'+ item.post_no +'</td>'
+		context += '<td scope="col">' + item.title + '</td>'
+		context += '<td scope="col">' + item.user_name + ' ' + item.class_name + '</b></td>'
+		context += '<td scope="col">' + item.team_name + '</td>'
+		context += '<td scope="col">' + formatDate(item.reg_date) + '</td>'
+		context += '<td scope="col">' + item.bHit + '</td>'
+		context += '</tr>';
+	}
+	if (page > 1 || searchFlag) {
+		$('#list').html(context);
+	} else {
+		$('#list').html(topFixedContext + context);
+	}
+}
+
 function locationMove(post_no){
 	location.href='/teamBoard/detail.go?post_no='+post_no;
 }
-
-//totalPage 활용하여 Pagination 버튼 설정
-	function setupPagination(page, totalPage) {
-		var pagination = $('#pagination');
-		var count = 0;
-		
-		pagination.empty();
-		
-		var content = '<li class="page-item">';
-		content += '<a class="page-link" href="#">&laquo;</a>';
-		content += '</li>';
-		content += '<li class="page-item">';
-		content += '<a class="page-link" href="#">&lsaquo;</a>';
-		content += '</li>';
-		
-		if (page < 3) {
-			for (var i = 1; i <= totalPage; i++) {
-				content += '<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>';
-				count++;
-				if (count == 5) {
-					break;
-				}
-			}
-		}else if (page >= 3 && page < (totalPage - 2)) {
-			for (var i = page - 2; i <= totalPage; i++) {
-				content += '<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>';
-				count++;
-				if (count == 5) {
-					break;
-				}
-			}
-		}else if (page >= 3 && page >= (totalPage - 2)) {
-			for (var i = totalPage - 4; i <= totalPage; i++) {
-				if (i == 0) {
-					continue;
-				}
-				content += '<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>';
-				count++;
-				if (count == 5) {
-					break;
-				}
-			}
-		}
-		
-		content += '<li class="page-item">';
-		content += '<a class="page-link" href="#">&rsaquo;</a>';
-		content += '</li>';
-		
-		content += '<li class="page-item">';
-		content += '<a class="page-link" href="#">&raquo;</a>';
-		content += '</li>';
-		
-		pagination.html(content);
-		pagination.find('.page-item').removeClass('active');
-		
-		$('.page-link').each(function() {
-			if ($(this).html() == page) {
-				$(this).parent().addClass('active');
-			}
-		});
-		
-	}
-
-//설정된 버튼에 이벤트 적용
-$('#pagination').on('click', '.page-link', function(e) {
-	e.preventDefault();
-	// console.log(page);
-	// console.log($(this).html());
-	if ($(this).html() == '«') {
-		page = 1;
-	}else if ($(this).html() == '‹') {
-		if (page > 1) {
-			page--;
-		}
-	}else if ($(this).html() == '›') {
-		if (page < totalPage) {
-			page++;
-		}
-	}else if ($(this).html() == '»') {
-		page = totalPage;
-	}else {
-		page = parseInt($(this).html());
-	}
-	// console.log(page);
-	listCall(page, searchCategory, searchWord, $('#hiddenTeamCategory').val());
-	
-});
 
 $('#searchBtn').click(function() {
 	searchCategory = $('#searchCategory').val();
@@ -319,11 +248,11 @@ $('#BoardTitle').click(function(){
 });
 
 $(document).on('mouseenter', '.boardTableTr', function() {
-    $(this).css('background-color', 'gray');
+	$(this).css('background-color', 'gray');
 });
 
 $(document).on('mouseleave', '.boardTableTr', function() {
-    $(this).css('background-color', '');
+	$(this).css('background-color', '');
 });
 
 //엔터 키로 검색 버튼 클릭 이벤트 트리거
@@ -334,19 +263,8 @@ $('#searchWord').keypress(function(event) {
 });
 
 $('#hiddenTeamCategory').change(function() {
-    var teamCode = $(this).val();
-    listCall(page, searchCategory, searchWord, teamCode);
+	var teamCode = $(this).val();
+	listCall(page, searchCategory, searchWord, teamCode);
 });
 </script>
 </html>
-
-
-
-
-
-
-
-
-
-
-

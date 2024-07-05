@@ -192,7 +192,7 @@ public class BoardService {
 			dto.setOri_filename(file.getOriginalFilename());
 			boardDAO.fileSave(dto);
 
-			String new_filename = "allboardFile_" + dto.getPost_no() + '_' + dto.getFile_no()
+			String new_filename = "boardFile_" + dto.getPost_no() + '_' + dto.getFile_no()
 					+ dto.getOri_filename().substring(dto.getOri_filename().lastIndexOf("."));
 			dto.setNew_filename(new_filename);
 			boardDAO.newFileNameUpdate(dto);
@@ -215,6 +215,7 @@ public class BoardService {
 	public Map<String, Object> teamList(Map<String, String> map, String my_team_code) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		int pagePerCnt = 10;
+		logger.info("page = "+map.get("page"));
 		int start = (Integer.parseInt(map.get("page")) - 1) * pagePerCnt;
 		String searchCategory = map.get("searchCategory");
 		String searchWord = map.get("searchWord");
@@ -339,13 +340,17 @@ public class BoardService {
 	}
 
 	@Transactional
-	public int stdBoardWrite(MultipartFile[] attachFile, BoardDTO dto) {
-	
+	public void stdBoardWrite(MultipartFile[] attachFile, BoardDTO dto) {
+		boardDAO.stdBoardWrite(dto);
+		
+		dto.getUser_code();
+		dto.getPost_no();
+		
 		if (attachFile[0].getSize() != 0) {
 			fileSave(attachFile, dto);
 		}
 		logger.info("데이터 추가 후 현재 글번호 = " + dto.getPost_no());
-		return boardDAO.stdBoardWrite(dto);
+
 	}
 
 	public List<BoardDTO> teamSelectList() {
@@ -385,14 +390,17 @@ public class BoardService {
 	}
 	
 	@Transactional
-	public int dataBoardWrite(MultipartFile[] attachFile, BoardDTO dto) {
+	public void dataBoardWrite(MultipartFile[] attachFile, BoardDTO dto) {
+		boardDAO.dataBoardWrite(dto);
+		
+		dto.getUser_code();
+		dto.getPost_no();
 		
 		if (attachFile[0].getSize() != 0) {
 			fileSave(attachFile, dto);
 		}
 		
 		logger.info("데이터 추가 후 현재 글번호 = " + dto.getPost_no());
-		return boardDAO.dataBoardWrite(dto);
 	}
 
 	public void databoardUpdate(MultipartFile[] attachFile, Map<String, String> param) {

@@ -13,6 +13,9 @@ public class CommuteDTO {
 	private Timestamp end_time;
 	private int work_hour;
 	private int state;
+	private int late_cnt;
+	private int early_cnt;
+	private int absent_cnt;
 
 	private String au_code;
 	private int au_type;
@@ -21,6 +24,10 @@ public class CommuteDTO {
 	private String end_date;
 	private int va_type;
 	private double va_days;
+	
+	private double remain;
+	private double useLeave;
+	
 	
 	public String getUser_code() {
 		return user_code;
@@ -124,6 +131,46 @@ public class CommuteDTO {
 
 	public void setVa_days(double va_days) {
 		this.va_days = va_days;
+	}
+
+	public double getRemain() {
+		return remain;
+	}
+
+	public void setRemain(double remain) {
+		this.remain = remain;
+	}
+
+	public double getUseLeave() {
+		return useLeave;
+	}
+
+	public void setUseLeave(double useLeave) {
+		this.useLeave = useLeave;
+	}
+	
+	public int getLate_cnt() {
+		return late_cnt;
+	}
+
+	public void setLate_cnt(int late_cnt) {
+		this.late_cnt = late_cnt;
+	}
+
+	public int getEarly_cnt() {
+		return early_cnt;
+	}
+
+	public void setEarly_cnt(int early_cnt) {
+		this.early_cnt = early_cnt;
+	}
+
+	public int getAbsent_cnt() {
+		return absent_cnt;
+	}
+
+	public void setAbsent_cnt(int absent_cnt) {
+		this.absent_cnt = absent_cnt;
 	}
 	
 }

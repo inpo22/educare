@@ -156,7 +156,7 @@
 		UPDATE officehour
 			SET end_time = CURRENT_TIMESTAMP()
 				, work_hour = TIMESTAMPDIFF(HOUR, (SELECT o.start_time FROM officehour o 
-					WHERE user_code = #{param1} AND work_date LIKE CONCAT(CURDATE(), '%')), CURRENT_TIMESTAMP())
+					WHERE o.user_code = #{param1} AND o.work_date LIKE CONCAT(CURDATE(), '%')), CURRENT_TIMESTAMP())
 		WHERE user_code = #{param1} AND work_date LIKE CONCAT(CURDATE(), '%')
 	</update>
 	
@@ -164,12 +164,15 @@
 		SELECT
 			<![CDATA[
 			CASE
+				WHEN a.is_vaca = 1 THEN 3
 				WHEN o.work_hour < 5 THEN 2
 				WHEN o.start_time > CONCAT(CURDATE(), ' 09:00:00') THEN 0
 				WHEN o.end_time < CONCAT(CURDATE(), ' 18:00:00') THEN 1
 				ELSE -1 END AS state_check
 			]]>
-		FROM officehour o
+		FROM officehour o JOIN (
+			SELECT user_code, 1 AS is_vaca FROM approval WHERE CURDATE() BETWEEN start_date AND end_date
+		) a ON o.user_code = a.user_code
 		WHERE o.user_code = #{param1} AND o.work_date LIKE CONCAT(CURDATE(), '%')
 	</select>
 	

@@ -343,11 +343,17 @@
 	});
 	
 	function attendance() {
-		location.href = "/main/attendance.do";
+		var result = confirm('현재 시간으로 출근 시간에 입력하시겠습니까?');
+		if (result) {
+			location.href = "/main/attendance.do";
+		}
 	}
 	
 	function leaveWork() {
-		location.href = "/main/leaveWork.do";
+		var result = confirm('현재 시간으로 퇴근 시간에 입력하시겠습니까?');
+		if (result) {
+			location.href = "/main/leaveWork.do";
+		}
 	}
 	
 </script>

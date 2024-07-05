@@ -84,7 +84,13 @@
 		    <version>1.4.7</version>
 		</dependency>
 		
-		
+		<!-- Spring devTools -->
+		<dependency>
+	        <groupId>org.springframework.boot</groupId>
+	        <artifactId>spring-boot-devtools</artifactId>
+	        <scope>runtime</scope>
+	        <optional>true</optional>
+	    </dependency>
 		
 		
 		<dependency>

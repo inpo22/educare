@@ -129,7 +129,7 @@ public class BoardController {
 //////////////////////////////////////////////////////// 부서 //////////////////////////////////////////////////////////////////////////
 	// 부서 공지사항 리스트 페이지 이동
 	@GetMapping(value = "/teamBoard/list.go")
-	public String teamBoardList(Model model, HttpSession session) {
+	public String teamBoardList(Model model, HttpSession session,String category) {
 		String teamCode = (String) session.getAttribute("team_code");
 		boolean isPerm = false;
 
@@ -140,6 +140,7 @@ public class BoardController {
 		
 		model.addAttribute("isPerm", isPerm);
 		model.addAttribute("teamList", boardService.teamSelectList());
+		model.addAttribute("category",category);
 		return "board/teamBoard_list";
 	}
 
@@ -166,7 +167,7 @@ public class BoardController {
 
 	// 부서 공지사항 글작성페이지 이동
 	@GetMapping(value = "/teamBoard/write.go")
-	public String teamWriteGo(HttpSession session, Model model) {
+	public String teamWriteGo(HttpSession session, Model model, String category) {
 		logger.info("부서 글작성 페이지 접속");
 		String teamCode = (String) session.getAttribute("team_code");
 		boolean isPerm = false;
@@ -177,7 +178,7 @@ public class BoardController {
 										
 		model.addAttribute("isPerm", isPerm);
 		model.addAttribute("teamList", boardService.teamSelectList());
-		
+		model.addAttribute("category",category);
 		return "board/teamBoard_write";
 	}
 
@@ -196,7 +197,7 @@ public class BoardController {
 		dto.setUser_code(user_code);
 		boardService.teamBoardWrite(attachFile, dto);
 
-		return "redirect:/teamBoard/detail.go	?post_no=" + dto.getPost_no();
+		return "redirect:/teamBoard/detail.go?post_no=" + dto.getPost_no();
 	}
 
 	// 부서 글수정 페이지 이동

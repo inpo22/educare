@@ -1,5 +1,7 @@
 /**
  * department tree modal module
+ * 모달 스크롤 기능 생성: deptModal.jsp의 <style> 내용 확인
+ * tree 이벤트 추가: deptModal.jsp에서 이벤트 추가
  */
 var treeModule = (function (module,$){
 
@@ -34,7 +36,7 @@ var treeModule = (function (module,$){
 		if(final_option.id == null){
 			return false;
 		}
-		// tree option
+
 		var tree_option = {};
 		tree_option.data = final_option.data;
 		tree_option.nodeDefaultState = final_option.nodeDefaultState;
@@ -44,26 +46,18 @@ var treeModule = (function (module,$){
 
 		tree_obj.var = {};
 		tree_obj.var.rootId = final_option.nodeId;
-		tree_obj.var.selected_id = final_option.nodeId;	
+		tree_obj.var.selectId = final_option.nodeId;	
 
 		// tree instance
 		tree_obj.var.tree = new tui.Tree(final_option.treeId, tree_option);
 		// set tree root node data
 		tree_obj.var.tree.setNodeData(tree_obj.var.rootId, final_option.data);
 		//console.log('tree init obj:',tree_obj.var.tree.getNodeData(tree_obj.var.rootId))
-		// add tree options
+		// tree select event
 		tree_obj.var.tree.enableFeature('Selectable', {
 			selectedClassName: 'tui-tree-selected',
 		});
-		// add tree event
-		tree_obj.var.tree.on('select', function(e){
-			//console.log('select: '+e.nodeId);
-			var data = tree_obj.var.tree.getNodeData(e.nodeId);
-			tree_obj.var.select_id = e.nodeId;
-			tree_obj.var.select_data = data;
-			console.log('selected: ',tree_obj.var.select_id);
-			console.log('selected: ',tree_obj.var.select_data);
-		});
+
 		// tree modal
 		tree_obj.var.tree.modal = new bootstrap.Modal(
 			document.getElementById(final_option.modalId), { keyboard: false } );
@@ -80,17 +74,18 @@ var treeModule = (function (module,$){
 			type	: 'get',
 			url		: '/dept/list.ajax',
 			dataType: 'json',
+			async: false,
 			success	: function(result){
 	 			if(result.deptList.length > 0){
 	 				//console.log(result.deptList);
- 					// clear node
+					// clear node
 					tree.removeAllChildren(rootId);
 	 				// create tree
  					result.deptList.forEach(function (data, idx){
 						//console.log(idx,':', data);
 						addNode(rootId, data);
 					});
-	 				tree_obj.var.selected_id = rootId;
+	 				tree_obj.var.selectId = rootId;
 	 				tree.select(rootId);
 				}else{
 					console.log('no dept');
@@ -117,7 +112,6 @@ var treeModule = (function (module,$){
 					result = true;
 				}else{
 					tree.getChildIds(id).forEach(function(child, i){
-						//console.log(i,'child: ',child)
 						addNode(child, data);
 					});
 				}
@@ -139,6 +133,7 @@ var treeModule = (function (module,$){
 			url:'/approval/deptList.ajax',
 			data:{},
 			dataType:'JSON',
+			async: false,
 			success:function(result) {
 				//console.log(result.empList);
 				// create tree
@@ -146,6 +141,7 @@ var treeModule = (function (module,$){
 					//console.log(idx,':', data);
 					addNode(rootId, data);
 				});
+				
 			},
 			error:function(error) {
 				console.log(error);
@@ -190,18 +186,6 @@ var treeModule = (function (module,$){
 		init		: self.tree.init,
 		loadTree	: self.tree.loadTree,
 		loadMember	: self.tree.loadMember
-		
 	}
 
 }(window, jQuery));
-
-function getDept(){
-/*	const xhttp = new XMLHttpRequest();
-	
-	xhttp.open("GET", "/dept/list.ajax");
-	xhttp.send();
-	
-	var result = xhttp.responseXML;
-	console.log(result);
-*/
-}

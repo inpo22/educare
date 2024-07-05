@@ -8,6 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.edu.care.dao.CommuteDAO;
 import com.edu.care.dto.CommuteDTO;
@@ -19,6 +22,17 @@ public class CommuteService {
 
 	@Autowired
 	CommuteDAO commuteDAO;
+	
+	public ModelAndView commuteState(String user_code) {
+		ModelAndView mav = new ModelAndView("commute/commute_state");
+		CommuteDTO todayAtt = commuteDAO.todayAtt(user_code);
+		CommuteDTO monthAtt = commuteDAO.monthAtt(user_code);
+		
+		mav.addObject("todayAtt", todayAtt);
+		mav.addObject("monthAtt", monthAtt);
+		
+		return mav;
+	}
 
 	public Map<String, Object> vacaUseList(int currPage, int pagePerCnt, String user_code) {
 		int start = (currPage-1) * pagePerCnt;
@@ -47,5 +61,28 @@ public class CommuteService {
 		
 		return result;
 	}
+
+	public void vacaHistory(String user_code, Model model) {
+		CommuteDTO dto = commuteDAO.vacaHistory(user_code);
+		dto.setUser_code(user_code);
+		model.addAttribute("dto",dto);
+	}
+
+	public void attendance(String user_code) {
+		commuteDAO.attendance(user_code);
+	}
+	
+	@Transactional
+	public void leaveWork(String user_code) {
+		commuteDAO.leaveWork(user_code);
+		int state = commuteDAO.stateCheck(user_code);
+		if (state > 0) {
+			commuteDAO.stateUpdate(user_code, state);
+		}
+		
+	}
 	
 }
+
+
+

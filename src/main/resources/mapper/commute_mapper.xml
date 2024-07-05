@@ -29,16 +29,19 @@
 		SELECT
 			<![CDATA[
 			CASE
+				WHEN a.is_vaca = 1 THEN 3
 				WHEN o.work_hour < 5 THEN 2
 				WHEN o.start_time > CONCAT(CURDATE(), ' 09:00:00') THEN 0
 				WHEN o.end_time < CONCAT(CURDATE(), ' 18:00:00') THEN 1
 				ELSE -1 END AS state_check
 			]]>
-		FROM officehour o
+		FROM officehour o JOIN (
+			SELECT user_code, 1 AS is_vaca FROM approval WHERE CURDATE() BETWEEN start_date AND end_date
+		) a ON o.user_code = a.user_code
 		WHERE o.user_code = #{param1} AND o.work_date LIKE CONCAT(CURDATE(), '%')
 	</select>
 	
-	<update id="autoStateUpdate">
+	<update id="stateUpdate">
 		UPDATE officehour
 			SET state = #{param2}
 		WHERE user_code = #{param1} AND work_date LIKE CONCAT(CURDATE(), '%')
@@ -66,19 +69,32 @@
 		LIMIT #{param2} OFFSET #{param1}
 	</select>
 	
+	<select id="vacaHistory" resultType="commute">
+		SELECT	
+			vh.user_code
+			, vh.remain
+			, 15-vh.remain AS useLeave
+		FROM vacation_history vh
+		WHERE vh.user_code = #{param1}
+	</select>
+	
 	<select id="attList" resultType="commute">
 		SELECT
 			o.work_date
 			, o.start_time
 			, o.end_time
-			, o.work_hour
-			, o.state
+			, CASE
+				WHEN o.work_hour IS NULL THEN -1
+				ELSE o.work_hour END AS work_hour
+			, CASE
+				WHEN o.state IS NULL THEN -1
+				ELSE o.state END AS state
 		FROM officehour o
 		WHERE o.user_code = #{param3}
 		<if test="param4 != '' and param5 != ''">
-			o.work_date BETWEEN(#{param4}, #{param5})
+			AND o.work_date BETWEEN #{param4} AND #{param5}
 		</if>
-		ORDER BY o.work_date LIMIT #{param1} OFFSET #{param2}
+		ORDER BY o.work_date LIMIT #{param2} OFFSET #{param1}
 	</select>
 	
 	<select id="attListPageCnt" resultType="Integer">
@@ -87,8 +103,39 @@
 		FROM officehour o
 		WHERE o.user_code = #{param2}
 		<if test="param3 != '' and param4 != ''">
-			o.work_date BETWEEN(#{param3}, #{param4})
+			AND o.work_date BETWEEN #{param3} AND #{param4}
 		</if>
+	</select>
+	
+	<insert id="attendance">
+		INSERT INTO officehour (user_code, work_date, start_time)
+			VALUES(#{param1}, CURDATE(), CURRENT_TIMESTAMP())
+	</insert>
+	
+	<update id="leaveWork">
+		UPDATE officehour
+			SET end_time = CURRENT_TIMESTAMP()
+				, work_hour = TIMESTAMPDIFF(HOUR, (SELECT o.start_time FROM officehour o 
+					WHERE o.user_code = #{param1} AND o.work_date LIKE CONCAT(CURDATE(), '%')), CURRENT_TIMESTAMP())
+		WHERE user_code = #{param1} AND work_date LIKE CONCAT(CURDATE(), '%')
+	</update>
+	
+	<select id="todayAtt" resultType="commute">
+		SELECT 
+			o.start_time
+			, o.end_time
+		FROM officehour o
+		WHERE o.user_code = #{param1} AND o.work_date LIKE CONCAT(CURDATE(), '%')
+	</select>
+	
+	<select id="monthAtt" resultType="commute">
+		SELECT 
+			(SELECT COUNT(o.user_code) FROM officehour o WHERE YEAR(o.work_date) = YEAR(CURDATE()) AND MONTH(o.work_date) = MONTH(CURDATE())
+				AND o.state = 0 AND o.user_code = #{param1}) AS late_cnt
+			, (SELECT COUNT(o.user_code) FROM officehour o WHERE YEAR(o.work_date) = YEAR(CURDATE()) AND MONTH(o.work_date) = MONTH(CURDATE())
+				AND o.state = 1 AND o.user_code = #{param1}) AS early_cnt
+			, (SELECT COUNT(o.user_code) FROM officehour o WHERE YEAR(o.work_date) = YEAR(CURDATE()) AND MONTH(o.work_date) = MONTH(CURDATE())
+				AND o.state = 2 AND o.user_code = #{param1}) AS absent_cnt
 	</select>
 	
 </mapper>
