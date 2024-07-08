@@ -83,7 +83,6 @@
 			} else {
 				var result = confirm('임시비밀번호를 발급하시겠습니까?');
 				if (result) {
-					alert('임시비밀번호 발급이 완료되었습니다.');
 					$('form').submit();
 				}
 			}

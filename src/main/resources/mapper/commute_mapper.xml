@@ -136,7 +136,7 @@
 		<if test="param4 != '' and param5 != ''">
 			AND o.work_date BETWEEN #{param4} AND #{param5}
 		</if>
-		ORDER BY o.work_date LIMIT #{param2} OFFSET #{param1}
+		ORDER BY o.work_date DESC LIMIT #{param2} OFFSET #{param1}
 	</select>
 	
 	<select id="attListPageCnt" resultType="Integer">

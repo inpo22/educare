@@ -371,7 +371,7 @@
 			
 			$('.selected-value').removeClass('selected-value');
 			
-			if (deptTree.getChildIds(e.nodeId) == '' && deptTree.getNodeData(e.nodeId).value != '${sessionScope.user_code}') {
+			if (deptTree.getChildIds(e.nodeId) == '' && deptTree.getNodeData(e.nodeId).user_code != '${sessionScope.user_code}') {
 				selectedNodeText = deptTree.getNodeData(e.nodeId).text;
 				selectedNodeValue = deptTree.getNodeData(e.nodeId).user_code;
 				// console.log(selectedNodeValue);
