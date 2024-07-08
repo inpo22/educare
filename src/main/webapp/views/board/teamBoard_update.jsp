@@ -142,7 +142,7 @@
                 <table class="table table-borderless">
                     <tr>
                         <th class="first-col">제목</th>
-                        <td class="second-col"><input type="text" id="titleText" name="title" class="form-control" value="${dto.title}" /></td>
+                        <td class="second-col"><input type="text" id="titleText" name="title" class="form-control" value="${dto.title}" maxlength="30"/></td>
                     </tr>
                     <tr>
                         <th>
@@ -260,7 +260,10 @@ console.log(fileList);
 
     // 수정취소
     function updateCancle() {
-        location.href = '/teamBoard/list.go?category='+$('#hiddenTeamCategory').val();
+    	var result = confirm('수정을 취소하시겠습니까?');
+		if(result){
+	        location.href = '/teamBoard/list.go?category='+$('#hiddenTeamCategory').val();	
+		}
     }
 
     // 수정완료

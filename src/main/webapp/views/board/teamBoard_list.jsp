@@ -103,15 +103,17 @@
 			<table class="table">
 				<colgroup>
 					<col width="5%" />
+					<col width="5%" />
 					<col width="25%" />
 					<col width="10%" />
-					<col width="10%" />
+					<col width="5%" />
 					<col width="15%" />
 					<col width="5%" />
 				</colgroup>
 				<thead>
 				  <tr>
 					<th scope="col">No.</th>
+					<th scope="col">게시판 부서</th>
 					<th scope="col">제목</th>
 					<th scope="col">작성자</th>
 					<th scope="col">부서명</th>
@@ -206,6 +208,7 @@ function drawList(data, page, searchFlag){
 		for (var item of data.topFixedTeamList){
 			topFixedContext += '<tr class="boardTableTr" onclick="locationMove('+item.post_no+')">'
 			topFixedContext += '<td scope="col"><b>'+ item.post_no +'</b></td>'
+			topFixedContext += '<td scope="col"><b>' + item.post_team_name + '</b></td>'
 			topFixedContext += '<td scope="col"><b>' + item.title + '</b></td>'
 			topFixedContext += '<td scope="col"><b>' + item.user_name + ' ' + item.class_name + '</b></td>'
 			topFixedContext += '<td scope="col"><b>' + item.team_name + '</b></td>'
@@ -217,6 +220,7 @@ function drawList(data, page, searchFlag){
 	for (var item of data.list) {
 		context += '<tr class="boardTableTr" onclick="locationMove('+item.post_no+')">'
 		context += '<td scope="col">'+ item.post_no +'</td>'
+		context += '<td scope="col">' + item.post_team_name + '</td>'
 		context += '<td scope="col">' + item.title + '</td>'
 		context += '<td scope="col">' + item.user_name + ' ' + item.class_name + '</b></td>'
 		context += '<td scope="col">' + item.team_name + '</td>'

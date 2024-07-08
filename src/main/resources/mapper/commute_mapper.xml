@@ -48,24 +48,66 @@
 	</update>
 	
 	<select id="vacaListPageCnt" resultType="Integer">
-		SELECT CEIL(COUNT(a.au_code)/#{param1})
-		FROM approval a 
-		JOIN user u ON a.user_code = u.user_code
-		WHERE au_type = 1 AND a.user_code = #{param2}
+		WITH approval_order_check AS (
+				SELECT 
+				* 
+				, COUNT(apv_no) OVER (PARTITION BY au_code) AS order_count
+				, SUM(state) OVER (PARTITION BY au_code) AS approval_state
+				, MAX(state) OVER (PARTITION BY au_code) AS is_rejected
+			FROM approval_order
+		)
+		SELECT 
+			CEIL(COUNT(au_code)/#{param1})
+		FROM 
+			(SELECT 
+				a.au_code
+				, a.user_code
+				, a.reg_date
+				, a.start_date
+				, a.end_date
+				, a.va_type
+				, a.va_days
+				, CASE 
+					WHEN is_rejected = 2 THEN 2
+					WHEN is_rejected != 2 AND order_count = approval_state THEN 1
+					WHEN is_rejected != 2 AND order_count > approval_state THEN 0
+				END AS total_order_state
+			FROM approval a JOIN approval_order_check aoc ON a.au_code = aoc.au_code
+			JOIN user u ON a.user_code = u.user_code
+			WHERE a.au_type =1 AND a.user_code = #{param2}) AS subquery
+		WHERE total_order_state = 1
 	</select>
 	
 	<select id="vacaUseList" resultType="commute">
-		SELECT 
-			a.user_code
-			, a.reg_date
-			, a.start_date
-			, a.end_date
-			, a.va_type
-			, a.va_days
-		FROM approval a
-		JOIN user u ON a.user_code = u.user_code
-		WHERE a.au_type =1 AND a.user_code = #{param3}
-		ORDER BY a.au_code DESC
+		WITH approval_order_check AS (
+				SELECT 
+				* 
+				, COUNT(apv_no) OVER (PARTITION BY au_code) AS order_count
+				, SUM(state) OVER (PARTITION BY au_code) AS approval_state
+				, MAX(state) OVER (PARTITION BY au_code) AS is_rejected
+			FROM approval_order
+		)
+		SELECT
+			*
+		FROM 
+			(SELECT 
+				a.au_code
+				, a.user_code
+				, a.reg_date
+				, a.start_date
+				, a.end_date
+				, a.va_type
+				, a.va_days
+				, CASE 
+					WHEN is_rejected = 2 THEN 2
+					WHEN is_rejected != 2 AND order_count = approval_state THEN 1
+					WHEN is_rejected != 2 AND order_count > approval_state THEN 0
+				END AS total_order_state
+			FROM approval a JOIN approval_order_check aoc ON a.au_code = aoc.au_code
+			JOIN user u ON a.user_code = u.user_code
+			WHERE a.au_type =1 AND a.user_code = #{param3}) AS subquery
+		WHERE total_order_state = 1
+		ORDER BY au_code DESC
 		LIMIT #{param2} OFFSET #{param1}
 	</select>
 	

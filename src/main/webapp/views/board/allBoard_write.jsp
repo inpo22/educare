@@ -192,7 +192,10 @@ const editor = new toastui.Editor({
 
 	// 작성취소
 	function writeCancle(){
-		location.href = '/allBoard/list.go';
+		var result = confirm('작성을 취소하시겠습니까?');
+		if(result){
+			location.href = '/allBoard/list.go';
+		}
 	}
 
 	// 작성완료

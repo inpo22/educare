@@ -43,6 +43,9 @@ td {
 	border-color: gray;
 }
 
+#viewer{
+	min-height: 400px;
+}
 </style>
 </head>
 

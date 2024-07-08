@@ -211,12 +211,14 @@
         , (SELECT d.team_name FROM department d WHERE d.team_code = (SELECT u3.team_code FROM user u3 WHERE u3.user_code = p.user_code)) AS team_name
         , (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code) AS class_name
         , p.title
+        , d.team_name AS post_team_name
         , p.bHit
         , p.reg_date
         , p.fixed_yn
     FROM post p 
     JOIN board b ON p.board_no = b.board_no
     JOIN user u ON p.user_code = u.user_code
+    LEFT JOIN department d ON d.team_code = p.post_team_code
     WHERE p.is_del = 0 AND b.board_no = 2 
     <if test="param4 == null or param4 == ''">
 		AND p.fixed_yn = 0	
@@ -280,11 +282,13 @@
 	        , (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code) AS class_name
 	        , p.title
 	        , p.bHit
+	        , d.team_name AS post_team_name
 	        , p.reg_date
 	        , p.fixed_yn
     FROM post p 
     JOIN board b ON p.board_no = b.board_no
     JOIN user u ON p.user_code = u.user_code
+    LEFT JOIN department d ON d.team_code = p.post_team_code
     WHERE p.is_del = 0 AND b.board_no = 2 AND p.fixed_yn = 1 
     <if test="param1 != ''">
         AND p.post_team_code = #{param1}

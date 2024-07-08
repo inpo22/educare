@@ -230,7 +230,10 @@ console.log(fileList);
 	
 	// 수정취소
 	function updateCancle(){
-		location.href = '/allBoard/list.go';
+		var result = confirm('수정을 취소하시겠습니까?');
+		if(result){
+			location.href = '/allBoard/list.go';			
+		}
 	}
 	
 	// 수정완료

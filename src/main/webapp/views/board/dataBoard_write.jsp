@@ -137,7 +137,7 @@
 				<table class="table table-borderless">
 					<tr>
 						<th class="first-col">제목</th>
-						<td class="second-col"><input type="text" id="titleText" name="title" class="form-control"/></td>
+						<td class="second-col"><input type="text" id="titleText" name="title" class="form-control" maxlength="30"/></td>
 					</tr>
 					<tr>
 						<th>
@@ -221,7 +221,10 @@ const editor = new toastui.Editor({
 
 	// 작성취소
 	function writeCancle(){
-		location.href = '/dataBoard/list.go';
+		var result = confirm('작성을 취소하시겠습니까?');
+		if(result){
+			location.href = '/dataBoard/list.go';	
+		}
 	}
 
 // 작성완료
