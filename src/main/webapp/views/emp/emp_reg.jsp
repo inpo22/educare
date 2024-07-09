@@ -452,17 +452,17 @@ function reg(){
 	var $reg_date = $('input[name="reg_date"]');
 	var $team_code = $('input[name="team_code"]');
 	
-	if(overChk == false){
+	if($name.val()==''){ // 이름 값이 비었을 경우
+		alert('이름을 입력해주세요.');
+		$name.focus(); // 커서가 이름으로	
+	}else if($id.val()==''){ // 아이디 값이 비었을 경우
+		alert('아이디를 입력해주세요.');
+		$id.focus();
+	}
+	else if(overChk == false){
 		alert('중복 체크를 해주세요.');
 		$id.focus(); 
 		return false;
-	}else if($name.val()==''){ // 이름 값이 비었을 경우
-		alert('이름을 입력해주세요.');
-		$name.focus(); // 커서가 이름으로
-	}
-	else if($id.val()==''){ // 아이디 값이 비었을 경우
-		alert('아이디를 입력해주세요.');
-		$id.focus();
 	}else if($pw.val()==''){ // 비밀번호 값이 비었을 경우
 		alert('비밀번호를 입력해주세요.');
 		$pw.focus(); // 커서가 비밀번호로
