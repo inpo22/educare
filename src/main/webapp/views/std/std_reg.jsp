@@ -318,7 +318,7 @@ function reg(){
 		}
 		
 		//핸드폰번호 유효성검사
-		var regphone = /^(01[016789]{1})-?[0-9]{3,4}-?[0-9]{4}$/;
+		var regphone = /^(010)-?[0-9]{4}-?[0-9]{4}$/;
 		if(!regphone.test($phone.val())){
 			alert("핸드폰번호를 확인해주세요.");
 			$phone.focus();
