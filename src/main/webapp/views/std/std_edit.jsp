@@ -220,8 +220,16 @@ function edit(){
 			$email.focus();
 
 			return false;
+		}
 		
-		}else{
+		//핸드폰번호 유효성검사
+		var regphone = /^(01[016789]{1})-?[0-9]{3,4}-?[0-9]{4}$/;
+		if(!regphone.test($phone.val())){
+			alert("핸드폰번호를 확인해주세요.");
+			$phone.focus();
+			return false;
+		}
+		else{
 			alert("정보수정에 성공했습니다.");
 			$('form').submit();
 		}

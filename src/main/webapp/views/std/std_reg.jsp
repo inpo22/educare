@@ -316,6 +316,15 @@ function reg(){
 			$pw.focus();
 			return false;
 		}
+		
+		//핸드폰번호 유효성검사
+		var regphone = /^(01[016789]{1})-?[0-9]{3,4}-?[0-9]{4}$/;
+		if(!regphone.test($phone.val())){
+			alert("핸드폰번호를 확인해주세요.");
+			$phone.focus();
+			return false;
+		}
+		
 		// 최종 중복 체크 (등록 시 중복 체크를 다시 수행)
 	    $.ajax({
 	        type: 'post',

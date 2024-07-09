@@ -204,9 +204,17 @@ function edit(){
 
 			$email.focus();
 
-			return false;
+			return false;		
+		}
 		
-		}else{
+		//핸드폰번호 유효성검사
+		var regphone = /^(01[016789]{1})-?[0-9]{3,4}-?[0-9]{4}$/;
+		if(!regphone.test($phone.val())){
+			alert("핸드폰번호를 확인해주세요.");
+			$phone.focus();
+			return false;
+		}
+		else{
 			$('form').submit();
 		}
 	
