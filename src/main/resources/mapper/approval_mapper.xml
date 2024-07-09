@@ -257,17 +257,17 @@
 			FROM approval a JOIN approval_recipient ar ON a.au_code = ar.au_code JOIN user u ON a.user_code = u.user_code
 				JOIN approval_order_check aoc ON a.au_code = aoc.au_code
 			WHERE ar.receive_team_code = #{param3}) AS subquery
-		WHERE total_order_state = 1;
+		WHERE total_order_state = 1
 		<if test="param5 != ''">
 			AND
 			<if test="param4 == 'subject'">
-				a.title LIKE CONCAT('%', #{param5}, '%')
+				title LIKE CONCAT('%', #{param5}, '%')
 			</if>
 			<if test="param4 == 'content'">
-				a.contents LIKE CONCAT('%', #{param5}, '%')
+				contents LIKE CONCAT('%', #{param5}, '%')
 			</if>
 			<if test="param4 == 'drafter_name'">
-				u.name LIKE CONCAT('%', #{param5}, '%')
+				name LIKE CONCAT('%', #{param5}, '%')
 			</if>
 		</if>
 		ORDER BY reg_date DESC LIMIT #{param2} OFFSET #{param1}
@@ -284,7 +284,7 @@
 			GROUP BY au_code 
 		)
 		SELECT
-			CEIL(COUNT(a.au_code)/#{param1})
+			CEIL(COUNT(au_code)/#{param1})
 		FROM (SELECT 
 				a.au_code
 				, u.name AS user_name
