@@ -515,6 +515,9 @@ function tosspayment(course_no,course_name,course_price,name,user_code){
         } else {
             var msg = "결제에 실패했습니다. 에러 내용: " + rsp.error_msg;
             alert(msg);
+            setTimeout(function() {
+                alert(msg);
+            }, 500);
         }
     });
 }
