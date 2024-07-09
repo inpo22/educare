@@ -116,8 +116,8 @@
 			      <th scope="col">사원번호</th>
 			      <th scope="col">이름</th>
 			      <th scope="col">부서</th>
-			      <th scope="col">직책</th>
 			      <th scope="col">직급</th>
+			      <th scope="col">직책</th>
 			      <th scope="col">입사일</th>
 			      <th><input class="form-check-input" type="checkbox" value="" id="chkAll"></th>
 			      
