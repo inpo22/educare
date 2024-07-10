@@ -14,7 +14,7 @@
 	
 	<insert id="autoCommute">
 		INSERT INTO officehour(user_code, work_date, state)
-			VALUES(#{param1}, CURDATE(), 2)
+			VALUES(#{param1}, CURDATE(), #{param2})
 	</insert>
 	
 	<update id="autoLeaveWork">

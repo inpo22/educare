@@ -92,7 +92,8 @@ public class ScheduleUtil {
 			for (String user_code : empList) {
 				CommuteDTO todayCommute = commuteDAO.todayCommute(user_code);
 				if (todayCommute == null) {
-					commuteDAO.autoCommute(user_code);
+					int type = commuteDAO.stateCheck(user_code);
+					commuteDAO.autoCommute(user_code, type);
 				} else if (todayCommute != null && todayCommute.getEnd_time() == null) {
 					commuteDAO.autoLeaveWork(user_code);
 					int type = commuteDAO.stateCheck(user_code);

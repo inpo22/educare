@@ -13,7 +13,7 @@ public interface CommuteDAO {
 
 	CommuteDTO todayCommute(String user_code);
 
-	void autoCommute(String user_code);
+	void autoCommute(String user_code, int type);
 
 	void autoLeaveWork(String user_code);
 
