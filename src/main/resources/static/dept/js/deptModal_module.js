@@ -76,10 +76,10 @@ var treeModule = (function (module,$){
 			dataType: 'json',
 			async: false,
 			success	: function(result){
+				// clear node
+				tree.removeAllChildren(rootId);
 	 			if(result.deptList.length > 0){
 	 				//console.log(result.deptList);
-					// clear node
-					tree.removeAllChildren(rootId);
 	 				// create tree
  					result.deptList.forEach(function (data, idx){
 						//console.log(idx,':', data);
@@ -94,12 +94,12 @@ var treeModule = (function (module,$){
 			error	: function(error){
 				console.log(error);
 			}
-		});
+		});//End ajax
 		
 		function addNode(id, data){
-			var result;
 			if(tree.getNodeData(id)){
 				var code = tree.getNodeData(id).team_code;
+				//console.log(code,'(',tree.getNodeData(id).team_name,') :',data.upper_code);
 				
 				if(code == data.upper_code){
 					var addedId = tree.add({
@@ -112,19 +112,20 @@ var treeModule = (function (module,$){
 						upper_code: data.upper_code,
 						reg_date: data.reg_date
 					});
-					result = true;
+					//console.log('added id:', addedId);
+					return true;
 				}else{
 					tree.getChildIds(id).forEach(function(child, i){
+						//console.log(child,':', data);
 						addNode(child, data);
 					});
 				}
 			}else{
-				result = false;
+				return false;
 			}
-			return result;
-		}
+		}//End addNode
 		
-	}
+	}//End loadTree
 	
 	// load member in tree
 	self.tree.loadMember = function(tree_obj){
