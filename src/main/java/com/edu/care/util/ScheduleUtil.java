@@ -32,7 +32,7 @@ public class ScheduleUtil {
 	// crontab
 	// 초 분 시 일 월 요일 년도(일반적으로 생략)
 	// 1 0 0 * * MON-FRI
-	@Scheduled(cron = "0 0 23 * * MON-FRI")
+	@Scheduled(cron = "0 19 17 * * MON-FRI")
 	public void cron() throws IOException {
 		LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
 		
@@ -92,8 +92,9 @@ public class ScheduleUtil {
 			for (String user_code : empList) {
 				CommuteDTO todayCommute = commuteDAO.todayCommute(user_code);
 				if (todayCommute == null) {
+					commuteDAO.autoCommute(user_code);
 					int type = commuteDAO.stateCheck(user_code);
-					commuteDAO.autoCommute(user_code, type);
+					commuteDAO.stateUpdate(user_code, type);
 				} else if (todayCommute != null && todayCommute.getEnd_time() == null) {
 					commuteDAO.autoLeaveWork(user_code);
 					int type = commuteDAO.stateCheck(user_code);
