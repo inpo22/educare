@@ -1,120 +1,121 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>로그인 - 에듀케어</title>
- 	<link href="/resources/assets/img/favicon.png" rel="icon">
+<meta charset="UTF-8">
+<title>로그인 - 에듀케어</title>
+<link href="/resources/assets/img/favicon.png" rel="icon">
 
-    <link
-        href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        rel="stylesheet">
-    <style>
-    /*body를 쓴 이유: 페이지 전체에 중간 정렬을 하고, 배경색 지정을 위해사용 */
-		body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f5f5f5;
-        }
-      
-        .login-container {
-            width: 400px;
-            padding: 20px;
-            background-color: white;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            
-        }
+<link
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+	rel="stylesheet">
+<style>
+/*body를 쓴 이유: 페이지 전체에 중간 정렬을 하고, 배경색 지정을 위해사용 */
+body {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	background-color: #f5f5f5;
+}
 
-        .login-container img {
-            display: block;
-            margin: 0 auto 20px;
-        }
+.login-container {
+	width: 400px;
+	padding: 20px;
+	background-color: white;
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+	border-radius: 10px;
+}
 
-        .login-container .form-group {
-            position: relative;
-        }
+.login-container img {
+	display: block;
+	margin: 0 auto 20px;
+}
 
-        .login-container .form-group i {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-        }
+.login-container .form-group {
+	position: relative;
+}
 
-        .login-container input {
-            padding-left: 30px;
-        }
+.login-container .form-group i {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+}
 
-        .login-container .btn-primary {
-            width: 100%;
-            background-color: #007bff;
-            border: none;
-        }
+.login-container input {
+	padding-left: 30px;
+}
 
-        .login-container .forgot-links {
-            display: flex;
-            justify-content: space-between;
-        }
+.login-container .btn-primary {
+	width: 100%;
+	background-color: #007bff;
+	border: none;
+}
 
-        .login-container .alert {
-            display: none;
-        }
+.login-container .forgot-links {
+	display: flex;
+	justify-content: space-between;
+}
 
-        #findIdLink, #findPwLink {
-            font-size: 14px;
-            color: #007bff;
-            text-decoration: none;
-            margin-left: 270px;
-        }
+.login-container .alert {
+	display: none;
+}
 
-        #findIdLink:hover, #findPwLink:hover {
-            text-decoration: underline;
-        }
+#findIdLink, #findPwLink {
+	font-size: 14px;
+	color: #007bff;
+	text-decoration: none;
+	margin-left: 270px;
+}
 
-        #LoginButton {
-            width: 100%;
-            height: 50px;
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            padding-top: 10px;
-            line-height: 1.2;
-            margin-top: 10px;
-        }
-    </style>
+#findIdLink:hover, #findPwLink:hover {
+	text-decoration: underline;
+}
+
+#LoginButton {
+	width: 100%;
+	height: 50px;
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	padding-top: 10px;
+	line-height: 1.2;
+	margin-top: 10px;
+}
+</style>
 
 
 </head>
 <body>
-    <div class="login-container">
-        <img src="/resources/img/EDUcare_logo.png" alt="EduCare Logo" class="img-fluid">
-        <form action="/login.do" method="post">
-            <div class="form-group">
-                <i class="fa fa-user"></i>
-                <input type="text" class="form-control" id="name" name="id" placeholder="ID">
-            </div>
-            <div class="form-group">
-                <i class="fa fa-lock"></i>
-                <input type="password" class="form-control" id="password" name="pw" placeholder="PW">
-            </div>
-            <div class="form-group form-check">
-                <input type="checkbox" class="form-check-input" id="rememberMe" name="rememberMe">
-                <label class="form-check-label" for="rememberMe">아이디저장</label>
-            </div>
-            <div class="forgot-links">
-                <a href="login/idFind.go" id="findIdLink">아이디찾기</a>
-            </div>
-            <div>
-                <a href="/login/pwFind.go" id="findPwLink">패스워드찾기</a>
-            </div>
-            <button type="submit" class="btn-primary" id="LoginButton">LOGIN</button>
-            <div class="alert alert-danger mt-3" role="alert" id="errorMsg"></div>
-        </form>
-    </div>
+	<div class="login-container">
+		<img src="/resources/img/EDUcare_logo.png" alt="EduCare Logo"
+			class="img-fluid">
+		<form action="/login.do" method="post">
+			<div class="form-group">
+				<i class="fa fa-user"></i> <input type="text" class="form-control"
+					id="name" name="id" placeholder="ID">
+			</div>
+			<div class="form-group">
+				<i class="fa fa-lock"></i> <input type="password"
+					class="form-control" id="password" name="pw" placeholder="PW">
+			</div>
+			<div class="form-group form-check">
+				<input type="checkbox" class="form-check-input" id="rememberMe"
+					name="rememberMe"> <label class="form-check-label"
+					for="rememberMe">아이디저장</label>
+			</div>
+			<div class="forgot-links">
+				<a href="login/idFind.go" id="findIdLink">아이디찾기</a>
+			</div>
+			<div>
+				<a href="/login/pwFind.go" id="findPwLink">패스워드찾기</a>
+			</div>
+			<button type="submit" class="btn-primary" id="LoginButton">LOGIN</button>
+			<div class="alert alert-danger mt-3" role="alert" id="errorMsg"></div>
+		</form>
+	</div>
 </body>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -145,7 +146,12 @@ $(document).ready(function() {
            //console.log("쿠키가 삭제되었습니다.");
         }
     });
+	var timeout = getParameterByName('timeout');
+	if (timeout) {
+   	 alert("로그인이 만료되었습니다");
+	}
 });
+
 
 
 //쿠키 설정 함수
@@ -175,6 +181,22 @@ function getCookie(name) {
         var msg = '${msg}';
         if (msg != '') {
             alert(msg);
+        }
+        //세션 타임아웃으로 타임아웃 메시지를 표시하기위해 
+        var timeout = getParameterByName('timeout');
+        if (timeout) {
+            alert("로그인이 만료되었습니다");
+        }
+        
+        // URL 파라미터 읽기 함수 추가
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
         }
     </script>
 </html>

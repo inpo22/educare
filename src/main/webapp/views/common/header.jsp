@@ -79,7 +79,7 @@
 <script>
     function logoutAccess() {
         var id = "${user_code}";
-        console.log("user_code:", id);
+        //console.log("user_code:", id);
         if (id != null && id != "") {
         	alert("로그아웃 되었습니다.")
             window.location.href = "/logout.do";
@@ -89,4 +89,28 @@
         
         }
     }
+    
+ // 세션 타임아웃을 감지하는 타이머 설정 (30분 후 자동 로그아웃)
+    var logoutTimer;
+    function startLogoutTimer() {
+        console.log("로그아웃 타이머 시작");
+        clearTimeout(logoutTimer);
+        logoutTimer = setTimeout(function() {
+            alert('로그인이 만료되었습니다');
+            window.location.href = '/logout.do';
+        }, 30 * 60 * 1000); // 30분
+    }
+
+    // 페이지 로드 시 타이머 시작
+    startLogoutTimer();
+
+    // 사용자가 페이지에서 활동할 때마다 타이머 리셋
+    document.addEventListener('click', function() {
+        //console.log("클릭 이벤트 감지, 타이머 리셋");
+        startLogoutTimer();
+    });
+    document.addEventListener('keypress', function() {
+        //console.log("키보드 입력 감지, 타이머 리셋");
+        startLogoutTimer();
+    });
 </script>
