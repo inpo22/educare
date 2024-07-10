@@ -214,7 +214,7 @@
 		SELECT
 			CEIL(COUNT(a.au_code)/#{param1})
 		FROM approval a JOIN approval_order_check aoc ON a.au_code = aoc.au_code JOIN user u ON a.user_code = u.user_code
-		WHERE aoc.user_code = #{param3} AND aoc.state IN (1, 2)
+		WHERE aoc.user_code = #{param2} AND aoc.state IN (1, 2)
 		<if test="param4 != ''">
 			AND
 			<if test="param3 == 'subject'">
