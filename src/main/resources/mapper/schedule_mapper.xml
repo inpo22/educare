@@ -38,10 +38,16 @@
 			, sch.end_date
 			, sch.sked_type
 			, usr.name as name
+			, sch.edit_user_code
 			, (select team_name from department where team_code = usr.TEAM_CODE) as team_name
 		FROM schedule sch
 		LEFT JOIN user usr
-		ON usr.user_code = sch.user_code
+		ON
+		 	usr.user_code = 
+        (CASE WHEN sch.edit_user_code IS NOT NULL 
+        THEN sch.edit_user_code
+		ELSE sch.user_code 
+		END)
 		WHERE 1=1
 			AND sch.is_del = 0
 		<if test="sked_type != null">

@@ -138,13 +138,15 @@ function read_courseList(page, searchFilter, searchContent, showCourse){
 }
 
 function drawList(list){
-	var now = new Date().toISOString();
-	var formatNow = now.split('T')[0];
+	var now = new Date();
+	now.setDate(now.getDate() + 1);
+	var formatNow = now.toISOString().split('T')[0];
+	
 	console.log("nownow",formatNow);
 	var con = '';
 	for(var list of list){
 		console.log("start.",list.course_start.substring(0,10));
-		if(list.course_start.substring(0,10) >= formatNow){
+		if(list.course_start.substring(0,10) > formatNow){
 			con += '<tr class="pointer" onclick="location.href=\'/course/detail.go?course_no=' + list.course_no + '\'">';
 		}else{
 			con += '<tr class="pointer table-light" onclick="location.href=\'/course/detail.go?course_no=' + list.course_no + '\'">';

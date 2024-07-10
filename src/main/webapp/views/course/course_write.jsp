@@ -42,7 +42,7 @@
 						<div class="input-group input-group mb-3">
 							<span class="input-group-text" id="basic-addon1">사원번호</span> 
 							<input type="text" class="form-control" name="user_code" id="user_code" placeholder="강사의 사원번호를 입력해주세요.">
-							<button class="btn btn-outline-secondary user-code-btn" type="button" onclick="checkUserCode()">사원여부확인</button>
+							<button class="btn btn-outline-secondary user-code-btn" type="button" onclick="checkUserCode()" style="width: 27% !important;">사원여부확인</button>
 						</div>
 
 						<div class="input-group input-group mb-3">
@@ -88,7 +88,7 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<h1 class="modal-title fs-5" id="reservationModalLabel">강의실 예약 선택</h1>
-						<button type="button" class="btn-close bg-white rounded-5" data-bs-dismiss="modal" aria-label="Close"></button>
+						<button type="button" id="top-close-btn" class="btn-close bg-white rounded-5" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
 						<form id="modalForm">
@@ -277,6 +277,8 @@ function drawCalendar() {
         if (seleteRoom) {
         	$('#selectDate').val(formatDay);
             timeBtn(formatDay, seleteRoom);
+            $('.day').removeClass('selectedDay');
+        	$(this).addClass('selectedDay');
         } else {
             alert('강의실을 먼저 선택해주세요.');
         }
@@ -460,7 +462,7 @@ function selectTimeBtnEvent() {
 	    if (alreadyReserv(selectDate, selectTime)) {
 	    	
 	        alert('이미 선택된 시간입니다.');
-		    event.preventDefault();
+	        event.preventDefault();
 	        event.stopPropagation(); 
 	        return;
 	    }
@@ -519,7 +521,12 @@ function selectTimeBtnEvent() {
 				$('.reservation-item').remove();
 				$('.day').removeClass('highlight');
 				$('.time-btn').removeAttr('style');
+				$('.day').removeClass('selectedDay');
+				if($(this).val() == ''){
+					$('.time-btn').remove();
+				} else {
 				timeBtn(selectDate,selectedRoom);
+				}
 			}else{
 				$(this).val(selectedRoom);
 				console.log('selectedRoom : ', selectedRoom); 
@@ -738,6 +745,15 @@ function submitCourseWrite(){
 	}); 
 	
 }
+
+$('#closeButton, #top-close-btn').on('click',function(){
+	$('.reservation-item').remove();
+	$('.day').removeClass('highlight');
+	$('.time-btn').removeAttr('style');
+	$('.time-btn').remove();
+	$('#select-space').val('');
+	$('.day').removeClass('selectedDay');
+});
 
 </script>
 

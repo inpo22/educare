@@ -101,7 +101,7 @@ public class ScheduleController {
 		logger.info("##### schedule update ajax controller IN #####");
 		
 		scheduleDTO.setUser_code((String)session.getAttribute("user_code"));
-		scheduleDTO.setTeam_code((String) session.getAttribute("team_code"));
+		scheduleDTO.setTeam_code((String)session.getAttribute("team_code"));
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		

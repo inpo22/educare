@@ -140,12 +140,14 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
         headerToolbar : {
             left : 'prev',
             center : 'title',
-            right : 'next'
+            right : 'today next'
+        },
+        buttonText: {
+            today: 'TODAY'
         },
         selectable : true,
         nowIndicator: true,
         expandRows: true,
-        dayMaxEventRows: true, 
         timeZone : 'Asia/Seoul',
         initialView : 'dayGridMonth',
         slotLabelFormat: {
@@ -159,7 +161,8 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
             day: 'numeric',
             weekday: 'long'
         },
-        dayMaxEvents : true,
+        // dayMaxEventRows: true,
+        dayMaxEvents : 5,
         fixedWeekCount : false,
         displayEventTime: false,
         dayCellContent: function(arg) {
@@ -210,31 +213,29 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
         							name : item.name,
         							user_code : item.user_code,
         							team_name : item.team_name,
+        							edit_user_code : item.edit_user_code,
         							allDay: true,
         							backgroundColor: item.sked_type === 'SKED_TP01' ? '#ffd146':
         											 item.sked_type === 'SKED_TP02' ? '#6fb171':
         											 item.sked_type === 'SKED_TP03' ? '#55b4ff':'#ff6666'
         						
-        						
         						};
         						
-        			                
         						events.push(event);
         				});
         				
         				console.log('Events:', events);
         				successCallback(events);
         				//return events;
-        				//calendar.addEventSource(events); 
+        				//calendar.addEventSource(events);
         		},
         		error:function(request, status, error){
         				console.log(error);
         		}
         	});
         	
-        	
-        }
-       
+        },
+        eventOrder: '-skedType' 
     });
     
     calendar.setOption('dateClick', function(info) {
@@ -308,6 +309,7 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
     	var parent = document.querySelector("form");
     	var sessionUserCode = document.getElementById('sessionUserCode').value;
     	var user_code = info.event.extendedProps.user_code;
+    	var edit_user_code = info.event.extendedProps.edit_user_code;
     	console.log("user_codeuser_code:: "+user_code);
     	console.log("sessionUserCodesessionUserCode:: "+sessionUserCode);	
     	console.log("@@@@"+end);

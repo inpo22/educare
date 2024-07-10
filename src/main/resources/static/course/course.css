@@ -158,6 +158,13 @@
     border-radius:20px;
     border: 1px solid transparent; 
 }
+.days .day.selectedDay {
+    background-color: #FFC107;
+    color: white;
+    border-radius:20px;
+    border: 1px solid transparent; 
+}
+
 
 .days .emptyDay {
     background-color: transparent;

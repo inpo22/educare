@@ -39,19 +39,18 @@
 		</div>
 		<!-- End Page Title -->
 		
-		<div class="row-sm-4 mx-auto mt-3">
+		<div class="row-sm-4 mx-auto mt-2">
+			<div class="mb-2 colorInfoSelectDiv text-end">
+				<button type="button" class="colorInfo" id="A102" data-type="A102" style="border: 0; border-radius: 7px; background-color: #db7e6a;">A101</button>
+				<button type="button" class="colorInfo" id="A102" data-type="A102" style="border: 0; border-radius: 7px; margin-left:10px; background-color: #faab23;">A102</button>
+				<button type="button" class="colorInfo" id="B101" data-type="B101" style="border: 0; border-radius: 7px; margin-left:10px; background-color: #87b27c;">B101</button>
+				<button type="button" class="colorInfo" id="B102" data-type="B102" style="border: 0; border-radius: 7px; margin-left:10px; background-color: #7db0c7;">B102</button>
+				<button type="button" class="colorInfo" id="C101" data-type="C101" style="border: 0; border-radius: 7px; margin-left:10px; background-color: #7774b6;">C101</button>
+				<button type="button" class="colorInfo" id="C102" data-type="C102" style="border: 0; border-radius: 7px; margin-left:10px; background-color: #b789a9;">C102</button>
+			</div>
 			<select class="form-select form-select mb-3" id="selectCourse" aria-label="Large select example">
 				  <option value="all" selected>모든 강의실 예약현황</option>
 			</select>
-		 	<fieldset>
-				<button type="button" class="filter_btn w-10" id="all" data-type="all" style="border: 0; border-radius: 7px; background-color: #525252;">ALL</button>
-				<button type="button" class="filter_btn w-10" id="A101" data-type="A101" style="border: 0; border-radius: 7px; background-color: #db7e6a;">A101</button>
-				<button type="button" class="filter_btn w-10" id="A102" data-type="A102" style="border: 0; border-radius: 7px; background-color: #faab23;">A102</button>
-				<button type="button" class="filter_btn w-10" id="B101" data-type="B101" style="border: 0; border-radius: 7px; background-color: #87b27c;">B101</button>
-				<button type="button" class="filter_btn w-10" id="B102" data-type="B102" style="border: 0; border-radius: 7px; background-color: #7db0c7;">B102</button>
-				<button type="button" class="filter_btn w-10" id="C101" data-type="C101" style="border: 0; border-radius: 7px; background-color: #7774b6;">C101</button>
-				<button type="button" class="filter_btn w-10" id="C102" data-type="C102" style="border: 0; border-radius: 7px; background-color: #b789a9;">C102</button>
-			</fieldset>
 		</div>
 
 		<div class="calendar-view mt-3">

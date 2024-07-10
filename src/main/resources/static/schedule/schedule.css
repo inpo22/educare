@@ -48,6 +48,10 @@
 }
 
 /* 일정 모달 창 START */
+.modal{
+	z-index: 1060 !important;
+}
+
 .modal-header {
 	background: #EEEEEE !important;
 	color: #707070 !important;
@@ -72,6 +76,16 @@ textarea {
 
 :root { -
 	-fc-border-color: #e9ecef;
+}
+
+.fc-daygrid-day{
+	height:150px !important;
+}
+
+.fc-more-popover {
+  max-height: 180px; 
+  overflow-y: auto; 
+  z-index: 1050 !important;
 }
 
 .fc-day-sat .fc-daygrid-day-number {
