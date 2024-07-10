@@ -153,7 +153,8 @@
 
 </body>
 <script>
-const MAX_CONTENT_SIZE = 5 * 1024 * 1024; // 5MB를 바이트로 변환
+const maxSize = 5 * 1024 * 1024; // 5MB를 바이트로 변환
+const editorSize = 1 * 1024 * 1024;
 
 const editor = new toastui.Editor({
 	   el: document.querySelector('#editor'),
@@ -161,113 +162,125 @@ const editor = new toastui.Editor({
 	   initialEditType: 'wysiwyg',
 	   hideModeSwitch: true
 	});
-	editor.removeToolbarItem('code');
-	editor.removeToolbarItem('codeblock');
+editor.removeToolbarItem('code');
+editor.removeToolbarItem('codeblock');
 
-	var fileList = [];
+var fileList = [];
 
-	if('${dto.fixed_yn}' == '1'){
-		$('#flexSwitchCheckChecked').prop('checked', true);
-	}
-	
-    <c:forEach var="file" items="${attachFileList}">
-	    fileList.push({
-	        file_no: "${file.file_no}",
-			name : "${file.ori_filename}"
-	    });
-	</c:forEach>
+if('${dto.fixed_yn}' == '1'){
+	$('#flexSwitchCheckChecked').prop('checked', true);
+}
+
+<c:forEach var="file" items="${attachFileList}">
+	fileList.push({
+		file_no: "${file.file_no}",
+		name : "${file.ori_filename}"
+	});
+</c:forEach>
 console.log(fileList);
 
-	$('#fileInputButton').click(function() {
-		$('#attachFile').click();
-	});
+$('#fileInputButton').click(function() {
+	$('#attachFile').click();
+});
 
-	$('#attachFile').change(function() {
-		var files = this.files;
-		for (var file of files) {
-			fileList.push(file);
-		}
-		updateFileList();
-		updateAttachFile();
-	});
-	
-	// 파일리스트에서삭제
-	function deleteFileList(spanElement, file_no) {
-		console.log(file_no);
-		fileList = fileList.filter(file => file.file_no !== file_no);
-		console.log(fileList);
-		$(spanElement).closest('li').remove();
-	}
+$('#attachFile').change(function() {
+    var inputFiles = $("#attachFile")[0].files;
+    // console.log(inputFiles);
+    
+    for (var item of inputFiles) {
+       var fileSize = item.size;//업로드한 파일용량
+       // console.log(fileSize);
+       if (fileSize > maxSize) {
+          alert("파일은 5MB 이하의 파일만 첨부할 수 있습니다.");
+          return false;
+       }
+    }
+    
+    var files = this.files;
+    for (var file of files) {
+       fileList.push(file);
+    }
+    updateFileList();
+    updateAttachFile();
+ });
 
-	function updateFileList() {
-		$('#fileList').empty();
-		fileList.forEach((file, index) => {
-	        var li = $('<li></li>').text(file.name);
-	        li.append('&nbsp;&nbsp;&nbsp;');
-	        var removeBtn = $('<span></span>')
-	            .html('X')
-	            .addClass('remove-x')
-	            .on('click', function() {
-	            	fileList.splice(index, 1);
-	                updateFileList();
-	                updateAttachFile();
-	            });
-	        li.append(removeBtn);
-	        $('#fileList').append(li);
-	    });
-	}
+// 파일리스트에서삭제
+function deleteFileList(spanElement, file_no) {
+	console.log(file_no);
+	fileList = fileList.filter(file => file.file_no !== file_no);
+	console.log(fileList);
+	$(spanElement).closest('li').remove();
+}
 
-	function updateAttachFile() {
-	    var dataTransfer = new DataTransfer();
-	    fileList.forEach(file => {
-			if(file.file_no === undefined) {
-				dataTransfer.items.add(file);
-			}
-	    });
-	    $('#attachFile')[0].files = dataTransfer.files;
-	}
+function updateFileList() {
+	$('#fileList').empty();
+	fileList.forEach((file, index) => {
+        var li = $('<li></li>').text(file.name);
+        li.append('&nbsp;&nbsp;&nbsp;');
+        var removeBtn = $('<span></span>')
+            .html('X')
+            .addClass('remove-x')
+            .on('click', function() {
+            	fileList.splice(index, 1);
+                updateFileList();
+                updateAttachFile();
+            });
+        li.append(removeBtn);
+        $('#fileList').append(li);
+    });
+}
 
-	
-	// 수정취소
-	function updateCancle(){
-		var result = confirm('수정을 취소하시겠습니까?');
-		if(result){
-			location.href = '/allBoard/list.go';			
+function updateAttachFile() {
+    var dataTransfer = new DataTransfer();
+    fileList.forEach(file => {
+		if(file.file_no === undefined) {
+			dataTransfer.items.add(file);
+		}
+    });
+    $('#attachFile')[0].files = dataTransfer.files;
+}
+
+
+// 수정취소
+function updateCancle(){
+	var result = confirm('수정을 취소하시겠습니까?');
+	if(result){
+		location.href = '/allBoard/list.go';			
+	}
+}
+
+// 수정완료
+function updateSubmit(){
+	var editContent = editor.getHTML()+'';
+	$('#content').val(editContent);
+	console.log(editor.getMarkdown());
+	var isChecked = $('#flexSwitchCheckChecked').prop('checked');
+	console.log(isChecked);
+    var fileNumbers = fileList.map(file => file.file_no).join(',');
+    $('#fileNumbers').val(fileNumbers);
+	if(isChecked == true){
+		$('#checkBox').val(1);		
+	}else{
+		$('#checkBox').val(0);
+	}
+	var $title = $('#titleText');
+	var $content = $('#content');
+	if($title.val() == ''){
+		alert('제목을 입력해 주세요.');
+		$title.focus();
+	}else if(editor.getMarkdown() == ''){
+		alert('내용을 입력해 주세요.');
+		editor.focus();
+	} else if (new Blob([editContent]).size > editorSize) {
+        alert('내용의 용량이 초과되었습니다. 이미지의 크기나 갯수를 줄여 주세요.');
+	} else{
+		var result = confirm('수정 하시겠습니까?');
+		if (result) {
+			alert('수정이 완료되었습니다.');
+			$('form').submit();
 		}
 	}
-	
-	// 수정완료
-	function updateSubmit(){
-		var editContent = editor.getHTML()+'';
-		$('#content').val(editContent);
-		console.log(editor.getMarkdown());
-		var isChecked = $('#flexSwitchCheckChecked').prop('checked');
-		console.log(isChecked);
-	    var fileNumbers = fileList.map(file => file.file_no).join(',');
-	    $('#fileNumbers').val(fileNumbers);
-		if(isChecked == true){
-			$('#checkBox').val(1);		
-		}else{
-			$('#checkBox').val(0);
-		}
-		var $title = $('#titleText');
-		var $content = $('#content');
-		if($title.val() == ''){
-			alert('제목을 입력해 주세요.');
-			$title.focus();
-		}else if(editor.getMarkdown() == ''){
-			alert('내용을 입력해 주세요.');
-			editor.focus();
-		} else if (new Blob([editContent]).size > MAX_CONTENT_SIZE) {
-	        alert('내용의 용량이 초과되었습니다. 이미지의 크기나 갯수를 줄여 주세요.');
-		} else{
-			var result = confirm('수정 하시겠습니까?');
-			if (result) {
-				alert('수정이 완료되었습니다.');
-				$('form').submit();
-			}
-		}
-	}
+}
 	
 // 	$('#flexSwitchCheckChecked').on('click',function(){
 // 		var fixedCheck = $(this);

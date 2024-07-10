@@ -438,14 +438,20 @@
 			alert('이메일을 입력해주세요.');
 			$email.focus();
 		} else if($phone.val() == ''){
-			alert('핸드폰 번호를 입력해주세요.');
+			alert('연락처를 입력해주세요.');
 			$phone.focus();
 		} else {
 			// 이메일 유효성 검사
 			var regEmail = /^([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
+			//핸드폰번호 유효성검사
+			var regphone = /^(010)-?[0-9]{4}-?[0-9]{4}$/;
+			
 			if (regEmail.test($email.val()) == false) {
-				alert("이메일 형식이 올바르지 않습니다.");
+				alert('이메일 형식이 올바르지 않습니다.');
 				$email.focus();
+			} else if (regphone.test($phone.val()) == false) {
+				alert('연락처 형식이 올바르지 않습니다.');
+				$phone.focus();
 			} else {
 				var result = confirm('입력하신 정보로 변경하시겠습니까?');
 				if (result) {
