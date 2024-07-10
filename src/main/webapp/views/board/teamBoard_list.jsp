@@ -117,7 +117,7 @@
 					<th scope="col">게시판 부서</th>
 					<th scope="col">제목</th>
 					<th scope="col">작성자</th>
-					<th scope="col">부서명</th>
+					<th scope="col">부서</th>
 					<th scope="col">작성일자</th>
 					<th scope="col">조회수</th>
 				  </tr>
