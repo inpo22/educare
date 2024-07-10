@@ -32,7 +32,7 @@ public class ScheduleUtil {
 	// crontab
 	// 초 분 시 일 월 요일 년도(일반적으로 생략)
 	// 1 0 0 * * MON-FRI
-	@Scheduled(cron = "0 19 17 * * MON-FRI")
+	@Scheduled(cron = "0 0 23 * * MON-FRI")
 	public void cron() throws IOException {
 		LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
 		
