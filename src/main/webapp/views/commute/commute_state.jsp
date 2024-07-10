@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
@@ -266,7 +267,7 @@
 				};
 				window.pagination.init($('#pagination'), option, function(currentPage) {
 					page = currentPage;
-					listCall(page, searchCondition, searchContent);
+					listCall(page, start_date, end_date);
 				});
 			},
 			error : function(request, status, error) {
@@ -369,11 +370,17 @@
 	}
 	
 	function attendance() {
-		location.href = "/commuteState/attendance.do";
+		var result = confirm('현재 시간으로 출근 시간에 입력하시겠습니까?');
+		if (result) {
+			location.href = "/commuteState/attendance.do";
+		}
 	}
 	
 	function leaveWork() {
-		location.href = "/commuteState/leaveWork.do";
+		var result = confirm('현재 시간으로 퇴근 시간에 입력하시겠습니까?');
+		if (result) {
+			location.href = "/commuteState/leaveWork.do";
+		}
 	}
 </script>
 </html>

@@ -204,7 +204,7 @@
 			, (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code) AS class_name
 			, u.team_code
 		FROM user u
-		WHERE u.classify_code IN ('U01', 'U02')
+		WHERE u.classify_code IN ('U01', 'U02') AND u.status = 0
 	</select>
 	
 	<insert id="mailWrite"

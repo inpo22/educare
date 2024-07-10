@@ -177,6 +177,7 @@
 </body>
 <script>
 	const MAX_CONTENT_SIZE = 5 * 1024 * 1024; // 5MB를 바이트로 변환
+	const editorSize = 1 * 1024 * 1024;
 
 	$('#teamCode').val('${category}');
     
@@ -196,13 +197,25 @@
 	});
 
 	$('#attachFile').change(function() {
+		var inputFiles = $("#attachFile")[0].files;
+		// console.log(inputFiles);
+		
+		for (var item of inputFiles) {
+		   var fileSize = item.size;//업로드한 파일용량
+		   // console.log(fileSize);
+		   if (fileSize > MAX_CONTENT_SIZE) {
+		      alert("파일은 5MB 이하의 파일만 첨부할 수 있습니다.");
+		      return false;
+		   }
+		}
+		
 		var files = this.files;
 		for (var file of files) {
-		    fileList.push(file);
+		   fileList.push(file);
 		}
 		updateFileList();
 		updateAttachFile();
-	});
+	});	
 
 	function updateFileList() {
 		$('#fileList').empty();
@@ -264,7 +277,7 @@
 		}else if (editor.getMarkdown() === '') {
 			alert('내용을 입력해 주세요.');
 			editor.focus();
-		}else if (new Blob([editContent]).size > MAX_CONTENT_SIZE) {
+		}else if (new Blob([editContent]).size > editorSize) {
 			alert('내용의 용량이 초과되었습니다. 이미지의 크기나 갯수를 줄여 주세요.');
 		}else {
 			var result = confirm('작성 하시겠습니까?');
