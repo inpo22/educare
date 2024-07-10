@@ -305,13 +305,13 @@
 		<if test="param4 != ''">
 			AND
 			<if test="param3 == 'subject'">
-				a.title LIKE CONCAT('%', #{param4}, '%')
+				title LIKE CONCAT('%', #{param4}, '%')
 			</if>
 			<if test="param3 == 'content'">
-				a.contents LIKE CONCAT('%', #{param4}, '%')
+				contents LIKE CONCAT('%', #{param4}, '%')
 			</if>
 			<if test="param3 == 'drafter_name'">
-				u.name LIKE CONCAT('%', #{param4}, '%')
+				name LIKE CONCAT('%', #{param4}, '%')
 			</if>
 		</if>
 	</select>
