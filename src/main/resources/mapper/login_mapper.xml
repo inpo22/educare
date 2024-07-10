@@ -6,25 +6,26 @@
 	<!--비밀번호 암호화 로그인 -->
 	<select id="loginAccess" resultType="login">
 		SELECT
-		  u.user_code,
-		  u.name,
-		  u.team_code,
-		  u.classify_code,
-		  ac1.code_name AS class_name,
-		  d.team_name,
-		  ac2.code_name AS classify_name,
-		  u.photo,
-		  u.pw
-		FROM
-		  user u
-		LEFT JOIN
-		  all_code ac1 ON u.class_code = ac1.code
-		LEFT JOIN
-		  all_code ac2 ON u.classify_code = ac2.code
-		LEFT JOIN
-		  department d ON u.team_code = d.team_code
-		WHERE
-		  u.id = #{param1}
+          u.user_code,
+          u.name,
+          u.team_code,
+          u.classify_code,
+          ac1.code_name AS class_name,
+          d.team_name,
+          ac2.code_name AS classify_name,
+          u.photo,
+          u.pw,
+          u.status
+        FROM
+          user u
+        LEFT JOIN
+          all_code ac1 ON u.class_code = ac1.code
+        LEFT JOIN
+          all_code ac2 ON u.classify_code = ac2.code
+        LEFT JOIN
+          department d ON u.team_code = d.team_code
+        WHERE
+          u.id = #{param1}
 	</select>
 	<!--  아이디찾기 결과불러오기 -->	 
 	<select id="idFindResult" resultType="String">

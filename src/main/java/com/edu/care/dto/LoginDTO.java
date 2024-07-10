@@ -18,7 +18,7 @@ public class LoginDTO {
 	private String id;
 	private String pw;
 	private String email;
-	
+	private int status;
 	
 	
 	public String getClass_name() {
@@ -86,6 +86,12 @@ public class LoginDTO {
 	}
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	public int getStatus() {
+		return status;
+	}
+	public void setStatus(int status) {
+		this.status = status;
 	}
 
 	

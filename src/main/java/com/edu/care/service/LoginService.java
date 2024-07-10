@@ -57,6 +57,17 @@ public class LoginService {
 		String page = "login/login";
 		String msg = "아이디 또는 비밀번호를 확인하세요";
 		
+		if (loginInfo !=null && loginInfo.getStatus() ==1) {
+			msg = "퇴사자는 로그인이 불가능합니다.";
+			ModelAndView mav = new ModelAndView();
+			mav.addObject("msg", msg);
+			mav.setViewName(page);
+			return mav;
+		}
+		
+		
+		
+		
 		//String enc_pw = (loginInfo != null) ? loginInfo.getPw() : null
 		String enc_pw;
 		if (loginInfo != null) {
