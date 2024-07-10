@@ -272,6 +272,7 @@
 	            FROM payment p
 	            WHERE p.user_code = #{user_code}
 	            AND p.course_no = c.course_no
+	            AND p.pay_state != 2
 	        )
 	</insert>
 
@@ -287,6 +288,8 @@
 	        p.user_code = #{user_code}
 	    AND
 	        c.course_name = #{course_name}
+	    AND
+	    	p.pay_state != 2 
 	</select>
 
 

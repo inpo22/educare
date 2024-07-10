@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
@@ -116,8 +117,8 @@
 			      <th scope="col">사원번호</th>
 			      <th scope="col">이름</th>
 			      <th scope="col">부서</th>
-			      <th scope="col">직책</th>
 			      <th scope="col">직급</th>
+			      <th scope="col">직책</th>
 			      <th scope="col">입사일</th>
 			      <th><input class="form-check-input" type="checkbox" value="" id="chkAll"></th>
 			      

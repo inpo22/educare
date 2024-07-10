@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
@@ -397,7 +398,6 @@ $('.dept-reg').click(function() {
 
 //아이디 중복체크
 var overChk = false;
-overChk = true;
 
 function overlay(){
 	var id = $('input[name="id"]').val();
@@ -419,7 +419,8 @@ function overlay(){
 			console.log(data);
 			if(data.use>0){
 				alert("이미 사용 중인 아이디 입니다.");
-				$('input[name="id"]'.val(''));
+				$('input[name="id"]').val('');
+				overChk = false;
 			}else{
 				alert("사용 가능한 아이디 입니다.");
 				overChk = true;
@@ -431,9 +432,14 @@ function overlay(){
 	});
 }
 
-// 등록버튼 (유효성 검사)
-var overChk = false;
+//아이디 입력 필드 변경 시 중복 체크 다시 하도록 설정
+$('input[name="id"]').on('input', function() {
+    overChk = false;
+});
 
+
+
+// 등록버튼 (유효성 검사)
 function reg(){
 	var $id = $('input[name="id"]'); 
 	var $pw = $('input[name="pw"]');
@@ -447,17 +453,17 @@ function reg(){
 	var $reg_date = $('input[name="reg_date"]');
 	var $team_code = $('input[name="team_code"]');
 	
-	if(overChk == false){
+	if($name.val()==''){ // 이름 값이 비었을 경우
+		alert('이름을 입력해주세요.');
+		$name.focus(); // 커서가 이름으로	
+	}else if($id.val()==''){ // 아이디 값이 비었을 경우
+		alert('아이디를 입력해주세요.');
+		$id.focus();
+	}
+	else if(overChk == false){
 		alert('중복 체크를 해주세요.');
 		$id.focus(); 
 		return false;
-	}else if($name.val()==''){ // 이름 값이 비었을 경우
-		alert('이름을 입력해주세요.');
-		$name.focus(); // 커서가 이름으로
-	}
-	else if($id.val()==''){ // 아이디 값이 비었을 경우
-		alert('아이디를 입력해주세요.');
-		$id.focus();
 	}else if($pw.val()==''){ // 비밀번호 값이 비었을 경우
 		alert('비밀번호를 입력해주세요.');
 		$pw.focus(); // 커서가 비밀번호로
@@ -511,10 +517,38 @@ function reg(){
 			alert("비밀번호는 공백을 포함할 수 없습니다.")
 			$pw.focus();
 			return false;
-		}else{
-			alert("사원 등록에 성공했습니다.");
-			$('form').submit();
 		}
+		
+		//핸드폰번호 유효성검사
+		var regphone = /^(010)-?[0-9]{4}-?[0-9]{4}$/;
+		if(!regphone.test($phone.val())){
+			alert("핸드폰번호를 확인해주세요.");
+			$phone.focus();
+			return false;
+		}
+		
+		 // 최종 중복 체크 (등록 시 중복 체크를 다시 수행)
+	    $.ajax({
+	        type: 'post',
+	        url: '/emp/overlay.do',
+	        data: {'id': $id.val()},
+	        dataType: 'json',
+	        success: function(data) {
+	            console.log(data);
+	            if (data.use > 0) {
+	                alert("이미 사용 중인 아이디 입니다. 다시 확인해주세요.");
+	                $id.focus();
+	                overChk = false; // 중복 체크 실패 시 false로 설정
+	            } else {
+	                alert("사원 등록에 성공했습니다.");
+	                $('form').submit();
+	            }
+	        },
+	        error: function(error) {
+	            console.log(error);
+	            overChk = false; // 에러 발생 시 false로 설정
+	        }
+	    });
 
 	}
 	

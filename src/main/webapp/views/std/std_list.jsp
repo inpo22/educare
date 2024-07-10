@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
@@ -154,7 +155,7 @@ function listCall(page, type, searchbox, startDate, endDate){
 			};
 			window.pagination.init($('#pagination'), option, function(currentPage) {
 				page = currentPage;
-				listCall(page, searchCondition, searchContent);
+				listCall(page, type, searchbox, startDate, endDate);
 			});
 		},
 		error:function(error){
@@ -179,7 +180,7 @@ function drawStdList(stdList){
 	$('#stdList').html(content);
 }
 
-/* 페이징처리 스크립트 시작 */
+/* 페이징처리 스크립트 시작 
 //totalPage 활용하여 Pagination 버튼 설정
 function setupPagination(page, totalPage) {
 	var pagination = $('#pagination');
@@ -262,7 +263,7 @@ $('#pagination').on('click', '.page-link', function(e) {
   }
   listCall(page, type, searchbox, startDate, endDate);
 });
-/* 페이징처리 스크립트 끝 */
+ 페이징처리 스크립트 끝 */
 
 // 날짜 검색 버튼 함수
 $('#searchdate_btn').click(function(){
