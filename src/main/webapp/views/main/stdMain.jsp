@@ -49,7 +49,7 @@
 								</c:if>
 								<c:forEach items="${notiBoardList}" var="post">
 									<tr>
-										<td><a href="/allBoard/detail.go?post_no=${post.post_no}">${post.title}</a></td>
+										<td><a href="/stdBoard/detail.go?post_no=${post.post_no}">${post.title}</a></td>
 										<td>${post.user_name}</td>
 										<td><fmt:formatDate value="${post.reg_date}" pattern="yyyy.MM.dd"/></td>
 									</tr>
@@ -58,7 +58,7 @@
 						</table>
 						<c:if test="${notiBoardList.size() > 0}">
 							<div class="more-div">
-								<a class="blue-color" href="/allBoard/list.go">더보기</a>
+								<a class="blue-color" href="/stdBoard/list.go">더보기</a>
 							</div>
 						</c:if>
 					</div>

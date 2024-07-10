@@ -229,9 +229,11 @@ public class BoardController {
 		logger.info("\n param  :{}", param);
 		logger.info("fileNameList=" + param.get("fileNumbers"));
 		logger.info("attachFile =" + attachFile.length);
+		logger.info("postTeamCode : "+ param.get("post_team_code"));
 		
 		String[] fileNumbers = param.get("fileNumbers").split(",");
 		param.put("user_code", user_code);
+		
 		
 		boardService.fileDelete(fileNumbers, param.get("post_no"));
 		boardService.boardUpdate(attachFile, param);
