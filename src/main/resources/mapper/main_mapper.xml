@@ -161,6 +161,15 @@
 	</update>
 	
 	<select id="stateCheck" resultType="Integer">
+		WITH approval_order_check AS (
+			SELECT
+				au_code
+				, COUNT(apv_no) AS order_count
+				, SUM(state) AS approval_state
+				, MAX(state) AS is_rejected
+			FROM approval_order
+			GROUP BY au_code 
+		)
 		SELECT
 			<![CDATA[
 			CASE
@@ -170,10 +179,25 @@
 				WHEN o.end_time < CONCAT(CURDATE(), ' 18:00:00') THEN 1
 				ELSE -1 END AS state_check
 			]]>
-		FROM officehour o JOIN (
-			SELECT user_code, 1 AS is_vaca FROM approval WHERE CURDATE() BETWEEN start_date AND end_date
+		FROM officehour o LEFT JOIN (
+			SELECT 
+				a.user_code
+				, 1 AS is_vaca 
+			FROM approval a JOIN (
+				SELECT
+					*
+					<![CDATA[
+					, CASE 
+						WHEN is_rejected = 2 THEN 2
+						WHEN is_rejected != 2 AND order_count = approval_state THEN 1
+						WHEN is_rejected != 2 AND order_count > approval_state THEN 0
+					END AS total_order_state
+					]]>
+				FROM approval_order_check
+			) aoc ON a.au_code = aoc.au_code
+			WHERE CURDATE() BETWEEN a.start_date AND a.end_date AND aoc.total_order_state = 1
 		) a ON o.user_code = a.user_code
-		WHERE o.user_code = #{param1} AND o.work_date LIKE CONCAT(CURDATE(), '%')
+		WHERE o.user_code = #{param1} AND o.work_date LIKE CONCAT(CURDATE(), '%');
 	</select>
 	
 	<update id="stateUpdate">
