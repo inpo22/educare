@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
@@ -199,7 +200,8 @@
 	
 	var selected_tab;
 	var checked = new Set();
-	
+	var checkName = /^[가-힣]|[A-Z]|[a-z0-9]$/;
+
 	// tree module
 	var mainModule = treeModule.init({
 		id: 'main',
@@ -284,21 +286,30 @@
 	});
 	
 	tree.on('beforeCreateChildNode', function(e) {
+		var result = confirm('새로운 부서를 추가하시겠습니까?');
+		var validation = checkName.test(e.value);
+		
 		if (event.cause === 'blur') {
 			tree.finishEditing();
 			tree.remove(e.nodeId);
 			return false;
-		}
-		var result = confirm('새로운 부서를 추가하시겠습니까?');
-		if(result){
-			var add_param = {
-				'team_name' : e.value,
-				'upper_code': tree.getNodeData(selected_id).team_code
+		} else if(result){
+			if(!validation){
+				alert('사용할 수 없는 부서명입니다. 다시 입력해주세요.')
+				//console.log(e.value,'- 유효성 결과: ',validation);
+				tree.finishEditing();
+				tree.remove(e.nodeId);
+				return false;
+			}else {
+				var add_param = {
+					'team_name' : e.value,
+					'upper_code': tree.getNodeData(selected_id).team_code
+				}
+				//console.log('add dept:',e.value,'-',add_param);
+				createDept_ajax(add_param);
+				selected_tab = 'deptInfo';
+				tree.select(e.nodeId)
 			}
-			//console.log('add dept:',e.value,'-',add_param);
-			createDept_ajax(add_param);
-			selected_tab = 'deptInfo';
-			tree.select(e.nodeId)
 		}else{
 			tree.finishEditing();
 			tree.remove(e.nodeId);
@@ -310,30 +321,33 @@
 	// tree-edit event
 	tree.on('beforeEditNode', function(e) {
 		//console.log('edit: ',e.nodeId, '/',e.'e.nodeId, '/',e.value, '/',e.cause'e = e.value);
+		var result = confirm('부서명을 수정하시겠습니까?');
 		var data = tree.getNodeData(e.nodeId);
-		if(data.team_name != e.value){
-			var edit_name = e.value;
-			var result = confirm('부서명을 수정하시겠습니까?');
-			if(result){
-				//console.log("::edit Dept::");
-				//console.log(data.team_code,':',data.team_name,'->',edit_name);
-				if(edit_name != null){
-					var edit_param = {
-							'nodeId'	: e.nodeId,
-							'team_code'	: data.team_code,
-							'team_name'	: edit_name,
-							'type'	: 'name'
-					}
-					updateDept_ajax(edit_param);	// update DB
-					
-				}else{
-					//console.log('update fail');
-				}
-			}else{
+		var validation = checkName.test(e.value);
+		
+		if(result){
+			if(data.team_name == e.value){
+				alert('기존 부서명과 동일합니다. 다시 입력해주세요.');
 				tree.finishEditing();
 				return false;
-			}			
-		} else{
+			}else if(!validation){
+				alert('사용할 수 없는 부서명입니다. 다시 입력해주세요.');
+				//console.log(e.value,'- 유효성 결과: ',validation);
+				tree.finishEditing();
+				return false;
+			}else {
+				var edit_name = e.value;
+				var edit_param = {
+						'nodeId'	: e.nodeId,
+						'team_code'	: data.team_code,
+						'team_name'	: edit_name,
+						'type'	: 'name'
+				}
+				//console.log("::edit Dept::");
+				//console.log(data.team_code,':',data.team_name,'->',edit_name);
+				updateDept_ajax(edit_param);	// update DB
+			}
+		}else{
 			tree.finishEditing();
 			return false;
 		}
