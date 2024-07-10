@@ -18,7 +18,7 @@ public class LoginChecker implements HandlerInterceptor {
 	public boolean preHandle(HttpServletRequest req, HttpServletResponse resp, Object handler)
 			throws Exception {
 		boolean pass = true;
-		 logger.info("=== PRE HANDLER ===");
+		// logger.info("=== PRE HANDLER ===");
 		
 		HttpSession session = req.getSession();
 		

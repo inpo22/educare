@@ -163,7 +163,7 @@ public class LoginService {
 			try {
 				MimeMessage message = new MimeMessage(session);
 				message.setFrom(new InternetAddress(mailId, "에듀케어", "UTF-8"));
-				message.addRecipient(Message.RecipientType.TO, new InternetAddress("inpyo8086@naver.com"));
+				message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
 				
 				message.setSubject(subject);
 				

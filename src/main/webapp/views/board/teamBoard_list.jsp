@@ -103,7 +103,7 @@
 			<table class="table">
 				<colgroup>
 					<col width="5%" />
-					<col width="5%" />
+					<col width="10%" />
 					<col width="25%" />
 					<col width="10%" />
 					<col width="5%" />
