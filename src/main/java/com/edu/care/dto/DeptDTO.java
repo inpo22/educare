@@ -9,6 +9,7 @@ public class DeptDTO {
 	private String team_name;
 	private String upper_code;
 	private String reg_date;
+	private String depth;
 	
 	public String getTeam_code() {
 		return team_code;
@@ -34,4 +35,11 @@ public class DeptDTO {
 	public void setReg_date(String reg_date) {
 		this.reg_date = reg_date;
 	}
+	public String getDepth() {
+		return depth;
+	}
+	public void setDepth(String depth) {
+		this.depth = depth;
+	}
+	
 }
