@@ -42,9 +42,16 @@
 						<div class="input-group input-group mb-3">
 							<span class="input-group-text" id="basic-addon1">사원번호</span> 
 							<input type="text" class="form-control" name="user_code" id="user_code" placeholder="강사의 사원번호를 입력해주세요.">
-							<button class="btn btn-outline-secondary user-code-btn" type="button" onclick="checkUserCode()" style="width: 27% !important;">사원여부확인</button>
+							<button class="btn btn-outline-secondary user-code-btn" type="button" id="checkUserBtn" onclick="checkUserCode()" style="width: 27% !important;">사원여부확인</button>
 						</div>
-
+						
+						<div class="input-group input-group mb-3">
+							<span class="input-group-text">강사명</span>
+							<input type="text" class="form-control readInfo" name="user_name" id="user_name" placeholder="사원체크성공시 강사명이 출력됩니다." readonly>
+							<span class="input-group-text">소속부서</span> 
+							<input type="text" class="form-control readInfo" id="team_name"  name="team_name" placeholder="사원체크성공시 소속부서가 출력됩니다."  readonly>
+						</div>
+						
 						<div class="input-group input-group mb-3">
 							<span class="input-group-text" id="basic-addon2">강의명</span> 
 							<input type="text" class="form-control" name="title" id="title" placeholder="강의명 입력해주세요.">
@@ -602,6 +609,14 @@ function submitButton(){
 
 function checkUserCode(){
 	var userCode = $('#user_code').val();
+	
+	if($('#checkUserBtn').html() === '수정'){
+		$('#user_code').val('');
+		$('#user_code').attr("readonly",false);
+		$('#checkUserBtn').html('사원여부확인');
+		return false;
+	}
+	
 	console.log('userCode.>>>>'+userCode);
 	$.ajax({
 		url: '/course/checkUserCode.ajax',
@@ -613,6 +628,8 @@ function checkUserCode(){
 			if(data.result === "success" ){
 				alert('사원번호 확인완료 되었습니다.');
 				$('#user_code').attr("readonly",true); 
+				$('#checkUserBtn').html('수정');
+				$('#checkUserBtn').addClass('removeUser');
 			}else{
 				alert('입력하신 사원번호는 없는번호이니 다시 입력해주세요.');
 			}

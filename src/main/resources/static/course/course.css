@@ -68,6 +68,9 @@
 }
 
 /* WRITE */
+.readInfo{
+	background-color: #eaeaea !important;
+}
 
 .reserv-textarea{
 	resize: none !important;
@@ -77,7 +80,7 @@
 
 .reservTextareaGo{
 	resize: none !important;
-	height: 91px !important;
+	height: 144px !important;
 	overflow: auto !important;
 	pointer-events: none !important;
 }

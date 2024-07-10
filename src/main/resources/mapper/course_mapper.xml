@@ -153,6 +153,14 @@
 		AND status = 0
 	</select>
 	
+	<select id="checkUserCodeInfo" resultType="course">
+		SELECT u.name, d.team_name
+		FROM user u 
+		JOIN department d
+		ON u.team_code = d.team_code
+		WHERE user_code  = #{param1}
+	</select>
+	
 	<update id="courseUpdateAjax" parameterType="course">
 		UPDATE 
 			course 

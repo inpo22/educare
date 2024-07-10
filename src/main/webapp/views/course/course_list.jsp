@@ -139,7 +139,7 @@ function read_courseList(page, searchFilter, searchContent, showCourse){
 
 function drawList(list){
 	var now = new Date();
-	now.setDate(now.getDate() + 1);
+	now.setDate(now.getDate());
 	var formatNow = now.toISOString().split('T')[0];
 	
 	console.log("nownow",formatNow);
