@@ -93,7 +93,7 @@
  // 세션 타임아웃을 감지하는 타이머 설정 (30분 후 자동 로그아웃)
     var logoutTimer;
     function startLogoutTimer() {
-        console.log("로그아웃 타이머 시작");
+        //console.log("로그아웃 타이머 시작");
         clearTimeout(logoutTimer);
         logoutTimer = setTimeout(function() {
             alert('로그인이 만료되었습니다');
@@ -102,6 +102,7 @@
     }
 
     // 페이지 로드 시 타이머 시작
+    
     startLogoutTimer();
 
     // 사용자가 페이지에서 활동할 때마다 타이머 리셋

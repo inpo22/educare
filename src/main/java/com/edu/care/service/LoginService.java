@@ -51,14 +51,14 @@ public class LoginService {
 	public ModelAndView loginAccess(HttpSession session, String id, String pw) {
 
 		LoginDTO loginInfo = loginDAO.loginAccess(id);
-		logger.info("loginInfo = {}", loginInfo);
+		//logger.info("loginInfo = {}", loginInfo);
 		
 		boolean success = false;
 		String page = "login/login";
 		String msg = "아이디 또는 비밀번호를 확인하세요";
 		
 		if (loginInfo !=null && loginInfo.getStatus() ==1) {
-			msg = "퇴사자는 로그인이 불가능합니다.";
+			msg = "로그인 할 수 없습니다.";
 			ModelAndView mav = new ModelAndView();
 			mav.addObject("msg", msg);
 			mav.setViewName(page);
@@ -75,7 +75,7 @@ public class LoginService {
 		}else {
 			 enc_pw = null;
 		}
-		logger.info("enc_pw = {}", enc_pw);
+		//logger.info("enc_pw = {}", enc_pw);
 		
 		
 		if (enc_pw != null) {

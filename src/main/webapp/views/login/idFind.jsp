@@ -1,38 +1,20 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>아이디 찾기 - 에듀케어</title>
-     <link href="/resources/assets/img/favicon.png" rel="icon">
+    <link href="/resources/assets/img/favicon.png" rel="icon">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f5f5f5;
-        }
-        .container {
-            width: 600px;
-            padding: 20px;
-            background-color: white;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-        }
-        .text-align-center {
-            text-align: center;
-        }
-        .vertical-align-middle {
-            vertical-align: middle;
-        }
-    </style>
+    <link href="/resources/login/login.css" rel="stylesheet">
+    <style></style>
 </head>
 <body>
+    <video width="100%" height="auto" autoplay loop playsinline muted>
+        <source src="/resources/login/loginimage.mp4" type="video/mp4">
+    </video>
     <div class="container">
         <h3><b>아이디 찾기</b></h3>
         <br/>
@@ -59,20 +41,15 @@
             </div>
         </form>
     </div>
-</body>
     <script>
-    function cancelVerification() {
-        window.location.href = "/login.go";
-    }
-    
-    var msg = '${msg}';
-    if (msg != '') {
-        alert(msg);
-    }
+        function cancelVerification() {
+            window.location.href = "/login.go";
+        }
 
-    
-    
-    
-    
+        var msg = '${msg}';
+        if (msg != '') {
+            alert(msg);
+        }
     </script>
+</body>
 </html>
