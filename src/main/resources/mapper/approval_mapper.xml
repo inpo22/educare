@@ -248,6 +248,7 @@
 				, (SELECT d.team_name FROM department d WHERE d.team_code = u.team_code) AS team_name
 				, a.au_type
 				, a.title
+				, a.contents
 				, a.reg_date
 				, CASE 
 					WHEN is_rejected = 2 THEN 2
@@ -267,7 +268,7 @@
 				contents LIKE CONCAT('%', #{param5}, '%')
 			</if>
 			<if test="param4 == 'drafter_name'">
-				name LIKE CONCAT('%', #{param5}, '%')
+				user_name LIKE CONCAT('%', #{param5}, '%')
 			</if>
 		</if>
 		ORDER BY reg_date DESC LIMIT #{param2} OFFSET #{param1}
@@ -292,6 +293,7 @@
 				, (SELECT d.team_name FROM department d WHERE d.team_code = u.team_code) AS team_name
 				, a.au_type
 				, a.title
+				, a.contents
 				, a.reg_date
 				, CASE 
 					WHEN is_rejected = 2 THEN 2
@@ -301,17 +303,17 @@
 			FROM approval a JOIN approval_recipient ar ON a.au_code = ar.au_code JOIN user u ON a.user_code = u.user_code
 				JOIN approval_order_check aoc ON a.au_code = aoc.au_code
 			WHERE ar.receive_team_code = #{param2}) AS subquery
-		WHERE total_order_state = 1;
+		WHERE total_order_state = 1
 		<if test="param4 != ''">
 			AND
 			<if test="param3 == 'subject'">
-				a.title LIKE CONCAT('%', #{param4}, '%')
+				title LIKE CONCAT('%', #{param4}, '%')
 			</if>
 			<if test="param3 == 'content'">
-				a.contents LIKE CONCAT('%', #{param4}, '%')
+				contents LIKE CONCAT('%', #{param4}, '%')
 			</if>
 			<if test="param3 == 'drafter_name'">
-				u.name LIKE CONCAT('%', #{param4}, '%')
+				user_name LIKE CONCAT('%', #{param4}, '%')
 			</if>
 		</if>
 	</select>
