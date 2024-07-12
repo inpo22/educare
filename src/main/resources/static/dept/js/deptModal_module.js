@@ -30,7 +30,8 @@ var treeModule = (function (module,$){
 			nodeId: 'tui-tree-node-1',
 			modalId:'deptTree_modal',
 			modalOption: {keyboard: false}
-		};
+		};//End default option
+		
 		// final_option = defalut_option + new_option
 		var final_option = Object.assign({}, default_option, option);
 		if(final_option.id == null){
@@ -63,12 +64,13 @@ var treeModule = (function (module,$){
 			document.getElementById(final_option.modalId), { keyboard: false } );
 		
 		return tree_obj;
-	}
+	}//End init
 	
 	// load dept in tree
 	self.tree.loadTree = function(tree_obj){
 		var tree = tree_obj.var.tree;
 		var rootId = tree_obj.var.rootId;
+		var selectId = tree_obj.var.selectId;
 		
 		$.ajax({
 			type	: 'get',
@@ -86,7 +88,8 @@ var treeModule = (function (module,$){
 						addNode(rootId, data);
 					});
 	 				tree_obj.var.selectId = rootId;
-	 				tree.select(rootId);
+	 				tree.select(selectId);
+	 				
 				}else{
 					console.log('no dept');
 				}
@@ -125,6 +128,11 @@ var treeModule = (function (module,$){
 			}
 		}//End addNode
 		
+		//load tree icon event
+		$('.tui-tree-subtree').prevUntil('.tui-tree-root').last().find('.tui-ico-folder').html('<i class=\"bi bi-building-fill\"></i>');
+		$('.tui-tree-subtree').prevUntil('.tui-tree-root').last().find('.tui-ico-folder').attr('class','tui-tree-ico tui-tree-root');
+		$('.tui-tree-subtree .tui-tree-leaf .tui-ico-file').append('<i class=\"ri ri-folder-4-line\"></i>');
+		$('.tui-ico-file').attr('class','tui-tree-ico tui-tree-leaf');
 	}//End loadTree
 	
 	// load member in tree
@@ -150,7 +158,7 @@ var treeModule = (function (module,$){
 			error:function(error) {
 				console.log(error);
 			}
-		});
+		});//End ajax
 		
 		function addNode(id, data){
 			var result;
@@ -181,9 +189,12 @@ var treeModule = (function (module,$){
 				result = false;
 			}
 			return result;
-		}
-	
-	}
+		}//Emd addNode
+		
+		// load member icon event
+		$('.tui-tree-content-wrapper .tui-tree-text .tui-ico-file').append('<i class=\"bi bi-person-fill\"></i>');
+		$('.tui-ico-file').attr('class','tui-tree-ico tui-tree-leaf');
+	}//End load member
 	
 	// return self.tree
 	return {

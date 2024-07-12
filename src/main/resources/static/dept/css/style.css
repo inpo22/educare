@@ -1,15 +1,38 @@
 /**
-* Template Name: dept
+* Department Style CSS
 */
-
+.title-cate{
+  color: #012970 !important;
+}
 .card-header{
-	height: 135px;
+  height: 135px;
 }
 .card-body{
-	height: 530px;
+  height: 530px;
 }
+
 .tui-tree-root {
 	height: 450px;
+}
+
+.tui-tree-opened .bi {
+  background-position: -32px 0px;
+}
+
+.tui-tree-opened .tui-ico-tree {
+  width: 8px;
+  height: 5px;
+  background-position: -22px -28px;
+}
+
+.tui-tree-closed .tui-ico-tree {
+  width: 5px;
+  height: 8px;
+  background-position: -22px -35px;
+}
+
+.tui-tree-closed .bi {
+  background-position: -16px -16px;
 }
 
 .list_userLink {
@@ -31,7 +54,3 @@
 	display: none;
 }
 
-.invalidation {
-	color: red;
-	display: none;
-}
