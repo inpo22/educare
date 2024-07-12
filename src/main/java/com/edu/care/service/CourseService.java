@@ -147,4 +147,21 @@ public class CourseService {
 		return courseDAO.getCourseSpaceList();
 	}
 
+	public Map<String, Object> checkUserCodeInfo(String user_code) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			CourseDTO list = courseDAO.checkUserCodeInfo(user_code);
+			String name = list.getName() != null ? list.getName() : "";
+			String teamName = list.getTeam_name() != null ? list.getTeam_name() : "";
+			
+			map.put("name", name);
+			map.put("teamName", teamName);
+				
+			return map;
+		} catch (Exception e) {
+	        map.put("exception","error");
+	        return map;
+	    }
+	}
+
 }

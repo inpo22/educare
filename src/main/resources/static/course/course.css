@@ -29,7 +29,7 @@
 }
 
 .title-cate{
-	color:#012970 !important;
+	color:black !important;
 }
 
 .table-light{
@@ -70,6 +70,7 @@
 /* WRITE */
 .readInfo{
 	background-color: #eaeaea !important;
+	box-shadow: none !important;
 }
 
 .reserv-textarea{
@@ -222,19 +223,21 @@
 }
 
 .miniBox{
- 	background-color: #545fc8;
- 	font-size:8px;
-    color: white;
-    border-radius: 20px;
+ 	background-color: #545fc8 !important;
+ 	font-size:8px !important;
+    color: white !important;
+    border-radius: 20px !important;
 }
+
 small{
-	font-size: 10px;
+	font-size: 10px !important;
 }
+
 .todayBox{
-	background-color: #f78686;
- 	font-size: 8px;
-    color: white;
-    border-radius: 20px;
+	background-color: #f78686 !important;
+ 	font-size: 8px !important;
+    color: white !important;
+    border-radius: 20px !important;
 }
 
 .disabled {

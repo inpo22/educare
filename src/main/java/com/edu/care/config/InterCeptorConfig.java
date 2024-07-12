@@ -32,6 +32,7 @@ public class InterCeptorConfig implements WebMvcConfigurer {
 		excludeList.add("/login.do");
 		excludeList.add("/logout.do");
 		excludeList.add("/login/**");
+		excludeList.add("/error");
 		
 		
 		registry.addInterceptor(checker)

@@ -28,7 +28,7 @@
             	)
 			</if>
 			<if test = "param5 == 'true'">
-				<![CDATA[AND DAY(c.course_start) > DAY(now())]]>
+				<![CDATA[AND DATE(c.course_start) > DATE(now())]]>
 			</if>
 		 GROUP BY c.course_no
 		 ORDER BY c.course_start DESC
@@ -56,7 +56,7 @@
             	)
 			</if>
 			<if test = "param4 == 'true'">
-				<![CDATA[AND DAY(c.course_start) > DAY(now())]]>
+				<![CDATA[AND DATE(c.course_start) > DATE(now())]]>
 			</if>
 			ORDER BY c.course_start DESC
 	</select>

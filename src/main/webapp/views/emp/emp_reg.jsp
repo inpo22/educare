@@ -110,7 +110,7 @@ label[for="id"]{
 		<div id="backBoard"><br/>
 
 		<div class="pagetitle">
-			<h1>사원 등록</h1>
+			<h1><a href="/emp/list.go">사원 등록</a></h1>
 		</div>
 		<!-- End Page Title -->
 		
@@ -215,8 +215,8 @@ label[for="id"]{
 	         <div class="row mt-3">
             	<div class="col-md-6"></div>
 	            <div class="col-md-6 d-flex justify-content-end">
-	           		<button id="reg_btn" class="btn btn-dark" type="button" onclick="reg()">등록</button>
-	            	<button id="no_btn" class="btn btn-dark" type="button">취소</button>
+	           		<button id="reg_btn" class="btn btn-primary" type="button" onclick="reg()">등록</button>
+	            	<button id="no_btn" class="btn btn-secondary" type="button">취소</button>
 	            </div>
 	        </div>	
         </form>

@@ -61,7 +61,7 @@
         <li class="nav-item pm-admin">
             <a class="nav-link collapsed" href="/courseReservation.go">
                 <i class="bi bi-geo"></i>
-                <span>강의실 관리</span>
+                <span>강의실 현황</span>
             </a>
         </li><!-- 강의실 관리 구획 끝 -->
 

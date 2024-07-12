@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
@@ -38,14 +39,14 @@
 	<main id="main" class="main">
 
 		<div class="pagetitle">
-			<h1>일정 관리</h1>
+			<h1><a href="/schedule.go" class="title-cate" >일정 관리</a></h1>
 		</div>
 		<!-- End Page Title -->
 		
 		<input type="hidden" id="sessionUserCode" value="${sessionScope.user_code}" />		
 		<div class="row">
 			<div class="col-2 rounded-5 p-3">
-			<button class="btn btn-dark border-secondary pln_btn w-100" data-bs-toggle="modal" id="write_btn" data-bs-target="#writeModal">+ 일정 추가</button>
+			<button class="btn btn-primary border-secondary pln_btn w-100" data-bs-toggle="modal" id="write_btn" data-bs-target="#writeModal">+ 일정 추가</button>
 			<!-- End Schedule Button -->
 				<div class="card border-secondary mt-4">
 					<div class="card-header">선택한 일정 보기</div>
@@ -103,10 +104,10 @@
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-secondary" id="closeButton" data-bs-dismiss="modal">취소</button>
-							<button type="button" class="btn text-light bg-dark" id="submitButton" onclick="sch_beforeSubmit()">등록</button>
-							<button type="button" class="btn btn-secondary" id="deleteButton" onclick="sch_del()" style="display:none;">삭제</button>
-							<button type="button" class="btn text-light bg-dark" id="beforeUpdateButton" style="display:none;">수정</button>
-							<button type="button" class="btn text-light bg-dark" id="updateButton" style="display:none;">수정완료</button>
+							<button type="button" class="btn text-white bg-primary" id="submitButton" onclick="sch_beforeSubmit()">등록</button>
+							<button type="button" class="btn btn-danger" id="deleteButton" onclick="sch_del()" style="display:none;">삭제</button>
+							<button type="button" class="btn text-white bg-primary" id="beforeUpdateButton" style="display:none;">수정</button>
+							<button type="button" class="btn text-white bg-primary" id="updateButton" style="display:none;">수정완료</button>
 						</div>
 					</div>
 				</div>
@@ -131,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
     	googleCalendarApiKey: 'AIzaSyCJeD_Gho52ovrTpfj8zqwl-m3r41gvpBo',
     	eventSources: 
     		 {  
-    		   	googleCalendarId: 'ko.south_korea#holiday@group.v.calendar.google.com',
+    		   	googleCalendarId: 'ko.south_korea.official#holiday@group.v.calendar.google.com',
     			color:'red',
     			className : 'gcal-event',
     			editable: false

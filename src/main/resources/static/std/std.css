@@ -17,6 +17,9 @@ body {
 h1{
 	margin-top: 10px;
 }
+a{
+	color:black;
+}
 #detailBoard {
     background-color: #E2E2E2;
     width: 100%;
@@ -65,7 +68,7 @@ h1{
 	margin:0 0 0 200px;
 }
 .bi.bi-arrow-clockwise{
-	font-size: 24px;
+	font-size: 20px;
 }
 .payment-pending {
     color: green !important; 

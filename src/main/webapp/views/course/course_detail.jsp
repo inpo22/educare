@@ -3,8 +3,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<!DOCTYPE html>
 <html>
-
 <head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -95,8 +95,8 @@
 
     		<div class="row">
         		<div class="col-md-12 d-flex justify-content-end">
-           			<button type="button" class="btn btn-dark mt-3 mb-1" id="deleteBtn" onclick="deleteCourseGo()">삭제하기</button>
-       			 	<button type="button" class="btn btn-dark mt-3 mb-1" id="updateBtn" onclick="updateCourseGo()">수정하기</button>
+           			<button type="button" class="btn btn-danger mt-3 mb-1" id="deleteBtn" onclick="deleteCourseGo()">삭제</button>
+       			 	<button type="button" class="btn btn-primary mt-3 mb-1" id="updateBtn" onclick="updateCourseGo()">수정</button>
        			</div>
     		</div>
 	</div>

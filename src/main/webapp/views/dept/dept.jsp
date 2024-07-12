@@ -251,7 +251,11 @@
 	tree.enableFeature('Draggable', {
 		helperClassName: 'tui-tree-drop',
 		lineClassName: 'tui-tree-line',
-		isSortable: true
+		isSortable: true,
+		helperPos: {
+			x: -330,
+			y: -120
+		}
 	}).enableFeature('Editable', {
 		dataKey: 'text'
 	}).enableFeature('ContextMenu', {
@@ -324,7 +328,7 @@
 		var result = confirm('부서명을 수정하시겠습니까?');
 		var data = tree.getNodeData(e.nodeId);
 		var validation = checkName.test(e.value);
-		
+
 		if(result){
 			if(data.team_name == e.value){
 				alert('기존 부서명과 동일합니다. 다시 입력해주세요.');
