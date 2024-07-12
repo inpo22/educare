@@ -78,6 +78,7 @@ public class MainController {
 		return map;
 	}
 	
+	
 	@GetMapping(value="/main/attendance.do")
 	public String attendance(HttpSession session) {
 		String user_code = (String) session.getAttribute("user_code");

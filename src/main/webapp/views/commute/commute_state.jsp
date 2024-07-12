@@ -14,66 +14,12 @@
 
 <jsp:include page="/views/common/head.jsp"></jsp:include>
 <!-- css -->
+<link href="/resources/commute/commuteStyle.css" rel="stylesheet">
 
 <!-- js -->
 <script src="/resources/js/pagination_module.js" type="text/javascript"></script>
 
 <style>
-.main-section {
-	background-color: white;
-	width: 100%;
-	padding: 20px;
-	border-radius: 10px;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-	margin-top: 15px;
-}
-.display-flex {
-	display: flex;
-}
-.left-section {
-	width: 50%;
-	height: 100%;
-	padding-right: 20px;
-}
-.right-section {
-	width: 50%;
-	height: 100%;
-	padding-left: 20px;
-}
-.small-section {
-	width: 33%;
-}
-.blue-color {
-	color: rgb(88, 88, 255);
-}
-.white-color {
-	color: white;
-}
-.gray-color {
-	color: gray;
-}
-.text-align-center {
-	text-align: center;
-}
-.big-font-size {
-	font-size: 45px;
-}
-.blue-circle {
-	width: 85px;
-	height: 85px;
-	border-radius: 50px;
-	background-color: #0d6efd;
-	margin: 0 auto;
-	display: grid;
-	align-content: center;
-}
-.datepicker {
-	width: 200px;
-	display: inline;
-}
-.medium-font-size {
-	font-size: 35px;
-}
 </style>
 </head>
 
@@ -85,7 +31,7 @@
 	<main id="main" class="main">
 		<div class="main-section">
 			<div class="pagetitle">
-				<h1>근태 관리</h1>
+				<h1><a href="/commuteState.go">근태 관리</a></h1>
 			</div>
 			<br/><br/>
 			<div class="display-flex">
