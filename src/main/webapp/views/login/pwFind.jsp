@@ -5,31 +5,15 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<link href="/resources/login/login.css" rel="stylesheet">
 <jsp:include page="/views/common/head.jsp"></jsp:include>
 <style>
-	body {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		height: 100vh;
-		background-color: #f5f5f5;
-	}
-	.container {
-		width: 600px;
-		padding: 20px;
-		background-color: white;
-		box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-		border-radius: 10px;
-	}
-	.text-align-center {
-		text-align: center;
-	}
-	.vertical-align-middle {
-		vertical-align: middle;
-	}
 </style>
 </head>
 <body>
+<video width="100%" height="auto" autoplay loop playsinline muted>
+        <source src="/resources/login/loginimage.mp4" type="video/mp4">
+</video>
 	<div class="container">
 		<h3><b>비밀번호 찾기</b></h3>
 		<br/>

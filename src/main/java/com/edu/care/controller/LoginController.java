@@ -26,7 +26,7 @@ public class LoginController {
 
 	@GetMapping(value = "/login.go")
 	public String login() {
-		logger.info("::최초 로그인 페이지::");
+		//logger.info("::최초 로그인 페이지::");
 		return "login/login";
 	}
 
@@ -34,8 +34,8 @@ public class LoginController {
 	@PostMapping(value = "/login.do")
 	public ModelAndView loginAccess(HttpSession session, String id, String pw, boolean rememberMe,
 			HttpServletResponse response) {
-		logger.info("::최초 로그인 실행::");
-		logger.info("id : {}/ pw : {}", id, pw);
+		//logger.info("::최초 로그인 실행::");
+		//logger.info("id : {}/ pw : {}", id, pw);
 		ModelAndView mav = loginService.loginAccess(session, id, pw);
 
 		if (mav.getViewName().startsWith("redirect:")) {
@@ -57,7 +57,7 @@ public class LoginController {
 	// 로그아웃
 	@GetMapping(value = "/logout.do")
 	public String logoutAccess(HttpSession session, Model model, HttpServletResponse response) {
-		logger.info("::로그아웃 실행::");
+		//logger.info("::로그아웃 실행::");
 		session.removeAttribute("user_code");
 		session.removeAttribute("user_name");
 		session.removeAttribute("class_name");
@@ -75,7 +75,7 @@ public class LoginController {
 	// ID찾기 페이지 이동
 	@GetMapping(value = "login/idFind.go")
 	public String idFind() {
-		logger.info("::아이디 찾기 페이지::");
+		//logger.info("::아이디 찾기 페이지::");
 		return "login/idFind";
 	}
 
@@ -83,13 +83,13 @@ public class LoginController {
 	//ID찾기 확인 페이지 
 	@PostMapping(value = "login/idFindResult.go")
 	public ModelAndView idFindResult(String name, String email) {
-		logger.info("::아이디 찾기 실행::");
-		logger.info("user_name :{}", name);
-		logger.info("user_email :{}", email);
+		//logger.info("::아이디 찾기 실행::");
+		//logger.info("user_name :{}", name);
+		//logger.info("user_email :{}", email);
 		
 		ModelAndView mav = new ModelAndView();
 		String userId = loginService.idFindResult(name, email);
-		logger.info("user_Idddd : {} ",userId);
+		//logger.info("user_Idddd : {} ",userId);
 		
 		if (userId != null) {
 			mav.addObject("userId", userId);

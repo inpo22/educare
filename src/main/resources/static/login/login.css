@@ -1,0 +1,139 @@
+@charset "UTF-8";
+
+body {
+	display: flex !important;
+	justify-content: center !important;
+	align-items: center !important;
+	height: 100vh !important;
+	background-color: #f5f5f5 !important;
+}
+
+.container {
+	width: 600px !important;
+	padding: 20px !important;
+	background-color: white !important;
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1) !important;
+	border-radius: 10px !important;
+}
+
+.text-align-center {
+	text-align: center !important;
+}
+
+.vertical-align-middle {
+	vertical-align: middle;
+}
+
+.result-container {
+	width: 400px;
+	padding: 20px;
+	background-color: white;
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+	border-radius: 10px;
+	text-align: center;
+}
+
+.result-container h3, .result-container p {
+	margin: 0;
+	padding: 10px 0;
+}
+
+.result-container p.id {
+	font-size: 1.5rem;
+	font-weight: bold;
+	background-color: #e9ecef;
+	padding: 10px;
+	border-radius: 5px;
+	border: 1px solid #ced4da;
+}
+
+.login-container {
+	width: 400px;
+	padding: 20px;
+	background-color: white;
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+	border-radius: 10px;
+}
+
+.login-container img {
+	display: block;
+	margin: 0 auto 20px;
+}
+
+.login-container .form-group {
+	position: relative;
+}
+
+.login-container .form-group i {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+}
+
+.login-container input {
+	padding-left: 30px;
+}
+
+.login-container .btn-primary {
+	width: 100%;
+	background-color: #007bff;
+	border: none;
+}
+
+.login-container .forgot-links {
+	display: flex;
+	justify-content: space-between;
+}
+
+.login-container .alert {
+	display: none;
+}
+
+#findIdLink, #findPwLink {
+	font-size: 14px;
+	color: #007bff;
+	text-decoration: none;
+	margin-left: 270px;
+}
+
+#findIdLink:hover, #findPwLink:hover {
+	text-decoration: underline;
+}
+
+#LoginButton {
+	width: 100%;
+	height: 50px;
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	padding-top: 10px;
+	line-height: 1.2;
+	margin-top: 10px;
+}
+
+.btn-group {
+	display: flex;
+	justify-content: space-around;
+	width: 100%;
+	margin-top: 20px;
+}
+
+.btn-group .btn {
+	flex: 1;
+	border-radius: 8px !important;
+	margin: 5px;
+	padding: 12px;
+	flex-basis: 100%;
+	max-width: 200px;
+}
+
+video {
+	-o-object-fit: cover;
+	object-fit: cover;
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	top: 0;
+	left: 0;
+	z-index: -1;
+}
