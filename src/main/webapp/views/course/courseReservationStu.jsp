@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
@@ -36,7 +37,7 @@
 	<!-- Start #main -->
 	<main id="main" class="main">
 		<div class="pagetitle">
-			<h1>MY CLASS CALENDAR</h1>
+			<h1><a href="/scheduleStu.go" class="title-cate" >MY CLASS CALENDAR</a></h1>
 		</div>
 		<!-- End Page Title -->
 		<div id="courseInfo" class="shadow-sm"> :: ${sessionScope.user_name}의 수강 목록 ::</div> 
