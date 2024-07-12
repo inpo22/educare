@@ -24,6 +24,9 @@ body {
 h1{
 	margin-top: 10px;
 }
+a{
+	color:black;
+}
 #photo-preview{
 	display: none;
 	width : 250px;

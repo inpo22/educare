@@ -32,6 +32,7 @@
 }
 #search_btn, #reset_btn {
 	margin: 7px 5px;
+	height:40px;
 }
 .input-group {
 	width: 100%;
@@ -51,7 +52,7 @@
 	}
 }
 .bi.bi-arrow-clockwise{
-	font-size: 24px;
+	font-size: 20px;
 }
 </style>
 </head>
@@ -64,7 +65,7 @@
 	<main id="main" class="main">
 		<div id="backBoard">
 			<div class="pagetitle">
-				<h1>퇴사자 목록</h1>
+				<h1><a href="/emp/list.go">퇴사자 목록</a></h1>
 			</div>
 			<!-- End Page Title -->
 			<br/>
@@ -73,7 +74,7 @@
 			
 			<div class="row">
 				<div class="d-flex">
-					<button id="empList_btn" type="button" class="btn btn-dark">사원 목록</button>  
+					<button id="empList_btn" type="button" class="btn btn-secondary">사원 목록</button>  
 				</div>
 			</div>
 

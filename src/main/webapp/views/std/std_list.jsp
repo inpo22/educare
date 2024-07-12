@@ -22,25 +22,33 @@
 @media (min-width: 768px) {
 	#searchbox {
 		width: 250px;
+		height:40px;
 	}
 	#date {
 		width: auto;
+		height:40px;
 	}
 	#type,#reg_btn {
 		width: 100px;
+		height:40px;
 	}
 	.input-group.date {
 		width: auto;
+		height:40px;
+		
 	}
 }
-#search_btn{
+#search_btn, #reset_btn{
 	margin-right: 15px;
+	height:40px;
 }
 #inputdate{
 	margin: 0 3px;
+	height:40px;
 }
 #searchdate_btn{
 	margin-right: 10px;
+	height:40px;
 }
 
 </style>
@@ -54,7 +62,7 @@
 	<main id="main" class="main">
 		<div id="backBoard">
 			<div class="pagetitle">
-				<h1>학생 목록</h1>
+				<h1><a href="/std/list.go">학생 목록</a></h1>
 			</div>
 			<!-- End Page Title -->
 			
@@ -85,7 +93,7 @@
 				  <button id="reset_btn" class="btn btn-outline-dark" type="button"><i class="bi bi-arrow-clockwise"></i></button>
 	          	  
 	          	  <div id="reg" class="ms-auto">
-				  	<button id="stdReg_btn" type="button" class="btn btn-dark">+ 학생등록</button>  																  
+				  	<button id="stdReg_btn" type="button" class="btn btn-primary">+ 학생등록</button>  																  
 				  </div>	          	
 	          </div>  
 	      	</div>
