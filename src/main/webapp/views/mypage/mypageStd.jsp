@@ -101,7 +101,7 @@
 	<main id="main" class="main">
 		<div id="backBoard">
 			<div class="pagetitle">
-				<h1>마이페이지</h1>
+				<h1><a href="/mypage.go">마이페이지</a></h1>
 			</div>
 			<!-- End Page Title -->
 			
@@ -169,7 +169,7 @@
 			    <div class="col-md-12 d-flex justify-content-end">
 			    	<form action="/mypageStd/update.go" method='get'>
 			    		<input type="hidden" name="user_code" value="${mypageDto.user_code}">
-			    		<button id="edit_btn" class="btn btn-dark" type="submit">수정</button>
+			    		<button id="edit_btn" class="btn btn-secondary" type="submit">수정</button>
 			    	</form>			    
 				</div>
 				
