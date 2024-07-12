@@ -158,10 +158,10 @@
 				    </div>
 				</div>
 			    <div class="col-md-12 d-flex justify-content-end">
-			    	<button id="stdList_go" class="btn btn-dark" type="button">학생리스트</button>
+			    	<button id="stdList_go" class="btn btn-secondary" type="button">학생리스트</button>
 			    	<form action="/std/edit.go" method='get'>
 			    		<input type="hidden" name="user_code" value="${stdDto.user_code}">
-			    		<button id="edit_btn" class="btn btn-dark" type="submit">수정</button>
+			    		<button id="edit_btn" class="btn btn-secondary" type="submit">수정</button>
 			    	</form>			    
 				</div>
 
@@ -188,7 +188,7 @@
                 	<div class="row justify-content-end">
 					    <div class="col-auto">
 					        <div class="d-flex">
-					            <button id="courseReg_btn" type="button" class="btn btn-dark me-2" onclick="openModal()">+강의등록</button>
+					            <button id="courseReg_btn" type="button" class="btn btn-primary me-2" onclick="openModal()">+강의등록</button>
 					            <input id="Csearchbox" type="text" class="form-control" placeholder="강의명을 입력하세요." aria-label="Recipient's course" aria-describedby="button-addon2">
 					            <button id="Csearch_btn" class="btn btn-outline-dark" type="button">검색</button>
 					        	<button id="Creset_btn" class="btn btn-outline-dark" type="button"><i class="bi bi-arrow-clockwise"></i></button>
