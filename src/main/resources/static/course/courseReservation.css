@@ -1,5 +1,9 @@
 @charset "UTF-8";
 
+.title-cate{
+	color:black !important;
+}
+
 .toastui-calendar-template-timegridDisplayPrimaryTime{
 	font-size: 16px;
 }
@@ -136,3 +140,45 @@ textarea {
 .colorInfo:hover{
 	pointer-events : none;
 }
+
+.color-a101{
+	border: 0; 
+	border-radius: 7px; 
+	background-color: #db7e6a;
+}
+
+.color-a102{
+	border: 0; 
+	border-radius: 7px; 
+	margin-left:10px; 
+	background-color: #faab23;
+}
+.color-b101{
+	border: 0; 
+	border-radius: 7px; 
+	margin-left:10px; 
+	background-color: #87b27c;
+}
+
+.color-b102{
+	border: 0; 
+	border-radius: 7px; 
+	margin-left:10px; 
+	background-color: #7db0c7;
+}
+
+.color-c101{
+	border: 0; 
+	border-radius: 7px; 
+	margin-left:10px; 
+	background-color: #7774b6;
+}
+
+.color-c102{
+	border: 0; 
+	border-radius: 7px; 
+	margin-left:10px; 
+	background-color: #b789a9;
+}
+
+

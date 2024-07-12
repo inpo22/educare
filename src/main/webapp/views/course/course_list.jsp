@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
@@ -35,7 +36,7 @@
 		<!-- End Page Title -->
 		<div class="row">
 			<div class="col-2 rounded-5 p-3">
-				<button class="btn btn-dark border-secondary pln_btn w-100" data-bs-toggle="modal" id="write_btn" onclick="course_wirte()">+ 강의 등록</button>
+				<button class="btn btn-primary border-secondary pln_btn w-100" data-bs-toggle="modal" id="write_btn" onclick="course_wirte()">+ 강의 등록</button>
 				<!-- End Schedule Button -->
 				<div class="input-group mt-4">
 					<div class="form-check form-switch" id="showYn">

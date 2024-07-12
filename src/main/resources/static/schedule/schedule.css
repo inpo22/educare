@@ -1,5 +1,9 @@
 @charset "UTF-8";
 
+.title-cate{
+	color:black !important;
+}
+
 /* 일정 추가 버튼 START*/
 .pln_btn {
 	height: 54px !important;
@@ -7,7 +11,7 @@
 
 /* 일정 필터 버튼 START*/
 .card-header {
-	font-weight: bold;
+	font-weight: bold !important;
 }
 
 .card-body {

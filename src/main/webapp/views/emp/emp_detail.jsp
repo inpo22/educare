@@ -135,7 +135,7 @@ input[readonly] {
     <main id="main" class="main">
         <div id="backBoard">
             <div class="pagetitle">
-                <h1>사원 상세정보</h1>
+                <h1><a href="/emp/list.go">사원 상세정보</a></h1>
             </div>
             <!-- End Page Title -->
             <br>
@@ -234,10 +234,10 @@ input[readonly] {
             <div class="row mt-3">
             	<div class="col-md-6"></div>
 	            <div class="col-md-6 d-flex justify-content-end">
-	                <button id="empList_go" class="btn btn-dark" type="button">사원리스트</button>
+	                <button id="empList_go" class="btn btn-secondary" type="button">사원리스트</button>
 	            	<form action="/emp/edit.go" method="get">
 	            		<input type="hidden" name="user_code" value="${empDto.user_code}">
-	            		<button id="edit_go" class="btn btn-dark" type="submit">수정하기</button>
+	            		<button id="edit_go" class="btn btn-secondary" type="submit">수정하기</button>
 	            	</form>
 	            </div>
 	        </div>

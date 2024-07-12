@@ -21,15 +21,18 @@
 <style>
 #type,#del{
 	width: 100px;
+	height:40px;
 	margin : 7px 0 7px 10px;
 }
 #searchbox,#date,#date{
 	width: 250px;
+	height:40px;
 	margin : 7px 0;
 }
 #search_btn,#reset_btn
 {
 	margin : 7px 5px;
+	height:40px;
 }	
 .chk,#chkAll{
 	margin:3px 0;
@@ -48,7 +51,7 @@
 	margin-right: 10px;
 }
 .bi.bi-arrow-clockwise{
-	font-size: 24px;
+	font-size: 20px;
 }
 </style>
 </head>
@@ -61,7 +64,7 @@
 	<main id="main" class="main">
 		<div id="backBoard"><br/>
 			<div class="pagetitle">
-				<h1>사원 목록</h1>
+				<h1><a href="/emp/list.go">사원 목록</a></h1>
 			</div>
 			
 			<!-- End Page Title -->
@@ -74,8 +77,8 @@
 			
 			<div class="row">          
 	          <div class="d-flex">
-	              <button id="empReg_btn" type="button" class="btn btn-dark me-2">+사원등록</button>
-	              <button id="quitList_btn" type="button" class="btn btn-dark">퇴사자목록</button>  
+	              <button id="empReg_btn" type="button" class="btn btn-primary me-2">+사원등록</button>
+	              <button id="quitList_btn" type="button" class="btn btn-secondary">퇴사자목록</button>  
 	          </div>
 	      	</div>
 	      	
@@ -103,7 +106,7 @@
 				  <button id="reset_btn" class="btn btn-outline-dark" type="button"><i class="bi bi-arrow-clockwise"></i></button>
 				  
 				  <div id="del" class="ms-auto">
-				  	<button id="quit_btn" type="button" class="btn btn-dark" onclick="quit()">퇴사처리</button>																  
+				  	<button id="quit_btn" type="button" class="btn btn-outline-danger" onclick="quit()">퇴사처리</button>																  
 				  </div>
 	          </div>  
 	      	</div>

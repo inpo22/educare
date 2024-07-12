@@ -77,7 +77,7 @@ input:focus, select:focus {
 	<main id="main" class="main">
 		<div id="backBoard">
 			<div class="pagetitle">
-			<h1>개인 정보 수정</h1>
+			<h1><a href="/mypage.go">개인 정보 수정</a></h1>
 		</div>
 		<!-- End Page Title -->
 		
@@ -151,8 +151,8 @@ input:focus, select:focus {
 		         <div class="row mt-3">
 	            	<div class="col-md-6"></div>
 		            <div class="col-md-6 d-flex justify-content-end">
-		           		<button id="mypageStd_go" class="btn btn-dark" type="button" onclick="detail('${mypageDto.user_code}')">취소</button>
-		            	<button id="stdUpdate_fn" class="btn btn-dark" type="button" onclick="edit()">수정완료</button>
+		           		<button id="mypageStd_go" class="btn btn-secondary" type="button" onclick="detail('${mypageDto.user_code}')">취소</button>
+		            	<button id="stdUpdate_fn" class="btn btn-primary" type="button" onclick="edit()">수정완료</button>
 		            </div>
 		        </div>
 	        </form>
