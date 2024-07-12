@@ -191,6 +191,8 @@
 				} else if(diffMin > 0){
 					noti_time = diffMin+' 분 전';
 					//console.log('min:',noti_time);
+				} else if(diffMin < 1){
+					noti_time = '방금 전';
 				}
 				// 알림 작성자 표시
 				if(data.from_user_code == 'system'){
