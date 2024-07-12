@@ -92,7 +92,7 @@
 		<div id="backBoard">
 			<br/>
 			<div class="pagetitle">
-				<h1 id="vacaTitle">연차 내역</h1>
+				<h1 id="vacaTitle"><a href="/vacaHistory.go" style="color:black;">연차 내역</a></h1>
 			</div>
 			<br/>
 			<div class="subTitle"><h5>남은 연차</h5></div>

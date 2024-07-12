@@ -44,10 +44,6 @@
     margin-top: 20px;
 }
 
-#cancleBtn {
-	background-color: gray;
-	border-color: gray;
-}
 
 #attachFile {
 		display: none;
@@ -95,7 +91,7 @@
 	<main id="main" class="main">
 		<div id="backBoard">
 			<div class="pagetitle">
-				<h1 id="BoardTitle">전사 공지글 작성</h1>
+				<h1 id="BoardTitle"><a href="/allBoard/list.go" style="color:black;">전사 공지글 작성</a></h1>
 			</div>
 			<br/>
 			<div class="form-check form-switch" id="fixedYn">
@@ -124,7 +120,7 @@
 				</table>
 				
 				<div class="buttonCon">
-					<input type="button" id="cancleBtn" value="작성취소" class="btn btn-primary" onclick="writeCancle()"/>
+					<input type="button" id="cancleBtn" value="작성취소" class="btn btn-secondary" onclick="writeCancle()"/>
 					<input type="button" id="finishBtn" value="작성완료" class="btn btn-primary" onclick="writeSubmit()"/>
 				</div>
 				<input type="hidden" name="contents" id="content"/>

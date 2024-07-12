@@ -54,13 +54,9 @@
 	
 }
 
-.write{
+#write{
 	float:right;
 	margin-right: 20px;
-	border:none;
-	border-radius: 10px;
-	width:80px;
-	height: 30px;
 }
 
 .boardTableTr:hover{
@@ -77,7 +73,7 @@
 		<div id="backBoard">
 			<br/>
 			<div class="pagetitle">
-				<h1 id="BoardTitle">부서 공지사항</h1>
+				<h1 id="BoardTitle" style="color:black;">부서 공지사항</h1>
 			</div>
 			<div class="selectBox">
 				<div class="teamSelectContainer" >
@@ -97,7 +93,7 @@
 						<option value="contents">내용</option>
 					</select>
 					<input type="text" id="searchWord" placeholder="검색단어입력" maxlength="30"/>
-					<input type="button" id="searchBtn" value="검색" class="btn btn-primary"/>
+					<input type="button" id="searchBtn" value="검색" class="btn btn-secondary"/>
 				</div>
 			</div>
 			<br/><br/>
@@ -126,7 +122,7 @@
 				  
 				</tbody>
 			</table>
-			<button class="write" id="write">글쓰기</button>
+			<button class="btn btn-primary" id="write">글쓰기</button>
 			<ul class="pagination d-flex justify-content-center" id="pagination"></ul>
 			  
 		</div>

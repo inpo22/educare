@@ -40,17 +40,18 @@
     justify-content: center; /* 자식 요소들을 가로축 기준으로 가운데 정렬 */
     width: 100%;
 }
-.write{
+#write{
 	float:right;
 	margin-right: 20px;
-	border:none;
-	border-radius: 10px;
-	width:80px;
-	height: 30px;
+
 }
 
 .boardTableTr:hover{
 	cursor: pointer;
+}
+
+#boardTitle: {
+	color: black;
 }
 </style>
 </head>
@@ -74,7 +75,7 @@
 					<option value="contents">내용</option>
 				</select>
 				<input type="text" id="searchWord" placeholder="검색단어입력" maxlength="30"/>
-				<input type="button" id="searchBtn" value="검색" class="btn btn-primary"/>
+				<input type="button" id="searchBtn" value="검색" class="btn btn-secondary"/>
 			</div>
 			<br/><br/>
 			<table class="table">
@@ -99,7 +100,7 @@
 				</tbody>
 			</table>
 			<c:if test="${isPerm}">
-				<button class="write" onclick="location.href='/dataBoard/write.go'">글쓰기</button>
+				<button class="btn btn-primary" onclick="location.href='/dataBoard/write.go'" id="write">글쓰기</button>
 			</c:if>
 			<ul class="pagination d-flex justify-content-center" id="pagination"></ul>
 		</div>

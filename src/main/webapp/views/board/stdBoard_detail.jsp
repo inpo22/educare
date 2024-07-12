@@ -34,16 +34,6 @@ td {
     margin-top: 20px;
 }
 
-#backBtn {
-	background-color: lightgray;
-	border-color: lightgray;
-}
-
-#deleteBtn {
-	background-color: gray;
-	border-color: gray;
-}
-
 #viewer{
 	min-height: 400px;
 }
@@ -59,7 +49,7 @@ td {
 		<div id="backBoard">
 			<br/>	
 			<div class="pagetitle">
-				<h1 id="BoardTitle">학생 공지사항</h1>
+				<h1 id="BoardTitle" style="color:black;">학생 공지사항</h1>
 			</div>
 			<br/>
 			<table class="table">
@@ -108,10 +98,10 @@ td {
 			</table>
 			<br/><br/>
 			<div class="buttonCon">
-				<input type="button" id="backBtn" value="뒤로" class="btn btn-primary" onclick="BoardList()"/>
+				<input type="button" id="backBtn" value="뒤로" class="btn btn-secondary" onclick="BoardList()"/>
 				<c:if test="${isPerm}">
 					<input type="button" id="updateBtn" value="수정" class="btn btn-primary" onclick="BoardUpdate()"/>
-					<input type="button" id="deleteBtn" value="삭제" class="btn btn-primary" onclick="boardDel()"/>
+					<input type="button" id="deleteBtn" value="삭제" class="btn btn-danger" onclick="boardDel()"/>
 				</c:if>
 			</div>
 		</div>

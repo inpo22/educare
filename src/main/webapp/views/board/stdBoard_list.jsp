@@ -39,13 +39,10 @@
     justify-content: center; /* 자식 요소들을 가로축 기준으로 가운데 정렬 */
     width: 100%;
 }
-.write{
+
+#write{
 	float:right;
 	margin-right: 20px;
-	border:none;
-	border-radius: 10px;
-	width:80px;
-	height: 30px;
 }
 
 .boardTableTr:hover{
@@ -98,7 +95,7 @@
 				</tbody>
 			</table>
 			<c:if test="${isPerm}">
-				<button class="write" onclick="location.href='/stdBoard/write.go'">글쓰기</button>
+				<button class="btn btn-primary" onclick="location.href='/stdBoard/write.go'" id="write">글쓰기</button>
 			</c:if>
 			<ul class="pagination d-flex justify-content-center" id="pagination"></ul>
 		</div>
