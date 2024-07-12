@@ -36,7 +36,7 @@
 		<div class="display-flex">
 			<div id="left-section">
 				<div class="pagetitle">
-					<h1>메일</h1>
+					<h1><a href="/receivedMail/list.go">메일</a></h1>
 				</div>
 				<button class="btn btn-primary btn-newMail">메일 작성</button>
 				<br/><br/><br/>

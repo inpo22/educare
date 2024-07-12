@@ -38,4 +38,6 @@ public interface CourseDAO {
 
 	List<CourseDTO> getCourseSpaceList();
 
+	CourseDTO checkUserCodeInfo(String user_code);
+
 }

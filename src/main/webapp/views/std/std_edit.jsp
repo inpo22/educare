@@ -86,7 +86,7 @@ input[readonly] {
 	<main id="main" class="main">
 		<div id="backBoard">
 			<div class="pagetitle">
-				<h1>학생 정보 수정</h1>
+				<h1><a href="/std/list.go">학생 정보 수정</a></h1>
 			</div>
 			<!-- End Page Title -->
 			
@@ -157,8 +157,8 @@ input[readonly] {
 		         <div class="row mt-3">
 	            	<div class="col-md-6"></div>
 		            <div class="col-md-6 d-flex justify-content-end">
-		           		<button id="stdDetail_go" class="btn btn-dark" type="button" onclick="detail('${stdDto.user_code}')">취소</button>
-		            	<button id="stdDetail_fn" class="btn btn-dark" type="button" onclick="edit()">수정완료</button>
+		           		<button id="stdDetail_go" class="btn btn-secondary" type="button" onclick="detail('${stdDto.user_code}')">취소</button>
+		            	<button id="stdDetail_fn" class="btn btn-primary" type="button" onclick="edit()">수정완료</button>
 		            </div>
 		        </div>
 	        </form>

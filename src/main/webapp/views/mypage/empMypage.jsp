@@ -30,7 +30,7 @@
 
 	<main id="main" class="main">
 		<div class="pagetitle">
-			<h1>마이페이지</h1>
+			<h1><a href="/mypage.go">마이페이지</a></h1>
 		</div>
 		<!-- End Page Title -->
 

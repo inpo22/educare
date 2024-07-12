@@ -95,6 +95,7 @@ public class ScheduleUtil {
 					commuteDAO.autoCommute(user_code);
 					int type = commuteDAO.stateCheck(user_code);
 					commuteDAO.stateUpdate(user_code, type);
+
 				} else if (todayCommute != null && todayCommute.getEnd_time() == null) {
 					commuteDAO.autoLeaveWork(user_code);
 					int type = commuteDAO.stateCheck(user_code);

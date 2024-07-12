@@ -46,7 +46,7 @@
 		<div class="display-flex">
 			<div id="left-section">
 				<div class="pagetitle">
-					<h1>전자 결재</h1>
+					<h1><a href="/getApproval/list.go">전자 결재</a></h1>
 				</div>
 				<button class="btn btn-primary btn-newApproval">새 결재 작성</button>
 				<br/><br/><br/>

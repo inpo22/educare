@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!DOCTYPE html>
 <html>
-
 <head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -31,7 +31,7 @@
 
 	<main id="main" class="main">
 		<div class="pagetitle">
-			<h1>강의 관리 > 강의 등록</h1>
+			<h1><a href="/course/list.go" class="title-cate" >강의 관리</a> > 강의 등록</h1>
 		</div>
 		<!-- End Page Title -->
 
@@ -42,14 +42,14 @@
 						<div class="input-group input-group mb-3">
 							<span class="input-group-text" id="basic-addon1">사원번호</span> 
 							<input type="text" class="form-control" name="user_code" id="user_code" placeholder="강사의 사원번호를 입력해주세요.">
-							<button class="btn btn-outline-secondary user-code-btn" type="button" id="checkUserBtn" onclick="checkUserCode()" style="width: 27% !important;">사원여부확인</button>
+							<button class="btn btn-outline-secondary user-code-btn" type="button" id="checkUserBtn" onclick="checkUserCode()" style="width: 27% !important;">사원번호확인</button>
 						</div>
 						
 						<div class="input-group input-group mb-3">
 							<span class="input-group-text">강사명</span>
-							<input type="text" class="form-control readInfo" name="user_name" id="user_name" placeholder="사원체크성공시 강사명이 출력됩니다." readonly>
+							<input type="text" class="form-control readInfo" name="user_name" id="user_name" readonly>
 							<span class="input-group-text">소속부서</span> 
-							<input type="text" class="form-control readInfo" id="team_name"  name="team_name" placeholder="사원체크성공시 소속부서가 출력됩니다."  readonly>
+							<input type="text" class="form-control readInfo" id="team_name"  name="team_name" readonly>
 						</div>
 						
 						<div class="input-group input-group mb-3">
@@ -85,7 +85,7 @@
 					
 				</div>
 				<div id="editor"></div>
-					<button type="button" class="btn text-light bg-dark mt-2" id="submitButton">등록</button>
+					<button type="button" class="btn btn-primary mt-2" id="submitButton">등록</button>
 			</div>
 		</div>
 
@@ -124,8 +124,8 @@
 														<div class="day">토</div>
 													</div>
 													<div id="daysData" class="daysData"></div>
-														<small>* 오늘날짜는 ' <small class="todayBox">&nbsp &nbsp &nbsp</small> ' 로 표시됩니다.</small></br>
-														<small>* 예약누르신날짜는 ' <small class="miniBox">&nbsp &nbsp &nbsp</small> ' 로 표시됩니다.</small>
+														<small>* 오늘날짜는 ' <small class="todayBox">&nbsp; &nbsp; &nbsp;</small> ' 로 표시됩니다.</small></br>
+														<small>* 예약하신날짜는 ' <small class="miniBox">&nbsp; &nbsp; &nbsp;</small> ' 로 표시됩니다.</small>
 												</div>
 												<!--  캘린더 망치면 위에 부분까지 지우기  -->
 												
@@ -178,13 +178,13 @@
 					<div class="modal-footer">
 						<button type="button" class="btn btn-secondary" id="closeButton"
 							data-bs-dismiss="modal">취소</button>
-						<button type="button" class="btn text-light bg-dark"
+						<button type="button" class="btn btn-primary"
 							id="submitModalButton" onclick="submitButton()">등록</button>
-						<button type="button" class="btn btn-secondary" id="deleteButton"
+						<button type="button" class="btn btn-danger" id="deleteButton"
 							onclick="sch_del()" style="display: none;">삭제</button>
-						<button type="button" class="btn text-light bg-dark"
+						<button type="button" class="btn btn-primary"
 							id="beforeUpdateButton" style="display: none;">수정</button>
-						<button type="button" class="btn text-light bg-dark"
+						<button type="button" class="btn btn-primary"
 							id="updateButton" style="display: none;">수정완료</button>
 					</div>
 				</div>
@@ -213,7 +213,6 @@ const editor = new toastui.Editor({
 	height : '500px',
 	initialEditType : 'wysiwyg',
 	hideModeSwitch : true,
-	initialValue : "** 이곳에 강의에 대한 상세 커리큘럼에 대해서 적어주세요.**"
 });
 editor.removeToolbarItem('code');
 editor.removeToolbarItem('codeblock');
@@ -523,6 +522,8 @@ function selectTimeBtnEvent() {
 	
 	$(document).on('change', '#select-space', function(event) {
 		 var selectDate =  $('#selectDate').val();
+		 $('#buttonContainer').html('');
+		 $('.day').removeClass('selectedDay');
 		 if($('#reserv-textarea').html() != ''){
 			if(confirm("강의실 변경시 선택하셨던 일정은 모두 삭제됩니다. 정말 변경하시겠습니까?")){
 				$('.reservation-item').remove();
@@ -532,7 +533,7 @@ function selectTimeBtnEvent() {
 				if($(this).val() == ''){
 					$('.time-btn').remove();
 				} else {
-				timeBtn(selectDate,selectedRoom);
+					timeBtn(selectDate,selectedRoom);
 				}
 			}else{
 				$(this).val(selectedRoom);
@@ -607,13 +608,22 @@ function submitButton(){
 	$('#reservationModal').modal('hide');
 }
 
+
 function checkUserCode(){
 	var userCode = $('#user_code').val();
+	
+	if(userCode == ''){
+		alert('사원번호를입력해주세요');
+		return false;
+	}
 	
 	if($('#checkUserBtn').html() === '수정'){
 		$('#user_code').val('');
 		$('#user_code').attr("readonly",false);
-		$('#checkUserBtn').html('사원여부확인');
+		$('#checkUserBtn').html('사원번호확인');
+		$('#user_code').removeClass('readInfo');
+		$('#user_name').val('');
+		$('#team_name').val('');
 		return false;
 	}
 	
@@ -624,12 +634,14 @@ function checkUserCode(){
 		dataType:'JSON',
 		data:{ user_code: userCode },
 		success:function(data) {
-			console.log(data.result);
 			if(data.result === "success" ){
 				alert('사원번호 확인완료 되었습니다.');
+				$('#user_code').addClass('readInfo');
 				$('#user_code').attr("readonly",true); 
 				$('#checkUserBtn').html('수정');
 				$('#checkUserBtn').addClass('removeUser');
+                $('#user_name').val(data.list.name);
+                $('#team_name').val(data.list.teamName);
 			}else{
 				alert('입력하신 사원번호는 없는번호이니 다시 입력해주세요.');
 			}
