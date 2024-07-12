@@ -40,6 +40,7 @@ public class CourseDTO {
 	private int pay_state;
 	private Date min_start;
 	private Date max_end;
+	private String team_name;
 	
 	public int getCourse_no() {
 		return course_no;
@@ -157,5 +158,11 @@ public class CourseDTO {
 	}
 	public void setMax_end(Date max_end) {
 		this.max_end = max_end;
+	}
+	public String getTeam_name() {
+		return team_name;
+	}
+	public void setTeam_name(String team_name) {
+		this.team_name = team_name;
 	}
 }

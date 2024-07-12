@@ -1,12 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-<title>강의실 관리 - 에듀케어</title>
+<title>강의실 현황 - 에듀케어</title>
 <meta content="" name="description">
 <meta content="" name="keywords">
 
@@ -35,21 +36,27 @@
 	<!-- Start #main -->
 	<main id="main" class="main">
 		<div class="pagetitle">
-			<h1>강의실 관리</h1>
+			<h1><a href="/courseReservation.go" class="title-cate" >강의실 현황</a></h1>
 		</div>
 		<!-- End Page Title -->
 		
 		<div class="row-sm-4 mx-auto mt-2">
 			<div class="mb-2 colorInfoSelectDiv text-end">
-				<button type="button" class="colorInfo" id="A102" data-type="A102" style="border: 0; border-radius: 7px; background-color: #db7e6a;">A101</button>
-				<button type="button" class="colorInfo" id="A102" data-type="A102" style="border: 0; border-radius: 7px; margin-left:10px; background-color: #faab23;">A102</button>
-				<button type="button" class="colorInfo" id="B101" data-type="B101" style="border: 0; border-radius: 7px; margin-left:10px; background-color: #87b27c;">B101</button>
-				<button type="button" class="colorInfo" id="B102" data-type="B102" style="border: 0; border-radius: 7px; margin-left:10px; background-color: #7db0c7;">B102</button>
-				<button type="button" class="colorInfo" id="C101" data-type="C101" style="border: 0; border-radius: 7px; margin-left:10px; background-color: #7774b6;">C101</button>
-				<button type="button" class="colorInfo" id="C102" data-type="C102" style="border: 0; border-radius: 7px; margin-left:10px; background-color: #b789a9;">C102</button>
+				<button type="button" class="colorInfo color-a101" id="A102" data-type="A102">A101</button>
+				<button type="button" class="colorInfo color-a102" id="A102" data-type="A102">A102</button>
+				<button type="button" class="colorInfo color-b101"  id="B101" data-type="B101">B101</button>
+				<button type="button" class="colorInfo color-b102" id="B102" data-type="B102">B102</button>
+				<button type="button" class="colorInfo color-c101" id="C101" data-type="C101">C101</button>
+				<button type="button" class="colorInfo color-c102" id="C102" data-type="C102">C102</button>
 			</div>
 			<select class="form-select form-select mb-3" id="selectCourse" aria-label="Large select example">
-				  <option value="all" selected>모든 강의실 예약현황</option>
+				<option value="all" selected>모든 강의실 예약현황</option>
+				<option value="A101">A101</option>
+				<option value="A102">A102</option>
+			   	<option value="B101">B101</option>
+			    <option value="B102">B102</option>
+			    <option value="C101">C101</option>
+			    <option value="C102">C102</option> 
 			</select>
 		</div>
 
@@ -229,7 +236,7 @@ function goPrevOrNext(result){
 	}
 }
 
-$.ajax({
+/* $.ajax({
   	url: '/course/getCourseSpaceList.ajax',
     type: 'POST',
     contentType: 'application/json',
@@ -246,7 +253,8 @@ $.ajax({
         console.log(error);
     }
 });
-
+ */
+ 
 $('#selectCourse').on('change',function(){
 	var eventType = $(this).val();
 	 var event = calendar.getEvent(eventType, eventType);
