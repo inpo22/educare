@@ -65,7 +65,7 @@ public class EmpController {
 	@ResponseBody
 	@PostMapping(value="/emp/overlay.do")
 	public Map<String, Object> overlay(String id){
-		logger.info("id ="+id);
+		//logger.info("id ="+id);
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("use", empService.overlay(id));
@@ -77,10 +77,10 @@ public class EmpController {
 	public String reg(MultipartFile photo ,Model model, @RequestParam Map<String, String> param) {
 		String page = "emp_reg";
 		String msg = "사원 등록에 실패했습니다.";
-		logger.info("param:"+param);
+		//logger.info("param:"+param);
 		
 		int row = empService.reg(photo, param);
-		logger.info("insert count:"+row);
+		//logger.info("insert count:"+row);
 		
 		if(row==1) {
 			page="redirect:/emp/list.go";
@@ -109,7 +109,7 @@ public class EmpController {
 	// 사원 상세정보 페이지 이동
 	@GetMapping(value="/emp/detail.go")
 	public String empDetail(@RequestParam("user_code") String user_code, Model model) {
-		logger.info("detail user_code="+user_code);
+		//logger.info("detail user_code="+user_code);
 		
 		EmpDTO empDTO = empService.empDetail(user_code);
 		model.addAttribute("empDto", empDTO);
@@ -120,7 +120,7 @@ public class EmpController {
 	// 사원 정보 수정 페이지 이동
 	@GetMapping(value="/emp/edit.go")
 	public String empEdit(@RequestParam("user_code") String user_code, Model model) {
-		logger.info("edit user_code="+user_code);
+		//logger.info("edit user_code="+user_code);
 		
 		EmpDTO empDTO = empService.empDetail(user_code);
 		model.addAttribute("empDto", empDTO);
@@ -133,10 +133,10 @@ public class EmpController {
 	public String empEdit(MultipartFile photo ,Model model, @RequestParam Map<String, String> param, @RequestParam("user_code") String user_code) {
 		String page = "emp_edit";
 		String msg = "정보수정에 실패했습니다.";
-		logger.info("param:"+param);
+		//logger.info("param:"+param);
 		
 		int row = empService.edit(photo, param,user_code);
-		logger.info("insert count:"+row);
+		//logger.info("insert count:"+row);
 		
 		if(row==1) {
 			page="redirect:/emp/detail.go?user_code="+user_code;
@@ -152,7 +152,7 @@ public class EmpController {
 	@ResponseBody
 	@PostMapping(value="/emp/quit.ajax")
 	public Map<String, Object> quitEmp(@RequestParam(value="quitList[]") List<String> quitList){
-		logger.info("quitList : {}", quitList);
+		//logger.info("quitList : {}", quitList);
 		
 		int cnt = empService.quitEmp(quitList);
 		Map<String, Object> map = new HashMap<String, Object>();
