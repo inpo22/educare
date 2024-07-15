@@ -161,7 +161,7 @@
 			    	<button id="stdList_go" class="btn btn-secondary" type="button">학생리스트</button>
 			    	<form action="/std/edit.go" method='get'>
 			    		<input type="hidden" name="user_code" value="${stdDto.user_code}">
-			    		<button id="edit_btn" class="btn btn-secondary" type="submit">수정</button>
+			    		<button id="edit_btn" class="btn btn-primary" type="submit">수정</button>
 			    	</form>			    
 				</div>
 
