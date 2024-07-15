@@ -207,19 +207,23 @@ function listCall(page, type, searchbox, startDate, endDate){
 // list 그리기
 function drawEmpList(empList){
 	var content = '';
-	console.log(empList);
+	//console.log(empList);
 	
-	for(data of empList){
-		content += '<tr>';
-		content += '<td><a href="/emp/detail.go?user_code='+ data.user_code +'">' + data.user_code + '</td>';
-		content += '<td>' + data.name + '</td>';
-		content += '<td>' + data.team_name + '</td>';
-		content += '<td>' + data.class_name + '</td>';
-		content += '<td>' + data.position_name + '</td>';
-		content += '<td>' + data.reg_date + '</td>';
-		content += '<td><input class="form-check-input chk" type="checkbox" value="' + data.user_code + '"></td>';
-		content += '</tr>';
-	}
+	if(empList.length == 0){
+		content = '<tr><td colspan ="7" class="no-emp">등록된 사원이 없습니다.</td></tr>';
+	}else{
+		for(data of empList){
+			content += '<tr>';
+			content += '<td><a href="/emp/detail.go?user_code='+ data.user_code +'">' + data.user_code + '</td>';
+			content += '<td>' + data.name + '</td>';
+			content += '<td>' + data.team_name + '</td>';
+			content += '<td>' + data.class_name + '</td>';
+			content += '<td>' + data.position_name + '</td>';
+			content += '<td>' + data.reg_date + '</td>';
+			content += '<td><input class="form-check-input chk" type="checkbox" value="' + data.user_code + '"></td>';
+			content += '</tr>';
+		}
+	}	
 	$('#empList').html(content);
 }
 

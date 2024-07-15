@@ -40,12 +40,12 @@ public class EmpController {
 	@ResponseBody
 	@PostMapping(value="/emp/list.ajax")
 	public Map<String, Object> empListCall(String page, String type, String searchbox, String startDate, String endDate){
-		logger.info("사원 리스트 요청");
-		logger.info("page : " + page);
-		logger.info("type : " + type);
-		logger.info("searchbox : " + searchbox);
-		logger.info("startDate : "+ startDate);
-		logger.info("endDate : "+ endDate);
+		//logger.info("사원 리스트 요청");
+		//logger.info("page : " + page);
+		//logger.info("type : " + type);
+		//logger.info("searchbox : " + searchbox);
+		//logger.info("startDate : "+ startDate);
+		//logger.info("endDate : "+ endDate);
 		
 		int currPage = Integer.parseInt(page);
 		int pagePerCnt = 10;
@@ -164,12 +164,12 @@ public class EmpController {
 	@ResponseBody
 	@PostMapping(value="/emp/quitList.ajax")
 	public Map<String, Object> quitListCall(String page, String dateType, String type, String searchbox, String startDate, String endDate){
-		logger.info("page: "+page);
-		logger.info("dateType: "+dateType);
-		logger.info("type: "+type);
-		logger.info("searchbox: "+searchbox);
-		logger.info("startDate: "+startDate);
-		logger.info("endDate: "+endDate);
+		//logger.info("page: "+page);
+		//logger.info("dateType: "+dateType);
+		//logger.info("type: "+type);
+		//logger.info("searchbox: "+searchbox);
+		//logger.info("startDate: "+startDate);
+		//logger.info("endDate: "+endDate);
 		
 		int currPage = Integer.parseInt(page);
 		int pagePerCnt = 10;

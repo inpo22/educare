@@ -37,11 +37,11 @@ public class StuController {
 	@ResponseBody
 	@PostMapping(value="/std/list.ajax")
 	public Map<String, Object> stdListCall(String page, String type, String searchbox, String startDate, String endDate){
-		logger.info("page: "+page);
-		logger.info("type: "+type);
-		logger.info("searchbox: "+searchbox);
-		logger.info("startDate: "+startDate);
-		logger.info("endDate: "+endDate);
+		//logger.info("page: "+page);
+		//logger.info("type: "+type);
+		//logger.info("searchbox: "+searchbox);
+		//logger.info("startDate: "+startDate);
+		//logger.info("endDate: "+endDate);
 		
 		int currPage = Integer.parseInt(page);
 		int pagePerCnt = 10;
@@ -61,7 +61,7 @@ public class StuController {
 	@ResponseBody
 	@PostMapping(value="/std/overlay.ajax")
 	public Map<String, Object> overlay(String id){
-		logger.info("id : "+id);
+		//logger.info("id : "+id);
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("use", stuService.overlay(id));
@@ -74,10 +74,10 @@ public class StuController {
 	public String reg(MultipartFile photo ,Model model, @RequestParam Map<String, String> param) {
 		String page = "emp_reg";
 		String msg = "사원 등록에 실패했습니다.";
-		logger.info("param:"+param);
+		//logger.info("param:"+param);
 		
         int row = stuService.reg(photo, param);
-		logger.info("insert count:"+row);
+		//logger.info("insert count:"+row);
 		
 		if(row==1) {
 			page="redirect:/std/list.go";
@@ -90,7 +90,7 @@ public class StuController {
 	// 학생 상세보기 페이지 이동
 	@GetMapping(value="/std/detail.go")
 	public String stdDetail(@RequestParam("user_code") String user_code, Model model) {
-		logger.info("detail user_code : "+user_code);
+		//logger.info("detail user_code : "+user_code);
 		
 		StuDTO stdDto = stuService.stuDetail(user_code);
 		model.addAttribute("stdDto", stdDto);
@@ -102,7 +102,7 @@ public class StuController {
 	@ResponseBody
 	@PostMapping(value="/std/course_modal.ajax")
 	public Map<String, Object> CouseModalList(){
-		logger.info("강의 선택 모달 리스트");
+		//logger.info("강의 선택 모달 리스트");
 		
 		Map<String, Object> map = stuService.courseModalList();
 		return map;
@@ -112,10 +112,10 @@ public class StuController {
 	@PostMapping(value="/std/course_reg.do")
 	public String courseReg(@RequestParam Map<String, String> param, RedirectAttributes reAttr, @RequestParam("user_code") String user_code) {
 		String msg = "강의등록 실패";
-		logger.info("param:"+param);
+		//logger.info("param:"+param);
 		
 		int row = stuService.courseReg(param, user_code);
-		logger.info("insert count : "+row);
+		//logger.info("insert count : "+row);
 		
 		if(row == 1) {
 			msg = "강의등록 성공";	
@@ -131,10 +131,10 @@ public class StuController {
 	@ResponseBody
 	@PostMapping(value="/std/detail_course.ajax")
 	public Map<String, Object> courseListCall(@RequestParam("user_code") String user_code, String page, String Csearchbox){
-		logger.info("수강이력 요청");
-		logger.info("page : " + page);
-		logger.info("Csearchbox : " + Csearchbox);
-		logger.info("user_code : " + user_code);
+		//logger.info("수강이력 요청");
+		//logger.info("page : " + page);
+		//logger.info("Csearchbox : " + Csearchbox);
+		//logger.info("user_code : " + user_code);
 		
 		int currPage = Integer.parseInt(page);
 		int pagePerCnt = 10;
@@ -148,10 +148,10 @@ public class StuController {
 	@ResponseBody
 	@PostMapping(value="/std/detail/attd.ajax")
 	public Map<String, Object> attdListCall(@RequestParam("user_code") String user_code, String page, String Asearchbox){
-		logger.info("출석현황 요청");
-		logger.info("page : " + page);
-		logger.info("Asearchbox : " + Asearchbox);
-		logger.info("user_code : " + user_code);
+		//logger.info("출석현황 요청");
+		//logger.info("page : " + page);
+		//logger.info("Asearchbox : " + Asearchbox);
+		//logger.info("user_code : " + user_code);
 		
 		int currPage = Integer.parseInt(page);
 		int pagePerCnt = 10;
@@ -165,10 +165,10 @@ public class StuController {
 	@ResponseBody
 	@PostMapping(value="/std/detail_pay.ajax")
 	public Map<String, Object> payListCall(@RequestParam("user_code") String user_code, String page, String Psearchbox){
-		logger.info("결제내역 요청");
-		logger.info("page : " + page);
-		logger.info("Psearchbox : " + Psearchbox);
-		logger.info("user_code : " + user_code);
+		//logger.info("결제내역 요청");
+		//logger.info("page : " + page);
+		//logger.info("Psearchbox : " + Psearchbox);
+		//logger.info("user_code : " + user_code);
 		
 		int currPage = Integer.parseInt(page);
 		int pagePerCnt = 10;
@@ -182,7 +182,7 @@ public class StuController {
 	// 학생 정보 수정 페이지 이동
 	@GetMapping(value="/std/edit.go")
 	public String stdEdit(@RequestParam("user_code") String user_code, Model model) {
-		logger.info("edit user_code : "+user_code);
+		//logger.info("edit user_code : "+user_code);
 		
 		StuDTO stdDto = stuService.stuDetail(user_code);
 		model.addAttribute("stdDto", stdDto);
@@ -195,10 +195,10 @@ public class StuController {
 	public String stdEditDo(Model model, @RequestParam Map<String, String> param, @RequestParam("user_code") String user_code) {
 		String page = "std_edit";
 		String msg = "정보수정에 실패했습니다.";
-		logger.info("param : "+param);
+		//logger.info("param : "+param);
 		
 		int row = stuService.edit(param, user_code);
-		logger.info("insert count : "+row);
+		//logger.info("insert count : "+row);
 		
 		if(row == 1) {
 			page="redirect:/std/detail.go?user_code="+user_code;
@@ -211,15 +211,15 @@ public class StuController {
 	// 출석 처리
 	@GetMapping(value="/std/attd.do")
 	public String attd(RedirectAttributes rAttr ,@RequestParam("course_name") String course_name, @RequestParam("user_code") String user_code, @RequestParam("att_date") String att_date) {
-		logger.info("출석");
-		logger.info("course_name: " + course_name);
-	    logger.info("user_code: " + user_code);
-	    logger.info("att_date: " + att_date);
-	    
+		//logger.info("출석");
+		//logger.info("course_name: " + course_name);
+	    //logger.info("user_code: " + user_code);
+	    //logger.info("att_date: " + att_date);
+	     
 		String msg = "다시 시도해주세요.";
 		
 		int row = stuService.attd(course_name, user_code,att_date);
-		logger.info("insert count:"+row);
+		//logger.info("insert count:"+row);
 		
 		if(row == 1) {
 			msg = "출석완료";
@@ -232,15 +232,15 @@ public class StuController {
 	// 결석 처리
 	@GetMapping(value="/std/absent.do")
 	public String absent(RedirectAttributes rAttr ,@RequestParam("course_name") String course_name, @RequestParam("user_code") String user_code, @RequestParam("att_date") String att_date) {
-		logger.info("결석");
-		logger.info("course_name: " + course_name);
-	    logger.info("user_code: " + user_code);
-	    logger.info("att_date: " + att_date);
+		//logger.info("결석");
+		//logger.info("course_name: " + course_name);
+	    //logger.info("user_code: " + user_code);
+	    //logger.info("att_date: " + att_date);
 	    
 		String msg = "다시 시도해주세요.";
 		
 		int row = stuService.absent(course_name, user_code, att_date);
-		logger.info("insert count:"+row);
+		//logger.info("insert count:"+row);
 		
 		if(row == 1) {
 			msg = "결석처리 완료";
@@ -254,7 +254,7 @@ public class StuController {
 	@ResponseBody
 	@GetMapping(value="/std/attRate.ajax")
 	public String attdRate(@RequestParam("user_code") String user_code) {
-		logger.info("user_code:"+user_code);
+		//logger.info("user_code:"+user_code);
 		
 		String attdRate = stuService.attRate(user_code);
 		return attdRate;

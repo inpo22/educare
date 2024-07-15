@@ -97,9 +97,9 @@ public class MypageController {
 	@ResponseBody
 	@PostMapping(value="/mypage/std_detail_course.ajax")
 	public Map<String, Object> courseListCall(@RequestParam("user_code") String user_code, String page, String Csearchbox){
-		logger.info("수강이력 요청 - 학생 마이페이지");
-		logger.info("page : "+page);
-		logger.info("Csearchbox : "+Csearchbox);
+		//logger.info("수강이력 요청 - 학생 마이페이지");
+		//logger.info("page : "+page);
+		//logger.info("Csearchbox : "+Csearchbox);
 		
 		int currPage = Integer.parseInt(page);
 		int pagePerCnt = 10;
@@ -131,9 +131,9 @@ public class MypageController {
 	@ResponseBody
 	@PostMapping(value="/mypage/std_detail_attd.ajax")
 	public Map<String, Object> attdListCall(@RequestParam("user_code") String user_code, String page, String Asearchbox){
-		logger.info("출석현황 요청 - 학생마이페이지");
-		logger.info("page : " + page);
-		logger.info("Asearchbox : " + Asearchbox);
+		//logger.info("출석현황 요청 - 학생마이페이지");
+		//logger.info("page : " + page);
+		//logger.info("Asearchbox : " + Asearchbox);
 		
 		int currPage = Integer.parseInt(page);
 		int pagePerCnt = 10;
@@ -147,9 +147,9 @@ public class MypageController {
 	@ResponseBody
 	@PostMapping(value="/mypage/std_detail_pay.ajax")
 	public Map<String, Object> payListCall(@RequestParam("user_code") String user_code, String page, String Psearchbox){
-		logger.info("결제내역요청-학생마이페이지");
-		logger.info("page : " + page);
-		logger.info("Psearchbox : " + Psearchbox);
+		//logger.info("결제내역요청-학생마이페이지");
+		//logger.info("page : " + page);
+		//logger.info("Psearchbox : " + Psearchbox);
 		
 		int currPage = Integer.parseInt(page);
 		int pagePerCnt = 10;

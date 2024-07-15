@@ -237,7 +237,7 @@ input[readonly] {
 	                <button id="empList_go" class="btn btn-secondary" type="button">사원리스트</button>
 	            	<form action="/emp/edit.go" method="get">
 	            		<input type="hidden" name="user_code" value="${empDto.user_code}">
-	            		<button id="edit_go" class="btn btn-secondary" type="submit">수정하기</button>
+	            		<button id="edit_go" class="btn btn-primary" type="submit">수정하기</button>
 	            	</form>
 	            </div>
 	        </div>
