@@ -15,6 +15,18 @@
 	height: 450px;
 }
 
+.tui-tree-text {
+    overflow: hidden;
+    position: relative;
+    display: block;
+    padding: 5px 0;
+    font-size: 14px;
+    font-weight: 400;
+    text-overflow: ellipsis;
+    color: #777;
+    zoom: 1;
+}
+
 .tui-tree-opened .bi {
   background-position: -32px 0px;
 }
