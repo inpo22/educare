@@ -26,8 +26,8 @@ public class CourseService {
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<CourseDTO> list = courseDAO.courseList(start, pagePerCnt, searchFilter, searchContent, showCourse);
-		logger.info("list : {}", list);
-		logger.info("list.size : "+list.size());
+		//logger.info("list : {}", list);
+		//logger.info("list.size : "+list.size());
 		map.put("list",list);
 		map.put("totalPage",courseDAO.courseListPageCnt(pagePerCnt, searchFilter, searchContent, showCourse));
 		return map;
@@ -59,8 +59,8 @@ public class CourseService {
 					Date end_time = courseDTO.getEnd_time_array().get(i);
 					courseDAO.reservationCourseWrite(course_no, course_space, start_time, end_time);
 					
-					logger.info("start_time : {}", start_time);
-					logger.info("end_time : {}", end_time);
+					//logger.info("start_time : {}", start_time);
+					//logger.info("end_time : {}", end_time);
 				}
 			}
 			return true;
@@ -89,7 +89,7 @@ public class CourseService {
 	
 	
 	public List<CourseDTO> courseDetail(int course_no) {
-		logger.info("##### course courseDetail service IN #####");
+		//logger.info("##### course courseDetail service IN #####");
 		
 		List<CourseDTO> courseList = courseDAO.courseDetail(course_no);
 		
@@ -98,7 +98,7 @@ public class CourseService {
 
 	public int courseDelete(int course_no) {
 		int row = courseDAO.courseReservationDelete(course_no);
-		logger.info("courseDelete >> " + row);
+		//logger.info("courseDelete >> " + row);
 		if( row > 0) {
 			courseDAO.courseHide(course_no);
 			logger.info("courseHide >> " + course_no);

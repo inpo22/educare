@@ -133,11 +133,11 @@ function cancelCourseUpdate(){
 function updateCourseSubmit(){
 	var course_no = '${courseDTO[0].course_no}';
 	var courseName = $('#course_name').val();
-	console.log("course_name >> "+ course_name);
+	//console.log("course_name >> "+ course_name);
 	var editorContent = editor.getHTML();
 	var formatContent = $('#content').val(editorContent);
 	var content = formatContent.val();
-	console.log("content >> "+ content);
+	//console.log("content >> "+ content);
 	
 	var paramData = {
 		course_no: course_no,
@@ -152,7 +152,7 @@ function updateCourseSubmit(){
 		data: JSON.stringify(paramData),
 		contentType: 'application/json',
 		success:function(data) {
-			console.log(data.result);
+			//console.log(data.result);
 			if(data.result === "success" ){
 				alert('수정이 완료되었습니다.');
 				location.href='/course/detail.go?course_no='+course_no;

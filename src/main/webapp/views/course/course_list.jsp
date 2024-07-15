@@ -96,8 +96,8 @@ var searchContent = '';
 var showCourse =  $('#showOnlytPreCourse').is(':checked');
 var checkCourse = $('#checkBox').val(showCourse ? 0 : 1);
 //ture : 0 --> 현재진행중인강의만 false: 1 --> 마감된 강의까지 ALL
-console.log("showCourse"+ showCourse);
-console.log("checkCoursecheckCourse"+ $('#checkBox').val());
+/*console.log("showCourse"+ showCourse);*/
+/*console.log("checkCoursecheckCourse"+ $('#checkBox').val());*/
 
 read_courseList(page, searchFilter, searchContent, showCourse);	
 
@@ -143,10 +143,10 @@ function drawList(list){
 	now.setDate(now.getDate());
 	var formatNow = now.toISOString().split('T')[0];
 	
-	console.log("nownow",formatNow);
+	/*console.log("nownow",formatNow);*/
 	var con = '';
 	for(var list of list){
-		console.log("start.",list.course_start.substring(0,10));
+		/*console.log("start.",list.course_start.substring(0,10));*/
 		if(list.course_start.substring(0,10) > formatNow){
 			con += '<tr class="pointer" onclick="location.href=\'/course/detail.go?course_no=' + list.course_no + '\'">';
 		}else{

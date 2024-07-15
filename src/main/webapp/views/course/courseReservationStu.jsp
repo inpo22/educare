@@ -136,7 +136,7 @@ $.ajax({
     contentType: 'application/json',
     dataType: 'json',
     success: function(response) {
-        console.log(response);
+        //console.log(response);
         var events = [];
         response.list.forEach(function(item) {
             var event = {
@@ -211,7 +211,7 @@ calendar.setTheme({
 });
 
 function goCalendar(view){
-	console.log("view"+ view);
+	//console.log("view"+ view);
 	calendar.changeView(view);
 	displayRenderRange();
 }

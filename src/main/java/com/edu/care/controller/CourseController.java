@@ -47,9 +47,9 @@ public class CourseController {
 	@GetMapping(value="/course/list.ajax")
 	@ResponseBody
 	public Map<String, Object> courseList(String page, String searchFilter, String searchContent, String showCourse, HttpSession session) {
-		logger.info("##### course list ajax controller IN #####");
-		logger.info("searchFilter : " + searchFilter);
-		logger.info("searchContent : "+ searchContent);
+		//logger.info("##### course list ajax controller IN #####");
+		//logger.info("searchFilter : " + searchFilter);
+		//logger.info("searchContent : "+ searchContent);
 		
 		int currPage = Integer.parseInt(page);
 		int pagePerCnt = 10;
@@ -62,7 +62,7 @@ public class CourseController {
 	@PostMapping(value="/course/reservationTime.ajax")
 	@ResponseBody
 	public Map<String, Object> reservationTime(@RequestBody CourseDTO courseDTO, HttpSession session) {
-		logger.info("##### course reservationTime ajax controller IN #####");
+		//logger.info("##### course reservationTime ajax controller IN #####");
 		
 		Date rez_date = courseDTO.getStart_time();
 		String rez_room = courseDTO.getCourse_space();
@@ -75,10 +75,10 @@ public class CourseController {
 	@PostMapping(value="/course/reservationWrite.ajax")
 	@ResponseBody
 	public Map<String, String> reservationWrite(@RequestBody CourseDTO courseDTO, HttpSession session) {
-		logger.info("##### course reservationWrite ajax controller IN #####");
+		//logger.info("##### course reservationWrite ajax controller IN #####");
 		
 		Boolean result = courseService.reservationWrite(courseDTO);
-		logger.info("##### result=> ",result);
+		//logger.info("##### result=> ",result);
 		
 		Map<String, String> map = new HashMap<String, String>();
 		
@@ -92,13 +92,12 @@ public class CourseController {
 
 	@GetMapping(value="/course/detail.go")
 	public ModelAndView courseDetail(@RequestParam("course_no") int course_no) {
-		logger.info("##### course courseDetail controller IN #####");
-		logger.info("##### course_no >>> "+course_no);
+		//logger.info("##### course courseDetail controller IN #####");
+		//logger.info("##### course_no >>> "+course_no);
 		ModelAndView mv = new ModelAndView();
 		//int course_no_int = Integer.parseInt(String.valueOf(course_no));
 		List<CourseDTO> courseList = courseService.courseDetail(course_no);
 		  
-		
 		mv.addObject("courseDTO",courseList);
         mv.setViewName("course/course_detail");
 		
@@ -107,8 +106,8 @@ public class CourseController {
 	
 	@GetMapping(value="/course/delete.go")
 	public ModelAndView courseDelete(@RequestParam("course_no") int course_no) {
-		logger.info("##### course courseDelete controller IN #####");
-		logger.info("##### course_no >>> "+course_no);
+		//logger.info("##### course courseDelete controller IN #####");
+		//logger.info("##### course_no >>> "+course_no);
 		ModelAndView mv = new ModelAndView();
 		//int course_no_int = Integer.parseInt(String.valueOf(course_no));
 		courseService.courseDelete(course_no);
@@ -121,8 +120,8 @@ public class CourseController {
 	@PostMapping(value="/course/check.ajax")
 	@ResponseBody
 	public Map<String, Object> courseCheck(@RequestParam(value="course_space", required=false) String course_space, HttpSession session) {
-		logger.info("##### schedule list ajax controller IN #####");
-		logger.info("##### course_space : ", course_space);
+		//logger.info("##### schedule list ajax controller IN #####");
+		//logger.info("##### course_space : ", course_space);
 		
 		Map<String, Object> map = courseService.courseCheck();
 		return map;
@@ -131,10 +130,10 @@ public class CourseController {
 	@PostMapping(value="/course/checkUserCode.ajax")
 	@ResponseBody
 	public Map<String, Object> checkUserCode(@RequestParam(value="user_code") String user_code, HttpSession session) {
-		logger.info("##### course checkUserCode ajax controller IN #####");
-		logger.info("##### user_code=> ",user_code);
+		//logger.info("##### course checkUserCode ajax controller IN #####");
+		//logger.info("##### user_code=> ",user_code);
 		Boolean result = courseService.checkUserCode(user_code);
-		logger.info("##### result=> ",result);
+		//logger.info("##### result=> ",result);
 		
 		Map<String, Object> list = courseService.checkUserCodeInfo(user_code);
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -151,8 +150,8 @@ public class CourseController {
 	
 	@GetMapping(value="/course/update.go")
 	public ModelAndView courseUpdate(@RequestParam("course_no") int course_no) {
-		logger.info("##### course courseUpdate controller IN #####");
-		logger.info("##### course_no >>> "+course_no);
+		//logger.info("##### course courseUpdate controller IN #####");
+		//logger.info("##### course_no >>> "+course_no);
 		ModelAndView mv = new ModelAndView();
 		//int course_no_int = Integer.parseInt(String.valueOf(course_no));
 		List<CourseDTO> courseList = courseService.courseDetail(course_no);
@@ -167,14 +166,14 @@ public class CourseController {
 	@PostMapping(value="/course/update.ajax")
 	@ResponseBody
 	public Map<String, String> courseUpdateAjax(@RequestBody CourseDTO courseDTO, HttpSession session) {
-		logger.info("##### course courseUpdate Ajax controller IN #####");
+		//logger.info("##### course courseUpdate Ajax controller IN #####");
 		
 		int course_no = courseDTO.getCourse_no();
 		String course_name  = courseDTO.getCourse_name();
 		String course_con = courseDTO.getCourse_con();
 		
 		Boolean result = courseService.courseUpdateAjax(courseDTO);
-		logger.info("##### result=> ",result);
+		//logger.info("##### result=> ",result);
 		
 		Map<String, String> map = new HashMap<String, String>();
 		
@@ -194,7 +193,7 @@ public class CourseController {
 	@PostMapping(value="/course/stuCheck.ajax")
 	@ResponseBody
 	public Map<String, Object> courseStuCheck(HttpSession session) {
-		logger.info("##### schedule courseStuCheck list ajax controller IN #####");
+		//logger.info("##### schedule courseStuCheck list ajax controller IN #####");
 		String userCode = (String)session.getAttribute("user_code");
 		Map<String, Object> map = courseService.courseStuCheck(userCode);
 		return map;
@@ -203,7 +202,7 @@ public class CourseController {
 	@PostMapping(value="/course/getCourseSpaceList.ajax")
 	@ResponseBody
 	public Map<String, Object> getCourseSpaceList(HttpSession session) {
-		logger.info("##### schedule courseStuCheck list ajax controller IN #####");
+		//logger.info("##### schedule courseStuCheck list ajax controller IN #####");
 		List<CourseDTO> spaceList = courseService.getCourseSpaceList();
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("spaceList", spaceList);

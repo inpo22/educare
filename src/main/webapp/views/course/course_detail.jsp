@@ -123,7 +123,7 @@ const viewer = toastui.Editor.factory({
 
 function deleteCourseGo(){
 	var course_no = '${courseDTO[0].course_no}';
-	console.log(course_no);
+	/*console.log(course_no);*/
 	if(confirm('정말삭제하시겠습니까?')){
 		location.href="/course/delete.go?course_no=" + course_no;
 		alert('삭제되었습니다.');

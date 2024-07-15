@@ -294,7 +294,7 @@ function drawCalendar() {
 $('#prevBtn').on("click", function() {
 	event.preventDefault();
     event.stopPropagation();
-	console.log('prevBtn 왜 닫히냐구');
+	//console.log('prevBtn 왜 닫히냐구');
 	
     preMonth--;
 	if(preMonth < 0){
@@ -309,7 +309,7 @@ $('#prevBtn').on("click", function() {
 $('#nextBtn').on("click", function() {
 	event.preventDefault();
     event.stopPropagation();
-	console.log('nextBtn 왜 닫히냐구');
+	//console.log('nextBtn 왜 닫히냐구');
 	
 	preMonth++;
 	if(preMonth > 11){
@@ -391,7 +391,7 @@ function timeBtn(selectDay,selectRoom) {
 		course_space: selectRoom
 	};
 	
-	console.log("paramData",paramData);
+	//console.log("paramData",paramData);
 	$.ajax({
 		url: '/course/reservationTime.ajax',
 		type: 'POST',
@@ -445,8 +445,8 @@ function checkReservTimeInReservTextArea(selectDate) {
         var reservationDate = findHtml.substring(0,10);
         var reservationTime = findHtml.substring(11,13);
         
-        console.log("reservationDate",reservationDate);
-        console.log("reservationTime",reservationTime);
+        //console.log("reservationDate",reservationDate);
+        //console.log("reservationTime",reservationTime);
 
         if (reservationDate === selectDate) {
         	// 이렇게까지해야되나..?
@@ -494,9 +494,9 @@ function selectTimeBtnEvent() {
 	    var removeDate = findHtml.substring(0,10);
 	    var removeTime = findHtml.substring(11,13);
 	    
-	    console.log('removeDate : ', removeDate);
-	    console.log('removeTime : ', removeTime);
-	    console.log('==============================');
+	    //console.log('removeDate : ', removeDate);
+	    //console.log('removeTime : ', removeTime);
+	    //console.log('==============================');
 	    
 	    // 예약지우기
 	    removeData.remove();
@@ -537,7 +537,7 @@ function selectTimeBtnEvent() {
 				}
 			}else{
 				$(this).val(selectedRoom);
-				console.log('selectedRoom : ', selectedRoom); 
+				//console.log('selectedRoom : ', selectedRoom); 
 				return false;
 			}
 		 }
@@ -578,8 +578,8 @@ function reservCalendarDate(date) {
         var untilMonth = selectDate.substring(0, 7);
         var fullDate = untilMonth + '-' + (day < 10 ? '0' + day : day);
 
-        console.log('day : ', day);
-        console.log('fullDate : ', fullDate);
+        //console.log('day : ', day);
+        //console.log('fullDate : ', fullDate);
 
         if (fullDate === date) {
             $(this).addClass('highlight'); 
@@ -627,7 +627,7 @@ function checkUserCode(){
 		return false;
 	}
 	
-	console.log('userCode.>>>>'+userCode);
+	//console.log('userCode.>>>>'+userCode);
 	$.ajax({
 		url: '/course/checkUserCode.ajax',
 		type: 'POST',
@@ -664,7 +664,7 @@ $('#submitButton').click(function() {
 	var formatContent = $('#content').val(editorContent);
 	var content = formatContent.val();
 	var MAX_CONTENT_SIZE = 5 * 1024 * 1024;
-    console.log("rezCourse",rezCourse);
+    //console.log("rezCourse",rezCourse);
 	
     if ($("#user_code").attr("readonly") == undefined){
         alert('사원여부확인 체크해주세요.');
@@ -713,10 +713,10 @@ function submitCourseWrite(){
 		var formatFullEnd= new Date(fullFormatEnd);
 		var formatFullStart= new Date($(this).html());
 		startTimeArray.push(formatFullStart);
-		console.log("------------------");
-		console.log("endDay==>"+endDay);
-		console.log("------------------");
-		console.log("endTime==>"+endTime);
+		//console.log("------------------");
+		//console.log("endDay==>"+endDay);
+		//console.log("------------------");
+		//console.log("endTime==>"+endTime);
 		endTimeArray.push(formatFullEnd);
 	});
 	
@@ -732,11 +732,11 @@ function submitCourseWrite(){
 		return new Date(prev).getTime() <= new Date(curr).getTime() ? curr : prev;
 	})
 	
-	console.log("++++++++++++++++++++++");
-	console.log("minStart==>"+minStart);
+	//console.log("++++++++++++++++++++++");
+	//console.log("minStart==>"+minStart);
 	
-	console.log("++++++++++++++++++++++");
-	console.log("maxEnd==>"+maxEnd);
+	//console.log("++++++++++++++++++++++");
+	//console.log("maxEnd==>"+maxEnd);
 	
 	
 	var paramData = {
@@ -751,7 +751,7 @@ function submitCourseWrite(){
 		max_end : maxEnd
 	};
 		
-	console.log("paramData",paramData);
+	//console.log("paramData",paramData);
 	 $.ajax({
 		url: '/course/reservationWrite.ajax',
 		type: 'POST',
@@ -759,7 +759,7 @@ function submitCourseWrite(){
 		data: JSON.stringify(paramData),
 		contentType: 'application/json',
 		success:function(data) {
-			console.log(data.result);
+			//console.log(data.result);
 			if(data.result === "success" ){
 				alert('등록이 완료되었습니다.');
 				location.href='/course/list.go';
