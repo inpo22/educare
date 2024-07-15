@@ -53,12 +53,10 @@ var treeModule = (function (module,$){
 		tree_obj.var.tree = new tui.Tree(final_option.treeId, tree_option);
 		// set tree root node data
 		tree_obj.var.tree.setNodeData(tree_obj.var.rootId, final_option.data);
-		//console.log('tree init obj:',tree_obj.var.tree.getNodeData(tree_obj.var.rootId))
 		// tree select event
 		tree_obj.var.tree.enableFeature('Selectable', {
 			selectedClassName: 'tui-tree-selected',
 		});
-
 		// tree modal
 		tree_obj.var.tree.modal = new bootstrap.Modal(
 			document.getElementById(final_option.modalId), { keyboard: false } );
@@ -81,28 +79,23 @@ var treeModule = (function (module,$){
 				// clear node
 				tree.removeAllChildren(rootId);
 	 			if(result.deptList.length > 0){
-	 				//console.log(result.deptList);
 	 				// create tree
  					result.deptList.forEach(function (data, idx){
-						//console.log(idx,':', data);
 						addNode(rootId, data);
 					});
 	 				tree_obj.var.selectId = rootId;
 	 				tree.select(selectId);
 	 				
 				}else{
-					console.log('no dept');
 				}
 	 		},
 			error	: function(error){
-				console.log(error);
 			}
 		});//End ajax
 		
 		function addNode(id, data){
 			if(tree.getNodeData(id)){
 				var code = tree.getNodeData(id).team_code;
-				//console.log(code,'(',tree.getNodeData(id).team_name,') :',data.upper_code);
 				
 				if(code == data.upper_code){
 					var addedId = tree.add({
@@ -115,11 +108,9 @@ var treeModule = (function (module,$){
 						upper_code: data.upper_code,
 						reg_date: data.reg_date
 					});
-					//console.log('added id:', addedId);
 					return true;
 				}else{
 					tree.getChildIds(id).forEach(function(child, i){
-						//console.log(child,':', data);
 						addNode(child, data);
 					});
 				}
@@ -147,16 +138,13 @@ var treeModule = (function (module,$){
 			dataType:'JSON',
 			async: false,
 			success:function(result) {
-				//console.log(result.empList);
 				// create tree
 				result.empList.forEach(function (data, idx){
-					//console.log(idx,':', data);
 					addNode(rootId, data);
 				});
 				
 			},
 			error:function(error) {
-				console.log(error);
 			}
 		});//End ajax
 		
@@ -181,7 +169,6 @@ var treeModule = (function (module,$){
 					result = true;
 				}else{
 					tree.getChildIds(id).forEach(function(child, i){
-						//console.log(i,'child: ',child)
 						addNode(child, data);
 					});
 				}
@@ -189,7 +176,7 @@ var treeModule = (function (module,$){
 				result = false;
 			}
 			return result;
-		}//Emd addNode
+		}//End addNode
 		
 		// load member icon event
 		$('.tui-tree-content-wrapper .tui-tree-text .tui-ico-file').append('<i class=\"bi bi-person-fill\"></i>');
