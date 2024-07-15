@@ -251,22 +251,19 @@
 	function writeSubmit() {
 		var editContent = editor.getHTML();
 		$('#content').val(editContent);
-		console.log(editor.getMarkdown());
 	
 		var isChecked = $('#flexSwitchCheckChecked').prop('checked');
-		console.log(isChecked);
 		$('#checkBox').val(isChecked ? 1 : 0);
 
 	var $title = $('#titleText');
 	var $content = $('#content');
 	var isPerm = '${isPerm}';
-	console.log(isPerm);
 	if(isPerm == 'true'){
 		if($('#teamCode').val() == ''){
 			alert('부서를 선택해 주세요.');
 			return;
 		}
-		console.log('권한체크 들어옴');
+		
 		}if ($title.val() === '') {
 			alert('제목을 입력해 주세요.');
 			$title.focus();

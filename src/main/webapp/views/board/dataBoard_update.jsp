@@ -140,7 +140,6 @@
 
 </body>
 <script>
-console.log();
 const MAX_CONTENT_SIZE = 5 * 1024 * 1024; // 5MB를 바이트로 변환
 const editorSize = 1 * 1024 * 1024;
 
@@ -165,7 +164,6 @@ const editor = new toastui.Editor({
 			name : "${file.ori_filename}"
 	    });
 	</c:forEach>
-	console.log(fileList);
 
 	$('#fileInputButton').click(function() {
 		$('#attachFile').click();
@@ -173,11 +171,10 @@ const editor = new toastui.Editor({
 
 	$('#attachFile').change(function() {
       var inputFiles = $("#attachFile")[0].files;
-	      // console.log(inputFiles);
 	      
 	      for (var item of inputFiles) {
 	         var fileSize = item.size;//업로드한 파일용량
-	         // console.log(fileSize);
+
 	         if (fileSize > MAX_CONTENT_SIZE) {
 	            alert("파일은 5MB 이하의 파일만 첨부할 수 있습니다.");
 	            return false;
@@ -194,9 +191,9 @@ const editor = new toastui.Editor({
 	
 	// 파일리스트에서삭제
 	function deleteFileList(spanElement, file_no) {
-		console.log(file_no);
+		
 		fileList = fileList.filter(file => file.file_no !== file_no);
-		console.log(fileList);
+		
 		$(spanElement).closest('li').remove();
 	}
 
@@ -240,7 +237,6 @@ const editor = new toastui.Editor({
 	function updateSubmit(){
 		var editContent = editor.getHTML()+'';
 		$('#content').val(editContent);
-		console.log(editor.getMarkdown());
 
 	    var fileNumbers = fileList.map(file => file.file_no).join(',');
 	    $('#fileNumbers').val(fileNumbers);

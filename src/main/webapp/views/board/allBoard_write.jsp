@@ -212,10 +212,8 @@ const editor = new toastui.Editor({
 	function writeSubmit() {
     var editContent = editor.getHTML();
     $('#content').val(editContent);
-    console.log(editor.getMarkdown());
     
     var isChecked = $('#flexSwitchCheckChecked').prop('checked');
-    console.log(isChecked);
     $('#checkBox').val(isChecked ? 1 : 0);
     
     var $title = $('#titleText');

@@ -157,8 +157,7 @@ function formatDate(dateStr) {
 }
 
 function listCall(page, searchCategory, searchWord, teamCode){
-	console.log("listCall function called");
-	console.log("page:", page, "searchCategory:", searchCategory, "searchWord:", searchWord, "teamCode:", teamCode);
+// 	console.log("page:", page, "searchCategory:", searchCategory, "searchWord:", searchWord, "teamCode:", teamCode);
 
 	$.ajax({
 		type: 'post',
@@ -171,7 +170,6 @@ function listCall(page, searchCategory, searchWord, teamCode){
 		},
 		dataType: 'JSON',
 		success: function(data){
-			console.log("AJAX request successful");
 			console.log(data);
 
 			totalPage = data.totalPage;

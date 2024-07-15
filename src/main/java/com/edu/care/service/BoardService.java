@@ -107,7 +107,7 @@ public class BoardService {
 	public int del(String post_no) {
 		int row = boardDAO.del(post_no);
 		if(row > 0) {
-			logger.info("delete noti post_no = "+post_no);
+
 			notiDAO.deleteNoti(post_no, 1);
 		}
 		
@@ -141,7 +141,6 @@ public class BoardService {
 			updateTopFixed(post_no, board_type, team_code);
 		}
 		
-		logger.info("데이터 추가 후 현재 글번호 = " + dto.getPost_no());
 		return row;
 	}
 
@@ -175,7 +174,6 @@ public class BoardService {
 		List<BoardDTO> oldFileList = boardDAO.oldFileList(object);
 		boolean isFileNameSame = false;
 		for (BoardDTO boardDTO : oldFileList) {
-			logger.info("\nfileName = " + boardDTO.getNew_filename() + "\nfileNo = " + boardDTO.getFile_no());
 			for (String fileNumber : fileNumbers) {
 				if (boardDTO.getFile_no().equals(fileNumber) == true) {
 					isFileNameSame = true;
@@ -196,7 +194,6 @@ public class BoardService {
 
 	@Transactional
 	public void boardUpdate(MultipartFile[] attachFile, Map<String, String> param) {
-		logger.info("param : {} ", param);
 		
 		boardDAO.boardUpdate(param);
 		
@@ -222,7 +219,6 @@ public class BoardService {
 	// 파일 저장
 	private void fileSave(MultipartFile[] attachFile, BoardDTO dto) {
 		for (MultipartFile file : attachFile) {
-			logger.info(file.getOriginalFilename());
 			dto.setOri_filename(file.getOriginalFilename());
 			boardDAO.fileSave(dto);
 
@@ -249,7 +245,7 @@ public class BoardService {
 	public Map<String, Object> teamList(Map<String, String> map, String my_team_code) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		int pagePerCnt = 10;
-		logger.info("page = "+map.get("page"));
+
 		int start = (Integer.parseInt(map.get("page")) - 1) * pagePerCnt;
 		String searchCategory = map.get("searchCategory");
 		String searchWord = map.get("searchWord");
@@ -331,7 +327,7 @@ public class BoardService {
 			updateTopFixed(post_no, board_type, team_code);
 		}
 		
-		logger.info("데이터 추가 후 현재 글번호 = " + dto.getPost_no());
+
 		
 		return row;
 	}
@@ -342,8 +338,7 @@ public class BoardService {
 		int start = (Integer.parseInt(map.get("page")) - 1) * pagePerCnt;
 		String searchCategory = map.get("searchCategory");
 		String searchWord = map.get("searchWord");
-		logger.info(searchWord);
-		logger.info(searchWord.isBlank()+"");
+
 		List<BoardDTO> topFixedList = new ArrayList<BoardDTO>();
 		int fixCnt = 0;
 
@@ -391,7 +386,7 @@ public class BoardService {
 		if (attachFile[0].getSize() != 0) {
 			fileSave(attachFile, dto);
 		}
-		logger.info("데이터 추가 후 현재 글번호 = " + dto.getPost_no());
+
 		
 		int post_no = dto.getPost_no();
 		int board_type = 3;
@@ -448,12 +443,11 @@ public class BoardService {
 		if (attachFile[0].getSize() != 0) {
 			fileSave(attachFile, dto);
 		}
-		
-		logger.info("데이터 추가 후 현재 글번호 = " + dto.getPost_no());
+
 	}
 
 	public void databoardUpdate(MultipartFile[] attachFile, Map<String, String> param) {
-		logger.info("param : {} ", param);
+
 		boardDAO.databoardUpdate(param);
 		
 		BoardDTO dto = new BoardDTO();

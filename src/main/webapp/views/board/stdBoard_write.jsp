@@ -154,11 +154,9 @@ const editor = new toastui.Editor({
 
 	$('#attachFile').change(function() {
 	var inputFiles = $("#attachFile")[0].files;
-	   // console.log(inputFiles);
 	   
 	for (var item of inputFiles) {
 	   var fileSize = item.size;//업로드한 파일용량
-	   // console.log(fileSize);
 	   if (fileSize > MAX_CONTENT_SIZE) {
 	      alert("파일은 5MB 이하의 파일만 첨부할 수 있습니다.");
 	      return false;
@@ -211,10 +209,9 @@ const editor = new toastui.Editor({
 	function writeSubmit() {
     var editContent = editor.getHTML();
     $('#content').val(editContent);
-    console.log(editor.getMarkdown());
     
     var isChecked = $('#flexSwitchCheckChecked').prop('checked');
-    console.log(isChecked);
+
     $('#checkBox').val(isChecked ? 1 : 0);
     
     var $title = $('#titleText');
@@ -237,29 +234,7 @@ const editor = new toastui.Editor({
     }
 }
 
-// 	$('#flexSwitchCheckChecked').on('click',function(){
-// 		var fixedCheck = $(this);
-// 		if(fixedCheck.prop('checked')){
-// 			$.ajax({
-// 				url:'/fixedCheck'
-// 				,type:'get'
-// 				,data:{
-// 					"board_no":3
-// 				}
-// 				,dataType:'json'
-// 				,success:function(data){
-// 					console.log(data);
-// 					if(data.result){
-// 						alert("이미 5개 이상의 상단고정 게시글이 존재합니다.");
-// 						fixedCheck.prop('checked',false);
-// 					}
-// 				}
-// 				,error:function(error){
-// 					console.log(error);
-// 				}
-// 			});
-// 		}
-// 	});
+
 </script>
 </html>
 

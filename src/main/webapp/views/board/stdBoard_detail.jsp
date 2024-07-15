@@ -133,7 +133,7 @@ if (regDateElement) { // 요소가 존재하는지 확인
     const formattedDate = formatDate(regDateText);
     regDateElement.innerText = formattedDate;
 } else {
-    console.log('regDateElement not found');
+    
 }
 
 // 수정일 포맷팅
@@ -143,7 +143,7 @@ if (editDateElement) { // 요소가 존재하는지 확인
     const formattedDate2 = formatDate(editDateText);
 	editDateElement.innerText = formattedDate2;
 } else {
-    console.log('editDateElement not found');
+    
 }
 
 // 뒤로가기
@@ -166,7 +166,7 @@ function boardDel(){
 				'post_no':post_no
 			},dataType:'JSON'
 			,success:function(data){
-				console.log(data);
+				
 				if(data.row > 0){
 					alert("삭제 되었습니다.");
 					location.href = '/stdBoard/list.go';

@@ -173,7 +173,6 @@ if('${dto.fixed_yn}' == '1'){
 		name : "${file.ori_filename}"
 	});
 </c:forEach>
-console.log(fileList);
 
 $('#fileInputButton').click(function() {
 	$('#attachFile').click();
@@ -202,9 +201,7 @@ $('#attachFile').change(function() {
 
 // 파일리스트에서삭제
 function deleteFileList(spanElement, file_no) {
-	console.log(file_no);
 	fileList = fileList.filter(file => file.file_no !== file_no);
-	console.log(fileList);
 	$(spanElement).closest('li').remove();
 }
 
@@ -249,9 +246,7 @@ function updateCancle(){
 function updateSubmit(){
 	var editContent = editor.getHTML()+'';
 	$('#content').val(editContent);
-	console.log(editor.getMarkdown());
 	var isChecked = $('#flexSwitchCheckChecked').prop('checked');
-	console.log(isChecked);
     var fileNumbers = fileList.map(file => file.file_no).join(',');
     $('#fileNumbers').val(fileNumbers);
 	if(isChecked == true){

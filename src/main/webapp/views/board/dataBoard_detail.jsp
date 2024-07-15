@@ -167,7 +167,6 @@ function boardDel(){
 				'post_no':post_no
 			},dataType:'JSON'
 			,success:function(data){
-				console.log(data);
 				if(data.row > 0){
 					alert("삭제 되었습니다.");
 					location.href = '/dataBoard/list.go';

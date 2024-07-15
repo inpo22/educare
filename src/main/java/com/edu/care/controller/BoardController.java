@@ -36,7 +36,7 @@ public class BoardController {
 	// 전사 공지사항 리스트 페이지
 	@GetMapping(value = "/allBoard/list.go")
 	public String allBoardList() {
-		logger.info("전사공지사항 리스트 페이지 접속");
+		
 		return "board/allBoard_list";
 	}
 
@@ -51,7 +51,7 @@ public class BoardController {
 	// 전사 공지사항 상세페이지 접속
 	@GetMapping(value = "/allBoard/detail.go")
 	public ModelAndView allBoardDetail(String post_no, HttpSession session) {
-		logger.info(post_no);
+		
 		String user_code = (String) session.getAttribute("user_code");
 		return boardService.allDetail(post_no, user_code);
 	}
@@ -59,7 +59,7 @@ public class BoardController {
 	// 전사 공지사항 작성페이지 이동
 	@GetMapping(value = "/allBoard/write.go")
 	public String allBoardWriteGo() {
-		logger.info("전사 공지사항 글작성 페이지 접속");
+		
 		return "board/allBoard_write";
 	}
 
@@ -68,12 +68,12 @@ public class BoardController {
 	public String allBoardWrite(@RequestParam("attachFile") MultipartFile[] attachFile, BoardDTO dto,
 			HttpSession session) {
 		String user_code = (String) session.getAttribute("user_code");
-		logger.info("\n DTO Title :{}", dto.getTitle());
-		logger.info("\n DTO contents :{}", dto.getContents());
-		logger.info("\n DTO fixed_yn :{}", dto.getFixed_yn());
-		logger.info("attachFile =" + attachFile[0].getContentType());
-		logger.info("attachFile =" + attachFile[0].getOriginalFilename());
-		logger.info("attachFile =" + attachFile[0].getSize());
+//		logger.info("\n DTO Title :{}", dto.getTitle());
+//		logger.info("\n DTO contents :{}", dto.getContents());
+//		logger.info("\n DTO fixed_yn :{}", dto.getFixed_yn());
+//		logger.info("attachFile =" + attachFile[0].getContentType());
+//		logger.info("attachFile =" + attachFile[0].getOriginalFilename());
+//		logger.info("attachFile =" + attachFile[0].getSize());
 		
 		dto.setUser_code(user_code);
 		boardService.allBoardWrite(attachFile, dto);
@@ -84,7 +84,7 @@ public class BoardController {
 	// 전사 공지사항 수정페이지 이동
 	@GetMapping(value = "/allBoard/update.go")
 	public String allBoardUpdateGo(String post_no, Model model) {
-		logger.info("공지사항 글수정 페이지 접속");
+		
 		boardService.detail(post_no, model);
 		return "board/allBoard_update";
 	}
@@ -95,9 +95,9 @@ public class BoardController {
 	public String allBoardUpdate(@RequestParam("attachFile") MultipartFile[] attachFile,
 			@RequestParam Map<String, String> param, HttpSession session) {
 		String user_code = (String) session.getAttribute("user_code");
-		logger.info("\n param  :{}", param);
-		logger.info("fileNameList=" + param.get("fileNumbers"));
-		logger.info("attachFile =" + attachFile.length);
+//		logger.info("\n param  :{}", param);
+//		logger.info("fileNameList=" + param.get("fileNumbers"));
+//		logger.info("attachFile =" + attachFile.length);
 		String[] fileNumbers = param.get("fileNumbers").split(",");
 		param.put("user_code", user_code);
 		boardService.fileDelete(fileNumbers, param.get("post_no"));
@@ -109,7 +109,7 @@ public class BoardController {
 	// 파일 다운로드
 	@RequestMapping(value = "/board/download/{fileName}")
 	public ResponseEntity<Resource> download(@PathVariable String fileName) {
-		logger.info("download fileName : " + fileName);
+//		logger.info("download fileName : " + fileName);
 		return boardService.download(fileName);
 	}
 
@@ -117,8 +117,6 @@ public class BoardController {
 	@PostMapping(value = "/board/del.ajax")
 	@ResponseBody
 	public Map<String, Object> del(String post_no, HttpSession session) {
-		logger.info("삭제요청");
-		logger.info(post_no);
 		Map<String, Object> map = new HashMap<String, Object>();
 		int row = boardService.del(post_no);
 		if (row > 0) {
@@ -149,7 +147,7 @@ public class BoardController {
 	@PostMapping(value = "/teamBoard/list.ajax")
 	@ResponseBody
 	public Map<String, Object> teamList(@RequestParam Map<String, String> map, HttpSession session) {
-		logger.info("selectedTeamCode ={}", map);
+
 		String my_team_code = (String) session.getAttribute("team_code");
 		
 		// 게시글 조회
@@ -161,7 +159,7 @@ public class BoardController {
 	// 부서 공지사항 상세페이지 접속
 	@GetMapping(value = "/teamBoard/detail.go")
 	public ModelAndView teamBoardDetail(String post_no, HttpSession session) {
-		logger.info(post_no);
+
 		String user_code = (String) session.getAttribute("user_code");
 		return boardService.teamDetail(post_no, user_code);
 	}
@@ -169,7 +167,7 @@ public class BoardController {
 	// 부서 공지사항 글작성페이지 이동
 	@GetMapping(value = "/teamBoard/write.go")
 	public String teamWriteGo(HttpSession session, Model model, String category) {
-		logger.info("부서 글작성 페이지 접속");
+
 		String teamCode = (String) session.getAttribute("team_code");
 		boolean isPerm = false;
 		
@@ -188,13 +186,7 @@ public class BoardController {
 	public String teamBoardWrite(@RequestParam("attachFile") MultipartFile[] attachFile, BoardDTO dto,
 			HttpSession session) {
 		String user_code = (String) session.getAttribute("user_code");
-		logger.info("\n DTO Title :{}", dto.getTitle());
-		logger.info("\n DTO contents :{}", dto.getContents());
-		logger.info("\n DTO fixed_yn :{}", dto.getFixed_yn());
-		logger.info("attachFile =" + attachFile[0].getContentType());
-		logger.info("attachFile =" + attachFile[0].getOriginalFilename());
-		logger.info("attachFile =" + attachFile[0].getSize());
-		logger.info("teamCode = "+ dto.getTeamCode());
+
 		dto.setUser_code(user_code);
 		boardService.teamBoardWrite(attachFile, dto);
 
@@ -204,7 +196,7 @@ public class BoardController {
 	// 부서 글수정 페이지 이동
 	@GetMapping(value = "/teamBoard/update.go")
 	public String teamBoardUpdateGo(String post_no, Model model, HttpSession session,String category) {
-		logger.info("부서 글수정 페이지 접속");
+
 		String teamCode = (String) session.getAttribute("team_code");
 	    boolean isPerm = false;
 	    
@@ -226,10 +218,6 @@ public class BoardController {
 			@RequestParam Map<String, String> param, HttpSession session) {
 		String user_code = (String) session.getAttribute("user_code");
 		
-		logger.info("\n param  :{}", param);
-		logger.info("fileNameList=" + param.get("fileNumbers"));
-		logger.info("attachFile =" + attachFile.length);
-		logger.info("postTeamCode : "+ param.get("post_team_code"));
 		
 		String[] fileNumbers = param.get("fileNumbers").split(",");
 		param.put("user_code", user_code);
@@ -244,7 +232,7 @@ public class BoardController {
 	// 학생 공지사항 리스트 페이지 이동
 	@GetMapping(value = "/stdBoard/list.go")
 	public String stuBoardList(Model model, HttpSession session) {
-		logger.info("학생공지사항 리스트 페이지 이동");
+
 		String classifyCode = (String) session.getAttribute("classify_code");
 		boolean isPerm = true;
 		
@@ -268,7 +256,7 @@ public class BoardController {
 	// 학생 공지사항 상세페이지 접속
 	@GetMapping(value = "/stdBoard/detail.go")
 	public ModelAndView stdBoardDetail(String post_no, HttpSession session) {
-		logger.info(post_no);
+
 		String user_code = (String) session.getAttribute("user_code");
 		return boardService.stdDetail(post_no, user_code);
 	}
@@ -276,7 +264,7 @@ public class BoardController {
 	// 학생 공지사항 작성페이지 이동
 	@GetMapping(value = "/stdBoard/write.go")
 	public String stdBoardWriteGo() {
-		logger.info("전사 공지사항 글작성 페이지 접속");
+
 		return "board/stdBoard_write";
 	}
 
@@ -285,12 +273,7 @@ public class BoardController {
 	public String stdBoardWrite(@RequestParam("attachFile") MultipartFile[] attachFile, BoardDTO dto,
 			HttpSession session) {
 		String user_code = (String) session.getAttribute("user_code");
-		logger.info("\n DTO Title :{}", dto.getTitle());
-		logger.info("\n DTO contents :{}", dto.getContents());
-		logger.info("\n DTO fixed_yn :{}", dto.getFixed_yn());
-		logger.info("attachFile =" + attachFile[0].getContentType());
-		logger.info("attachFile =" + attachFile[0].getOriginalFilename());
-		logger.info("attachFile =" + attachFile[0].getSize());
+
 
 		dto.setUser_code(user_code);
 		boardService.stdBoardWrite(attachFile, dto);
@@ -301,7 +284,7 @@ public class BoardController {
 	// 핛생 공지사항 수정페이지 이동
 	@GetMapping(value = "/stdBoard/update.go")
 	public String stdBoardUpdateGo(String post_no, Model model) {
-		logger.info("학생 글수정 페이지 접속");
+
 		boardService.detail(post_no, model);
 		return "board/stdBoard_update";
 	}
@@ -311,9 +294,7 @@ public class BoardController {
 	public String stdBoardUpdate(@RequestParam("attachFile") MultipartFile[] attachFile,
 			@RequestParam Map<String, String> param, HttpSession session) {
 		String user_code = (String) session.getAttribute("user_code");
-		logger.info("\n param  :{}", param);
-		logger.info("fileNameList=" + param.get("fileNumbers"));
-		logger.info("attachFile =" + attachFile.length);
+
 		String[] fileNumbers = param.get("fileNumbers").split(",");
 		param.put("user_code", user_code);
 		boardService.fileDelete(fileNumbers, param.get("post_no"));
@@ -325,7 +306,7 @@ public class BoardController {
 	// 자료실 리스트 페이지 이동
 	@GetMapping(value = "/dataBoard/list.go")
 	public String dataBoardList(Model model, HttpSession session) {
-		logger.info("자료실 리스트페이지 이동");
+
 		String classifyCode = (String) session.getAttribute("classify_code");
 		boolean isPerm = true;
 		
@@ -349,7 +330,7 @@ public class BoardController {
 	// 자료실 글 상세보기
 	@GetMapping(value = "/dataBoard/detail.go")
 	public ModelAndView dataBoardDetail(String post_no, HttpSession session) {
-		logger.info(post_no);
+
 		String user_code = (String) session.getAttribute("user_code");
 		return boardService.dataDetail(post_no, user_code);
 	}
@@ -357,7 +338,7 @@ public class BoardController {
 	// 자료실 글작성페이지 이동
 	@GetMapping(value = "/dataBoard/write.go")
 	public String dataBoardWriteGo() {
-		logger.info("자료실 글작성 페이지 접속");
+
 		return "board/dataBoard_write";
 	}
 	
@@ -366,11 +347,7 @@ public class BoardController {
 	public String dataBoardWrite(@RequestParam("attachFile") MultipartFile[] attachFile, BoardDTO dto,
 			HttpSession session) {
 		String user_code = (String) session.getAttribute("user_code");
-		logger.info("\n DTO Title :{}", dto.getTitle());
-		logger.info("\n DTO contents :{}", dto.getContents());
-		logger.info("attachFile =" + attachFile[0].getContentType());
-		logger.info("attachFile =" + attachFile[0].getOriginalFilename());
-		logger.info("attachFile =" + attachFile[0].getSize());
+
 
 		dto.setUser_code(user_code);
 		boardService.dataBoardWrite(attachFile, dto);
@@ -381,7 +358,7 @@ public class BoardController {
 	// 자료글 수정페이지 이동
 	@GetMapping(value = "/dataBoard/update.go")
 	public String dataBoardUpdateGo(String post_no, Model model) {
-		logger.info("자료 글수정 페이지 접속");
+
 		boardService.detail(post_no, model);
 		return "board/dataBoard_update";
 	}
@@ -391,9 +368,7 @@ public class BoardController {
 	public String dataBoardUpdate(@RequestParam("attachFile") MultipartFile[] attachFile,
 			@RequestParam Map<String, String> param, HttpSession session) {
 		String user_code = (String) session.getAttribute("user_code");
-		logger.info("\n param  :{}", param);
-		logger.info("fileNameList=" + param.get("fileNumbers"));
-		logger.info("attachFile =" + attachFile.length);
+	
 		String[] fileNumbers = param.get("fileNumbers").split(",");
 		param.put("user_code", user_code);
 		boardService.fileDelete(fileNumbers, param.get("post_no"));

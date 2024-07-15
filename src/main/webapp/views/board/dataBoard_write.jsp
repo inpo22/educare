@@ -183,11 +183,11 @@ const editor = new toastui.Editor({
 
 	$('#attachFile').change(function() {
 	      var inputFiles = $("#attachFile")[0].files;
-	      // console.log(inputFiles);
+
 	      
 	      for (var item of inputFiles) {
 	         var fileSize = item.size;//업로드한 파일용량
-	         // console.log(fileSize);
+
 	         if (fileSize > MAX_CONTENT_SIZE) {
 	            alert("파일은 5MB 이하의 파일만 첨부할 수 있습니다.");
 	            return false;
@@ -240,7 +240,6 @@ const editor = new toastui.Editor({
 function writeSubmit() {
     var editContent = editor.getHTML();
     $('#content').val(editContent);
-    console.log(editor.getMarkdown());
     
     var $title = $('#titleText');
     var $content = $('#content');

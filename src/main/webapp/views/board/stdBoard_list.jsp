@@ -133,7 +133,7 @@ function listCall(page, searchCategory, searchWord){
 		},
 		dataType: 'JSON',
 		success: function(data){
-			console.log(data);
+			
 			totalPage = data.totalPage;
 			
 			var searchFlag = !!searchWord;
