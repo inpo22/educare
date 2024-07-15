@@ -35,7 +35,7 @@
 				AND reg_date &lt;= #{param6}
 			</if>
 		ORDER BY 
-	        reg_date ASC
+	        reg_date DESC
 	    LIMIT #{param1}, #{param2}
 	</select>
 	
@@ -65,8 +65,6 @@
 			<if test="param5 != null and param5 != ''">
 				AND reg_date &lt;= #{param5}
 			</if>
-		ORDER BY 
-	        reg_date ASC
 	</select>
 	
 	<!-- 학생 수 가져오는 쿼리문 -->

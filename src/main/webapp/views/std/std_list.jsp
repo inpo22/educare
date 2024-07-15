@@ -176,6 +176,10 @@ function listCall(page, type, searchbox, startDate, endDate){
 function drawStdList(stdList){
 	var content='';
 	
+	if(stdList.length == 0){
+		content = '<tr><td colspan ="5" class="no-std">등록된 학생이 없습니다.</td></tr>';
+	}
+	
 	for(data of stdList){
 		content += '<tr>';
 		content += '<td><a href="/std/detail.go?user_code='+ data.user_code +'">' + data.user_code + '</td>';
@@ -313,18 +317,6 @@ $('#reset_btn').click(function(){
 $('#stdReg_btn').click(function(){
 	window.location.href = '/std/reg.go';
 });
-
-
-
-
-
-
-
-
-
-
-
-
 
 </script>
 </html>

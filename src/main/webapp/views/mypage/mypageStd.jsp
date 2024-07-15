@@ -169,7 +169,7 @@
 			    <div class="col-md-12 d-flex justify-content-end">
 			    	<form action="/mypageStd/update.go" method='get'>
 			    		<input type="hidden" name="user_code" value="${mypageDto.user_code}">
-			    		<button id="edit_btn" class="btn btn-secondary" type="submit">수정</button>
+			    		<button id="edit_btn" class="btn btn-primary" type="submit">수정</button>
 			    	</form>			    
 				</div>
 				
@@ -388,7 +388,7 @@ function drawCourseList(courseList){
 	if(courseList.length == 0){
 		content = '<tr><td colspan ="5" class="no-course">등록된 강의가 없습니다.</td></tr>';
 	}else{
-		console.log(courseList);
+		//console.log(courseList);
 		
 		for(data of courseList){
 			var start = data.course_start.split("T")[0];
@@ -595,7 +595,7 @@ function drawAttdList(attdList){
 	if(attdList.length == 0){
 		content = '<tr><td colspan ="3" class="no-attd">출석내역이 없습니다.</td></tr>';
 	}else{
-		console.log(attdList);
+		//console.log(attdList);
 		
 		for(data of attdList){
 			content += '<tr>';
@@ -677,7 +677,7 @@ function drawPayList(payList){
 	if(payList.length == 0){
 		content = '<tr><td colspan ="4" class="no-payment">결제내역이 없습니다.</td></tr>';
 	}else{
-		console.log(payList);
+		//console.log(payList);
 		
 		for(data of payList){
 			content += '<tr>';

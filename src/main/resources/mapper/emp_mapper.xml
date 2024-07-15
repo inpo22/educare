@@ -4,339 +4,335 @@
 
 <mapper namespace="com.edu.care.dao.EmpDAO">
 
-<!-- 사원 리스트 쿼리문 -->
-<select id="empList" resultType="emp">
-    SELECT 
-        u.user_code, 
-        u.name, 
-        d.team_name, 
-        cc.code_name AS class_name, 
-        pc.code_name AS position_name,
-        u.reg_date
-    FROM 
-        `user` u
-    LEFT JOIN 
-        department d ON u.team_code = d.team_code
-    LEFT JOIN 
-        all_code cc ON u.class_code = cc.code
-    LEFT JOIN 
-        all_code pc ON u.position_code = pc.code
-    WHERE 
-        pc.code_name IN ('팀장', '팀원')
-        AND u.quit_date is null
-        <if test="param4 != null and param4 != ''">
-            AND (
-                <choose>
-                    <when test="param3 == 'team'">
-                        d.team_name LIKE CONCAT('%', #{param4}, '%')
-                    </when>
-                    <when test="param3 == 'class'">
-                        cc.code_name LIKE CONCAT('%', #{param4}, '%')
-                    </when>
-                    <when test="param3 == 'position'">
-                        pc.code_name LIKE CONCAT('%', #{param4}, '%')
-                    </when>
-                    <when test="param3 == 'name'">
-                        u.name LIKE CONCAT('%', #{param4}, '%')
-                    </when>
-                </choose>
-            )
-        </if>
-        <if test="startDate != null and startDate != ''">
-			AND u.reg_date &gt;= #{startDate}
-		</if>
-		<if test="endDate != null and endDate != ''">
-			AND u.reg_date &lt;= #{endDate}
-		</if>
-	ORDER BY 
-        u.reg_date ASC
-    LIMIT #{param1}, #{param2}
-        
-</select>
-
-
-<!-- 사원 리스트 페이징 쿼리문 -->
-<select id="empListPageCnt" resultType="Integer">
-    SELECT CEIL(COUNT(u.user_code) / #{param1})
-    FROM `user` u
-    LEFT JOIN department d ON u.team_code = d.team_code 
-    LEFT JOIN all_code cc ON u.class_code = cc.code
-    LEFT JOIN all_code pc ON u.position_code = pc.code
-    WHERE u.position_code IN ('P01', 'P02')
-    AND u.quit_date is null
-        <if test="param3 != null and param3 != ''">
-            AND (
-                <choose>
-                    <when test="param2 == 'team'">
-                        d.team_name LIKE CONCAT('%', #{param3}, '%')
-                    </when>
-                    <when test="param2 == 'class'">
-                        cc.code_name LIKE CONCAT('%', #{param3}, '%')
-                    </when>
-                    <when test="param2 == 'position'">
-                        pc.code_name LIKE CONCAT('%', #{param3}, '%')
-                    </when>
-                    <when test="param2 == 'name'">
-                        u.name LIKE CONCAT('%', #{param3}, '%')
-                    </when>
-                </choose>
-            )
-        </if>
-        <if test="startDate != null and startDate != ''">
-			AND u.reg_date &gt;= #{startDate}
-		</if>
-		<if test="endDate != null and endDate != ''">
-			AND u.reg_date &lt;= #{endDate}
-		</if>
-	ORDER BY 
-    u.reg_date ASC 
-</select>
-
-<!-- 재직 중인 사원 수 쿼리문 -->
-<select id="empCnt" resultType="Integer">
-	SELECT 
-	    COUNT(*) AS emp
-	FROM `user` u 
-	WHERE (user_code LIKE '%U01%' OR user_code LIKE '%U02%')
-	AND quit_date IS NULL
-</select>
-
-<!-- 퇴사자 수 쿼리문 -->
-<select id="quitCnt" resultType="Integer">
-	SELECT 
-	    COUNT(*) AS quit
-	FROM `user` u 
-	WHERE (user_code LIKE '%U01%' OR user_code LIKE '%U02%')
-	AND quit_date IS NOT NULL
-</select>
-
-<!-- 퇴사처리 쿼리문 -->
-<update id="quitEmp">
-    UPDATE user
-    SET quit_date = CURRENT_DATE, status = '1'
-    WHERE user_code = #{param} AND quit_date IS NULL;
-</update>
-
-<!-- 아이디 중복체크 쿼리문 -->
-<select id="overlay" resultType="int">
-	SELECT COUNT(id) FROM user WHERE id=#{param}
-</select>
-
-<!-- 회원 번호 생성 쿼리문 -->
-<select id="createUserCode" parameterType="map" resultType="String">
-	SELECT
-		CONCAT(SUBSTR(CAST(#{reg_date} AS CHAR), 1, 4), 
-			#{classify_code}, RIGHT(CONCAT("000" , 
-	        (SELECT (COUNT(u.user_code) + 1) FROM user u WHERE YEAR(u.reg_date) = YEAR(#{reg_date}) 
-	    	AND u.user_code LIKE CONCAT('%', #{classify_code}, '%'))), 4))
-</select>
-
-<!-- 사원 등록 쿼리문 -->
-<insert id="reg" parameterType="map">
-    INSERT INTO user (
-        user_code, name, id, pw, email, phone, birth, gender, class_code, classify_code, position_code, reg_date, team_code, photo, status
-    ) 
-    VALUES (
-        #{user_code},
-        #{name},
-        #{id},
-        #{pw},
-        #{email},
-        #{phone},
-        #{birth},
-        #{gender},
-        #{class_code},
-        #{classify_code},
-        'P02',
-        #{reg_date},
-        #{team_code},
-        <if test="photo == null">
-            NULL
-        </if>
-        <if test="photo != null">
-            #{photo, jdbcType=VARCHAR}
-        </if>,
-        '0'
-    )
-</insert>
-
-<!-- 휴가테이블 사원등록 쿼리문 -->
-<insert id="regVaca" parameterType="String">
-	INSERT INTO vacation_history (year, user_code, remain)
-		VALUES (YEAR(CURDATE()),#{user_code},15)
-</insert>
-
-<!-- 부서 리스트 쿼리문 -->
-<select id="deptList" resultType="emp">
-	SELECT d.team_code, d.team_name, d.upper_code FROM department d
-</select>
-
-
-<!-- 상세보기 쿼리문 -->
-<select id="empDetail" parameterType="String" resultType="emp">
-	SELECT  
-		u.user_code,
-		u.name,
-		d.team_name, 
-		u.team_code,
-		u.pw,
-    	cc.code_name AS class_name, 
-    	pc.code_name AS position_name,
-    	cfc.code_name AS classify_name,
-    	u.id,
-    	u.email,
-    	u.phone,
-    	u.birth,
-    	u.photo,
-    	u.reg_date,
-    	u.quit_date,
-    	u.gender,
-    	u.status  
-    FROM 
-	    `user` u
-	LEFT JOIN 
-	    department d ON u.team_code = d.team_code
-	LEFT JOIN 
-	    all_code cc ON u.class_code = cc.code
-	LEFT JOIN 
-	    all_code pc ON u.position_code = pc.code
-    LEFT JOIN 
-	    all_code cfc ON u.classify_code = cfc.code  	
-	WHERE user_code=#{param}
-</select>
-
-<!-- 정보수정 쿼리문 -->
-<update id="edit" parameterType="map">
-	UPDATE user SET 
-		birth=#{birth},
-		email=#{email},
-		phone=#{phone},
-		team_code=#{team_code} ,
-		gender=#{gender} ,
-		quit_date = 
-	        CASE WHEN #{quit_date} = '' THEN NULL ELSE #{quit_date} END,
-	    pw = CASE WHEN #{pw} IS NULL THEN pw ELSE #{pw} END,
-		class_code=#{class_code} ,
-		classify_code=#{classify_code} ,
-		status=#{status} ,
-		photo = CASE WHEN #{photo} IS NULL THEN photo ELSE #{photo} END
-	WHERE user_code=#{user_code}
-</update>
-
-<!-- 퇴사자 리스트 불러오기 쿼리문 -->
-<select id="quitList" resultType="emp">
-	SELECT
-		u.user_code,
-		u.name,
-		d.team_name,
-		cc.code_name AS class_name,
-		pc.code_name AS position_name,
-		u.reg_date,
-		u.quit_date
-	FROM 
-		user u
-	LEFT JOIN 
-		department d ON u.team_code = d.team_code
-	LEFT JOIN
-		all_code cc ON u.class_code = cc.code
-	LEFT JOIN
-		all_code pc ON u.position_code = pc.code
-	WHERE u.position_code IN ('P01', 'P02')
-		AND u.quit_date is not null
-		<if test="param5 != null and param5 != ''">
-            AND (
-                <choose>
-                    <when test="param4 == 'team'">
-                        d.team_name LIKE CONCAT('%', #{param5}, '%')
-                    </when>
-                    <when test="param4 == 'class'">
-                        cc.code_name LIKE CONCAT('%', #{param5}, '%')
-                    </when>
-                    <when test="param4 == 'position'">
-                        pc.code_name LIKE CONCAT('%', #{param5}, '%')
-                    </when>
-                    <when test="param4 == 'name'">
-                        u.name LIKE CONCAT('%', #{param5}, '%')
-                    </when>
-                </choose>
-            )
-        </if>
-        <choose>
-            <when test="param3 == 'reg_date'">
-                <if test="param6 != null and param6 != ''">
-                    AND u.reg_date &gt;= #{param6}
-                </if>
-                <if test="param7 != null and param7 != ''">
-                    AND u.reg_date &lt;= #{param7}
-                </if>
-            </when>
-            <when test="param3 == 'quit_date'">
-                <if test="param6 != null and param6 != ''">
-                    AND u.quit_date &gt;= #{param6}
-                </if>
-                <if test="param7 != null and param7 != ''">
-                    AND u.quit_date &lt;= #{param7}
-                </if>
-            </when>
-        </choose>
-    ORDER BY 
-        u.reg_date ASC
-    LIMIT #{param1}, #{param2}	
-</select>
-
-<!-- 퇴사자 리스트 페이징 처리 쿼리문 -->
-<select id="quitListPageCnt" resultType="Integer">
-	SELECT 
-		CEIL(COUNT(u.user_code) / #{param1})
-    FROM 
-    	`user` u
-    LEFT JOIN 
-    	department d ON u.team_code = d.team_code
-    LEFT JOIN
-		all_code cc ON u.class_code = cc.code
-	LEFT JOIN
-		all_code pc ON u.position_code = pc.code
-	WHERE u.position_code IN ('P01', 'P02')
-		AND u.quit_date is not null
-		<if test="param4 != null and param4 != ''">
-            AND (
-                <choose>
-                    <when test="param3 == 'team'">
-                        d.team_name LIKE CONCAT('%', #{param4}, '%')
-                    </when>
-                    <when test="param3 == 'class'">
-                        cc.code_name LIKE CONCAT('%', #{param4}, '%')
-                    </when>
-                    <when test="param3 == 'position'">
-                        pc.code_name LIKE CONCAT('%', #{param4}, '%')
-                    </when>
-                    <when test="param3 == 'name'">
-                        u.name LIKE CONCAT('%', #{param4}, '%')
-                    </when>
-                </choose>
-            )
-        </if>
-        <choose>
-            <when test="param2 == 'reg_date'">
-                <if test="param5 != null and param5 != ''">
-                    AND u.reg_date &gt;= #{param5}
-                </if>
-                <if test="param6 != null and param6 != ''">
-                    AND u.reg_date &lt;= #{param6}
-                </if>
-            </when>
-            <when test="param2 == 'quit_date'">
-                <if test="param5 != null and param5 != ''">
-                    AND u.quit_date &gt;= #{param5}
-                </if>
-                <if test="param6 != null and param6 != ''">
-                    AND u.quit_date &lt;= #{param6}
-                </if>
-            </when>
-        </choose>
-    ORDER BY 
-    	u.reg_date ASC
-        
-</select>
+	<!-- 사원 리스트 쿼리문 -->
+	<select id="empList" resultType="emp">
+	    SELECT 
+	        u.user_code, 
+	        u.name, 
+	        d.team_name, 
+	        cc.code_name AS class_name, 
+	        pc.code_name AS position_name,
+	        u.reg_date
+	    FROM 
+	        `user` u
+	    LEFT JOIN 
+	        department d ON u.team_code = d.team_code
+	    LEFT JOIN 
+	        all_code cc ON u.class_code = cc.code
+	    LEFT JOIN 
+	        all_code pc ON u.position_code = pc.code
+	    WHERE 
+	        pc.code_name IN ('팀장', '팀원')
+	        AND u.quit_date is null
+	        <if test="param4 != null and param4 != ''">
+	            AND (
+	                <choose>
+	                    <when test="param3 == 'team'">
+	                        d.team_name LIKE CONCAT('%', #{param4}, '%')
+	                    </when>
+	                    <when test="param3 == 'class'">
+	                        cc.code_name LIKE CONCAT('%', #{param4}, '%')
+	                    </when>
+	                    <when test="param3 == 'position'">
+	                        pc.code_name LIKE CONCAT('%', #{param4}, '%')
+	                    </when>
+	                    <when test="param3 == 'name'">
+	                        u.name LIKE CONCAT('%', #{param4}, '%')
+	                    </when>
+	                </choose>
+	            )
+	        </if>
+	        <if test="startDate != null and startDate != ''">
+				AND u.reg_date &gt;= #{startDate}
+			</if>
+			<if test="endDate != null and endDate != ''">
+				AND u.reg_date &lt;= #{endDate}
+			</if>
+		ORDER BY 
+	        u.reg_date DESC
+	    LIMIT #{param1}, #{param2}
+	        
+	</select>
+	
+	
+	<!-- 사원 리스트 페이징 쿼리문 -->
+	<select id="empListPageCnt" resultType="Integer">
+	    SELECT CEIL(COUNT(u.user_code) / #{param1})
+	    FROM `user` u
+	    LEFT JOIN department d ON u.team_code = d.team_code 
+	    LEFT JOIN all_code cc ON u.class_code = cc.code
+	    LEFT JOIN all_code pc ON u.position_code = pc.code
+	    WHERE u.position_code IN ('P01', 'P02')
+	    AND u.quit_date is null
+	        <if test="param3 != null and param3 != ''">
+	            AND (
+	                <choose>
+	                    <when test="param2 == 'team'">
+	                        d.team_name LIKE CONCAT('%', #{param3}, '%')
+	                    </when>
+	                    <when test="param2 == 'class'">
+	                        cc.code_name LIKE CONCAT('%', #{param3}, '%')
+	                    </when>
+	                    <when test="param2 == 'position'">
+	                        pc.code_name LIKE CONCAT('%', #{param3}, '%')
+	                    </when>
+	                    <when test="param2 == 'name'">
+	                        u.name LIKE CONCAT('%', #{param3}, '%')
+	                    </when>
+	                </choose>
+	            )
+	        </if>
+	        <if test="startDate != null and startDate != ''">
+				AND u.reg_date &gt;= #{startDate}
+			</if>
+			<if test="endDate != null and endDate != ''">
+				AND u.reg_date &lt;= #{endDate}
+			</if>
+	</select>
+	
+	<!-- 재직 중인 사원 수 쿼리문 -->
+	<select id="empCnt" resultType="Integer">
+		SELECT 
+		    COUNT(*) AS emp
+		FROM `user` u 
+		WHERE (user_code LIKE '%U01%' OR user_code LIKE '%U02%')
+		AND quit_date IS NULL
+	</select>
+	
+	<!-- 퇴사자 수 쿼리문 -->
+	<select id="quitCnt" resultType="Integer">
+		SELECT 
+		    COUNT(*) AS quit
+		FROM `user` u 
+		WHERE (user_code LIKE '%U01%' OR user_code LIKE '%U02%')
+		AND quit_date IS NOT NULL
+	</select>
+	
+	<!-- 퇴사처리 쿼리문 -->
+	<update id="quitEmp">
+	    UPDATE user
+	    SET quit_date = CURRENT_DATE, status = '1'
+	    WHERE user_code = #{param} AND quit_date IS NULL;
+	</update>
+	
+	<!-- 아이디 중복체크 쿼리문 -->
+	<select id="overlay" resultType="int">
+		SELECT COUNT(id) FROM user WHERE id=#{param}
+	</select>
+	
+	<!-- 회원 번호 생성 쿼리문 -->
+	<select id="createUserCode" parameterType="map" resultType="String">
+		SELECT
+			CONCAT(SUBSTR(CAST(#{reg_date} AS CHAR), 1, 4), 
+				#{classify_code}, RIGHT(CONCAT("000" , 
+		        (SELECT (COUNT(u.user_code) + 1) FROM user u WHERE YEAR(u.reg_date) = YEAR(#{reg_date}) 
+		    	AND u.user_code LIKE CONCAT('%', #{classify_code}, '%'))), 4))
+	</select>
+	
+	<!-- 사원 등록 쿼리문 -->
+	<insert id="reg" parameterType="map">
+	    INSERT INTO user (
+	        user_code, name, id, pw, email, phone, birth, gender, class_code, classify_code, position_code, reg_date, team_code, photo, status
+	    ) 
+	    VALUES (
+	        #{user_code},
+	        #{name},
+	        #{id},
+	        #{pw},
+	        #{email},
+	        #{phone},
+	        #{birth},
+	        #{gender},
+	        #{class_code},
+	        #{classify_code},
+	        'P02',
+	        #{reg_date},
+	        #{team_code},
+	        <if test="photo == null">
+	            NULL
+	        </if>
+	        <if test="photo != null">
+	            #{photo, jdbcType=VARCHAR}
+	        </if>,
+	        '0'
+	    )
+	</insert>
+	
+	<!-- 휴가테이블 사원등록 쿼리문 -->
+	<insert id="regVaca" parameterType="String">
+		INSERT INTO vacation_history (year, user_code, remain)
+			VALUES (YEAR(CURDATE()),#{user_code},15)
+	</insert>
+	
+	<!-- 부서 리스트 쿼리문 -->
+	<select id="deptList" resultType="emp">
+		SELECT d.team_code, d.team_name, d.upper_code FROM department d
+	</select>
+	
+	
+	<!-- 상세보기 쿼리문 -->
+	<select id="empDetail" parameterType="String" resultType="emp">
+		SELECT  
+			u.user_code,
+			u.name,
+			d.team_name, 
+			u.team_code,
+			u.pw,
+	    	cc.code_name AS class_name, 
+	    	pc.code_name AS position_name,
+	    	cfc.code_name AS classify_name,
+	    	u.id,
+	    	u.email,
+	    	u.phone,
+	    	u.birth,
+	    	u.photo,
+	    	u.reg_date,
+	    	u.quit_date,
+	    	u.gender,
+	    	u.status  
+	    FROM 
+		    `user` u
+		LEFT JOIN 
+		    department d ON u.team_code = d.team_code
+		LEFT JOIN 
+		    all_code cc ON u.class_code = cc.code
+		LEFT JOIN 
+		    all_code pc ON u.position_code = pc.code
+	    LEFT JOIN 
+		    all_code cfc ON u.classify_code = cfc.code  	
+		WHERE user_code=#{param}
+	</select>
+	
+	<!-- 정보수정 쿼리문 -->
+	<update id="edit" parameterType="map">
+		UPDATE user SET 
+			birth=#{birth},
+			email=#{email},
+			phone=#{phone},
+			team_code=#{team_code} ,
+			gender=#{gender} ,
+			quit_date = 
+		        CASE WHEN #{quit_date} = '' THEN NULL ELSE #{quit_date} END,
+		    pw = CASE WHEN #{pw} IS NULL THEN pw ELSE #{pw} END,
+			class_code=#{class_code} ,
+			classify_code=#{classify_code} ,
+			status=#{status} ,
+			photo = CASE WHEN #{photo} IS NULL THEN photo ELSE #{photo} END
+		WHERE user_code=#{user_code}
+	</update>
+	
+	<!-- 퇴사자 리스트 불러오기 쿼리문 -->
+	<select id="quitList" resultType="emp">
+		SELECT
+			u.user_code,
+			u.name,
+			d.team_name,
+			cc.code_name AS class_name,
+			pc.code_name AS position_name,
+			u.reg_date,
+			u.quit_date
+		FROM 
+			user u
+		LEFT JOIN 
+			department d ON u.team_code = d.team_code
+		LEFT JOIN
+			all_code cc ON u.class_code = cc.code
+		LEFT JOIN
+			all_code pc ON u.position_code = pc.code
+		WHERE u.position_code IN ('P01', 'P02')
+			AND u.quit_date is not null
+			<if test="param5 != null and param5 != ''">
+	            AND (
+	                <choose>
+	                    <when test="param4 == 'team'">
+	                        d.team_name LIKE CONCAT('%', #{param5}, '%')
+	                    </when>
+	                    <when test="param4 == 'class'">
+	                        cc.code_name LIKE CONCAT('%', #{param5}, '%')
+	                    </when>
+	                    <when test="param4 == 'position'">
+	                        pc.code_name LIKE CONCAT('%', #{param5}, '%')
+	                    </when>
+	                    <when test="param4 == 'name'">
+	                        u.name LIKE CONCAT('%', #{param5}, '%')
+	                    </when>
+	                </choose>
+	            )
+	        </if>
+	        <choose>
+	            <when test="param3 == 'reg_date'">
+	                <if test="param6 != null and param6 != ''">
+	                    AND u.reg_date &gt;= #{param6}
+	                </if>
+	                <if test="param7 != null and param7 != ''">
+	                    AND u.reg_date &lt;= #{param7}
+	                </if>
+	            </when>
+	            <when test="param3 == 'quit_date'">
+	                <if test="param6 != null and param6 != ''">
+	                    AND u.quit_date &gt;= #{param6}
+	                </if>
+	                <if test="param7 != null and param7 != ''">
+	                    AND u.quit_date &lt;= #{param7}
+	                </if>
+	            </when>
+	        </choose>
+	    ORDER BY 
+	        u.quit_date DESC
+	    LIMIT #{param1}, #{param2}	
+	</select>
+	
+	<!-- 퇴사자 리스트 페이징 처리 쿼리문 -->
+	<select id="quitListPageCnt" resultType="Integer">
+		SELECT 
+			CEIL(COUNT(u.user_code) / #{param1})
+	    FROM 
+	    	`user` u
+	    LEFT JOIN 
+	    	department d ON u.team_code = d.team_code
+	    LEFT JOIN
+			all_code cc ON u.class_code = cc.code
+		LEFT JOIN
+			all_code pc ON u.position_code = pc.code
+		WHERE u.position_code IN ('P01', 'P02')
+			AND u.quit_date is not null
+			<if test="param4 != null and param4 != ''">
+	            AND (
+	                <choose>
+	                    <when test="param3 == 'team'">
+	                        d.team_name LIKE CONCAT('%', #{param4}, '%')
+	                    </when>
+	                    <when test="param3 == 'class'">
+	                        cc.code_name LIKE CONCAT('%', #{param4}, '%')
+	                    </when>
+	                    <when test="param3 == 'position'">
+	                        pc.code_name LIKE CONCAT('%', #{param4}, '%')
+	                    </when>
+	                    <when test="param3 == 'name'">
+	                        u.name LIKE CONCAT('%', #{param4}, '%')
+	                    </when>
+	                </choose>
+	            )
+	        </if>
+	        <choose>
+	            <when test="param2 == 'reg_date'">
+	                <if test="param5 != null and param5 != ''">
+	                    AND u.reg_date &gt;= #{param5}
+	                </if>
+	                <if test="param6 != null and param6 != ''">
+	                    AND u.reg_date &lt;= #{param6}
+	                </if>
+	            </when>
+	            <when test="param2 == 'quit_date'">
+	                <if test="param5 != null and param5 != ''">
+	                    AND u.quit_date &gt;= #{param5}
+	                </if>
+	                <if test="param6 != null and param6 != ''">
+	                    AND u.quit_date &lt;= #{param6}
+	                </if>
+	            </when>
+	        </choose>
+	        
+	</select>
 	
 </mapper>

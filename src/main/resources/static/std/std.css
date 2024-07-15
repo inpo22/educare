@@ -82,7 +82,7 @@ a{
     color: red !important;
     font-weight: bold;
 }
-.no-course, .no-attd, .no-payment{
+.no-course, .no-attd, .no-payment, .no-std{
 	text-align: center;
 }
 

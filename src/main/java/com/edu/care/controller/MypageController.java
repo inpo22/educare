@@ -97,9 +97,9 @@ public class MypageController {
 	@ResponseBody
 	@PostMapping(value="/mypage/std_detail_course.ajax")
 	public Map<String, Object> courseListCall(@RequestParam("user_code") String user_code, String page, String Csearchbox){
-		logger.info("수강이력 요청 - 학생 마이페이지");
-		logger.info("page : "+page);
-		logger.info("Csearchbox : "+Csearchbox);
+		//logger.info("수강이력 요청 - 학생 마이페이지");
+		//logger.info("page : "+page);
+		//logger.info("Csearchbox : "+Csearchbox);
 		
 		int currPage = Integer.parseInt(page);
 		int pagePerCnt = 10;
@@ -112,11 +112,11 @@ public class MypageController {
 	// 취소버튼 클릭 시 결제상태 업데이트
 	@GetMapping(value="/mypage/pay-cancel.do")
 	public String cancel(RedirectAttributes rAttr, @RequestParam("course_name") String course_name, @RequestParam("user_code") String user_code) {
-		logger.info("결제취소");
+		//logger.info("결제취소");
 		String msg = "다시 확인해주세요.";
 		
 		int row = mypageService.cancel(course_name, user_code);
-		logger.info("insert count :"+row);
+		//logger.info("insert count :"+row);
 		
 		if(row == 1) {
 			msg = "결제가 취소되었습니다.";
@@ -131,9 +131,9 @@ public class MypageController {
 	@ResponseBody
 	@PostMapping(value="/mypage/std_detail_attd.ajax")
 	public Map<String, Object> attdListCall(@RequestParam("user_code") String user_code, String page, String Asearchbox){
-		logger.info("출석현황 요청 - 학생마이페이지");
-		logger.info("page : " + page);
-		logger.info("Asearchbox : " + Asearchbox);
+		//logger.info("출석현황 요청 - 학생마이페이지");
+		//logger.info("page : " + page);
+		//logger.info("Asearchbox : " + Asearchbox);
 		
 		int currPage = Integer.parseInt(page);
 		int pagePerCnt = 10;
@@ -147,9 +147,9 @@ public class MypageController {
 	@ResponseBody
 	@PostMapping(value="/mypage/std_detail_pay.ajax")
 	public Map<String, Object> payListCall(@RequestParam("user_code") String user_code, String page, String Psearchbox){
-		logger.info("결제내역요청-학생마이페이지");
-		logger.info("page : " + page);
-		logger.info("Psearchbox : " + Psearchbox);
+		//logger.info("결제내역요청-학생마이페이지");
+		//logger.info("page : " + page);
+		//logger.info("Psearchbox : " + Psearchbox);
 		
 		int currPage = Integer.parseInt(page);
 		int pagePerCnt = 10;
@@ -162,7 +162,7 @@ public class MypageController {
 	// 학생 개인정보 수정 페이지 이동
 	@GetMapping(value="/mypageStd/update.go")
 	public String stdEditP(@RequestParam("user_code") String user_code, Model model) {
-		logger.info("edit user_code : "+user_code);
+		//logger.info("edit user_code : "+user_code);
 		
 		MypageDTO mypageDto = mypageService.mypageStd(user_code);
 		model.addAttribute("mypageDto", mypageDto);
@@ -175,7 +175,7 @@ public class MypageController {
 	public String myStuUpdate(MultipartFile photo, RedirectAttributes rAttr, @RequestParam Map<String, String> param, @RequestParam("user_code") String user_code) {
 		String page = "mypageStd";
 		String msg = "정보수정에 실패했습니다.";
-		logger.info("param :"+param);
+		//logger.info("param :"+param);
 		
 		// 새 비밀번호 저장
 		String newPw = param.get("pw");
@@ -185,7 +185,7 @@ public class MypageController {
 		
 		
 		int row = mypageService.update(photo, param, user_code);
-		logger.info("insert count :"+row); 	
+		//logger.info("insert count :"+row); 	
 		
 		if(row == 1) {
 			// 새 비밀번호가 기존 비밀번호와 다를 경우
@@ -205,7 +205,7 @@ public class MypageController {
 		@ResponseBody
 		@GetMapping(value="/mypage/attRate.ajax")
 		public String attdRate(@RequestParam("user_code") String user_code) {
-			logger.info("user_code:"+user_code);
+			//logger.info("user_code:"+user_code);
 			
 			String attdRate = mypageService.attRate(user_code);
 			return attdRate;
