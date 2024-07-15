@@ -38,8 +38,8 @@ public class EmpService {
 		
 		List<EmpDTO> list = empDAO.empList(start, pagePerCnt,type,searchbox,startDate,endDate);
 		
-		logger.info("list : {}", list);
-		logger.info("list size : " + list.size());
+		//logger.info("list : {}", list);
+		//logger.info("list size : " + list.size());
 		result.put("list", list);		
 		result.put("totalPage", empDAO.empListPageCnt(pagePerCnt,type,searchbox,startDate,endDate));
 		
@@ -173,8 +173,8 @@ public class EmpService {
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		List<EmpDTO> Qlist = empDAO.quitList(start, pagePerCnt,dateType,type,searchbox,startDate,endDate);
-		logger.info("Qlist : {}", Qlist);
-		logger.info("Qlist size : " + Qlist.size());
+		//logger.info("Qlist : {}", Qlist);
+		//logger.info("Qlist size : " + Qlist.size());
 		result.put("Qlist", Qlist);
 		result.put("totalPage", empDAO.quitListPageCnt(pagePerCnt,dateType,type,searchbox,startDate,endDate));
 		

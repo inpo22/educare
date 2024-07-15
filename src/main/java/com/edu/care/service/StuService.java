@@ -44,8 +44,8 @@ public class StuService {
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		List<StuDTO> list = stuDAO.stdList(start, pagePerCnt, type, searchbox, startDate, endDate);
-		logger.info("list :"+list);
-		logger.info("list.size : "+list.size());
+		//logger.info("list :"+list);
+		//logger.info("list.size : "+list.size());
 		
 		result.put("list", list);
 		result.put("totalPage", stuDAO.stdListPageCnt(pagePerCnt, type, searchbox, startDate, endDate));
@@ -127,8 +127,8 @@ public class StuService {
 		
 		List<PaymentDTO> list = stuDAO.payList(start, pagePerCnt, Psearchbox,user_code);
 		
-		logger.info("list : {}", list);
-		logger.info("list size : " + list.size());
+		//logger.info("list : {}", list);
+		//logger.info("list size : " + list.size());
 		result.put("list", list);
 		result.put("totalPage", stuDAO.payListPageCnt(pagePerCnt, Psearchbox,user_code));
 		
@@ -141,8 +141,8 @@ public class StuService {
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		List<PaymentDTO> cList = stuDAO.courseList(start, pagePerCnt, Csearchbox,user_code);
-		logger.info("cList : {}", cList);
-		logger.info("cList size : " + cList.size());
+		//logger.info("cList : {}", cList);
+		//logger.info("cList size : " + cList.size());
 		
 		// 현재 날짜 가져오기
         LocalDate today = LocalDate.now();
@@ -199,8 +199,8 @@ public class StuService {
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		List<MypageDTO> aList = stuDAO.attdList(start, pagePerCnt, Asearchbox,user_code);
-		logger.info("aList : {}", aList);
-		logger.info("aList size : " + aList.size());
+		//logger.info("aList : {}", aList);
+		//logger.info("aList size : " + aList.size());
 		
 		result.put("aList", aList);
 		result.put("totalPage", stuDAO.attdListPageCnt(pagePerCnt, Asearchbox,user_code));
