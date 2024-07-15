@@ -12,11 +12,12 @@
 <style>
 </style>
 <jsp:include page="/views/common/head.jsp"></jsp:include>
-<!-- style css -->
-<link rel="stylesheet" href="/resources/dept/css/style.css">
-<!-- tui-tree -->
+<!-- tui-tree CSS-->
 <link rel="stylesheet" href="https://uicdn.toast.com/tui.context-menu/latest/tui-context-menu.css" />
 <link rel="stylesheet" href="/resources/dept/tui-tree/css/tree.css">
+<!-- style css -->
+<link rel="stylesheet" href="/resources/dept/css/style.css">
+<!-- tui-tree JS -->
 <script	src="https://uicdn.toast.com/tui.context-menu/latest/tui-context-menu.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
 <script src="https://uicdn.toast.com/tui-tree/latest/tui-tree.js"></script>
@@ -39,7 +40,7 @@
 		<div class="content">
 			<div class="container-fluid">
 				<div class="row">
-					<div class="col-lg-3">
+					<div class="col-lg-3 pt-3">
 						<!-- 조직도 card -->
 						<div class="card">
 							<div class="card-header border-0">
@@ -66,11 +67,9 @@
 						<!-- card End -->
 					</div>
 					<!-- 조직도 End -->
-
 					<div class="col-md-auto"></div>
-
 					<!-- 부서 card -->
-					<div class="col-lg-6">
+					<div class="col-lg-6 pt-3">
 						<div class="card">
 							<div class="card-header border-0">
 								<div class="d-flex justify-content-between">
@@ -234,28 +233,28 @@
 	// tree-select event
 	tree.on('select', function(e){
 		selected_id = e.nodeId;
-		//console.log('click: '+e.nodeId);
-		//console.log('selected node data: '+nodeData.team_code,'/'+nodeData.team_name,'/'+nodeData.upper_code);
-		console.log('id:',selected_id);
 		clickTab(selected_tab);
 	});
 	
 	modalTree.on('select', function(e){
-		//console.log('modal click: '+e.nodeId);
 		var data = modalTree.getNodeData(e.nodeId);
 		
 		if(tree.getNodeData(selected_id).team_code != data.team_code){
 			selected_modalId = e.nodeId;
-			//console.log('selected node data: '+data.team_code,'/'+data.team_name,'/'+data.upper_code);			
 		}else{
 			alert('이미 해당 부서입니다. 다른 부서를 선택해주세요.');
 			selected_modalId = modalTree.getRootNodeId();
 		}
-		//console.log('now selected:',selected_modalId);
-		
 	});
 
 	// add tree option
+	tree.on('afterDraw', function(e) {
+		$('.tui-tree-subtree').prevUntil('.tui-tree-root').last().find('.tui-ico-folder').html('<i class=\"bi bi-building-fill\"></i>');
+		$('.tui-tree-subtree').prevUntil('.tui-tree-root').last().find('.tui-ico-folder').attr('class','tui-tree-ico tui-tree-root');
+		$('.tui-tree-subtree .tui-tree-leaf .tui-ico-file').append('<i class=\"ri ri-folder-4-line\"></i>');
+		$('.tui-ico-file').attr('class','tui-tree-ico tui-tree-leaf');
+	});
+
 	tree.enableFeature('Draggable', {
 		helperClassName: 'tui-tree-drop',
 		lineClassName: 'tui-tree-line',
@@ -275,12 +274,13 @@
 	});
 	
 	// tree-contextmenu event
+	tree.on('beforeOpenContextMenu', function(e) {
+		tree.select(e.nodeId);
+	});
 	tree.on('selectContextMenu', function(e) {
 		var command = e.command;
 		var nodeId = e.nodeId;
 		var data = tree.getNodeData(nodeId);
-		
-		tree.select(e.nodeId);
 		
 		switch (command) {
 			case 'create':
@@ -291,7 +291,6 @@
 				break;
 			case 'remove':
 				selected_id = nodeId;
-				//tree.remove(nodeId);
 				removeDept();
 				break;
 		}
@@ -307,8 +306,7 @@
 			return false;
 		} else if(result){
 			if(!validation){
-				alert('사용할 수 없는 부서명입니다. 다시 입력해주세요.')
-				//console.log(e.value,'- 유효성 결과: ',validation);
+				alert('사용할 수 없는 부서명입니다. 다시 입력해주세요.');
 				tree.finishEditing();
 				tree.remove(e.nodeId);
 				return false;
@@ -317,7 +315,6 @@
 					'team_name' : e.value,
 					'upper_code': tree.getNodeData(selected_id).team_code
 				}
-				//console.log('add dept:',e.value,'-',add_param);
 				createDept_ajax(add_param);
 				selected_tab = 'deptInfo';
 				tree.select(e.nodeId)
@@ -332,7 +329,6 @@
 	
 	// tree-edit event
 	tree.on('beforeEditNode', function(e) {
-		//console.log('edit: ',e.nodeId, '/',e.'e.nodeId, '/',e.value, '/',e.cause'e = e.value);
 		var result = confirm('부서명을 수정하시겠습니까?');
 		var data = tree.getNodeData(e.nodeId);
 		var validation = checkName.test(e.value);
@@ -344,7 +340,6 @@
 				return false;
 			}else if(!validation){
 				alert('사용할 수 없는 부서명입니다. 다시 입력해주세요.');
-				//console.log(e.value,'- 유효성 결과: ',validation);
 				tree.finishEditing();
 				return false;
 			}else {
@@ -355,8 +350,6 @@
 						'team_name'	: edit_name,
 						'type'	: 'name'
 				}
-				//console.log("::edit Dept::");
-				//console.log(data.team_code,':',data.team_name,'->',edit_name);
 				updateDept_ajax(edit_param);	// update DB
 			}
 		}else{
@@ -370,8 +363,6 @@
 		var edit_data = tree.getNodeData(e.nodeId);
 		var og_upper = tree.getNodeData(tree.getParentId(e.nodeId));
 		var new_upper = tree.getNodeData(e.newParentId);
-		//console.log('::move Dept::');
-		//console.log(edit_data.team_code,':',og_upper.team_name,'->',new_upper.team_name);
 		if(new_upper.team_name != null){
 			var move_param = {
 				'nodeId'	: e.nodeId,
@@ -384,14 +375,12 @@
 			selected_tab = 'deptInfo';
 
 		}else{
-			//console.log('update fail');
 		}
 	});
 	
 	// basic event
 	// open modal to move dept of member
 	$('#moveMember_btn').on('click', function(){
-		//console.log('checked list:',checked.size,'/',checked);
 		if(checked.size == null || checked.size < 1){
 			alert('부서 이동시킬 부서원을 1명 이상 선택 해주세요.');
 			clearChecked();
@@ -402,16 +391,13 @@
 			modal.show();
 			$('#modalTree').find('.tui-tree-subtree').prevUntil('.tui-tree-root').last().find('.tui-ico-folder').html('<i class=\"bi bi-building-fill\"></i>');
 			$('#modalTree').find('.tui-tree-subtree').prevUntil('.tui-tree-root').last().find('.tui-ico-folder').attr('class','tui-tree-ico tui-tree-root');
-			$('.tui-tree-subtree .tui-tree-leaf .tui-ico-file').append('<i class=\"ri ri-folder-4-line\"></i>');
-			$('.tui-ico-file').attr('class','tui-tree-ico tui-tree-leaf');
 		}
 
 	});	
 	// all/each check-box event
  	$('.form-check-input').on('click', function(){
 		var code = $(this).attr('name');
-		//console.log('click:',code)
- 		if(code == 'all'){
+		if(code == 'all'){
 			if($(this).is(':checked')){
 				$('.form-check-input').each(function(i, item){
 					var user_code = $(item).attr('name');
@@ -435,11 +421,9 @@
 			}
 			$('.check-input-all').prop("checked", false);
 		}
- 		//console.log('checked list:',checked.size,'/',checked);
  	});
 	// close button event
  	$('.btn-close').on('click',function(){
-		//console.log('close');
 		modal.hide();
 		clearChecked();
 	});
@@ -448,7 +432,6 @@
 	//ajax
  	function getMember_ajax(code){
 		var ajax_result;
-		//console.log('::init Dept Members::')
 		$.ajax({
 			type	: 'get',
 			url		: '/dept/member/list.ajax',
@@ -460,8 +443,6 @@
 			success	: function(result){
 				var newList = $('#deptUser_list');
  				var emp_cnt = result.userList.length;
-				//console.log('userList: ',result.userList);
-				//console.log('부서 인원수: ', emp_cnt);
 				//부서 인원수 부서 정보에 저장
 				tree.setNodeData(selected_id, {
 					emp_cnt: emp_cnt
@@ -471,15 +452,12 @@
 				if(emp_cnt > 0){
 					result.userList.forEach(function(data, i){
 						var ogList = $('#deptUser_list_sample li').clone(true);
-						//console.log(i,':',data.name);
 						ogList.find('input').attr('name', data.user_code);
 						ogList.find('a').attr('href', '/emp/detail.go?user_code='+data.user_code);
 						ogList.find('.list_userName').text(data.name+' '+data.class_name);
 
 						if(data.position_code == 'P01'){// 부서장
-	 						//console.log('부서장: ',data.user_code);
-	 						//ogList.find('.badge-member').attr('style', "display:none;");
-							newList.prepend(ogList);
+	 						newList.prepend(ogList);
 	 						
 						}else{	// 부서원
 	 						ogList.find('.badge-leader').attr('style', "display:none;");
@@ -490,12 +468,8 @@
 					newList.append('<li class=\"list-group-item\"> 해당 부서는 부서원이 없습니다. </li>');
 				}
 				newList.attr('style', "display:'';");
-				$('.tui-tree-subtree .tui-tree-leaf .tui-ico-file').append('<i class=\"ri ri-folder-4-line\"></i>');
-				$('.tui-ico-file').attr('class','tui-tree-ico tui-tree-leaf');
-
 	 		},
 			error	: function(error){
-				console.log(error);
 			}
 		});
 		
@@ -503,28 +477,23 @@
 	}
 		
 	function createDept_ajax(param){
-		//console.log('::create Dept::');
-		//console.log('param:',param);
 		$.ajax({
 			type	: 'post',
 			url		: '/dept/register.ajax',
 			data	: param,
 			dataType: 'json',
 			success	: function(result){
-				//console.log('createDept_ajax: ',result.msg);				
 				if(result.msg == 'success'){
 					//alert('해당 부서가 등록되었습니다.');
 					loadTree();
 				}
 	 		},
 			error	: function(error){
-				//console.log(error);
 			}
 		});
 	}
 	
 	function removeDept_ajax(code){
-		//console.log(':: remove Dept -', code);
 		$.ajax({
 			type	: 'get',
 			url		: '/dept/delete.ajax',
@@ -533,16 +502,13 @@
 			},
 			dataType: 'json',
 			success	: function(result){
-				//console.log('removeDept_ajax: ',result.msg);
 				
 				if(result.msg == 'success'){
-					//alert('해당 부서가 삭제되었습니다.');
 					tree.remove(selected_id);
 					loadTree();
 				}
 	 		},
 			error	: function(error){
-				console.log(error);
 			}
 		});
 	}	
@@ -554,19 +520,16 @@
 			data	: param,
 			dataType: 'json',
 			success	: function(result){
-				//console.log('updateDept_ajax:',result.msg);
 				if(result.msg == 'success'){
 					if(result.type == 'code'){
 					 	tree.on('move', function(e){
 							tree.setNodeData(e.nodeId, {upper_code: param.team_code});	// update node data
 							selected_id = e.nodeId;
-							//console.log('updated node data: ',tree.getNodeData(e.nodeId));
 					 	});
 					}else if(result.type == 'name'){
 						tree.finishEditing();
 						tree.setNodeData(param.nodeId, {team_name: param.team_name});	// update node data
 						selected_id = param.nodeId;
-						//console.log('updated node data: ', tree.getNodeData(param.nodeId));
 					}
 					loadTree();
 				}else{
@@ -574,21 +537,17 @@
 				}
 	 		},
 			error	:	function(error){
-				console.log(error);
 			}
 		});
 	}
 	
 	function changeLeader_ajax(param){
-		//console.log('::changeLeader_ajax::');
-		//console.log('param:',param);
 		$.ajax({
 			type	: 'post',
 			url		: '/dept/leader/update.ajax',
 			data	: param,
 			dataType: 'json',
 			success	: function(result){
-				//console.log('changeLeader_ajax: ',result.msg);
 				if(result.msg == 'success'){
 					alert('부서장으로 변경되었습니다.')	
 					tree.select(selected_id);
@@ -603,16 +562,13 @@
 	}
 
 	function moveMember_ajax(param){
-		//console.log('::moveMember_ajax::');
-		//console.log('param:',param);
 		$.ajax({
 			type		: 'post',
 			url			: '/dept/member/update.ajax',
 			data		: param,
 			dataType	: 'json',
 			contentType	: 'application/x-www-form-urlencoded; charset=UTF-8',
-			success	: function(result){
-				//console.log('moveMember_ajax: ',result.msg);
+			success		: function(result){
 				if(result.msg == 'success'){
 					alert('해당 부서원(들)을 부서 이동했습니다.');
 					loadTree();
@@ -622,7 +578,6 @@
 
 	 		},
 			error	: function(error){
-				console.log(error);
 			}
 		});
 	}
@@ -632,15 +587,13 @@
 	// method
 	function loadTree(){
 		treeModule.loadTree(mainModule);
-		//selected_tab = 'deptInfo';
-		//tree.select(selected_id);
 		clearChecked();
 	}
 	// tab click
 	function clickTab(type){
-		console.log('click tab: ',type, '- id:',selected_id);
 		selected_tab = type;
 		modal.hide();
+		clearChecked();
 		if(type == 'deptInfo'){
 			$('#deptInfo_tab').addClass('active');
 			$('#deptUser_tab').removeClass('active');
@@ -648,26 +601,17 @@
 			$('#deptUser_tab_content').removeClass('active show');
 			getDeptInfo(selected_id);
 		}else if(type='deptUser'){
-			//console.log('::load deptUser list::');
 			$('#deptUser_tab').addClass('active');
 			$('#deptInfo_tab').removeClass('active');
 			$('#deptUser_tab_content').addClass('active show');
 			$('#deptInfo_tab_content').removeClass('active show');
 			getMember_ajax(tree.getNodeData(selected_id).team_code);
 		}
-		$('.tui-tree-subtree').prevUntil('.tui-tree-root').last().find('.tui-ico-folder').html('<i class=\"bi bi-building-fill\"></i>');
-		$('.tui-tree-subtree').prevUntil('.tui-tree-root').last().find('.tui-ico-folder').attr('class','tui-tree-ico tui-tree-root');
-		$('.tui-tree-subtree .tui-tree-leaf .tui-ico-file').append('<i class=\"ri ri-folder-4-line\"></i>');
-		$('.tui-ico-file').attr('class','tui-tree-ico tui-tree-leaf');
 	}
 	
 	function getDeptInfo(nodeId){
 		var now = tree.getNodeData(nodeId);
 		var code = tree.getNodeData(nodeId).team_code;
-		//console.log('load: ',nodeId);
-		//console.log('code: ', code);
-		//selected_modalId = modal_rootId;
-		//console.log('::load deptInfo table::');
 		var ogTable = $('#deptInfo_table_sample tbody').clone(true);
 		var newTable = $('#deptInfo_table');
 		
@@ -682,7 +626,6 @@
 			ogTable.find('td').eq(2).text(dt_form);
 		}			
 		if(tree.getParentId(nodeId) != null){
-			//console.log('parent:',parent.team_name);
 			var parent = tree.getNodeData(tree.getParentId(nodeId));
 			if(parent.team_name == null || parent.team_name == "" || parent.team_name == "defined"){
 				ogTable.find('td').eq(3).text('-');
@@ -692,7 +635,6 @@
 		}
 		if(tree.getChildIds(nodeId)[0] != null){
 			var child = tree.getNodeData(tree.getChildIds(nodeId)[0]);
-			//console.log('child:',child);
 			if(child == null || child == "" || child == "defined"){
 				ogTable.find('td').eq(4).text('-');
 			}else{
@@ -720,14 +662,12 @@
 			}else if(!tree.isLeaf(selected_id)){
 				alert('하위 부서가 있는 부서는 삭제가 불가합니다.')
 			}else {
-				//console.log('remove param:',data.team_code)
 				removeDept_ajax(data.team_code);
 			}
 		}		
 	}
 	
  	function changeLeader(){
-		//console.log('checked list:',checked.size,'/',checked);
 		var result = confirm('해당 사원을 부서장으로 위임하시겠습니까?')
 		
 		if(result){
@@ -758,7 +698,6 @@
 					'users'		: Array.from(checked)
 			}
 			moveMember_ajax(update_param);
-			//console.log('update_param:',update_param);
 			
 		} else{
 			clearChecked();
