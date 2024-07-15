@@ -417,8 +417,8 @@
 					$('.list-add-button').removeClass('disabled-button');
 				}
 			}
-			console.log('nodeText : ' + selectedNodeText);
-			console.log('nodeValue : ' + selectedNodeValue);
+			// console.log('nodeText : ' + selectedNodeText);
+			// console.log('nodeValue : ' + selectedNodeValue);
 			
 	});
 	
