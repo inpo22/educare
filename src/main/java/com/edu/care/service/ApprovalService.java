@@ -155,7 +155,7 @@ public class ApprovalService {
 		dto.setAu_type(au_type);
 		dto.setTitle(param.get("subject"));
 		dto.setContents(param.get("content"));
-		logger.info("enf_date : " + param.get("enf_date"));
+		// logger.info("enf_date : " + param.get("enf_date"));
 		try {
 			if (!param.get("enf_date").equals("")) {
 				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
