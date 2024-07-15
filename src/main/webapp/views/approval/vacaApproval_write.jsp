@@ -208,6 +208,8 @@
 	
 </body>
 <script>
+	var maxSize = 5 * 1024 * 1024; //* 5MB 사이즈 제한
+
 	const editor = new toastui.Editor({
 		el: document.querySelector('#editor'),
 		height: '500px',

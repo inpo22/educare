@@ -73,7 +73,7 @@ public class MailController {
 	@PostMapping(value="/receivedMail/read.ajax")
 	@ResponseBody
 	public Map<String, Object> receivedMailListRead(@RequestParam(value="readList[]") List<String> readList, HttpSession session) {
-		logger.info("readList : {}", readList);
+		// logger.info("readList : {}", readList);
 		
 		String user_code = (String) session.getAttribute("user_code");
 		
@@ -88,7 +88,7 @@ public class MailController {
 	@PostMapping(value="/receivedMail/delete.ajax")
 	@ResponseBody
 	public Map<String, Object> receivedMailListDel(@RequestParam(value="delList[]") List<String> delList, HttpSession session) {
-		logger.info("delList : {}", delList);
+		// logger.info("delList : {}", delList);
 		
 		String user_code = (String) session.getAttribute("user_code");
 		
@@ -120,7 +120,7 @@ public class MailController {
 	@PostMapping(value="/writtenMail/delete.ajax")
 	@ResponseBody
 	public Map<String, Object> writtenMailListDel(@RequestParam(value="delList[]") List<String> delList) {
-		logger.info("delList : {}", delList);
+		// logger.info("delList : {}", delList);
 		
 		int cnt = mailService.writtenMailListDel(delList);
 		Map<String, Object> map = new HashMap<String, Object>();

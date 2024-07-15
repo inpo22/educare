@@ -187,11 +187,17 @@ function listCall(page){
 function drawList(list){
 	var context = '';
 	for (var item of list){
-		context += '<tr class="useVacationHistoryTr">'
-		context += '<td scope="col">'+formatDate(item.reg_date)+'</td>'
-		context += '<td scope="col">'+formatDate(item.start_date)+' ~ '+formatDate(item.end_date)+'</td>'
-		context += '<td scope="col">'+getVacationTypeName(item.va_type)+'</td>'
-		context += '<td scope="col">'+item.va_days+'</td>'
+		context += '<tr class="useVacationHistoryTr">';
+		context += '<td scope="col">'+formatDate(item.reg_date)+'</td>';
+		
+		if (item.va_type == 1 || item.va_type == 2) {
+			context += '<td scope="col">'+formatDate(item.start_date)+'</td>';
+		} else {
+			context += '<td scope="col">'+formatDate(item.start_date)+' ~ '+formatDate(item.end_date)+'</td>';
+		}
+		
+		context += '<td scope="col">'+getVacationTypeName(item.va_type)+'</td>';
+		context += '<td scope="col">'+item.va_days+'</td>';
 		context += '</tr>';
 	}
 	$('#list').html(context);
