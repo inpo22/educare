@@ -169,7 +169,7 @@
 			    <div class="col-md-12 d-flex justify-content-end">
 			    	<form action="/mypageStd/update.go" method='get'>
 			    		<input type="hidden" name="user_code" value="${mypageDto.user_code}">
-			    		<button id="edit_btn" class="btn btn-secondary" type="submit">수정</button>
+			    		<button id="edit_btn" class="btn btn-primary" type="submit">수정</button>
 			    	</form>			    
 				</div>
 				
