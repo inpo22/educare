@@ -196,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
         		contentType: 'application/json',
         		dataType:'JSON',
         		success : function(response){
-        				console.log(response);
+        				//console.log(response);
         				var events = [];
         				response.list.forEach(function(item) {
         					 	var start = new Date(item.start_date);
@@ -225,7 +225,7 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
         						events.push(event);
         				});
         				
-        				console.log('Events:', events);
+        				//console.log('Events:', events);
         				successCallback(events);
         				//return events;
         				//calendar.addEventSource(events);
@@ -277,17 +277,17 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
     	// 원하는 형식으로 포맷팅 (YYYY-MM-DD 형식)
     	var endDateFormatted = endDate.toISOString().slice(0, 10);
 
-    	console.log(endDateFormatted); // 예: "2024-07-02"
+    	//console.log(endDateFormatted); // 예: "2024-07-02"
 
     	writeModalOpen(selectionInfo.startStr,endDateFormatted);
         
-        console.log(selectionInfo.startStr);
-    	console.log(endDate);
+        //console.log(selectionInfo.startStr);
+    	//console.log(endDate);
     });
     
     function detailModalOpen(info) {
     	$('#infoUser').remove();
-    	console.log(info.event);
+    	//console.log(info.event);
     	var beforEnd = new Date(info.event.end);
     	beforEnd.setDate(beforEnd.getDate() - 1);
     	
@@ -299,11 +299,11 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
     	var contents = info.event.extendedProps.contents;
     	var skedType = info.event.extendedProps.skedType;
     	var start = info.event.start.getFullYear() +'-'+ ((info.event.start.getMonth()+1) < 10 ? '0'+ (info.event.start.getMonth()+1) : (info.event.start.getMonth()+1)) +'-'+ (info.event.start.getDate() <10 ? '0'+ info.event.start.getDate() : info.event.start.getDate());
-    	console.log("####start>>"+start);
+    	//console.log("####start>>"+start);
     	
     	
     	var end = beforEnd;
-    	console.log("####end>>"+end);
+    	//console.log("####end>>"+end);
     	var name = info.event.extendedProps.name;
     	var team_name = info.event.extendedProps.team_name;
     	var info_user = '<div id="infoUser" class="input-group input-group-sm mb-3 name_info"><span class="input-group-text" id="basic-user">작성자</span> <input type="text" class="form-control" id="name"><span class="input-group-text team_name_info" id="basic-addon1">소속부서</span> <input type="text" class="form-control" id="team_name"></div>';	
@@ -311,9 +311,9 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
     	var sessionUserCode = document.getElementById('sessionUserCode').value;
     	var user_code = info.event.extendedProps.user_code;
     	var edit_user_code = info.event.extendedProps.edit_user_code;
-    	console.log("user_codeuser_code:: "+user_code);
-    	console.log("sessionUserCodesessionUserCode:: "+sessionUserCode);	
-    	console.log("@@@@"+end);
+    	//console.log("user_codeuser_code:: "+user_code);
+    	//console.log("sessionUserCodesessionUserCode:: "+sessionUserCode);	
+    	//console.log("@@@@"+end);
     	parent.insertAdjacentHTML('afterbegin',info_user);
     	$('#name').val(name);
     	$('#name').attr('disabled',true);
@@ -328,7 +328,7 @@ document.addEventListener('DOMContentLoaded', function(eventList) {
        	$('#selectSchRange').val(skedType);
        	$('#selectSchRange').attr('disabled',true);
        	$('#start_date').val(start);
-       	console.log("start_date>>>"+start);
+       	//console.log("start_date>>>"+start);
     	$('#start_date').attr('disabled',true);
        	if(end === null){
        		$('#end_date').val(start);
@@ -395,8 +395,8 @@ $('#writeModal').on('hidden.bs.modal', function () {
 });
 
 function sch_beforeSubmit(){
-	console.log($('#selectSchRange option:selected').val());
-	console.log($('#start_date').val());
+	//console.log($('#selectSchRange option:selected').val());
+	//console.log($('#start_date').val());
 	if( $('#selectSchRange option:selected').val() === ''){
 		alert('일정유형을 선택해주세요.');
 		$('#selectSchRange').focus();
@@ -471,7 +471,7 @@ $('#updateButton').click(function() {
 
 function sch_update(){
 	var updateNo = $('#updateButton').attr('data-val');
-	console.log(updateNo);
+	//console.log(updateNo);
 	var paramData = {
 		sked_no: updateNo,
 		sked_type: $('#selectSchRange').val(), 
@@ -520,7 +520,7 @@ function sch_submit() {
 		data: JSON.stringify(paramData),
 		dataType:'JSON',
 		success : function(data){
-			console.log("datadatarow: " +data.row);
+			//console.log("datadatarow: " +data.row);
 			 calendar.addEvent(paramData);
 			if(data.row > 0){
 				alert('등록되었습니다');
@@ -538,7 +538,7 @@ function sch_submit() {
 function sch_del(info){
 	var delNo = $('#deleteButton').attr('data-val');
 	var skedType = $('#selectSchRange').val();
-	console.log("DELETE skedTypeskedType>>>"+skedType);
+	//console.log("DELETE skedTypeskedType>>>"+skedType);
 	if(confirm("해당 일정을 삭제하시겠습니까?")){
 		$.ajax({
 			url:'/schedule/delete.ajax',
@@ -568,7 +568,7 @@ $(".filter_btn").click(function () {
     filterEvent(filter_skedType);
     var evt = calendar.getEvents();
     filter = filter_skedType;
-    console.log(filter);
+    //console.log(filter);
     if (filter === '') {
         evt.forEach(function(event) {
             event.setProp('display', '');
