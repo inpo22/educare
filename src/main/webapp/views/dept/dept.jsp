@@ -156,7 +156,7 @@
 			</tr>
 			<tr>
 				<th>하위 부서</th>
-				<td>lower</td>
+				<td></td>
 			</tr>
 		</tbody>
 	</table>

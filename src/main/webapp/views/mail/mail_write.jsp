@@ -65,13 +65,10 @@
 							<td class="second-col">
 								<div class="display-flex">
 									<div class="table-left-section receiver-visual">
-										<c:if test="${receiverList.size() > 0}">
-											<c:forEach items="${receiverList}" var="receiver">
-												<span class="badge bg-primary receiver-${receiver.receive_user_code}">
-													${receiver.receiver_name}&nbsp;${receiver.class_name}
-												</span>
-												&nbsp;&nbsp;
-											</c:forEach>
+										<c:if test="${dto ne null}">
+											<span class="badge bg-primary receiver-${dto.send_user_code}">
+												${dto.send_user_name}&nbsp;${dto.class_name}
+											</span>
 										</c:if>
 									</div>
 									<div class="table-right-section"><button class="btn btn-secondary btn-sm" type="button" onclick="openReceiverModal()">+</button></div>

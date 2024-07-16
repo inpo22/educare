@@ -153,6 +153,7 @@
 	<select id="mailContentsDetail" resultType="mail">
 		SELECT
 			m.mail_no
+			, m.send_user_code
 			, u.name AS send_user_name
 			, (SELECT ac.code_name FROM all_code ac WHERE ac.code = u.class_code) AS class_name
 			, m.subject

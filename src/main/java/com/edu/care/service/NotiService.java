@@ -31,8 +31,8 @@ public class NotiService {
 		result.put("msg", msg);
 		result.put("notiList", notiList);
 		result.put("notiCnt", notiCnt);
-		logger.info("알림 리스트 조회 결과: "+msg);
-		logger.info("result: "+notiList.size()+"/cnt"+notiCnt);
+		// logger.info("알림 리스트 조회 결과: "+msg);
+		// logger.info("result: "+notiList.size()+"/cnt"+notiCnt);
 		return result;
 	}
 
@@ -44,7 +44,7 @@ public class NotiService {
 		if(row > 0) {
 			msg = "success";
 		}
-		logger.info("알림 읽음 결과: "+msg);
+		// logger.info("알림 읽음 결과: "+msg);
 		result.put("msg", msg);
 		return result;
 	}

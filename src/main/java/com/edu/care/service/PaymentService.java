@@ -29,7 +29,7 @@ public class PaymentService {
 		payDto.setName(param.get("name"));
 		payDto.setUser_code(param.get("user_code"));
 		
-		logger.info("payDto:"+payDto);
+		// logger.info("payDto:"+payDto);
 		
 		paymentDAO.savePay(payDto);
 		

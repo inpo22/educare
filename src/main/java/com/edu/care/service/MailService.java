@@ -262,7 +262,8 @@ public class MailService {
 			original_message = builder.toString();
 			
 			if (writeType.equals("1")) {
-				mav.addObject("receiverList", receiverList);
+				// mav.addObject("receiverList", receiverList);
+				mav.addObject("dto", dto);
 				mav.addObject("ccList", ccList);
 			} else if (writeType.equals("2")) {
 				List<MailDTO> attachFileList = mailDAO.mailAttachFileList(mail_no);

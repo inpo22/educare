@@ -16,6 +16,7 @@
 			, u.team_code
 		FROM user u
 		WHERE u.classify_code IN ('U01', 'U02') AND u.status = 0
+		ORDER BY u.class_code ASC, u.reg_date ASC
 	</select>
 	
 	<select id="createAu_code" resultType="String">
